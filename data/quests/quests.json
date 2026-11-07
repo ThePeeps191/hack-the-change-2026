@@ -11,7 +11,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Calgary Central Library",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free",
+      "side-by-side"
+    ]
   },
   {
     "id": "7f13908e-bee4-40ea-8707-2a5f90fa9973",
@@ -53,7 +58,11 @@
     "proof": "video",
     "coins": 25,
     "place_name": "West Campus Park",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "47a2b3e4-cd5e-423e-a238-5a82efbe70f1",
@@ -81,7 +90,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Inglewood Bird Sanctuary",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime",
+      "side-by-side"
+    ]
   },
   {
     "id": "4379f1a6-ae68-4d5d-99d6-156602a2435c",
@@ -123,7 +137,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Chinatown",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "daytime"
+    ]
   },
   {
     "id": "6a1a64b9-ef51-4116-ac70-e2a7d13140a8",
@@ -151,7 +169,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Centennial Place",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "48359d56-748a-4a9a-85b9-388c730a447c",
@@ -165,7 +187,10 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Schulich School of Engineering",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "step-free"
+    ]
   },
   {
     "id": "3143141c-f538-4b52-a123-76f36c91572b",
@@ -193,7 +218,10 @@
     "proof": "gps",
     "coins": 15,
     "place_name": null,
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm"
+    ]
   },
   {
     "id": "a1b2c3d4-0099-4000-8000-000000000002",
@@ -221,7 +249,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "MacEwan Student Centre",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "a1b2c3d4-0003-4000-8000-000000000001",
@@ -235,7 +267,11 @@
     "proof": "photo",
     "coins": 30,
     "place_name": "Olympic Oval",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "a1b2c3d4-0004-4000-8000-000000000001",
@@ -249,7 +285,11 @@
     "proof": "photo",
     "coins": 20,
     "place_name": "Rozsa Centre",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "a1b2c3d4-0001-4000-8000-000000000001",
@@ -263,7 +303,11 @@
     "proof": "photo",
     "coins": 30,
     "place_name": "Taylor Family Digital Library",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "step-free",
+      "side-by-side"
+    ]
   },
   {
     "id": "a1b2c3d4-0001-4000-8000-000000000002",
@@ -277,7 +321,12 @@
     "proof": "photo",
     "coins": 20,
     "place_name": "Taylor Family Digital Library",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "step-free",
+      "side-by-side"
+    ]
   },
   {
     "id": "498fa389-ed95-4cdd-ad54-02fc87b8a002",
@@ -291,7 +340,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Nose Hill",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "0659901c-500b-41bd-8438-4f779d771b1b",

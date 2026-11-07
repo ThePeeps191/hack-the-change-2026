@@ -2,21 +2,32 @@
 
 How Amble earns marks against the Hack the Change 2026 rubric, and what each area of the team has to deliver for that. [PLAN.md](PLAN.md) holds the build plan, and this file is what the build is for. The team writes the quests and the story. This file gives them a structure to hang on.
 
+The organizers' rules, word for word where it matters, are in [RUNBOOK.md](RUNBOOK.md). How to explain every part of the code is in [WALKTHROUGH.md](WALKTHROUGH.md). The latest judge's-eye audit, with what's still open, is [at the end of this file](#audit-what-a-judge-sees-today).
+
 ## Hard gates (prescreening, no exceptions)
 
 If any of these is missing, nothing else matters.
 
 - [ ] Submitted on Devpost by **11:30 AM ABT, Sunday Nov 8**. Aim for 10:30.
 - [ ] Title is exactly `TEAM ID - TEAM NAME - Amble`.
-- [ ] A **2 to 5 minute video** of the product working: real phones, real campus, a real quest.
+- [ ] A **2 to 5 minute video** of the product working: real phones, real campus, a real quest. Under 2:00 or over 5:00 fails prescreening.
+- [ ] A **project description** and **all team members** added on Devpost. A draft description and AI disclosure are in [DEVPOST.md](DEVPOST.md).
 - [ ] A **public GitHub link**. The repo is public, so check that no key has ever been committed.
 - [ ] **AI use disclosed on Devpost.** Not disclosing it can mean disqualification and a report to MLH.
-- [ ] **Everyone can explain the code.** An inability to explain any technical design or code can mean disqualification, and all members must attend judging in person. Read [ARCHITECTURE.md](ARCHITECTURE.md) before judging.
+- [ ] **Everyone can explain the code.** An inability to explain any technical design or code can mean disqualification, and all members must attend judging in person. Each of us reads [WALKTHROUGH.md](WALKTHROUGH.md) and can answer its questions without looking.
 - [ ] It runs as intended for anyone with the link. Have a demo login and a bot partner for judges who are alone (see Demo in PLAN.md).
 - [ ] It looks complete: every tab works, with no "coming soon" and no dead buttons. Anything unfinished gets hidden, not shown broken.
-- [ ] Prescreening also needs us at least *satisfactory* in **Idea** (innovation, impact) and **Effectiveness** (it works and is usable).
+- [ ] Prescreening also needs us at least *satisfactory* (3 out of 5) in **Idea** and **Effectiveness**. The rubric has no rows with those names, so treat Idea as Innovation plus Impact and Effectiveness as Technical Execution plus UX, and be a clear 3 or better on all five.
+- [ ] **It's deployed.** Prescreeners and judges will open the link. A localhost demo can't pass "can be executed or run as intended".
 
-Pass/fail checks: theme, functionality, innovation, completeness, technical feasibility, presentation. "Purely vibecoded" projects get cut, so the work has to show decisions a human made: the quests, the story, the metrics and why they were chosen.
+Pass/fail checks, each one a hard fail: **adherence to theme** (fits the prompt and the challenge statement), **functionality** (runs as intended), **innovation** (a creative approach), **completeness** (code, presentation *and* demo all there), **technical feasibility** (appropriate use of technology), **presentation** (goals and outcomes explained clearly). "Purely vibecoded" projects get cut, so the work has to show decisions a human made: the quests, the story, the metrics and why they were chosen.
+
+## How the live rounds work
+
+- **Rounds 1 and 2 are two different panels** of 3 or 4 judges, back to back. Each judge scores on their own and the scores are averaged. Give the same pitch twice: neither panel has seen it.
+- **3 minutes to present, then 2 minutes of Q&A.** A CTC member times it and **cuts us off at 3:00**, so rehearse to 2:45. Have the phone already on the home screen, logged in, before the clock starts.
+- **Finals:** the top teams present to all judges, **5 minutes plus 3 minutes of Q&A**, with the same hard cutoff. Each judge's 1st, 2nd and 3rd earn 3, 2 and 1 points, and the most points wins. **Ties go to the Round 1 rubric score**, so Round 1 counts twice: it gets us into the final and it breaks the tie.
+- All four of us stand at the table for every round. Anyone can be asked about any file.
 
 ## Prompt fit: which focus areas we answer
 
@@ -42,7 +53,14 @@ The objective asks for a working prototype that addresses **at least one focus a
 
 ## The rubric, one row at a time
 
-Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
+Each category is scored 1 to 5, and the full wording of every level is in [RUNBOOK.md](RUNBOOK.md). The bullets are what a 5 looks like for us.
+
+**Read the rubric literally.** It was written for cities: Innovation asks how we "creatively apply technology to urban challenges (housing, mobility, disaster resilience, inclusivity)", and a 5 in Impact "addresses inclusivity, safety, resilience and sustainability in a unified way". Say all four words in the pitch, with one Amble example each:
+
+- **Inclusive:** comfort settings (step-free, short pace, side by side instead of chatting), ten quest languages, free, any phone browser, no fitness level assumed, and starter quests tagged `newcomer` that double as a tour of Calgary.
+- **Safe:** 18+, both people say yes, you meet at a public quest spot, your partner never sees your location, daylight only for strangers, one tap to report, and a report means you're never paired again.
+- **Resilient:** neighbours who already know each other, which is what a community leans on when something goes wrong. And the app itself keeps working when the AI, GPS or signal doesn't.
+- **Sustainable:** every quest is on foot to a public place, with nothing to buy and no car. One AI call is shared by everyone nearby, so it stays cheap to run.
 
 ### Innovation & Creativity
 
@@ -70,7 +88,7 @@ Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
 *5 = "highly executable within real-world limits; clear plan for budget, infrastructure and adoption."*
 
 - **Cold start:** launch on one campus, where there's density, a shared schedule and free time between classes. Crews and invite links work even with zero strangers nearby. That's the pilot.
-- **Cost:** one Gemini call writes a batch of quests, which are cached per area and reused. The starter pack is the free fallback. Put a per-quest cost estimate in the Devpost from actual token counts (measure it, don't guess).
+- **Cost:** one AI call writes a batch of quests, which are cached per area and reused. The starter pack is the free fallback. Put a per-quest cost estimate in the Devpost from actual token counts (measure it, don't guess).
 - **Infrastructure:** one Next.js app, Postgres on Tiger Data (location pings as a hypertable), Auth0. It scales to another city by changing the location and nothing else.
 - **Adoption partners to name:** the campus wellness centre, the students' union, residence life and city parks and recreation. Only name a partner as confirmed if we really spoke to them.
 - **Risks we've thought about:** safety (above), GPS spoofing (proof checks location and time), Gemini being wrong (manual approval in demo mode, appeals), and battery (location pings only during a quest).
@@ -79,9 +97,9 @@ Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
 
 *5 = "strong technical depth and reliability; stack chosen and implemented with precision."*
 
-- Shared contracts (`src/lib/contracts.ts`) with mock and live modes for auth and Gemini, so the demo never depends on luck.
-- Gemini grounding with sources shown, as Google requires. Structured output with a safety check on what comes back.
-- Proof verification uses media plus GPS plus timestamp.
+- Shared contracts (`src/lib/contracts.ts`) with mock and live modes for auth and the AI, so the demo never depends on luck.
+- Quests are only written at real places: the model picks from a list of public spots near you (OpenStreetMap plus our own), and the coordinates always come from that list, never from the model. Gemini mode also uses Maps and Search grounding and shows its sources. Either way, `toSafeQuest` checks everything that comes back.
+- Proof verification uses media plus GPS plus timestamp. (The GPS and time checks are switched off in `DEMO_MODE`, so judges can try it from the room. Say so if asked.)
 - Ratings use Glicko-2 from a library, not hand-rolled maths.
 - It degrades gracefully: GPS denied, no signal and Gemini down each have a designed state (tested, not just claimed).
 
@@ -89,7 +107,7 @@ Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
 
 *5 = "seamless, engaging, universally accessible; visually striking yet purposeful."*
 
-- One design system: tokens, components, light and dark themes, and Pip the mascot reacting to every state.
+- One design system: tokens, components, light and dark themes. (There's no mascot in the build, so don't promise one.)
 - Built for one hand outdoors: 44 px+ targets, primary actions in the thumb zone, contrast that holds up in sunlight, reduced-motion support.
 - Low-pressure by design: the timer is gentle, you can always leave, there's no streak guilt, and nothing yells.
 
@@ -113,21 +131,21 @@ There are three layers, so the competitive parts never leak into stranger meetup
 
 1. **Wellbeing stats** (above). They come from every quest, private, never ranked.
 2. **Coins.** Every completed quest earns coins for effort, and coins feed the weekly crew leaderboard. Anyone can earn them at any fitness level.
-3. **Ratings (Glicko-2, using the `glicko2` package).** Only where there's a real winner: crew vs crew in Claim (claiming or stealing a zone is a result) and races, plus friend 1v1 challenges. They're kept per category (fitness, explore, social) so everyone competes at their own level. Stranger quests are cooperative and never touch a rating.
+3. **Ratings (Glicko-2, using the `glicko2` package).** Only where there's a real winner. In the build that's one thing: a crew stealing a Claim zone from another crew (`rateSteal` in `src/server/games.ts`). Each crew has one rating. Stranger quests are cooperative and never touch a rating. (Races, 1v1 challenges and ratings per category were ideas that weren't built, so don't mention them.)
 
 ## The 3-minute demo (round 1) and 5-minute final
 
 The team owns the story. This is the skeleton it has to fit.
 
 1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers, and say the two focus areas by name.
-2. **System 1 live (90 s):** on a phone: free for 20 min, matched (bot partner if needed), a UCalgary quest, a photo, Gemini confirms it, the recap.
+2. **System 1 live (90 s):** on a phone: free for 20 min, matched (with Priya, the demo partner, and say she's a demo partner), a UCalgary quest, a photo, the AI referee confirms it, the recap.
 3. **Why it works (30 s):** the human metrics on the dashboard, and safety in one sentence.
 4. **System 2 (30 s):** crew leaderboard, the Claim map, a zone stolen.
 5. **Close (10 s):** what a pilot on campus looks like.
 
 The final adds 2 minutes: scalability (cost, any city), the tech architecture, and what we'd measure in a pilot.
 
-**Q&A to rehearse:** "How do you stop creeps?" "What if nobody's nearby?" "Can't people fake photos?" "How much does Gemini cost per user?" "Why would someone open this twice?" "How is this different from Meetup or Bumble BFF?"
+**Q&A to rehearse:** the likely questions, with answers grounded in the code, are in [WALKTHROUGH.md](WALKTHROUGH.md#questions-judges-will-ask). Two minutes is about four answers, so keep each one to two sentences.
 
 ## Who covers what
 
@@ -137,3 +155,53 @@ The final adds 2 minutes: scalability (cost, any city), the tech architecture, a
 | Backend | Login and the demo login, matching, the live deploy, no secrets in the repo |
 | Gemini | Grounded quests with sources, the proof referee, recaps, the cost-per-quest number |
 | Friends and demo | Quests and story, Claim rules, testers, the video, the Devpost write-up, the title format, submitting early |
+
+## Side pots and sponsor prizes
+
+Every team is entered for every side pot automatically, and each one is scored out of 3. One sentence in the pitch and a paragraph on Devpost is usually what decides them.
+
+| Prize | What scores 3 | Our case | Go for it? |
+| --- | --- | --- | --- |
+| **Clio, Best in Accessibility** ($100) | Inclusive, intuitive design, plus strong privacy, security and transparency | Comfort settings, ten quest languages, step-free quests, AA contrast. Location is deleted the moment you're matched, a partner only ever sees a rough distance, a first name only after both say yes, media served only to people on that quest, and download or delete all your data from `/privacy`, which also says which AI sees your photos. Priya is labelled as a practice partner | **Yes.** Show `/privacy` for 5 seconds in the pitch |
+| **Benevity, Best Local Impact** ($100 + $100 to donate) | A significant **Calgary** challenge, with a feasible solution that lasts | Quests at real Calgary places (the +15, Chinatown, Central Library, Prince's Island), newcomer quests that work as a city orientation, and a pilot on the UCalgary campus | **Yes**, but it needs one sourced Calgary number about loneliness or newcomers. Don't make one up |
+| **Voltex, Real-World Energy Data** ($500) | Real published or measured energy data, such as AESO, central to the product, live preferred. Sample or AI-made data scores 1 | Nothing. See below | **No** |
+| **MLH Gemini API** | Gemini actually used | `src/lib/gemini-live.ts`, used when `AI_PROVIDER=gemini`. The plan is Gemini for the demo, but the code picks Claude whenever `ANTHROPIC_API_KEY` is set | **Yes**, if the server sets `AI_PROVIDER=gemini` (audit item 2) |
+| **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | Yes, once deployed |
+| **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | Yes, once `DATABASE_URL` points there |
+| **MLH Vultr** | Hosted on Vultr | `deploy/` | Yes, once deployed |
+| **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | Not registered yet | Only if someone registers one before submitting |
+
+**Why we're skipping Voltex.** Amble asks people to walk to a public place together. No decision anyone makes in the app depends on electricity prices or grid load, and the honest-sounding hooks don't hold up. "CO₂ saved by walking" would be invented, because a quest doesn't replace a car trip. "Go outside when the grid peaks" isn't something anyone needs Amble to tell them. AESO data would be a basic display at best, which the Voltex rubric scores 2, and it would cost us credibility in the main rounds. Don't add it.
+
+## Audit: what a judge sees today
+
+Done on Nov 7 by opening the app alone at phone width (390 × 844), with a production build and `DEMO_MODE=1`, mock login and mock AI, going through every tab and then trying to break it. The site isn't deployed yet, so live Auth0, live AI and a real phone over HTTPS weren't tested.
+
+**What already works well.** The whole System 1 flow runs end to end alone, with the GPS denied: free, matched, quest, photo, verdict, recap. Every tab loads with no errors. Bad invite and crew codes, missing quests and a dropped signal all show a friendly message. `bun run smoke` passes 86 of 86 checks. axe finds no WCAG A or AA problems on `/crew`, `/privacy`, `/welcome` or `/login`.
+
+**Fixed in this pass:**
+
+| Gap | Why it cost points | Fix |
+| --- | --- | --- |
+| The first card on the home screen was "God Damn Dam", and "Animal Bingo" asked you to photograph a crying child | Presentation, plus a safety and privacy failure in front of the Clio judges. Our own AI rules ban filming strangers | Retitled, swapped the child for "an animal eating", fixed typos |
+| "Nearby" listed quests 9 km away first | It looks broken: a "20 min" quest at the zoo | Sorted nearest first, from your location if you've already allowed it, otherwise from campus |
+| No starter quest had tags | Step-free and side-by-side settings changed nothing when the AI was mocked or slow, and the pitch's newcomer quests didn't exist | Tagged 13 quests where the tag is plainly true |
+| Priya, the bot, was shown as "someone's free nearby, 260 m away" | Transparency, which is half of Clio. A judge who finds out stops trusting the rest | `Match.demo_partner`, and the label from #26 |
+| Faint text was 3.2:1, and the segmented tabs 2.5:1 | Fails WCAG AA, which matters for Clio and UX | Faint ink is now 4.8:1 in light mode and 5.1:1 in dark. #26 fixed the tabs |
+| An unknown URL showed Next's bare 404 | "Appears complete" | A 404 page in our own style |
+
+**Still open, ranked by points per hour of work.** Take one, and strike it out here when it's merged.
+
+1. **Deploy it, and test on a real phone over HTTPS** (backend, about 1 to 2 h). Without it, functionality is a hard prescreen fail, and four MLH prizes (Auth0, Tiger Data, Vultr, GoDaddy) are worth nothing. Check GPS, the camera upload, Auth0 sign-in and "Try the demo" on an iPhone and an Android.
+2. **Make sure the deployed server really runs Gemini** (backend, 5 min). The plan is Claude while we build and Gemini for the demo. But since #20, the code picks Claude whenever `ANTHROPIC_API_KEY` is set. So set `AI_PROVIDER=gemini` in `/opt/amble/shared/.env`, and check `/api/health` before judging. Without it we lose the MLH Gemini prize, the pitch is wrong, and video proof is approved without anyone looking at it (the Claude path can't watch video).
+3. **Submit to Devpost by 10:30 Sunday** (friends and demo, about 2 h, mostly the video). Video between 2:00 and 5:00, title `TEAM ID - TEAM NAME - Amble`, all four members, and the description and AI disclosure from [DEVPOST.md](DEVPOST.md).
+4. **Write give-back and skill-swap starter quests on campus** (friends and demo, 30 min). Focus area 1 names "volunteering, skill-sharing", and the pack has no quests for either. Two of each, tagged, plus a couple more `newcomer` ones. These are the ones to show the judges.
+5. **Rehearse to 2:45 with a timer, twice, all four of us** (1 h). Then each person answers three random questions from [WALKTHROUGH.md](WALKTHROUGH.md) without notes. This is the disqualification risk.
+6. **Rewrite or remove two starter quests** (friends and demo, 10 min). "Film an Air Ambulance" means filming a hospital helipad, which is a privacy flag. "Downtown View" sends people onto a parkade roof, and our own AI rules ban rooftops and heights.
+7. **Far quests claim to take 20 minutes** (friends and demo, 20 min). Inglewood (10 km), the airport (9 km), Glenmore Dam (9 km) and the zoo (8 km) can't be reached and done in 20 minutes from campus. Make them crew quests with honest durations, or drop them.
+8. **One sourced Calgary number for Benevity** (20 min of research). Use something published, for example from the City of Calgary or United Way of Calgary on isolation or newcomers. Quote it exactly, with the source.
+9. **Measure the cost per quest** (Gemini or AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one batch into a dollar figure for Feasibility.
+10. **The recap with a bad id** (15 min). `/recap/<unknown>` says "you did it" with zero stats and "still being written" forever. It should say it can't find that quest.
+11. **The recap with no GPS** (15 min). It shows "1 minutes" and "0.0 km walked". Hide the distance when there's no route, and fix the plural.
+12. **Don't promise what isn't built.** This file used to mention a mascot, a monthly UCLA loneliness check, ratings per category, races, 1v1 challenges and appeals. None of those are in the code. Leave them out of the pitch unless someone builds them.
+13. **A screen-reader pass on a real phone** (UX, 30 min). Run VoiceOver once through the System 1 flow. axe can't tell whether the order and the labels make sense out loud.
