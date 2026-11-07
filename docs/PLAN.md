@@ -1,6 +1,6 @@
 # Plan
 
-This is a starting point, not a contract. If something here stops making sense, change it in a small PR and carry on. The idea itself is in [IDEA.md](IDEA.md), and the shapes everyone shares are in [CONTRACTS.md](CONTRACTS.md).
+This is a starting point, not a contract. If something here stops making sense, change it in a small PR and carry on. The idea itself is in [IDEA.md](IDEA.md), and the shapes everyone shares are in [CONTRACTS.md](CONTRACTS.md). **What the judges score, and what each area owes for it, is in [JUDGING.md](JUDGING.md): read it before choosing what to build next.**
 
 ## Timeline
 

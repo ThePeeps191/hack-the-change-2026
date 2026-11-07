@@ -1,5 +1,10 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { Suspense } from "react";
+import { MatchScreen } from "@/features/matching/match-screen";
 
 export default function Page() {
-  return <Placeholder title="matching" note="searching, match found, both accept" />;
+  return (
+    <Suspense>
+      <MatchScreen />
+    </Suspense>
+  );
 }
