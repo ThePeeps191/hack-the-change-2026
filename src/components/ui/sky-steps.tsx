@@ -30,4 +30,4 @@ export function SkySteps({ items, delay = 0.3 }: { items: { badge: ReactNode; ti
 
 // The quiet second choice that sits under a white pill on the sky.
 export const skyQuiet =
-  "flex min-h-[56px] w-full items-center justify-center rounded-[20px] text-[17px] font-semibold text-on-sky transition-colors hover:bg-white/12";
+  "flex min-h-[56px] w-full items-center justify-center rounded-[20px] text-[17px] font-semibold text-[#121412]/75 dark:text-on-sky/85 transition-colors hover:bg-white/30 dark:hover:bg-white/12";

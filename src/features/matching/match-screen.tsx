@@ -188,11 +188,11 @@ export function MatchScreen() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
-                  <p className="mt-0.5 text-[14px] opacity-65">
-                    {[run.quest.place_name, `${run.quest.duration_min} min`].filter(Boolean).join(" · ")}
+                  <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[14px]">
+                    <span className="opacity-65">{[run.quest.place_name, `${run.quest.duration_min} min`].filter(Boolean).join(" · ")}</span>
+                    <span className="flex items-center gap-1 font-semibold whitespace-nowrap tabular-nums"><Coin size={13} />{run.quest.coins}</span>
                   </p>
                 </div>
-                <span className="flex items-center gap-1 pt-0.5 text-[15px] font-semibold tabular-nums"><Coin size={14} />{run.quest.coins}</span>
               </div>
             </motion.div>
           )}

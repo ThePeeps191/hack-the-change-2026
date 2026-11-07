@@ -63,7 +63,7 @@ export function HomeScreen() {
         />
         <div className="mt-2 flex justify-center gap-3 px-4">
           <Ring value={d ? active : 0} label="active min" progress={active / goal} color="#8ff0b4" />
-          <Ring value={d?.familiar_faces?.length ?? 0} label="familiar faces" progress={(d?.familiar_faces?.length ?? 0) / 5} color="#ffffff" />
+          <Ring value={d?.familiar_faces?.length ?? 0} label={(d?.familiar_faces?.length ?? 0) === 1 ? "familiar face" : "familiar faces"} progress={(d?.familiar_faces?.length ?? 0) / 5} color="#ffffff" />
           <Ring value={d?.new_places?.length ?? 0} label="new places" progress={(d?.new_places?.length ?? 0) / 8} color="#ffbe7a" />
         </div>
         <Hand as="h1" className="mt-5 text-center text-[38px] leading-none font-bold">free for {QUEST_MINUTES} min?</Hand>

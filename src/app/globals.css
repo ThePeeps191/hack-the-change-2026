@@ -375,3 +375,23 @@ a {
     --podium-edge: rgb(255 255 255 / .35);
   }
 }
+
+/* "You are here": a blue dot with a white ring and a slow pulse around it. */
+@keyframes you-pulse { from { transform: scale(1); opacity: .45 } to { transform: scale(3.2); opacity: 0 } }
+.amble-you {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px #fff, 0 2px 8px rgb(0 0 0 / .3);
+}
+.amble-you::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: you-pulse 2.2s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { .amble-you::after { animation: none; opacity: 0 } }
