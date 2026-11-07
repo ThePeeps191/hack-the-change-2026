@@ -22,3 +22,7 @@ dist/
 build/
 coverage/
 uploads/
+
+# Python
+__pycache__/
+.venv/
