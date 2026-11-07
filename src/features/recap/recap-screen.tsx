@@ -9,6 +9,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, Skeleton, Stat } from "@/components/ui/card";
 import { Mascot } from "@/components/ui/mascot";
 import { MoodCheck } from "@/features/checkin/mood-check";
+import { RecapExtras } from "./recap-extras";
 
 export function RecapScreen() {
   const { runId } = useParams<{ runId: string }>();
@@ -54,6 +55,7 @@ export function RecapScreen() {
             <Card className="p-4">
               <p className="leading-relaxed">{recap.summary}</p>
             </Card>
+            <RecapExtras recap={recap} />
             <MoodCheck runId={runId} phase="after" />
             {recap.partner && (
               <Card className="p-4">

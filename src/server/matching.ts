@@ -76,12 +76,13 @@ async function expireStale(userId: string) {
   );
 }
 
-// A pending match, or an accepted one whose quest is still going.
+// A pending match, or an accepted one whose quest is still going. The time check
+// matters: a quest nobody opened again is still marked active after it's over.
 const openMatch = (userId: string) =>
   one<MatchRow>(
     `${SELECT_MATCH}
      where $1 in (m.user_a, m.user_b)
-       and (m.status = 'pending' or (m.status = 'accepted' and r.status = 'active'))
+       and (m.status = 'pending' or (m.status = 'accepted' and r.status = 'active' and r.ends_at > now() - interval '2 minutes'))
      order by m.created_at desc limit 1`,
     [userId],
   );

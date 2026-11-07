@@ -33,7 +33,7 @@ export function ClaimScreen() {
           <>
             <div className="flex gap-3 text-[13px] font-semibold text-ink-muted">
               <span className="flex items-center gap-1.5"><i className="size-3 rounded-full bg-accent" />{us?.name}</span>
-              <span className="flex items-center gap-1.5"><i className="size-3 rounded-full bg-anywhere" />{game.teams[1]?.name}</span>
+              {game.teams[1] && <span className="flex items-center gap-1.5"><i className="size-3 rounded-full bg-anywhere" />{game.teams[1].name}</span>}
             </div>
             <MiniMap
               pins={game.zones.map((z) => ({
