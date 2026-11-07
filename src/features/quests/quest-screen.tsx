@@ -122,7 +122,7 @@ export function QuestScreen() {
                   <circle cx="12" cy="10" r="2.2" />
                 </svg>
                 <span className="flex-1 text-[15px] font-medium">{q.place_name}</span>
-                {mapsUrl && (
+                {mapsUrl && active && !you?.submitted && (
                   <a href={mapsUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center px-1 text-[15px] font-semibold text-[#8fb0ff]">
                     Walk there
                   </a>

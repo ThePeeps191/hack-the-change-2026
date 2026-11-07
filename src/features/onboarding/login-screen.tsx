@@ -58,13 +58,13 @@ export function LoginScreen({ demo, returnTo }: { demo: boolean; returnTo: strin
             <button
               onClick={tryDemo}
               disabled={busy}
-              className="flex min-h-[60px] w-full items-center justify-center rounded-[20px] bg-white/16 text-[17px] font-semibold text-on-sky ring-1 ring-white/30 backdrop-blur-md transition-transform active:scale-[0.98] disabled:opacity-60"
+              className="flex min-h-[60px] w-full items-center justify-center rounded-[20px] bg-white/16 text-[17px] font-semibold text-[#121412] ring-1 ring-white/50 backdrop-blur-md dark:text-on-sky dark:ring-white/30 transition-transform active:scale-[0.98] disabled:opacity-60"
             >
               {busy ? "Starting…" : "Try the demo"}
             </button>
           )}
-          <p className="pt-2 text-center text-[13px] text-on-sky/85">
-            For 18 and older. <a className="underline underline-offset-2" href="/privacy">What we keep, and why</a>
+          <p className="pt-1 text-center text-[13px] text-[#121412]/75 dark:text-on-sky/85">
+            For 18 and older. <a className="inline-flex min-h-11 items-center underline underline-offset-2" href="/privacy">What we keep, and why</a>
           </p>
         </motion.div>
       </Hero>

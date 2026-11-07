@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -47,21 +46,14 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
                 <li key={i}>
                   <Link
                     href={t.href}
-                    aria-label={t.label}
                     aria-current={active ? "page" : undefined}
                     onClick={() => !active && tick(0.6)}
-                    className={`relative grid size-12 place-items-center rounded-full transition-colors ${active ? "text-ink" : "text-ink-faint hover:text-ink-muted"}`}
+                    className={`relative flex min-h-12 min-w-14 flex-col items-center justify-center gap-0.5 rounded-[14px] transition-colors ${active ? "text-ink" : "text-ink-muted hover:text-ink"}`}
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={t.icon} />
                     </svg>
-                    {active && (
-                      <motion.span
-                        layoutId="nav-dot"
-                        className="absolute bottom-0.5 size-1 rounded-full bg-ink"
-                        transition={{ type: "spring", stiffness: 500, damping: 34 }}
-                      />
-                    )}
+                    <span className={`text-[11px] leading-none ${active ? "font-bold" : "font-medium"}`}>{t.label}</span>
                   </Link>
                 </li>
               );
