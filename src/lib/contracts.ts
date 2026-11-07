@@ -60,6 +60,8 @@ export type Match = {
   distance_m?: number | null;
   // Added: quests you've finished together before, once both have accepted.
   times_together?: number;
+  // Added: true when the partner is Priya, the demo bot, so the UI can say so. Never pretend she's a person.
+  demo_partner?: boolean;
 };
 
 export type RunMember = {
