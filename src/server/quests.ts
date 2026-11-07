@@ -1,6 +1,6 @@
 import "server-only";
 import type { Prefs, Quest, QuestTag, QuestType } from "@/lib/contracts";
-import { one, query } from "@/lib/db";
+import { one, query, refreshStarterQuests } from "@/lib/db";
 import { GEMINI_MODE } from "@/lib/env";
 import { generateQuests } from "@/lib/gemini";
 import { notFound } from "@/lib/route";
@@ -13,7 +13,7 @@ const CACHE_RADIUS_M = 1000;
 // The System 1 demo quest: the TFDL book hunt.
 const DEMO_PAIR_QUEST = "a1b2c3d4-0001-4000-8000-000000000001";
 
-export type QuestRow = Omit<Quest, "tags"> & { tags: QuestTag[] };
+export type QuestRow = Quest;
 
 export const toQuest = (r: QuestRow): Quest => ({
   id: r.id,
@@ -32,6 +32,7 @@ export const toQuest = (r: QuestRow): Quest => ({
 });
 
 export async function listQuests(type: string | null) {
+  await refreshStarterQuests();
   const rows = type
     ? await query<QuestRow>("select * from quests where type = $1 order by starter desc, id limit 200", [type])
     : await query<QuestRow>("select * from quests order by starter desc, id limit 200");
@@ -39,6 +40,7 @@ export async function listQuests(type: string | null) {
 }
 
 export async function getQuest(id: string) {
+  await refreshStarterQuests();
   const row = await one<QuestRow>("select * from quests where id = $1", [id]);
   if (!row) throw notFound("quest");
   return toQuest(row);

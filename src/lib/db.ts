@@ -3,6 +3,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { applyMigrations, seedDemoData, syncStarterQuests } from "@/server/db/setup";
+import { starterQuests } from "./starter-quests";
 
 // One small seam over two engines, so the same SQL runs everywhere:
 // - DATABASE_URL set: real Postgres (Tiger Data), through the postgres client.
@@ -85,6 +86,18 @@ export async function transaction<T>(fn: () => Promise<T>): Promise<T> {
   if (inTransaction.getStore()) return fn();
   const e = await engine();
   return e.transaction((run) => inTransaction.run(run, fn));
+}
+
+// In dev, picks up edits to data/quests/ as they happen, so the quest maker's
+// live saves show up without a restart. Production syncs on deploy instead.
+let lastSynced = "";
+
+export async function refreshStarterQuests() {
+  if (process.env.NODE_ENV === "production") return;
+  const current = JSON.stringify(starterQuests());
+  if (current === lastSynced) return;
+  lastSynced = current;
+  await syncStarterQuests((text, params) => query(text, params));
 }
 
 export async function databaseKind() {

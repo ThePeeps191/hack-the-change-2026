@@ -11,6 +11,8 @@ type DoneRun = {
   run_id: string;
   quest_id: string;
   place_name: string | null;
+  lat: number | null;
+  lng: number | null;
   started_at: Date;
   completed_at: Date;
   distance_m: number | null;
@@ -21,7 +23,7 @@ type DoneRun = {
 // why these are the numbers we show.
 export async function getDashboard(user: User): Promise<Dashboard> {
   const done = await query<DoneRun>(
-    `select r.id as run_id, r.quest_id, q.place_name, r.started_at, r.completed_at, m.distance_m, e.amount as coins
+    `select r.id as run_id, r.quest_id, q.place_name, q.lat, q.lng, r.started_at, r.completed_at, m.distance_m, e.amount as coins
      from run_members m
      join quest_runs r on r.id = m.run_id
      join quests q on q.id = r.quest_id
@@ -54,7 +56,8 @@ export async function getDashboard(user: User): Promise<Dashboard> {
       display_name: runs[0].display_name,
       avatar_url: runs[0].avatar_url,
       quests_together: runs.length,
-      hours_together: Math.round((runs.reduce((sum, r) => sum + minutes(r), 0) / 60) * 10) / 10,
+      minutes_together: Math.round(runs.reduce((sum, r) => sum + minutes(r), 0)),
+      last_seen: runs.at(-1)!.completed_at.toISOString(),
     }))
     .sort((a, b) => b.quests_together - a.quests_together);
 
@@ -68,13 +71,21 @@ export async function getDashboard(user: User): Promise<Dashboard> {
   const weekAgo = Date.now() - 7 * 86_400_000;
   const activeWeek = done.filter((r) => r.completed_at.getTime() > weekAgo).reduce((sum, r) => sum + minutes(r), 0);
 
-  const mood = await one<{ before_avg: number | null; after_avg: number | null; checkins: number }>(
-    `select avg(mood) filter (where phase = 'before')::float8 as before_avg,
-            avg(mood) filter (where phase = 'after')::float8 as after_avg,
-            count(*)::int as checkins
-     from checkins where user_id = $1`,
+  // Quests with a check-in on both sides, and how many of those ended better.
+  const mood = await one<{ after_better: number; checkins: number }>(
+    `select count(*)::int as checkins, (count(*) filter (where a.mood > b.mood))::int as after_better
+     from checkins b
+     join checkins a on a.run_id = b.run_id and a.user_id = b.user_id and a.phase = 'after'
+     where b.user_id = $1 and b.phase = 'before'`,
     [user.id],
   );
+
+  // Each place once, at the first visit, for the map.
+  const firstVisits = new Map<string, { name: string; lat: number; lng: number; first_visit: string }>();
+  for (const r of [...done].reverse()) {
+    if (!r.place_name || r.lat == null || r.lng == null || firstVisits.has(r.place_name)) continue;
+    firstVisits.set(r.place_name, { name: r.place_name, lat: r.lat, lng: r.lng, first_visit: r.completed_at.toISOString() });
+  }
 
   const partnerByRun = new Map(together.map((t) => [t.run_id, t]));
   const history: HistoryItem[] = await Promise.all(
@@ -100,15 +111,11 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     streak_days: streak(done.map((r) => r.completed_at)),
     history,
     active_minutes_week: Math.round(activeWeek),
-    weekly_goal_min: WEEKLY_GOAL_MIN,
+    active_goal_minutes: WEEKLY_GOAL_MIN,
     familiar_faces: familiar,
     small_hellos: hellos,
-    new_places: new Set(done.map((r) => r.place_name).filter(Boolean)).size,
-    mood: {
-      before_avg: mood?.before_avg != null ? Math.round(mood.before_avg * 10) / 10 : null,
-      after_avg: mood?.after_avg != null ? Math.round(mood.after_avg * 10) / 10 : null,
-      checkins: mood?.checkins ?? 0,
-    },
+    new_places: [...firstVisits.values()],
+    mood: { after_better: mood?.after_better ?? 0, checkins: mood?.checkins ?? 0 },
   };
 }
 

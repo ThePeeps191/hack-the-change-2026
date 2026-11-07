@@ -6,15 +6,18 @@ import { Card, Stat } from "@/components/ui/card";
 // The numbers that matter most, ahead of coins. docs/JUDGING.md says why each
 // one is here. They're private and never ranked.
 export function HumanMetrics({ d }: { d: Dashboard }) {
-  const percent = Math.min(100, Math.round((d.active_minutes_week / d.weekly_goal_min) * 100));
-  const lift = d.mood.before_avg != null && d.mood.after_avg != null ? d.mood.after_avg - d.mood.before_avg : null;
+  const active = d.active_minutes_week ?? 0;
+  const goal = d.active_goal_minutes ?? 150;
+  const percent = Math.min(100, Math.round((active / goal) * 100));
+  const faces = d.familiar_faces ?? [];
+  const hellos = d.small_hellos ?? [];
 
   return (
     <div className="space-y-3">
       <Card className="p-4">
         <div className="flex items-baseline justify-between">
           <p className="font-semibold">time outside this week</p>
-          <p className="text-sm text-ink-muted tabular-nums">{d.active_minutes_week} of {d.weekly_goal_min} min</p>
+          <p className="text-sm text-ink-muted tabular-nums">{active} of {goal} min</p>
         </div>
         <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-sunken" role="img" aria-label={`${percent} percent of the weekly guideline`}>
           <div className="h-full rounded-full bg-accent" style={{ width: `${percent}%` }} />
@@ -22,25 +25,25 @@ export function HumanMetrics({ d }: { d: Dashboard }) {
         <p className="mt-2 text-[13px] text-ink-muted">150 minutes a week is the Canadian guideline. a quiet week is fine.</p>
       </Card>
 
-      {d.familiar_faces.length > 0 && (
+      {faces.length > 0 && (
         <Card className="p-4">
           <p className="font-semibold">familiar faces</p>
           <ul className="mt-2 space-y-1.5">
-            {d.familiar_faces.map((f) => (
+            {faces.map((f) => (
               <li key={f.display_name} className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="truncate font-semibold">{f.display_name}</span>
-                <span className="shrink-0 text-ink-muted tabular-nums">{f.quests_together} quests, {f.hours_together} h together</span>
+                <span className="shrink-0 text-ink-muted tabular-nums">{f.quests_together} quests, {f.minutes_together} min together</span>
               </li>
             ))}
           </ul>
         </Card>
       )}
 
-      {d.small_hellos.length > 0 && (
+      {hellos.length > 0 && (
         <Card className="p-4">
           <p className="font-semibold">small hellos</p>
           <ul className="mt-2 space-y-1.5 text-sm text-ink-muted">
-            {d.small_hellos.slice(0, 3).map((h) => (
+            {hellos.slice(0, 3).map((h) => (
               <li key={h.run_id}>{h.quest_title} with {h.display_name}</li>
             ))}
           </ul>
@@ -48,12 +51,8 @@ export function HumanMetrics({ d }: { d: Dashboard }) {
       )}
 
       <Card className="grid grid-cols-2 gap-4 p-4">
-        <Stat label="new places" value={d.new_places} />
-        {lift != null ? (
-          <Stat label="mood after quests" value={`${lift >= 0 ? "+" : ""}${lift.toFixed(1)}`} />
-        ) : (
-          <Stat label="mood check-ins" value={d.mood.checkins} />
-        )}
+        <Stat label="new places" value={d.new_places?.length ?? 0} />
+        <Stat label="felt better after" value={d.mood?.checkins ? `${d.mood.after_better} of ${d.mood.checkins}` : "–"} />
       </Card>
     </div>
   );

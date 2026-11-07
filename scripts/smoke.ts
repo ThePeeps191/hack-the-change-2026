@@ -142,6 +142,7 @@ async function main() {
   ] });
   check((await alice.post(`/api/runs/${pairRun}/checkins`, { phase: "before", mood: 2 })).status === 204, "mood check-in saved");
   check((await alice.post(`/api/runs/${pairRun}/checkins`, { phase: "before", mood: 9 })).status === 400, "bad mood refused");
+  await alice.post(`/api/runs/${pairRun}/checkins`, { phase: "after", mood: 4 });
   await alice.proof(pairRun);
   await settled(alice, pairRun);
   check((await mine(alice, pairRun)).status === "active", "still active until both are approved");
@@ -256,11 +257,12 @@ async function main() {
 
   console.log("\ndashboard and privacy");
   const dash = (await alice.get<Dashboard>("/api/dashboard")).data;
-  check(dash.quests_done === 1 && dash.people_met === 1 && dash.small_hellos.length === 1, "dashboard counts real quests", dash);
-  check(dash.active_minutes_week >= 0 && dash.weekly_goal_min === 150, "weekly minutes against the guideline");
-  check(dash.mood.before_avg === 2 && dash.mood.checkins === 1, "mood summary", dash.mood);
+  check(dash.quests_done === 1 && dash.people_met === 1 && dash.small_hellos?.length === 1, "dashboard counts real quests", dash);
+  check(dash.active_minutes_week! >= 0 && dash.active_goal_minutes === 150, "weekly minutes against the guideline");
+  check(dash.mood?.checkins === 1 && dash.mood.after_better === 1, "mood before and after are compared", dash.mood);
+  check(dash.new_places?.length === 1 && !!dash.new_places[0].first_visit, "new places have a first visit", dash.new_places);
   const seeded = (await sam.get<Dashboard>("/api/dashboard")).data;
-  check(seeded.familiar_faces.some((f) => f.display_name === "Priya" && f.quests_together >= 2), "repeat partners are familiar faces", seeded.familiar_faces);
+  check(!!seeded.familiar_faces?.some((f) => f.display_name === "Priya" && f.quests_together >= 2 && f.minutes_together > 0), "repeat partners are familiar faces", seeded.familiar_faces);
   const prefs = await alice.patch<User>("/api/me", { prefs: { pace: "step-free", social: "side-by-side", language: "fr", junk: 1 } });
   check(prefs.data.prefs.pace === "step-free" && !("junk" in prefs.data.prefs), "comfort settings saved and cleaned", prefs.data.prefs);
   const exported = (await alice.get<{ location_pings: unknown[]; runs: unknown[] }>("/api/me/export")).data;

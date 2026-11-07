@@ -21,7 +21,7 @@ type Quest = {
   coins: number;
   place_name: string | null;
   sources: { title: string; uri: string }[];  // grounding sources to display
-  tags?: ('newcomer' | 'give-back' | 'skill-swap' | 'calm' | 'step-free' | 'side-by-side' | 'daytime')[];
+  tags?: string[];          // newcomer, give-back, skill-swap, calm, step-free, side-by-side, daytime
 };
 ```
 

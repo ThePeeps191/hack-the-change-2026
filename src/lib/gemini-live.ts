@@ -92,7 +92,7 @@ export function toSafeQuest(raw: unknown, near: { lat: number; lng: number }, so
     coins: Math.min(Math.max(typeof q.coins === "number" ? Math.round(q.coins) : 25, 10), 50),
     place_name: typeof q.place_name === "string" ? q.place_name.trim().slice(0, 80) : null,
     sources,
-    tags: Array.isArray(q.tags) ? q.tags.filter((t): t is QuestTag => VALID_TAGS.includes(t as QuestTag)) : [],
+    tags: Array.isArray(q.tags) ? q.tags.filter((t) => VALID_TAGS.includes(t as QuestTag)) : [],
   };
 }
 

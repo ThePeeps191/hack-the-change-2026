@@ -28,8 +28,8 @@ export type Quest = {
   coins: number;
   place_name: string | null;
   sources: Source[];
-  // Added: see the tags in docs/JUDGING.md. Optional on purpose.
-  tags?: QuestTag[];
+  // Added: optional tags, e.g. newcomer, give-back, skill-swap, calm, step-free, side-by-side.
+  tags?: string[];
 };
 
 export type User = {
@@ -151,22 +151,24 @@ export type Dashboard = {
   streak_days: number;
   rating?: number;
   history: HistoryItem[];
-  // Added: the human metrics from docs/JUDGING.md. Private, never ranked.
-  active_minutes_week: number;
-  weekly_goal_min: number; // the 150-minute Canadian guideline
-  familiar_faces: FamiliarFace[];
-  small_hellos: SmallHello[];
-  new_places: number;
-  mood: MoodSummary;
+  // Added: human metrics (see docs/JUDGING.md). All optional.
+  active_minutes_week?: number; // walking minutes during quests this week
+  active_goal_minutes?: number; // 150, the Canadian 24-Hour Movement Guidelines target
+  familiar_faces?: FamiliarFace[]; // people you've done 2+ quests with
+  new_places?: { name: string; lat: number; lng: number; first_visit: string }[];
+  mood?: { after_better: number; checkins: number }; // check-ins where you felt better after
+  small_hellos?: SmallHello[]; // a quest with someone new, as a moment rather than a tally
 };
 
-// Someone you've done 2+ quests with.
-export type FamiliarFace = { display_name: string; avatar_url: string | null; quests_together: number; hours_together: number };
+export type FamiliarFace = {
+  display_name: string;
+  avatar_url: string | null;
+  quests_together: number;
+  minutes_together: number;
+  last_seen: string;
+};
 
-// A quest with someone new, as a moment rather than a tally.
 export type SmallHello = { run_id: string; display_name: string; quest_title: string; at: string };
-
-export type MoodSummary = { before_avg: number | null; after_avg: number | null; checkins: number };
 
 export type Checkin = { phase: "before" | "after"; mood: number };
 
