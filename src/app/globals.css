@@ -297,7 +297,6 @@ a {
   animation: orb-turn 7s linear infinite;
   box-shadow: inset 0 -6px 14px rgb(10 30 120 / .45), 0 8px 22px rgb(47 102 245 / .45);
 }
-.orb:active .orb-swirl { animation-duration: 1.2s }
 .orb-gloss {
   position: absolute;
   inset: 0;

@@ -164,7 +164,7 @@ export function ProofScreen() {
                 exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
                 transition={soft}
               >
-                <ThinkingOrb state={view === "sending" ? "connecting" : "searching"} size={64} theme="dark" color="#ffffff" aria-label="Checking your proof" />
+                <ThinkingOrb state="searching" size={64} theme="dark" color="#ffffff" aria-label="Checking your proof" />
                 <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "having a look…"}</Hand>
                 <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">Checking it against the quest, the place and the time.</p>
               </motion.div>
