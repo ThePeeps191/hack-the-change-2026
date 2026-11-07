@@ -6,12 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { chime, knock } from "@/lib/feedback";
 import { distance, walkMinutes } from "@/lib/format";
+import type { QuestRun } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastPill, toastQuiet } from "@/components/ui/toast";
 import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
+import { CategoryIcon, categoryOf, Coin } from "@/components/ui/quest-glyph";
 
 type State = "searching" | "found" | "waiting" | "matched" | "ended";
 
@@ -30,6 +32,14 @@ export function MatchScreen() {
 
   const state: State =
     match == null ? "searching" : match.status === "accepted" ? "matched" : match.status === "pending" ? (match.you_accepted ? "waiting" : "found") : "ended";
+
+  // Once matched, fetch the quest so the screen can show what you're about to do.
+  const [run, setRun] = useState<QuestRun | null>(null);
+  const runId = match?.run_id ?? null;
+  useEffect(() => {
+    if (!runId) return;
+    api.run(runId).then(setRun).catch(() => {});
+  }, [runId]);
 
   const prev = useRef<State>("searching");
   useEffect(() => {
@@ -61,6 +71,9 @@ export function MatchScreen() {
   }
 
   const name = match?.partner?.display_name;
+  // True when the partner is the demo bot. Optional in the contract, so we say
+  // so plainly instead of letting a practice partner pass for a real person.
+  const practice = (match as (typeof match & { demo_partner?: boolean }) | null)?.demo_partner === true;
   const d = gap[state];
 
   return (
@@ -79,12 +92,12 @@ export function MatchScreen() {
           {state === "matched" && <Burst />}
           {state === "searching" && (
             <>
-              <span className="absolute size-24 -translate-x-[75px] rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_infinite]" />
-              <span className="absolute size-24 -translate-x-[75px] rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />
+              <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_infinite]" />
+              <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />
             </>
           )}
           <Liquid fill="#ffffff" blur={9} contrast={22} shadow="0 10px 30px rgba(13,40,90,.18)" className="h-[140px] w-[340px]">
-            <Liquid.Item x={-d / 2} y={0} transition="bouncy" className="absolute top-[28px] left-[128px]">
+            <Liquid.Item x={state === "searching" || state === "ended" ? 0 : -d / 2} y={0} transition="bouncy" className="absolute top-[28px] left-[128px]">
               <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">{state === "matched" ? "" : "you"}</div>
             </Liquid.Item>
             <Liquid.Item x={d / 2} y={0} scale={state === "searching" || state === "ended" ? 0.001 : 1} transition="bouncy" delay={80} className="absolute top-[28px] left-[128px]">
@@ -118,7 +131,7 @@ export function MatchScreen() {
           >
             <Hand as="h1" className="text-[36px] leading-none font-bold">
               {state === "searching" && "looking around…"}
-              {state === "found" && "someone's free"}
+              {state === "found" && "someone's nearby"}
               {state === "waiting" && "you said yes"}
               {state === "matched" && `you and ${name ?? "them"}`}
               {state === "ended" && "that one slipped away"}
@@ -130,9 +143,9 @@ export function MatchScreen() {
                   <span className="mt-1 block text-[13px] text-on-sky/65">Usually under a minute · <Elapsed /></span>
                 </>
               )}
-              {state === "found" && "Say yes and we'll both get the same quest."}
+              {state === "found" && "They're free right now too."}
               {state === "waiting" && "Waiting for them to say yes too."}
-              {state === "matched" && "Your quest is ready. Head to the spot and say hi."}
+              {state === "matched" && (practice ? `${name ?? "They"} is a practice partner, so you can try the whole thing alone.` : "Your quest is ready. Head to the spot and say hi.")}
               {state === "ended" && "No worries. Try again whenever you're free."}
             </p>
           </motion.div>
@@ -144,23 +157,53 @@ export function MatchScreen() {
 
         <Toast
           show={state === "found"}
-          title="someone's free nearby"
+          title="go together?"
           body={
             <>
               {match?.distance_m != null && <>About {walkMinutes(match.distance_m)} min away ({distance(match.distance_m)}). </>}
-              You&apos;ll see their first name once you both say yes, and you&apos;ll meet at the quest spot, never at each other&apos;s.
+              Say yes and you both get the same quest. You&apos;ll see their first name once you both agree, and you&apos;ll meet at the quest spot, never at each other&apos;s.
+              {practice && (
+                <span className="mt-2 block rounded-[14px] bg-black/5 px-3 py-2 text-[14px] font-medium opacity-100 dark:bg-white/10">
+                  This is a practice partner, so you can try the whole thing alone.
+                </span>
+              )}
             </>
           }
           action={<button className={toastPill} onClick={() => respond(true)} disabled={acting}>Yes, let&apos;s go</button>}
           secondary={<button className={toastQuiet} onClick={() => respond(false)} disabled={acting}>Not now</button>}
         />
 
-        <div className="mt-auto space-y-2 pb-[max(24px,env(safe-area-inset-bottom))]">
+        <AnimatePresence>
+          {state === "matched" && run && (
+            <motion.div
+              className="mx-auto mt-2 w-full rounded-[24px] bg-white/85 p-4 text-[#121412] shadow-[0_18px_50px_rgb(13_40_90/0.2)] backdrop-blur-xl dark:bg-[#1b2130]/85 dark:text-white"
+              initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+            >
+              <p className="text-[12px] font-semibold tracking-[0.08em] uppercase opacity-55">Your quest</p>
+              <div className="mt-2 flex items-start gap-3">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-black/5 dark:bg-white/10">
+                  <CategoryIcon category={categoryOf(run.quest)} size={22} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
+                  <p className="mt-0.5 text-[14px] opacity-65">
+                    {[run.quest.place_name, `${run.quest.duration_min} min`].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+                <span className="flex items-center gap-1 pt-0.5 text-[15px] font-semibold tabular-nums"><Coin size={14} />{run.quest.coins}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="mt-auto space-y-2 pt-4 pb-[max(24px,env(safe-area-inset-bottom))]">
           {(state === "searching" || state === "waiting") && (
             <button
               onClick={cancel}
               disabled={acting}
-              className="mx-auto flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/14 px-6 text-[16px] font-semibold text-on-sky shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] ring-1 ring-white/20 backdrop-blur-md transition-transform hover:bg-white/20 active:scale-[0.96]"
+              className="mx-auto flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/80 px-6 text-[16px] font-semibold text-[#121412] shadow-[0_6px_20px_rgb(13_40_90/0.15),inset_0_1px_0_rgb(255_255_255/0.9)] backdrop-blur-md transition-transform hover:bg-white/90 active:scale-[0.96] dark:bg-white/15 dark:text-white dark:shadow-none dark:ring-1 dark:ring-white/20"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
                 <path d="M6 6l12 12M18 6L6 18" />

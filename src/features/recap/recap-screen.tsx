@@ -15,10 +15,9 @@ import { RecapExtras } from "./recap-extras";
 
 type Feel = "better" | "same" | "worse";
 
-// The walk you took, drawn as a line. With a real route we project the points;
-// without one we draw a gentle made-up wander so the moment still lands.
+// The walk you took, drawn as a line from the real route points. With no
+// route (location off, or an anywhere quest) we draw nothing rather than fake one.
 function routePath(route: Recap["route"]) {
-  if (route.length < 2) return "M14 92 C 60 88, 70 40, 120 52 S 190 96, 236 70 S 300 20, 326 34";
   const lats = route.map((p) => p.lat);
   const lngs = route.map((p) => p.lng);
   const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
@@ -67,8 +66,9 @@ export function RecapScreen() {
           {recap?.title ? recap.title.charAt(0).toUpperCase() + recap.title.slice(1) : " "}
         </p>
 
+        {recap && recap.route.length >= 2 && (
         <svg viewBox="0 0 340 110" className="mx-auto mt-3 block w-full max-w-[360px] px-3" aria-hidden>
-          {recap && (
+          {(
             <>
               <path d={routePath(recap.route)} fill="none" stroke="rgb(255 255 255 / .25)" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
               <path
@@ -82,15 +82,17 @@ export function RecapScreen() {
                 strokeDasharray="1"
                 style={{ ["--len" as string]: 1, animation: "draw 1.8s var(--ease-out-soft) .2s both" }}
               />
-              <circle cx="14" cy="92" r="6" fill="#fff" opacity=".9" />
             </>
           )}
         </svg>
+        )}
 
-        <div className="mt-2 grid grid-cols-3 px-4 text-center">
+        <div className="mt-5 flex justify-center gap-10 px-4 text-center">
           {[
-            { v: recap?.duration_min ?? 0, l: "minutes" },
-            { v: km != null ? km.toFixed(1) : "0.0", l: "km walked" },
+            { v: recap?.duration_min ?? 0, l: recap?.duration_min === 1 ? "minute" : "minutes" },
+            ...(recap?.distance_m != null && recap.distance_m >= 50
+              ? [km! >= 1 ? { v: km!.toFixed(1), l: "km walked" } : { v: Math.round(recap.distance_m / 10) * 10, l: "metres walked" }]
+              : []),
             { v: recap?.coins ?? 0, l: "coins" },
           ].map((s, i) => (
             <div key={s.l}>

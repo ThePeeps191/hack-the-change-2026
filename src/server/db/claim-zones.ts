@@ -1,5 +1,6 @@
 // The Claim board for UCalgary main campus. Coordinates are approximate.
-// Every zone points at a quest in data/quests/.
+// Every zone points at a quest in data/claim-quests.json, which is synced into
+// the quests table but kept out of quest lists.
 export type ZoneTemplate = {
   name: string;
   lat: number;
