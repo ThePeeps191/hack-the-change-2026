@@ -330,14 +330,29 @@ async function finalize(matchId: string) {
     "select prefs from users where id = $1 or id = $2",
     [m.user_a, m.user_b],
   );
-  // If the invite pinned a specific quest, use it; otherwise pick one.
-  const quest = m.quest_id
-    ? await getQuest(m.quest_id)
-    : await pickPairQuest(
+  // If the invite pinned a specific quest, try to use it; fall back to picking one if not found.
+  let quest;
+  if (m.quest_id) {
+    try {
+      quest = await getQuest(m.quest_id);
+    } catch {
+      // Pinned quest was deleted; fall back to random selection
+      console.error(
+        `Pinned quest ${m.quest_id} not found, falling back to random selection`,
+      );
+      quest = await pickPairQuest(
         m.lat ?? CAMPUS_CENTER.lat,
         m.lng ?? CAMPUS_CENTER.lng,
         people.map((p) => p.prefs ?? {}),
       );
+    }
+  } else {
+    quest = await pickPairQuest(
+      m.lat ?? CAMPUS_CENTER.lat,
+      m.lng ?? CAMPUS_CENTER.lng,
+      people.map((p) => p.prefs ?? {}),
+    );
+  }
   const userA = m.user_a;
   const userB = m.user_b;
   await transaction(async () => {

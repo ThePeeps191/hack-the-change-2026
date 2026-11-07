@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
@@ -37,16 +37,14 @@ export function QuestSheet({
   const [airdropUrl, setAirdropUrl] = useState<string | null>(null);
   const [airdropBusy, setAirdropBusy] = useState(false);
   const [airdropError, setAirdropError] = useState<string | null>(null);
-  const [lastQuestId, setLastQuestId] = useState<string | undefined>();
   const busy = free.busy || run.busy;
   const q = quest;
 
-  // Reset AirDrop state when the sheet opens for a different quest.
-  if (q?.id !== lastQuestId) {
-    setLastQuestId(q?.id);
+  // Reset AirDrop state when the sheet opens for a different quest (using useEffect, not in render).
+  useEffect(() => {
     setAirdropUrl(null);
     setAirdropError(null);
-  }
+  }, [q?.id]);
 
   async function airdropQuest(questId: string) {
     setAirdropBusy(true);
@@ -56,13 +54,16 @@ export function QuestSheet({
       setAirdropUrl(url);
       // Immediately open the native share sheet (AirDrop on iOS).
       try {
-        if (navigator.share)
+        if (navigator.share) {
           await navigator.share({
             url,
             title: `Do "${quest?.title}" with me on Amble`,
           });
+        }
       } catch {
-        /* user closed the sheet */
+        /* user closed the sheet or share not supported */
+      } finally {
+        setAirdropBusy(false);
       }
     } catch (e) {
       setAirdropError(
@@ -70,7 +71,6 @@ export function QuestSheet({
           ? e.message
           : "Couldn't make a link just now. Try again?",
       );
-    } finally {
       setAirdropBusy(false);
     }
   }
