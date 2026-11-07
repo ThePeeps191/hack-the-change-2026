@@ -2,11 +2,11 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
 import type { Recap } from "@/lib/contracts";
 import { chime } from "@/lib/feedback";
-import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
-import { ButtonLink, MagneticButton } from "@/components/ui/button";
+import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Button, ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
@@ -25,18 +25,35 @@ function routePath(route: Recap["route"]) {
   return route.map((p, i) => `${i ? "L" : "M"}${sx(p.lng).toFixed(1)} ${sy(p.lat).toFixed(1)}`).join(" ");
 }
 
+// Why a recap can't be shown, each with an honest heading and one way on.
+type Problem = "missing" | "unfinished" | "offline" | "broken";
+const PROBLEMS: Record<Problem, { title: string; text: string }> = {
+  missing: { title: "no recap here", text: "We can't find that quest. The link may be wrong, or it was someone else's quest." },
+  unfinished: { title: "not done yet", text: "This quest hasn't finished, so there's no recap yet." },
+  offline: { title: "no signal", text: "We couldn't reach Amble. Check your connection and try again." },
+  broken: { title: "hmm", text: "Something went wrong loading this recap. Try again in a moment." },
+};
+
+function problemFrom(e: unknown): Problem {
+  if (!(e instanceof ApiError)) return "broken";
+  if (e.status === 0) return "offline";
+  if (e.status === 404) return e.message.includes("isn't ready") ? "unfinished" : "missing";
+  return "broken";
+}
+
 export function RecapScreen() {
   const { runId } = useParams<{ runId: string }>();
   const [recap, setRecap] = useState<Recap | null>(null);
-  const [error, setError] = useState(false);
+  const [problem, setProblem] = useState<Problem | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [kept, setKept] = useState<null | "asked" | "connected">(null);
   // Only after mount, and never with reduced motion, so hydration matches.
   const reduce = useReducedMotion();
   const moving = useSyncExternalStore(() => () => {}, () => true, () => false) && !reduce;
 
   useEffect(() => {
-    api.recap(runId).then((r) => { setRecap(r); chime(); }).catch(() => setError(true));
-  }, [runId]);
+    api.recap(runId).then((r) => { setRecap(r); setProblem(null); chime(); }).catch((e) => setProblem(problemFrom(e)));
+  }, [runId, attempt]);
 
   async function stayInTouch() {
     setKept("asked");
@@ -52,7 +69,7 @@ export function RecapScreen() {
       <Hero className="pb-8">
         <HeroBar left={<HeroIcon href="/" label="Done" d="M6 6l12 12M18 6L6 18" />} center="recap" />
         <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">
-          {name ? `you and ${name} did it` : "you did it"}
+          {problem ? PROBLEMS[problem].title : name ? `you and ${name} did it` : "you did it"}
         </Hand>
         <p className="mx-auto mt-2 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-on-sky/85">
           {recap?.title ? recap.title.charAt(0).toUpperCase() + recap.title.slice(1) : " "}
@@ -87,6 +104,7 @@ export function RecapScreen() {
         </svg>
         )}
 
+        {!problem && (
         <div className="mt-5 flex justify-center gap-10 px-4 text-center">
           {[
             { v: recap?.duration_min ?? 0, l: recap?.duration_min === 1 ? "minute" : "minutes" },
@@ -101,11 +119,20 @@ export function RecapScreen() {
             </div>
           ))}
         </div>
+        )}
       </Hero>
 
       <div className="flex-1 space-y-6 px-4 pt-6">
-        {error && <Notice tone="warning">The recap is still being written. Check back in a minute.</Notice>}
-        {!recap && !error && <Skeleton className="h-28 rounded-[24px]" />}
+        {problem && (
+          <div className="space-y-3">
+            <p className="px-1 text-[17px] leading-relaxed">{PROBLEMS[problem].text}</p>
+            {problem === "unfinished" && <ButtonLink size="lg" href={`/quest/${runId}`}>Back to the quest</ButtonLink>}
+            {(problem === "offline" || problem === "broken") && (
+              <Button size="lg" variant="secondary" className="w-full" onClick={() => { setProblem(null); setAttempt((n) => n + 1); }}>Try again</Button>
+            )}
+          </div>
+        )}
+        {!recap && !problem && <Skeleton className="h-28 rounded-[24px]" />}
 
         {recap && (
           <motion.p
