@@ -1,7 +1,5 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
 import { ok } from "@/lib/http";
+import { authed, publicOrigin } from "@/lib/route";
+import { createInvite } from "@/server/matching";
 
-export async function POST(req: Request) {
-  const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return ok({ code, url: new URL(`/invite/${code}`, req.url).toString() });
-}
+export const POST = authed(async (user, req) => ok(await createInvite(user, publicOrigin(req))));

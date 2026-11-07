@@ -8,10 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "check": "next typegen && tsc --noEmit && eslint"
+    "check": "next typegen && tsc --noEmit && eslint",
+    "db:migrate": "bun scripts/db-migrate.ts",
+    "smoke": "bun scripts/smoke.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.33.0",
+    "@electric-sql/pglite": "^0.5.15",
     "@google/genai": "^3.0.0",
     "@vis.gl/react-google-maps": "^1.10.2",
     "border-beam": "^1.4.1",
@@ -21,6 +24,7 @@
     "motion": "^14.10.1",
     "next": "16.4.5",
     "postgres": "^4.1.0",
+    "qrcode.react": "^4.2.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",

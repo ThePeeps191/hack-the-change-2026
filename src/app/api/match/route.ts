@@ -1,8 +1,6 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
 import { ok } from "@/lib/http";
-import { currentMatch } from "@/mocks/store";
+import { authed } from "@/lib/route";
+import { currentMatch } from "@/server/matching";
 
 // Polled by the client. null means still searching (or not free).
-export async function GET() {
-  return ok(currentMatch());
-}
+export const GET = authed(async (user) => ok(await currentMatch(user)));

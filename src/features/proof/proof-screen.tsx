@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { ThinkingOrb } from "thinking-orbs";
 import { useEffect, useRef, useState } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import type { QuestRun, Verdict } from "@/lib/contracts";
 import { chime, coins, knock, tick } from "@/lib/feedback";
 import { getPosition } from "@/lib/geo";
@@ -70,8 +70,10 @@ export function ProofScreen() {
       const pos = await getPosition(4000);
       const form = new FormData();
       if (file) form.set("media", file);
-      form.set("lat", String(pos.lat));
-      form.set("lng", String(pos.lng));
+      if (!pos.approximate) {
+        form.set("lat", String(pos.lat));
+        form.set("lng", String(pos.lng));
+      }
       form.set("taken_at", new Date().toISOString());
       if (forceReject) form.set("mock_verdict", "rejected");
       const v = await api.submitProof(run.id, form);
@@ -80,8 +82,8 @@ export function ProofScreen() {
         setVerdict(v);
         setStep(v.status);
       }
-    } catch {
-      setError("That didn't send. Your photo is still here, so try again when you have signal.");
+    } catch (e) {
+      setError(e instanceof ApiError && e.status >= 400 && e.status < 500 ? e.message : "That didn't send. Your photo is still here, so try again when you have signal.");
       setStep("capture");
     }
   }

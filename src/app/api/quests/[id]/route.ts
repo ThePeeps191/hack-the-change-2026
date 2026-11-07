@@ -1,9 +1,8 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { fail, ok } from "@/lib/http";
-import { findStarterQuest } from "@/lib/starter-quests";
+import { ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { getQuest } from "@/server/quests";
 
-export async function GET(_req: Request, ctx: RouteContext<"/api/quests/[id]">) {
+export const GET = authed<RouteContext<"/api/quests/[id]">>(async (_user, _req, ctx) => {
   const { id } = await ctx.params;
-  const quest = findStarterQuest(id);
-  return quest ? ok(quest) : fail("quest not found", 404);
-}
+  return ok(await getQuest(id));
+});

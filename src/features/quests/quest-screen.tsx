@@ -10,6 +10,9 @@ import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
+import { MoodCheck } from "@/features/checkin/mood-check";
+import { ReportSheet } from "./report-sheet";
+import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
 import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
 
@@ -65,6 +68,7 @@ export function QuestScreen() {
 
   return (
     <AppShell nav={false}>
+      <RunTracker runId={run.id} active={active} />
       <Hero className="pb-14">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d={back} />}
@@ -147,6 +151,8 @@ export function QuestScreen() {
         </BorderBeam>
       </motion.div>
 
+      {active && <div className="px-4 pt-5"><MoodCheck runId={run.id} phase="before" /></div>}
+
       {error && <div className="pt-2"><Notice tone="warning">Signal&apos;s patchy. We&apos;ll keep trying.</Notice></div>}
 
       <div className="mt-auto space-y-1 px-4 pt-8 pb-6">
@@ -162,6 +168,7 @@ export function QuestScreen() {
         ) : (
           <ButtonLink size="lg" href={`/quest/${run.id}/proof`}>{pending ? "Checking your proof…" : "Add our proof"}</ButtonLink>
         )}
+        {active && run.mode === "pair" && partner && <ReportSheet runId={run.id} reportedId={partner.user_id} />}
       </div>
     </AppShell>
   );

@@ -1,9 +1,8 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { fail, ok } from "@/lib/http";
-import { getRun } from "@/mocks/store";
+import { ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { getRun } from "@/server/runs";
 
-export async function GET(_req: Request, ctx: RouteContext<"/api/runs/[id]">) {
+export const GET = authed<RouteContext<"/api/runs/[id]">>(async (user, _req, ctx) => {
   const { id } = await ctx.params;
-  const run = getRun(id);
-  return run ? ok(run) : fail("run not found", 404);
-}
+  return ok(await getRun(user, id));
+});

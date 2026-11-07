@@ -1,7 +1,10 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { noContent } from "@/lib/http";
+import { body, fail, noContent } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { recordPings } from "@/server/runs";
 
-// Batch of pings: { run_id, points }. Location is personal data: never log it.
-export async function POST() {
+export const POST = authed(async (user, req) => {
+  const { run_id, points } = await body<{ run_id: string; points: { lat: number; lng: number; at: string }[] }>(req);
+  if (!run_id || !Array.isArray(points)) return fail("run_id and points are required");
+  await recordPings(user, run_id, points);
   return noContent();
-}
+});

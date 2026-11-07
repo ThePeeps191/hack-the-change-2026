@@ -9,6 +9,7 @@ import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import type { GlobeMarker } from "@/components/map/globe-map";
+import { NoGame, ZoneActions } from "./claim-actions";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
@@ -22,7 +23,8 @@ const GAME_ID = "current";
 const colors = { free: "#9aa09a", ours: "var(--color-accent)", theirs: "var(--color-anywhere)" };
 
 export function ClaimScreen() {
-  const { data: game } = usePoll(() => api.game(GAME_ID), { ms: 5000 });
+  const [started, setStarted] = useState(0);
+  const { data: game, error } = usePoll(() => api.game(GAME_ID), { ms: 5000, key: started });
   const [picked, setPicked] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
   const us = game?.teams[0];
@@ -70,14 +72,17 @@ export function ClaimScreen() {
       </motion.div>
 
       <div className="space-y-4 px-4 pt-5">
-        {!game ? (
+        {!game && error ? (
+          <NoGame onStarted={() => setStarted((n) => n + 1)} />
+        ) : !game ? (
           <Skeleton className="h-28 rounded-[24px]" />
         ) : (
           <>
             <div className="px-1">
               <Hand as="h1" className="text-[34px] leading-none font-bold">{game.name.toLowerCase()}</Hand>
               <p className="mt-1.5 text-[15px] text-ink-muted">
-                <span className="font-semibold text-accent">{us?.name}</span> vs <span className="font-semibold text-anywhere">{them?.name}</span>. Beat a zone&apos;s best to take it.
+                <span className="font-semibold text-accent">{us?.name}</span>
+                {them && <> vs <span className="font-semibold text-anywhere">{them.name}</span></>}. Beat a zone&apos;s best to take it.
               </p>
             </div>
 
@@ -107,6 +112,7 @@ export function ClaimScreen() {
                       <span className="text-[15px] text-ink-muted">Finish the challenge to take it.</span>
                     )}
                   </div>
+                  <ZoneActions game={game} zone={zone} />
                 </motion.div>
               ) : (
                 <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

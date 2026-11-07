@@ -1,9 +1,8 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { fail, ok } from "@/lib/http";
-import { respond } from "@/mocks/store";
+import { ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { declineMatch } from "@/server/matching";
 
-export async function POST(_req: Request, ctx: RouteContext<"/api/matches/[id]/decline">) {
+export const POST = authed<RouteContext<"/api/matches/[id]/decline">>(async (user, _req, ctx) => {
   const { id } = await ctx.params;
-  const match = respond(id, false);
-  return match ? ok(match) : fail("match not found", 404);
-}
+  return ok(await declineMatch(user, id));
+});
