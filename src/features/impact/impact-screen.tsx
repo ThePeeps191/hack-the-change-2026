@@ -16,9 +16,21 @@ const WEEKLY_GUIDELINE_MIN = 150; // Canadian 24-Hour Movement Guidelines
 const METRICS_DOC = "https://github.com/ThePeeps191/hack-the-change-2026/blob/main/docs/METRICS.md";
 const fmt = (n: number) => n.toLocaleString("en-CA");
 
+// The shared rolling digits, or a plain number when the person prefers reduced
+// motion (the Odometer blurs its digits for a moment even then).
+// Done in CSS (motion-reduce:), so the server and the phone render the same.
+function Count({ value, delay = 0, className }: { value: number | string; delay?: number; className: string }) {
+  return (
+    <>
+      <span className="motion-reduce:hidden"><Odometer value={value} delay={delay} className={className} /></span>
+      <span className={`hidden tabular-nums motion-reduce:inline-flex ${className}`}>{value}</span>
+    </>
+  );
+}
+
 // A number set inline in a sentence, in the display face.
 function Num({ value, delay = 0 }: { value: number | string; delay?: number }) {
-  return <Odometer value={value} delay={delay} className="mx-0.5 align-[-0.08em] font-[family-name:var(--font-display)] text-[1.5em] font-semibold tracking-[-0.03em] text-ink" />;
+  return <Count value={value} delay={delay} className="mx-0.5 align-[-0.08em] leading-none font-[family-name:var(--font-display)] text-[1.5em] font-semibold tracking-[-0.03em] text-ink" />;
 }
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
@@ -70,12 +82,12 @@ function SkyNumbers({ impact }: { impact: Impact }) {
   return (
     <div className="mt-6 flex flex-col items-center px-6 text-center">
       {impact.source === "demo" && <DemoLabel />}
-      <Odometer value={fmt(impact.minutes_outside)} delay={150} className="mt-3 font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
+      <Count value={fmt(impact.minutes_outside)} delay={150} className="mt-3 inline-flex font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
       <p className="mt-2 text-[16px] font-medium text-on-sky/95">minutes outside, added up across everyone</p>
       <p className="mt-4 max-w-[32ch] text-[15px] leading-snug text-balance text-on-sky/90">
         {impact.quests_completed === 0
           ? "No quests finished yet. The first one starts the count."
-          : `${fmt(impact.quests_completed)} ${impact.quests_completed === 1 ? "quest" : "quests"} finished and ${impact.km_walked} km on foot. That fills Canada's 150-minute weekly activity guideline ${weeks} ${weeks === 1 ? "time" : "times"}.`}
+          : `${fmt(impact.quests_completed)} ${impact.quests_completed === 1 ? "quest" : "quests"} finished and ${impact.km_walked} km on foot. That's ${weeks} ${weeks === 1 ? "week" : "weeks"} of Canada's 150-minute activity guideline.`}
       </p>
     </div>
   );
@@ -153,7 +165,7 @@ function Felt({ impact }: { impact: Impact }) {
           </p>
         ) : (
           <>
-            <Odometer value={`${pct}%`} delay={200} className="mt-5 font-[family-name:var(--font-display)] text-[56px] leading-none font-semibold tracking-[-0.04em]" />
+            <Count value={`${pct}%`} delay={200} className="mt-5 inline-flex font-[family-name:var(--font-display)] text-[56px] leading-none font-semibold tracking-[-0.04em]" />
             <p className="mt-2 text-[17px] leading-snug text-on-sky/95">of after-quest check-ins said they felt better than before.</p>
             <p className="mt-3 text-[14px] leading-snug text-on-sky/80">
               From {fmt(impact.checkins_after)} one-tap {impact.checkins_after === 1 ? "check-in" : "check-ins"}. Each person only ever sees their own; this is the total.
