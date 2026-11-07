@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
@@ -34,17 +34,19 @@ export function QuestSheet({
 }) {
   const free = useGoFree();
   const run = useStartRun();
-  const [airdropUrl, setAirdropUrl] = useState<string | null>(null);
+  const [airdrop, setAirdrop] = useState<{ questId: string; url: string | null; error: string | null } | null>(null);
   const [airdropBusy, setAirdropBusy] = useState(false);
-  const [airdropError, setAirdropError] = useState<string | null>(null);
+
   const busy = free.busy || run.busy;
   const q = quest;
 
-  // Reset AirDrop state when the sheet opens for a different quest (using useEffect, not in render).
-  useEffect(() => {
-    setAirdropUrl(null);
-    setAirdropError(null);
-  }, [q?.id]);
+  // AirDrop state belongs to one quest, so opening the sheet for another quest
+  // starts clean without an effect.
+  const mine = airdrop && airdrop.questId === q?.id ? airdrop : null;
+  const airdropUrl = mine?.url ?? null;
+  const airdropError = mine?.error ?? null;
+  const setAirdropUrl = (url: string | null) => q && setAirdrop((a) => ({ questId: q.id, url, error: a?.questId === q.id ? a.error : null }));
+  const setAirdropError = (error: string | null) => q && setAirdrop((a) => ({ questId: q.id, url: a?.questId === q.id ? a.url : null, error }));
 
   async function airdropQuest(questId: string) {
     setAirdropBusy(true);
