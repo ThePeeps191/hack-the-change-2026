@@ -87,9 +87,7 @@ export function QuestSheet({
       {q && (
         <div className="px-5 pb-2">
           <div className="flex items-center gap-2 text-[13px] font-medium text-ink-muted">
-            <span className="grid size-7 place-items-center rounded-[9px] bg-sunken text-ink">
-              <CategoryIcon category={categoryOf(q)} size={16} />
-            </span>
+            <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
             <span>{categoryLabel[categoryOf(q)]}</span>
             <span className="text-ink-faint">· {questTypeLabel[q.type]}</span>
           </div>

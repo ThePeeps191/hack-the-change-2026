@@ -137,12 +137,10 @@ export function ClaimScreen() {
                   {game.zones.map((z) => (
                     <li key={z.id}>
                       <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
-                        <span
-                          className={`grid size-10 shrink-0 place-items-center rounded-[12px] ${tone(z) === "free" ? "bg-sunken text-ink-muted" : "cat-tint"}`}
-                          style={hues[tone(z)] != null ? { ["--h" as string]: hues[tone(z)] } : undefined}
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={FLAG} /></svg>
-                        </span>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={colors[tone(z)]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
+                          <path d={FLAG} />
+                          {tone(z) !== "free" && <path d="M6 4h11l-2.5 4L17 12H6z" fill={colors[tone(z)]} fillOpacity=".22" stroke="none" />}
+                        </svg>
                         <span className="min-w-0 flex-1">
                           <span className="block text-[16px] font-semibold">{z.name}</span>
                           <span className="mt-0.5 block truncate text-[13px] text-ink-muted">

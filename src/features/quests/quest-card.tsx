@@ -1,12 +1,12 @@
 import Link from "next/link";
 import type { Quest } from "@/lib/contracts";
-import { categoryHue, categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
+import { categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
 
+// The quest's category icon, bare: ink with one detail in the category colour.
 export function GlyphTile({ quest, size = 44 }: { quest: Quest; size?: number }) {
-  const c = categoryOf(quest);
   return (
-    <span className="cat-tint grid shrink-0 place-items-center rounded-[14px]" style={{ width: size, height: size, ["--h" as string]: categoryHue[c] }}>
-      <CategoryIcon category={c} size={Math.round(size * 0.5)} />
+    <span className="grid shrink-0 place-items-start text-ink" style={{ width: Math.round(size * 0.64) }}>
+      <CategoryIcon category={categoryOf(quest)} size={Math.round(size * 0.62)} />
     </span>
   );
 }
@@ -22,8 +22,8 @@ export function questMeta(q: Quest) {
 // the description sits under the title, two lines at most.
 export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: string; onClick?: () => void }) {
   const body = (
-    <div className="flex gap-3.5">
-      <GlyphTile quest={quest} />
+    <div className="flex gap-3">
+      <span className="pt-0.5"><GlyphTile quest={quest} /></span>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <h3 className="pt-0.5 font-[family-name:var(--font-body)] text-[16px] leading-snug font-semibold text-pretty">

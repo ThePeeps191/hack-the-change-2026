@@ -183,9 +183,7 @@ export function MatchScreen() {
             >
               <p className="text-[12px] font-semibold tracking-[0.08em] uppercase opacity-55">Your quest</p>
               <div className="mt-2 flex items-start gap-3">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-black/5 dark:bg-white/10">
-                  <CategoryIcon category={categoryOf(run.quest)} size={22} />
-                </span>
+                <CategoryIcon category={categoryOf(run.quest)} size={28} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <p className="text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
                   <p className="mt-1 text-[14px] leading-snug">
