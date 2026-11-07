@@ -1,0 +1,30 @@
+[
+  {
+    "id": "a1b2c3d4-0001-4000-8000-000000000001",
+    "title": "the oldest book on the floor",
+    "description": "Pick one floor of the Taylor Family Digital Library. Between you, find the book with the oldest publication date on an open shelf, and photograph its title page.",
+    "type": "local",
+    "lat": 51.0777,
+    "lng": -114.1293,
+    "radius_m": 80,
+    "duration_min": 20,
+    "proof": "photo",
+    "coins": 30,
+    "place_name": "Taylor Family Digital Library",
+    "sources": []
+  },
+  {
+    "id": "a1b2c3d4-0001-4000-8000-000000000002",
+    "title": "the view from the top",
+    "description": "Find a window on the top floor of TFDL that faces the mountains. Photograph the view and agree on one thing you can both see.",
+    "type": "local",
+    "lat": 51.0777,
+    "lng": -114.1293,
+    "radius_m": 80,
+    "duration_min": 15,
+    "proof": "photo",
+    "coins": 20,
+    "place_name": "Taylor Family Digital Library",
+    "sources": []
+  }
+]

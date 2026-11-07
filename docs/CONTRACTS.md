@@ -1,6 +1,6 @@
 # Contracts
 
-The shapes everyone builds against, so the UI, backend and Gemini work can happen at the same time. This is a first draft to agree on at kickoff, based on the quest format in the Google Doc. After the scaffold, `src/lib/contracts.ts` holds the real types. Add to these freely, and see `CLAUDE.md` for renames.
+The shapes everyone builds against, so the UI, backend and Gemini work can happen at the same time. This is a first draft to agree on at kickoff, based on the quest format in the Google Doc. After the scaffold, `src/lib/contracts.ts` holds the real types, including the ones this page leaves loose (`User`, `Crew`, `LeaderboardEntry`, `Dashboard`, `Game`, `Zone`) and a few optional fields the screens need (`Match.you_accepted`, `Match.distance_m`, `Verdict.coins`, recap stats). Add to these freely, and see `CLAUDE.md` for renames.
 
 Conventions: JSON uses `snake_case`, ids are UUID strings, times are ISO 8601, and errors look like `{ "error": "message" }`. Requests are authenticated by the session cookie.
 

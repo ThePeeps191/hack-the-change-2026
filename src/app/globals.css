@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. PLACEHOLDER VALUES: the UI area is finalising the look, so the
+  values will change but these names won't. Use them through Tailwind
+  (bg-surface, text-ink-muted, rounded-card, shadow-card, ease-spring...) and
+  never hardcode a colour, radius or shadow in a component.
+*/
+@theme {
+  /* Surfaces and ink */
+  --color-canvas: #f6f3ec;      /* page background */
+  --color-surface: #fffdf8;     /* cards */
+  --color-sunken: #ece7dc;      /* wells, skeletons, inputs */
+  --color-line: #ddd5c6;        /* borders, dividers */
+  --color-ink: #1f2a24;         /* primary text */
+  --color-ink-muted: #5a6560;   /* secondary text */
+  --color-ink-faint: #8a928c;   /* captions, disabled */
+
+  /* Brand */
+  --color-accent: #2f6b4f;      /* primary actions */
+  --color-accent-strong: #24553e;
+  --color-accent-soft: #dcebe1;
+  --color-on-accent: #fffdf8;
+  --color-sky: #cfe3ee;
+  --color-sun: #f2c14e;
+
+  /* Quest types */
+  --color-local: #2f6b4f;
+  --color-anywhere: #c8643b;
+  --color-event: #3f6fa8;
+
+  /* Status */
+  --color-success: #2f7d4f;
+  --color-success-soft: #dcefe2;
+  --color-danger: #b4402f;
+  --color-danger-soft: #f6e0da;
+  --color-warning: #a8730f;
+  --color-warning-soft: #f7ebcc;
+  --color-coin: #d9a520;
+
+  /* Type */
+  --font-display: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Radius */
+  --radius-chip: 999px;
+  --radius-control: 14px;
+  --radius-card: 22px;
+  --radius-sheet: 28px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 0 rgb(31 42 36 / 0.04), 0 2px 8px rgb(31 42 36 / 0.06);
+  --shadow-lift: 0 2px 0 rgb(31 42 36 / 0.04), 0 12px 32px rgb(31 42 36 / 0.12);
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 140ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

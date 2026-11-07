@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a1b2c3d4-0002-4000-8000-000000000001",
+    "title": "a snack neither of you has had",
+    "description": "Walk the food court in MacEwan Student Centre and choose a snack or drink neither of you has tried. Split it, and photograph it before the first bite.",
+    "type": "local",
+    "lat": 51.0786,
+    "lng": -114.1306,
+    "radius_m": 70,
+    "duration_min": 20,
+    "proof": "photo",
+    "coins": 25,
+    "place_name": "MacEwan Student Centre",
+    "sources": []
+  }
+]
