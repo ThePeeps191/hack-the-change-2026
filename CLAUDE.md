@@ -27,7 +27,7 @@ Every branch is `<person>-<name>`, where `<person>` is the human driving the ses
 
 Don't commit or push to `main` directly; everything goes through a PR. `node scripts/task.mjs check-scope` tells you if a branch has strayed from this table.
 
-`claude -w` starts you on a scratch `worktree-*` branch that CI rejects. `/task` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
+`claude -w` starts you on a scratch `worktree-*` branch. `/task` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
 
 ## Commits
 
