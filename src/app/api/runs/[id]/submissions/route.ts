@@ -4,8 +4,9 @@ import { fail, ok } from "@/lib/http";
 import type { Verdict } from "@/lib/contracts";
 import { getRun, submit } from "@/mocks/store";
 
-// Multipart: media, lat, lng, taken_at. In mock mode, send mock_verdict=rejected
-// to see the rejection state.
+// Multipart: media, lat, lng, taken_at. Returns a pending verdict straight
+// away; poll GET /api/runs/:id for the final one. In mock mode, send
+// mock_verdict=rejected to see the rejection state.
 export async function POST(req: Request, ctx: RouteContext<"/api/runs/[id]/submissions">) {
   const { id } = await ctx.params;
   const run = getRun(id);
@@ -21,9 +22,10 @@ export async function POST(req: Request, ctx: RouteContext<"/api/runs/[id]/submi
     taken_at: (form?.get("taken_at") as string) ?? null,
   });
   if (form?.get("mock_verdict") === "rejected") {
-    verdict = { status: "rejected", reason: "we can see a bookshelf, but not a title page. get a little closer to the first pages and try again?" };
+    verdict = {
+      status: "rejected",
+      reason: "we can see a bookshelf, but not a title page. get a little closer to the first pages and try again?",
+    };
   }
-  await new Promise((r) => setTimeout(r, 1800)); // feels like Gemini thinking
-  submit(id, verdict);
-  return ok(verdict);
+  return ok(submit(id, verdict));
 }

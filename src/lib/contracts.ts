@@ -26,6 +26,7 @@ export type User = {
   display_name: string;
   avatar_url: string | null;
   email_verified: boolean;
+  age_confirmed_at: string | null;
   coins: number;
   created_at: string;
 };
@@ -39,14 +40,19 @@ export type Match = {
   status: MatchStatus;
   source: "nearby" | "invite";
   partner: Partner | null; // null until both accept
-  run_id: string | null;
+  run_id: string | null; // the server creates the run once both accept; clients never create pair runs
   // Added: lets the UI show "waiting for them" after you accept.
   you_accepted?: boolean;
   // Added: rough distance to the partner, never their location.
   distance_m?: number | null;
 };
 
-export type RunMember = { user_id: string; display_name: string; submitted: boolean };
+export type RunMember = {
+  user_id: string;
+  display_name: string;
+  submitted: boolean;
+  verdict: Verdict | null;
+};
 
 // One group doing one quest
 export type QuestRun = {
@@ -60,8 +66,8 @@ export type QuestRun = {
 };
 
 export type Verdict = {
-  status: "approved" | "rejected";
-  reason: string; // shown to the user
+  status: "pending" | "approved" | "rejected"; // pending until Gemini replies; poll GET /api/runs/:id
+  reason: string; // shown to the user, empty while pending
   // Added: coins awarded when approved.
   coins?: number;
 };
@@ -157,5 +163,7 @@ export type Game = {
   teams: GameTeam[];
   zones: Zone[];
 };
+
+export type Connection = { user_id: string; display_name: string; avatar_url: string | null };
 
 export type ApiError = { error: string };

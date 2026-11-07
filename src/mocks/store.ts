@@ -1,20 +1,26 @@
 import "server-only";
 import type { Match, Quest, QuestRun, Verdict } from "@/lib/contracts";
+import { starterQuests } from "@/lib/starter-quests";
 import { mockPartner, mockPartnerId, mockUser } from "./user";
 
 // In-memory state for mock mode, so the System 1 flow is clickable end to end:
-// free -> (4s) match found -> accept -> (2s) partner accepts -> run -> proof.
+// free -> (4s) match found -> you accept -> (2s) partner accepts and the server
+// creates the run -> submit proof -> verdict pending (2s) -> approved.
 // Lives on globalThis so it survives hot reloads. One shared mock user.
 
 const SEARCH_MS = 4000;
 const PARTNER_ACCEPT_MS = 2000;
-const PARTNER_SUBMIT_MS = 5000;
+const VERDICT_MS = 2000;
+const PARTNER_SUBMIT_MS = 6000;
 
-type State = {
-  freeSince: number | null;
-  match: (Match & { created: number; accepted_at: number | null }) | null;
-  runs: Map<string, QuestRun & { partnerSubmitAt: number | null }>;
+type MockMatch = Match & { accepted_at: number | null };
+type MockRun = QuestRun & {
+  verdictAt: number | null;
+  pendingVerdict: Verdict | null;
+  partnerSubmitAt: number | null;
 };
+
+type State = { freeSince: number | null; match: MockMatch | null; runs: Map<string, MockRun> };
 
 const g = globalThis as unknown as { __mockState?: State };
 const state: State = (g.__mockState ??= { freeSince: null, match: null, runs: new Map() });
@@ -35,7 +41,6 @@ export function currentMatch(): Match | null {
       run_id: null,
       you_accepted: false,
       distance_m: 260,
-      created: now,
       accepted_at: null,
     };
   }
@@ -43,6 +48,7 @@ export function currentMatch(): Match | null {
   if (m && m.status === "pending" && m.accepted_at && now - m.accepted_at > PARTNER_ACCEPT_MS) {
     m.status = "accepted";
     m.partner = mockPartner;
+    m.run_id = startRun(starterQuests()[0], "pair").id;
   }
   return m ? publicMatch(m) : null;
 }
@@ -68,59 +74,73 @@ export function acceptInvite(): Match {
     status: "accepted",
     source: "invite",
     partner: mockPartner,
-    run_id: null,
+    run_id: startRun(starterQuests()[0], "pair").id,
     you_accepted: true,
     distance_m: null,
-    created: Date.now(),
     accepted_at: Date.now(),
   };
   return publicMatch(state.match);
 }
 
-export function startRun(quest: Quest, mode: QuestRun["mode"] = "pair"): QuestRun {
+export function startRun(quest: Quest, mode: QuestRun["mode"]): QuestRun {
   const now = Date.now();
-  const run = {
+  const run: MockRun = {
     id: crypto.randomUUID(),
     quest,
     mode,
-    status: "active" as const,
+    status: "active",
     started_at: new Date(now).toISOString(),
     ends_at: new Date(now + quest.duration_min * 60_000).toISOString(),
     members: [
-      { user_id: mockUser.id, display_name: mockUser.display_name, submitted: false },
-      { user_id: mockPartnerId, display_name: mockPartner.display_name, submitted: false },
+      { user_id: mockUser.id, display_name: mockUser.display_name, submitted: false, verdict: null },
+      { user_id: mockPartnerId, display_name: mockPartner.display_name, submitted: false, verdict: null },
     ],
+    verdictAt: null,
+    pendingVerdict: null,
     partnerSubmitAt: null,
   };
   state.runs.set(run.id, run);
-  if (state.match) state.match.run_id = run.id;
   return publicRun(run);
 }
 
 export function getRun(id: string): QuestRun | null {
   const run = state.runs.get(id);
   if (!run) return null;
-  if (run.partnerSubmitAt && Date.now() > run.partnerSubmitAt) run.members[1].submitted = true;
+  const now = Date.now();
+  const [you, partner] = run.members;
+  if (run.verdictAt && now > run.verdictAt && run.pendingVerdict) {
+    you.verdict = run.pendingVerdict;
+    you.submitted = run.pendingVerdict.status === "approved";
+    if (you.submitted) run.partnerSubmitAt ??= now + PARTNER_SUBMIT_MS;
+    run.verdictAt = null;
+    run.pendingVerdict = null;
+  }
+  if (run.partnerSubmitAt && now > run.partnerSubmitAt && !partner.submitted) {
+    partner.submitted = true;
+    partner.verdict = { status: "approved", reason: "looks right.", coins: run.quest.coins };
+  }
   if (run.members.every((m) => m.submitted)) run.status = "completed";
-  else if (Date.now() > Date.parse(run.ends_at)) run.status = "expired";
+  else if (now > Date.parse(run.ends_at)) run.status = "expired";
   return publicRun(run);
 }
 
-export function submit(id: string, verdict: Verdict) {
+// Returns the pending verdict straight away; the final one shows up on the run.
+export function submit(id: string, final: Verdict): Verdict | null {
   const run = state.runs.get(id);
-  if (!run) return;
-  if (verdict.status === "approved") {
-    run.members[0].submitted = true;
-    run.partnerSubmitAt ??= Date.now() + PARTNER_SUBMIT_MS;
-  }
+  if (!run) return null;
+  const pending: Verdict = { status: "pending", reason: "" };
+  run.members[0].verdict = pending;
+  run.pendingVerdict = final;
+  run.verdictAt = Date.now() + VERDICT_MS;
+  return pending;
 }
 
-function publicMatch(m: NonNullable<State["match"]>): Match {
+function publicMatch(m: MockMatch): Match {
   const { id, status, source, partner, run_id, you_accepted, distance_m } = m;
   return { id, status, source, partner: status === "accepted" ? partner : null, run_id, you_accepted, distance_m };
 }
 
-function publicRun(r: QuestRun & { partnerSubmitAt: number | null }): QuestRun {
+function publicRun(r: MockRun): QuestRun {
   const { id, quest, mode, status, started_at, ends_at, members } = r;
   return structuredClone({ id, quest, mode, status, started_at, ends_at, members });
 }

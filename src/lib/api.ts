@@ -1,6 +1,7 @@
 // The thin client layer: every screen talks to the server through these, so
 // swapping mocks for real endpoints never touches UI code.
 import type {
+  Connection,
   Crew,
   Dashboard,
   Game,
@@ -53,17 +54,21 @@ export const api = {
   acceptInvite: (code: string) => post<Match>(`/api/invites/${code}/accept`),
 
   generateQuests: (lat: number, lng: number, count?: number) => post<Quest[]>("/api/quests/generate", { lat, lng, count }),
+  quests: (type?: Quest["type"]) => call<Quest[]>(`/api/quests${type ? `?type=${type}` : ""}`),
   quest: (id: string) => call<Quest>(`/api/quests/${id}`),
 
-  startRun: (body: { quest_id: string; match_id?: string; crew_id?: string; zone_id?: string }) => post<QuestRun>("/api/runs", body),
+  // Crew and Claim runs only; pair runs arrive on Match.run_id.
+  startRun: (body: { quest_id: string; crew_id?: string; zone_id?: string }) => post<QuestRun>("/api/runs", body),
   run: (id: string) => call<QuestRun>(`/api/runs/${id}`),
   submitProof: (id: string, form: FormData) => post<Verdict>(`/api/runs/${id}/submissions`, form),
   recap: (id: string) => call<Recap>(`/api/runs/${id}/recap`),
   sendLocation: (run_id: string, points: { lat: number; lng: number; at: string }[]) => post<void>("/api/location", { run_id, points }),
 
+  connections: () => call<Connection[]>("/api/connections"),
   connect: (run_id: string) => post<{ connected: boolean }>("/api/connections", { run_id }),
   report: (body: { reported_id: string; run_id: string; reason: string }) => post<void>("/api/reports", body),
 
+  crews: () => call<Crew[]>("/api/crews"),
   createCrew: (name: string) => post<Crew>("/api/crews", { name }),
   crew: (id: string) => call<Crew>(`/api/crews/${id}`),
   joinCrew: (invite_code: string) => post<Crew>("/api/crews/join", { invite_code }),

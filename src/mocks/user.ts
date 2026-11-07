@@ -6,6 +6,7 @@ export const mockUser: User = {
   display_name: "Sam",
   avatar_url: null,
   email_verified: true,
+  age_confirmed_at: "2026-11-01T17:00:00Z",
   coins: 240,
   created_at: "2026-11-01T17:00:00Z",
 };
