@@ -34,6 +34,7 @@ With no `.env` at all, the app runs on mocks: everyone is the made-up user "Sam"
 | `src/app/api/**` | Route stubs returning mock data |
 | `src/mocks/` | Fixtures and the in-memory mock store |
 | `data/quests/*.json` | UCalgary starter quests, one file per place |
+| `tools/quest-maker-server.ts` | `bun tools/quest-maker-server.ts`, then open http://localhost:8744: place quests on a map and every edit saves into `data/quests/` |
 | `src/app/globals.css` | Design tokens (`bg-surface`, `text-ink-muted`, `rounded-card`...) |
 
 This is Next.js 16: `middleware` is now `proxy.ts`, and route `params` are a promise. Read `node_modules/next/dist/docs/` before guessing an API.

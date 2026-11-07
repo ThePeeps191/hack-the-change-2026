@@ -9,7 +9,8 @@ import type { Quest } from "./contracts";
 let cache: Quest[] | null = null;
 
 export function starterQuests(): Quest[] {
-  if (cache) return cache;
+  // Re-read in dev so edits from tools/quest-maker-server.ts show up without a restart.
+  if (cache && process.env.NODE_ENV === "production") return cache;
   const dir = path.join(process.cwd(), "data", "quests");
   cache = readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
