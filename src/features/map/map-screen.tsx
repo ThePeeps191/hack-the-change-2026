@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { QuestCard } from "@/features/quests/quest-card";
+import { QuestSheet } from "@/features/quests/quest-sheet";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
@@ -36,6 +37,7 @@ export function MapScreen() {
   const [selected, setSelected] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [open, setOpen] = useState<Quest | null>(null);
 
   useEffect(() => {
     api.quests().then(setQuests).catch(() => setQuests([]));
@@ -127,7 +129,7 @@ export function MapScreen() {
                 exit={{ opacity: 0, y: 16, filter: "blur(6px)" }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <QuestCard quest={picked} />
+                <QuestCard quest={picked} onClick={() => setOpen(picked)} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -158,7 +160,7 @@ export function MapScreen() {
                     layout
                     transition={soft}
                     key={q.id}
-                    onClick={() => (q.lat != null ? choose(q.id) : undefined)}
+                    onClick={() => (q.id === selected || q.lat == null ? setOpen(q) : choose(q.id))}
                     className={`block w-full rounded-[20px] text-left outline-offset-2 ${q.id === selected ? "outline-2 outline-accent" : ""}`}
                     aria-pressed={q.id === selected}
                   >
@@ -167,6 +169,7 @@ export function MapScreen() {
                 ))}
         </div>
       </motion.section>
+      <QuestSheet quest={open} onClose={() => setOpen(null)} />
     </AppShell>
   );
 }

@@ -7,7 +7,7 @@ import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar } from "@/components/ui/hero";
+import { dusk, Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { QuestCard } from "@/features/quests/quest-card";
 
@@ -89,11 +89,11 @@ export function CrewScreen() {
             <Link
               href="/claim"
               onClick={() => tick(0.6)}
-              className="group relative block overflow-hidden rounded-[24px] bg-toast p-5 text-on-toast shadow-lift transition-transform active:scale-[0.985]"
+              className="group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
+              style={{ background: dusk }}
             >
-              <div aria-hidden className="pointer-events-none absolute -top-10 -right-6 size-40 rounded-full bg-accent/40 blur-3xl" />
-              <div aria-hidden className="pointer-events-none absolute -bottom-12 left-10 size-32 rounded-full bg-anywhere/30 blur-3xl" />
-              <div className="relative flex items-center gap-2 text-[13px] text-white/70">
+              <Stars />
+              <div className="relative flex items-center gap-2 text-[13px] text-white/75">
                 <span className="size-2 rounded-full bg-accent" />
                 <span className="size-2 rounded-full bg-anywhere" />
                 <span>Claim, live this week</span>
