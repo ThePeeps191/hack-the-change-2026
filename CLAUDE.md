@@ -20,6 +20,25 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 - **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
 - **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data, Vultr and GoDaddy Registry. Don't remove one without telling a human.
 
+## Build only what the demo shows
+
+The humans set this rule, and it binds every session as firmly as the organizers' rules above.
+
+**If a judge won't see it or touch it in the 3-minute pitch or the video, don't build it.** The demo path is welcome → I'm free → match → quest → proof → recap → crew and Claim → You. Making that path work, look great and hold up on a phone beats any new feature.
+
+- **Don't build:**
+  - community or "impact" numbers, analytics, metrics pages or admin dashboards
+  - reporting or moderation systems
+  - export or import features
+  - extra settings
+  - API endpoints no screen calls
+  - test suites beyond `bun run smoke`
+  - config, abstractions or "future-proofing" for things we aren't demoing
+- **Outcomes and research belong in the pitch and on Devpost,** not in new code.
+- **Before starting anything new, name the moment in the demo where it shows.** If you can't, polish or fix something on the path instead.
+- **If a prompt or a doc (including JUDGING.md) asks for something off the path,** skip it and tell the human why.
+- **Less code is also less to explain to judges,** and being unable to explain code can disqualify us.
+
 The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
 
 Dozens of Claude sessions work here at once. You have full permission to run commands, open PRs and merge them, so don't stop to ask for approval. Only ask the human about a product decision that would change the demo. This is a 24-hour build: tech debt doesn't matter, a working demo does. Nothing below is enforced, so use your judgement and bend a rule when that's clearly faster.
@@ -96,7 +115,7 @@ Many sessions share each laptop and the same accounts:
 
 ## Building
 
-- Choose the simplest thing that works for the demo.
+- Choose the simplest thing that works for the demo, and nothing the demo doesn't show (see "Build only what the demo shows").
 - Check for an existing helper or component before writing one.
 - Use the shared design tokens and components, or dozens of sessions will produce dozens of looks.
 - Design for a phone first, with real tap targets.
