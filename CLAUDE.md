@@ -9,6 +9,17 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
 - `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
 
+## The organizers' rules bind every change
+
+These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, so they beat anything else in this file.
+
+- **Nothing may look unfinished.** Prescreening is pass/fail and the project must "appear complete". Hide a feature that isn't working; never ship a dead button, a "coming soon" or a placeholder.
+- **Every one of us must be able to explain any code.** If one of us can't, we can be disqualified. Keep code plain enough to explain in one sentence, and update `docs/WALKTHROUGH.md` when you change how something works.
+- **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
+- **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
+- **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
+- **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data, Vultr and GoDaddy Registry. Don't remove one without telling a human.
+
 The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
 
 Dozens of Claude sessions work here at once. You have full permission to run commands, open PRs and merge them, so don't stop to ask for approval. Only ask the human about a product decision that would change the demo. This is a 24-hour build: tech debt doesn't matter, a working demo does. Nothing below is enforced, so use your judgement and bend a rule when that's clearly faster.
@@ -27,7 +38,7 @@ git branch -m <person>-<short-name>
 
 If the session started with a random name, rename the branch anyway. The folder name doesn't matter.
 
-**3. See what's in flight, then sync.** Run `scripts/wip.sh` and `gh pr list` so you don't duplicate or collide with someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`.
+**3. See what's in flight, then sync.** Run `scripts/wip.sh` and `gh pr list` so you don't duplicate or collide with someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`. If you haven't read `docs/RUNBOOK.md` in this session, read it now, even if your session started before it existed.
 
 **4. Commit as you go and push each time.** Small working steps, short messages. Your first commit adds `docs/wip/<branch>.md`, saying who you are, what you're building and which files you'll touch (format in `docs/wip/README.md`). Keep its status line current, and delete the file in your last commit before merging. After your first commit, open a draft PR so everyone can see what you're on:
 
