@@ -1,15 +1,7 @@
-// A person or crew as a soft gradient disc with their initial. The gradient is
-// picked from the name, so the same person always looks the same.
-const pairs = [
-  ["#ffb59a", "#ff7a7a"],
-  ["#ffd38a", "#f39a4c"],
-  ["#a8e6b8", "#3fae95"],
-  ["#9cc3ff", "#5d7dff"],
-  ["#d6b4ff", "#9a7bff"],
-  ["#ffc2dc", "#f07aa8"],
-  ["#a6ecf0", "#3ea7c4"],
-  ["#c9e89a", "#7fb04a"],
-];
+// A person or crew as a flat tinted disc with their initial in a deeper shade
+// of the same hue. The hue is picked from the name, so the same person always
+// looks the same.
+const hues = [14, 32, 150, 220, 265, 335, 190, 95];
 
 // FNV-1a, which spreads short names across the palette better than a plain sum.
 function hash(s: string) {
@@ -22,11 +14,11 @@ function hash(s: string) {
 }
 
 export function Avatar({ name, size = 40, ring = false }: { name: string; size?: number; ring?: boolean }) {
-  const [a, b] = pairs[hash(name) % pairs.length];
+  const h = hues[hash(name) % hues.length];
   return (
     <span
-      className={`grid shrink-0 place-items-center rounded-full font-semibold text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.18)] ${ring ? "ring-2 ring-accent ring-offset-2 ring-offset-surface" : ""}`}
-      style={{ width: size, height: size, fontSize: size * 0.4, background: `radial-gradient(circle at 30% 25%, rgb(255 255 255 / .45), transparent 45%), linear-gradient(145deg, ${a}, ${b})` }}
+      className={`avatar grid shrink-0 place-items-center rounded-full font-bold ${ring ? "ring-2 ring-accent ring-offset-2 ring-offset-surface" : ""}`}
+      style={{ width: size, height: size, fontSize: size * 0.42, ["--h" as string]: h }}
     >
       {name[0]?.toUpperCase()}
     </span>
