@@ -5,12 +5,14 @@ import { useParams, useSearchParams } from "next/navigation";
 import { ThinkingOrb } from "thinking-orbs";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
-import type { QuestRun, Verdict } from "@/lib/contracts";
+import type { QuestRun, Verdict, Zone } from "@/lib/contracts";
 import { chime, coins, knock, tick } from "@/lib/feedback";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Odometer } from "@/components/ui/odometer";
+import { GAME_ID } from "@/features/claim/game";
+import { zoneKey } from "@/features/quests/use-start-run";
 
 type Step = "capture" | "sending" | "checking" | "approved" | "rejected";
 
@@ -29,9 +31,18 @@ export function ProofScreen() {
   const [verdict, setVerdict] = useState<Verdict | null>(null);
   const [error, setError] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
+  // Claim runs: which zone, the result you got, and whether it took the zone.
+  const [zone, setZone] = useState<Zone | null>(null);
+  const [result, setResult] = useState("");
+  const [outcome, setOutcome] = useState<{ took: boolean; zone: Zone } | null>(null);
 
   useEffect(() => {
     api.run(runId).then(setRun).catch(() => setError("We can't find this quest. It may have ended."));
+    let zoneId: string | null = null;
+    try {
+      zoneId = sessionStorage.getItem(zoneKey(runId));
+    } catch {}
+    if (zoneId) api.game(GAME_ID).then((g) => setZone(g.zones.find((z) => z.id === zoneId) ?? null)).catch(() => {});
   }, [runId]);
 
   function pick(next: File | null) {
@@ -57,10 +68,17 @@ export function ProofScreen() {
     if (view === "approved") {
       chime();
       setTimeout(coins, 650);
+      const n = Number(result);
+      if (zone && result !== "" && Number.isFinite(n)) {
+        api
+          .attemptZone(GAME_ID, zone.id, { run_id: runId, result: n })
+          .then((z) => setOutcome({ took: z.best_result === n, zone: z }))
+          .catch(() => {});
+      }
     }
     if (view === "rejected") knock();
     prev.current = view;
-  }, [view]);
+  }, [view]); // eslint-disable-line react-hooks/exhaustive-deps -- fire once per verdict change
 
   async function submit() {
     if (!run) return;
@@ -116,7 +134,7 @@ export function ProofScreen() {
         </p>
 
         {/* The frame */}
-        <div className="relative mx-3 aspect-[4/5] overflow-hidden rounded-[28px] bg-white/[0.06]">
+        <div className={`relative mx-3 overflow-hidden rounded-[28px] bg-white/[0.06] ${zone ? "aspect-square" : "aspect-[4/5]"}`}>
           <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           {preview ? (
             <div
@@ -170,6 +188,26 @@ export function ProofScreen() {
           </AnimatePresence>
         </div>
 
+        {zone && view === "capture" && (
+          <label className="mx-3 mt-3 flex items-center gap-3 rounded-[22px] bg-white/[0.07] px-4 py-3">
+            <span className="flex-1">
+              <span className="block text-[15px] font-semibold">Your result at {zone.name}</span>
+              <span className="block text-[13px] text-white/60">
+                {zone.best_result != null ? `${zone.best_result} ${zone.result_unit ?? ""} to beat` : "Nobody's set one yet"}
+              </span>
+            </span>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={result}
+              onChange={(e) => setResult(e.target.value)}
+              placeholder="0"
+              className="w-24 rounded-[14px] bg-white/10 px-3 py-2 text-right font-[family-name:var(--font-display)] text-[24px] font-semibold text-white tabular-nums outline-none placeholder:text-white/30 focus:bg-white/15"
+            />
+            <span className="w-14 text-[14px] text-white/60">{zone.result_unit}</span>
+          </label>
+        )}
+
         {error && <p className="px-6 pt-4 text-center text-[14px] text-[#ffb4a3]" role="alert">{error}</p>}
         {!run && !error && <p className="px-6 pt-4 text-center text-[14px] text-white/50">Loading the quest…</p>}
 
@@ -193,12 +231,22 @@ export function ProofScreen() {
                   <span className="ml-1.5 text-[15px] text-white/70">coins</span>
                 </div>
               )}
+              {view === "approved" && outcome && (
+                <motion.p
+                  className={`mx-auto mt-4 flex w-fit items-center gap-2 rounded-full px-4 py-2 text-[15px] font-semibold ${outcome.took ? "bg-accent text-white" : "bg-white/10 text-white/80"}`}
+                  initial={{ opacity: 0, scale: 0.9, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  transition={{ delay: 1.2, type: "spring", stiffness: 300, damping: 22 }}
+                >
+                  {outcome.took ? `You took ${outcome.zone.name} for your crew` : `Not enough for ${outcome.zone.name}. Their best is ${outcome.zone.best_result} ${outcome.zone.result_unit ?? ""}`}
+                </motion.p>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
         <div className="mt-auto flex flex-col items-center gap-1 px-4 pt-6 pb-[max(24px,env(safe-area-inset-bottom))]">
-          {run && view === "capture" && (kind === "gps" || file) && (
+          {run && view === "capture" && (kind === "gps" || file) && !(zone && result === "") && (
             <>
               <button onClick={submit} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b] transition-transform active:scale-[0.98]">
                 Send it
@@ -218,6 +266,9 @@ export function ProofScreen() {
             >
               <span className="size-[60px] rounded-full bg-white" />
             </button>
+          )}
+          {view === "approved" && outcome && (
+            <Link href="/claim" className="flex min-h-12 items-center px-4 text-[15px] font-medium text-white/70">See the map</Link>
           )}
           {view === "approved" && (
             <Link href={`/quest/${runId}`} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b]">

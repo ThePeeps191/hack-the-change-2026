@@ -9,7 +9,9 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
+import type { Quest } from "@/lib/contracts";
 import { QuestCard } from "@/features/quests/quest-card";
+import { QuestSheet } from "@/features/quests/quest-sheet";
 
 function Avatar({ name, ours = false }: { name: string; ours?: boolean }) {
   return (
@@ -29,6 +31,7 @@ export function CrewScreen() {
   const [crew, setCrew] = useState<Crew | null | undefined>(undefined);
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState<Quest | null>(null);
 
   useEffect(() => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
@@ -145,11 +148,12 @@ export function CrewScreen() {
           <section aria-labelledby="shared">
             <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold"><span id="shared">do one together</span></Hand>
             <div className="flex flex-col gap-2.5">
-              {crew.shared_quests.map((q) => <QuestCard key={q.id} quest={q} />)}
+              {crew.shared_quests.map((q) => <QuestCard key={q.id} quest={q} onClick={() => setOpen(q)} />)}
             </div>
           </section>
         )}
       </div>
+      <QuestSheet quest={open} crewId={crew?.id} onClose={() => setOpen(null)} />
     </AppShell>
   );
 }

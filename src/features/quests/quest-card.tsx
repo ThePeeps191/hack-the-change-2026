@@ -4,7 +4,7 @@ import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
 
 // A compact quest card: bold title with the time on the right, one muted
 // line of what you'll do, and the kind, place and coins underneath.
-export function QuestCard({ quest, href }: { quest: Quest; href?: string }) {
+export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: string; onClick?: () => void }) {
   const body = (
     <>
       <div className="flex items-start justify-between gap-3">
@@ -20,6 +20,8 @@ export function QuestCard({ quest, href }: { quest: Quest; href?: string }) {
       </div>
     </>
   );
-  const cls = "block rounded-[20px] bg-surface p-4 shadow-card transition-transform active:scale-[0.985]";
-  return href ? <Link href={href} className={cls}>{body}</Link> : <div className={cls}>{body}</div>;
+  const cls = "block w-full rounded-[20px] bg-surface p-4 text-left shadow-card transition-transform active:scale-[0.985]";
+  if (href) return <Link href={href} className={cls}>{body}</Link>;
+  if (onClick) return <button type="button" onClick={onClick} className={cls}>{body}</button>;
+  return <div className={cls}>{body}</div>;
 }

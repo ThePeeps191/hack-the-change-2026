@@ -1,6 +1,7 @@
 import "server-only";
 import type { Match, Quest, QuestRun, Verdict } from "@/lib/contracts";
 import { starterQuests } from "@/lib/starter-quests";
+import { mockCrew } from "./crews";
 import { mockPartner, mockPartnerId, mockUser } from "./user";
 
 // In-memory state for mock mode, so the System 1 flow is clickable end to end:
@@ -88,7 +89,8 @@ export function acceptInvite(): Match {
   return publicMatch(state.match);
 }
 
-export function startRun(quest: Quest, mode: QuestRun["mode"]): QuestRun {
+// who: "pair" adds the mock partner, "crew" adds two crewmates, "solo" is just you.
+export function startRun(quest: Quest, mode: QuestRun["mode"], who: "pair" | "crew" | "solo" = "pair"): QuestRun {
   const now = Date.now();
   const run: MockRun = {
     id: crypto.randomUUID(),
@@ -99,7 +101,11 @@ export function startRun(quest: Quest, mode: QuestRun["mode"]): QuestRun {
     ends_at: new Date(now + quest.duration_min * 60_000).toISOString(),
     members: [
       { user_id: mockUser.id, display_name: mockUser.display_name, submitted: false, verdict: null },
-      { user_id: mockPartnerId, display_name: mockPartner.display_name, submitted: false, verdict: null },
+      ...(who === "pair"
+        ? [{ user_id: mockPartnerId, display_name: mockPartner.display_name, submitted: false, verdict: null }]
+        : who === "crew"
+          ? mockCrew.members.filter((m) => m.user_id !== mockUser.id).slice(0, 2).map((m) => ({ user_id: m.user_id, display_name: m.display_name, submitted: false, verdict: null }))
+          : []),
     ],
     verdictAt: null,
     pendingVerdict: null,
@@ -113,7 +119,7 @@ export function getRun(id: string): QuestRun | null {
   const run = state.runs.get(id);
   if (!run) return null;
   const now = Date.now();
-  const [you, partner] = run.members;
+  const [you, ...others] = run.members;
   if (run.verdictAt && now > run.verdictAt && run.pendingVerdict) {
     you.verdict = run.pendingVerdict;
     you.submitted = run.pendingVerdict.status === "approved";
@@ -121,9 +127,11 @@ export function getRun(id: string): QuestRun | null {
     run.verdictAt = null;
     run.pendingVerdict = null;
   }
-  if (run.partnerSubmitAt && now > run.partnerSubmitAt && !partner.submitted) {
-    partner.submitted = true;
-    partner.verdict = { status: "approved", reason: "looks right.", coins: run.quest.coins };
+  if (run.partnerSubmitAt && now > run.partnerSubmitAt) {
+    for (const other of others) {
+      other.submitted = true;
+      other.verdict = { status: "approved", reason: "Looks right.", coins: run.quest.coins };
+    }
   }
   if (run.members.every((m) => m.submitted)) run.status = "completed";
   else if (now > Date.parse(run.ends_at)) run.status = "expired";
