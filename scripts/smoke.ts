@@ -284,7 +284,9 @@ async function main() {
   check(photo.headers.get("x-content-type-options") === "nosniff", "media is served with nosniff");
   const raceCrew = (await kim.post<Crew>("/api/crews", { name: `race ${tag}` })).data;
   await lee.post("/api/crews/join", { invite_code: raceCrew.invite_code });
-  const both = await Promise.all([kim, lee].map((p) => p.post<QuestRun>("/api/runs", { quest_id: anywhere[0].id, crew_id: raceCrew.id })));
+  // Any quest works for this check, so a missing anywhere quest fails one line above, not the whole run.
+  const raceQuest = anywhere[0] ?? (await kim.get<Quest[]>("/api/quests")).data[0];
+  const both = await Promise.all([kim, lee].map((p) => p.post<QuestRun>("/api/runs", { quest_id: raceQuest.id, crew_id: raceCrew.id })));
   check(both[0].data.id === both[1].data.id, "crewmates tapping at once share one run", both.map((b) => b.data.id));
   const ola = person("ola");
   const pip = person("pip");

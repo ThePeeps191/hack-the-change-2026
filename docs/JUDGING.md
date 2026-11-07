@@ -202,7 +202,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 8. **There are no "anywhere" quests any more, and `bun run smoke` fails** on "anywhere quests are listed" (friends and demo, 10 min). The JUDGING story promises anywhere quests for people who can't get to campus. Either add two or three back, or change the smoke check if dropping them was deliberate.
 9. **One sourced Calgary number for Benevity** (20 min of research). Use something published, for example from the City of Calgary or United Way of Calgary on isolation or newcomers. Quote it exactly, with the source.
 10. **Measure the cost per quest** (Gemini or AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one batch into a dollar figure for Feasibility.
-11. **The recap with a bad id** (15 min). `/recap/<unknown>` says "you did it" with zero stats and "still being written" forever. It should say it can't find that quest.
-12. **The recap with no GPS** (15 min). It shows "1 minutes" and "0.0 km walked". Hide the distance when there's no route, and fix the plural.
+11. ~~**The recap with a bad id.**~~ Done: an unknown run says "no recap here", an unfinished one says "not done yet" and links back to the quest, and no signal offers Try again. None of them show the zero stats.
+12. ~~**The recap with no GPS.**~~ Done: the distance is hidden when there's no route, and "1 minute" is singular.
 13. **Don't promise what isn't built.** This file used to mention a mascot, a monthly UCLA loneliness check, ratings per category, races, 1v1 challenges and appeals. None of those are in the code. Leave them out of the pitch unless someone builds them.
 14. **A screen-reader pass on a real phone** (UX, 30 min). Run VoiceOver once through the System 1 flow. axe can't tell whether the order and the labels make sense out loud.
