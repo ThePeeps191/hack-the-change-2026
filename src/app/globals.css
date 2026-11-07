@@ -418,3 +418,8 @@ a {
   .cat-accent { color: hsl(var(--h) 75% 70%); }
   .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 80% 72%); }
 }
+
+/* A held Claim flag sways gently from its pole. */
+.flag-fly { transform-box: view-box; transform-origin: 6px 8px; animation: flag-fly 2.8s ease-in-out infinite; }
+@keyframes flag-fly { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-7deg) scaleX(.93); } }
+@media (prefers-reduced-motion: reduce) { .flag-fly { animation: none; } }

@@ -1,7 +1,7 @@
 "use client";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { api } from "@/lib/api";
 import type { Recap } from "@/lib/contracts";
 import { chime } from "@/lib/feedback";
@@ -30,6 +30,9 @@ export function RecapScreen() {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [error, setError] = useState(false);
   const [kept, setKept] = useState<null | "asked" | "connected">(null);
+  // Only after mount, and never with reduced motion, so hydration matches.
+  const reduce = useReducedMotion();
+  const moving = useSyncExternalStore(() => () => {}, () => true, () => false) && !reduce;
 
   useEffect(() => {
     api.recap(runId).then((r) => { setRecap(r); chime(); }).catch(() => setError(true));
@@ -71,6 +74,14 @@ export function RecapScreen() {
                 strokeDasharray="1"
                 style={{ ["--len" as string]: 1, animation: "draw 1.8s var(--ease-out-soft) .2s both" }}
               />
+              {/* you, walking it again: a dot follows the real route once the
+                  line has drawn, and stays where you finished */}
+              {moving && (
+                <circle r="5" fill="#fff" stroke="rgb(255 255 255 / .35)" strokeWidth="6" opacity="0">
+                  <set attributeName="opacity" to="1" begin="2s" />
+                  <animateMotion dur="2.6s" begin="2s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.25 1" path={routePath(recap.route)} />
+                </circle>
+              )}
             </>
           )}
         </svg>
