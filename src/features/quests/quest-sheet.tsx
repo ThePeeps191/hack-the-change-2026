@@ -2,7 +2,8 @@
 import type { Quest } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
 import { MagneticButton } from "@/components/ui/button";
-import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
+import { questTypeLabel } from "@/components/ui/quest-icon";
+import { categoryLabel, categoryOf, CategoryIcon } from "@/components/ui/quest-glyph";
 import { Sheet } from "@/components/ui/sheet";
 import { useGoFree } from "@/features/matching/use-go-free";
 import { useStartRun } from "./use-start-run";
@@ -22,10 +23,10 @@ export function QuestSheet({ quest, crewId, onClose }: { quest: Quest | null; cr
     <Sheet open={!!q} onClose={onClose} label={q?.title ?? "Quest"}>
       {q && (
         <div className="px-5 pb-2">
-          <div className="flex items-center gap-2 text-[13px] text-ink-muted">
-            <QuestIcon type={q.type} size={8} />
-            <span>{questTypeLabel[q.type]}</span>
-            {q.tags?.slice(0, 2).map((t) => <span key={t} className="text-ink-faint">· {t}</span>)}
+          <div className="flex items-center gap-2 text-[13px] font-medium text-ink-muted">
+            <span className="grid size-7 place-items-center rounded-[9px] bg-sunken text-ink"><CategoryIcon category={categoryOf(q)} size={16} /></span>
+            <span>{categoryLabel[categoryOf(q)]}</span>
+            <span className="text-ink-faint">· {questTypeLabel[q.type]}</span>
           </div>
           <h2 className="mt-2.5 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
             {q.title.charAt(0).toUpperCase() + q.title.slice(1)}

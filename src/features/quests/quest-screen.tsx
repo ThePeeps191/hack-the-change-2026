@@ -14,7 +14,7 @@ import { MoodCheck } from "@/features/checkin/mood-check";
 import { ReportSheet } from "./report-sheet";
 import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
-import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
+import { categoryLabel, categoryOf, CategoryIcon } from "@/components/ui/quest-glyph";
 
 const back = "M14.5 5.5L8 12l6.5 6.5";
 
@@ -105,8 +105,8 @@ export function QuestScreen() {
         <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-white/60">
-              <QuestIcon type={q.type} size={8} />
-              <span>{questTypeLabel[q.type]}</span>
+              <span className="grid size-7 place-items-center rounded-[9px] bg-white/10 text-white"><CategoryIcon category={categoryOf(q)} size={16} /></span>
+              <span>{categoryLabel[categoryOf(q)]}</span>
               <span className="text-white/40">· {q.proof} proof</span>
               <span className="ml-auto font-semibold text-white tabular-nums">+{q.coins}</span>
             </div>
