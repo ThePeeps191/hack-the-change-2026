@@ -9,6 +9,7 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
+import { categoryOf, glyphSvg } from "@/components/ui/quest-glyph";
 import { QuestCard } from "@/features/quests/quest-card";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
@@ -55,7 +56,7 @@ export function MapScreen() {
     .sort((a, b) => Number(b.lat != null) - Number(a.lat != null));
   const placed = shown.filter((q) => q.lat != null && q.lng != null);
   const markers = useMemo<GlobeMarker[]>(
-    () => placed.map((q) => ({ id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label: q.place_name ?? q.title })),
+    () => placed.map((q) => ({ id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label: q.place_name ?? q.title, icon: glyphSvg(categoryOf(q), 20) })),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute only when the visible set changes
     [quests, filter],
   );
@@ -83,7 +84,7 @@ export function MapScreen() {
     <AppShell>
       <motion.header {...behind} className="px-5 pt-[max(18px,env(safe-area-inset-top))] pb-3">
         <Hand as="h1" className="text-[36px] leading-none font-bold">around you</Hand>
-        <p className="mt-1 text-[14px] text-ink-muted">Drag to spin the globe. Tap a dot to see what&apos;s there.</p>
+        <p className="mt-1 text-[14px] text-ink-muted">Drag to spin the globe. Tap a pin to see what&apos;s there.</p>
       </motion.header>
 
       {/* The map keeps its slot in the page so nothing jumps when it opens up. */}

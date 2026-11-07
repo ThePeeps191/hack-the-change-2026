@@ -314,3 +314,42 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .orb-swirl, .orb-glow { animation: none }
 }
+
+/* Map pins: a small white badge with the quest's category icon and a tip
+   pointing at the spot. Picking one lifts it and turns it the accent colour. */
+.amble-marker[data-pin] { width: 48px; height: 56px; align-items: start; }
+.amble-pin {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  transform-origin: 50% 100%;
+  transition: transform var(--duration-base) var(--ease-spring);
+  filter: drop-shadow(0 4px 10px rgb(10 20 40 / .28));
+}
+.amble-pin-face {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  background: #fff;
+  color: #1d2433;
+  transition: background var(--duration-base), color var(--duration-base);
+}
+.amble-pin-tip {
+  width: 11px;
+  height: 11px;
+  margin-top: -7px;
+  background: #fff;
+  border-radius: 0 0 3px 0;
+  transform: rotate(45deg);
+  transition: background var(--duration-base);
+}
+.amble-marker[data-pin]:hover .amble-pin { transform: translateY(-2px); }
+.amble-marker[data-pin][data-selected] .amble-pin { transform: translateY(-4px) scale(1.14); }
+.amble-marker[data-pin][data-selected] .amble-pin-face,
+.amble-marker[data-pin][data-selected] .amble-pin-tip { background: var(--color-accent); color: #fff; }
+.amble-marker[data-pin] .amble-marker-label { top: 58px; }
+.amble-marker[data-selected] { z-index: 5; }
