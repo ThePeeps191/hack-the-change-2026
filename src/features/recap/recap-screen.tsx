@@ -50,9 +50,13 @@ export function RecapScreen() {
   // Only after mount, and never with reduced motion, so hydration matches.
   const reduce = useReducedMotion();
   const moving = useSyncExternalStore(() => () => {}, () => true, () => false) && !reduce;
+  // Opened from your quest history on the You page: go back there, and no chime.
+  const fromMe = useSyncExternalStore(() => () => {}, () => new URLSearchParams(location.search).get("from") === "me", () => false);
+  const back = fromMe ? "/me" : "/";
 
   useEffect(() => {
-    api.recap(runId).then((r) => { setRecap(r); setProblem(null); chime(); }).catch((e) => setProblem(problemFrom(e)));
+    const quiet = new URLSearchParams(location.search).get("from") === "me";
+    api.recap(runId).then((r) => { setRecap(r); setProblem(null); if (!quiet) chime(); }).catch((e) => setProblem(problemFrom(e)));
   }, [runId, attempt]);
 
   async function stayInTouch() {
@@ -67,7 +71,7 @@ export function RecapScreen() {
   return (
     <AppShell nav={false}>
       <Hero className="pb-8">
-        <HeroBar left={<HeroIcon href="/" label="Done" d="M6 6l12 12M18 6L6 18" />} center="recap" />
+        <HeroBar left={<HeroIcon href={back} label={fromMe ? "Back" : "Done"} d={fromMe ? "M15 6l-6 6 6 6" : "M6 6l12 12M18 6L6 18"} />} center="recap" />
         <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">
           {problem ? PROBLEMS[problem].title : name ? `you and ${name} did it` : "you did it"}
         </Hand>
@@ -170,7 +174,7 @@ export function RecapScreen() {
       </div>
 
       <div className="px-4 pt-6 pb-6">
-        <ButtonLink size="lg" variant="quiet" href="/">Back to today</ButtonLink>
+        <ButtonLink size="lg" variant="quiet" href={back}>{fromMe ? "Back to you" : "Back to today"}</ButtonLink>
       </div>
     </AppShell>
   );
