@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { MapScreen } from "@/features/map/map-screen";
 
 export default function Page() {
-  return <Placeholder title="map" note="quests and events nearby" />;
+  return <MapScreen />;
 }

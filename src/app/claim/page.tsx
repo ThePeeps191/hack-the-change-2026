@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { ClaimScreen } from "@/features/claim/claim-screen";
 
 export default function Page() {
-  return <Placeholder title="claim" note="zones on the campus map" />;
+  return <ClaimScreen />;
 }

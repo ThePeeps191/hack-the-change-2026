@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { RecapScreen } from "@/features/recap/recap-screen";
 
 export default function Page() {
-  return <Placeholder title="recap" note="the short story of the quest" />;
+  return <RecapScreen />;
 }

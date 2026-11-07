@@ -27,7 +27,7 @@ const state: State = (g.__mockState ??= { freeSince: null, match: null, runs: ne
 
 export function setFree(free: boolean) {
   state.freeSince = free ? Date.now() : null;
-  if (!free) state.match = null;
+  state.match = null; // saying you're free (again) always starts a fresh search
 }
 
 export function currentMatch(): Match | null {
@@ -48,7 +48,7 @@ export function currentMatch(): Match | null {
   if (m && m.status === "pending" && m.accepted_at && now - m.accepted_at > PARTNER_ACCEPT_MS) {
     m.status = "accepted";
     m.partner = mockPartner;
-    m.run_id = startRun(starterQuests()[0], "pair").id;
+    m.run_id = startRun(pairQuest(), "pair").id;
   }
   return m ? publicMatch(m) : null;
 }
@@ -68,13 +68,19 @@ export function respond(id: string, accept: boolean): Match | null {
   return out;
 }
 
+// The demo's System 1 quest: the TFDL book hunt, else the first local quest.
+function pairQuest(): Quest {
+  const all = starterQuests();
+  return all.find((q) => q.id === "a1b2c3d4-0001-4000-8000-000000000001") ?? all.find((q) => q.type === "local") ?? all[0];
+}
+
 export function acceptInvite(): Match {
   state.match = {
     id: crypto.randomUUID(),
     status: "accepted",
     source: "invite",
     partner: mockPartner,
-    run_id: startRun(starterQuests()[0], "pair").id,
+    run_id: startRun(pairQuest(), "pair").id,
     you_accepted: true,
     distance_m: null,
     accepted_at: Date.now(),
