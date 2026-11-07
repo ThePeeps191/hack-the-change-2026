@@ -163,7 +163,7 @@ export default function GlobeMap({
         sessionStorage.setItem("amble:globe-intro", "1");
       } catch {}
       if (reduced() || !intro || seen) m.jumpTo(target);
-      else setTimeout(() => m.flyTo({ ...target, duration: 4600, curve: 1.4, essential: false }), 1400);
+      else setTimeout(() => m.flyTo({ ...target, duration: 3400, curve: 1.4, essential: false }), 350);
     });
 
     // Detent ticks while the person drags, spins or zooms.

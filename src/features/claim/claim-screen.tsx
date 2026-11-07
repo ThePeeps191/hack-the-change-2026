@@ -82,7 +82,7 @@ export function ClaimScreen() {
         animate={{ height: zone ? "46dvh" : "60dvh" }}
         transition={{ type: "spring", stiffness: 260, damping: 34 }}
       >
-        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} />
+        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} fit />
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-[max(8px,env(safe-area-inset-top))]">
           <Link href="/crew" aria-label="Back to crew" className="pointer-events-auto grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -92,7 +92,7 @@ export function ClaimScreen() {
           {game && (
             <div className="pointer-events-auto flex items-center gap-2.5 rounded-full bg-surface/85 px-4 py-2 text-[13px] font-semibold text-ink shadow-card backdrop-blur-md" aria-label={`You hold ${held.ours}, they hold ${held.theirs}, ${held.free} open`}>
               <span className="text-accent"><span className="tabular-nums">{held.ours}</span> yours</span>
-              <span className="text-anywhere"><span className="tabular-nums">{held.theirs}</span> theirs</span>
+              <span className="text-rival"><span className="tabular-nums">{held.theirs}</span> theirs</span>
               <span className="text-ink-muted"><span className="tabular-nums">{held.free}</span> open</span>
             </div>
           )}
@@ -110,7 +110,7 @@ export function ClaimScreen() {
               <Hand as="h1" className="text-[34px] leading-none font-bold">{game.name.toLowerCase()}</Hand>
               <p className="mt-1.5 text-[15px] text-ink-muted">
                 <span className="font-semibold text-accent">{us?.name}</span>
-                {them && <> vs <span className="font-semibold text-anywhere">{them.name}</span></>}. Beat a zone&apos;s best to take it.
+                {them && <> vs <span className="font-semibold text-rival">{them.name}</span></>}. Beat a zone&apos;s best to take it.
               </p>
             </div>
 
@@ -160,7 +160,7 @@ export function ClaimScreen() {
                           </span>
                         </span>
                         <span className="shrink-0 text-right text-[13px] leading-tight">
-                          <span className={`block font-semibold ${tone(z) === "ours" ? "text-accent" : tone(z) === "theirs" ? "text-anywhere" : "text-ink-muted"}`}>
+                          <span className={`block font-semibold ${tone(z) === "ours" ? "text-accent" : tone(z) === "theirs" ? "text-rival" : "text-ink-muted"}`}>
                             {tone(z) === "ours" ? "Yours" : tone(z) === "theirs" ? "Theirs" : "Open"}
                           </span>
                           {best(z) && <span className="block text-ink-muted tabular-nums">{best(z)}</span>}

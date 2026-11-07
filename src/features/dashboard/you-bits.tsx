@@ -125,12 +125,12 @@ export function Stamp({ name, date, i }: { name: string; date: string; i: number
       transition={{ type: "spring", stiffness: 420, damping: 18, delay: 0.1 + i * 0.12 }}
     >
       <div
-        className="flex size-full flex-col items-center justify-center rounded-[20px] border-[1.5px] p-2 text-center mix-blend-multiply dark:mix-blend-normal"
-        style={{ borderColor: ink, color: ink, boxShadow: `inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px color-mix(in oklab, ${ink} 50%, transparent)` }}
+        className="stamp flex size-full flex-col items-center justify-center rounded-[20px] border-[1.5px] p-2 text-center mix-blend-multiply dark:mix-blend-normal"
+        style={{ ["--ink" as string]: ink, boxShadow: `inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px color-mix(in oklab, ${ink} 50%, transparent)` }}
       >
         <CategoryIcon category={categoryOf({ title: short, description: "", place_name: name, tags: [] })} size={20} />
         <p className="mt-1 line-clamp-3 text-[11px] leading-[1.15] font-bold tracking-[0.01em] break-words uppercase">{short}</p>
-        <p className="mt-1 text-[10px] font-semibold tracking-[0.12em] uppercase opacity-75">
+        <p className="mt-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
           {d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
         </p>
       </div>

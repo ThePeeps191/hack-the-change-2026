@@ -15,7 +15,7 @@
   --color-line: #e2e2dc;
   --color-ink: #121412;
   --color-ink-muted: #5c605b;
-  --color-ink-faint: #6f736e; /* 4.8:1 on white, AA for small text */
+  --color-ink-faint: #646862; /* 5.6:1 on white, 4.9:1 on the page */
 
   --color-accent: #2f66f5;
   --color-accent-strong: #1f4fd1;
@@ -42,9 +42,9 @@
   --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
 
   /* The sky hero panel and the dark notification toasts */
-  --color-sky-top: #4f8fdc;
-  --color-sky-mid: #7fb3ea;
-  --color-sky-bottom: #b9d6f3;
+  --color-sky-top: #3a70c8;
+  --color-sky-mid: #5287d6;
+  --color-sky-bottom: #a3c4ee;
   --color-on-sky: #ffffff;
   --color-toast: #0d0e0d;
   --color-on-toast: #ffffff;
@@ -439,3 +439,15 @@ a {
       linear-gradient(170deg, #1a3466 0%, #22407a 60%, #2a4c88 100%);
   }
 }
+
+/* Passport stamps: each has its own ink (--ink). In dark mode the ink is
+   mixed with white so the small type stays readable on the dark page, and the
+   category icon stays one colour like a real stamp. */
+.stamp { color: var(--ink); border-color: var(--ink); }
+.stamp .cat-accent { color: inherit; }
+@media (prefers-color-scheme: dark) {
+  .stamp { color: color-mix(in oklab, var(--ink) 45%, white); border-color: color-mix(in oklab, var(--ink) 45%, white); }
+}
+/* Rival orange as text: deep enough for AA on the light page. */
+.text-rival { color: #b8501b; }
+@media (prefers-color-scheme: dark) { .text-rival { color: var(--color-anywhere); } }
