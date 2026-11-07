@@ -8,9 +8,9 @@ import { Odometer } from "@/components/ui/odometer";
 // The top three crews of the week on a small podium: first in the middle and
 // highest, wearing the crown. Steps rise in on a spring, one after another.
 const steps = [
-  { at: 1, h: 64, tint: "linear-gradient(180deg, #e9edf3, #d7dde6)", label: "2nd" },
-  { at: 0, h: 92, tint: "linear-gradient(180deg, #ffe7a8, #f6cd68)", label: "1st" },
-  { at: 2, h: 48, tint: "linear-gradient(180deg, #f6dcc6, #e6b994)", label: "3rd" },
+  { at: 1, h: 64, tint: "var(--podium-2)", label: "2nd" },
+  { at: 0, h: 92, tint: "var(--podium-1)", label: "1st" },
+  { at: 2, h: 48, tint: "var(--podium-3)", label: "3rd" },
 ];
 
 export function Podium({ top, ours }: { top: LeaderboardEntry[]; ours?: string }) {
@@ -47,7 +47,7 @@ export function Podium({ top, ours }: { top: LeaderboardEntry[]; ours?: string }
               <Odometer value={e.coins} delay={300 + i * 100} />
             </span>
             <motion.div
-              className="mt-2 grid w-full place-items-start justify-center rounded-t-[14px] pt-2 text-[13px] font-semibold text-black/45 shadow-[inset_0_1px_0_rgb(255_255_255/0.7)]"
+              className="mt-2 grid w-full place-items-start justify-center rounded-t-[14px] pt-2 text-[13px] font-semibold text-[var(--podium-ink)] shadow-[inset_0_1px_0_var(--podium-edge)]"
               style={{ background: s.tint, transformOrigin: "50% 100%" }}
               initial={{ height: 0 }}
               animate={{ height: s.h }}
