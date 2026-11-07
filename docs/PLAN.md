@@ -124,7 +124,7 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 
 | Topic | Decision | Why |
 | --- | --- | --- |
-| Name | Not decided | Keep it in one constant so it's easy to change |
+| Name | Amble | Keep it in one constant so it's easy to change |
 | Hosted services | Gemini, Tiger Data, Auth0, Vultr, GoDaddy Registry domain | From the doc. Auth0 is a sponsor track, so keep it even if a shortcut is tempting |
 | App | *Proposed:* one Next.js app in TypeScript, with Tailwind | Pages and API in one repo and one deploy, which means less to integrate |
 | Package manager | *Proposed:* bun, for installs only | Fast, and cheap on disk across dozens of worktrees. Install with `npm i -g bun` |
