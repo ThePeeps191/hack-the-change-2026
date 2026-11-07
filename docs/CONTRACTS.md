@@ -137,6 +137,5 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
 | `GET /api/games/:id` | Game state for the map, polled | game with zones |
 | `POST /api/games/:id/zones/:zone_id/attempts` | Claim or steal: `{ run_id, result }` | zone |
-| `GET /api/impact` | Community-wide totals, no login needed: quests completed, minutes outside, km walked, people who met someone new, pairs who met 2+ times, and the share of after check-ins at 4 or above. Counts only, no names or places. Bots never count, and `source` is `"demo"` when the numbers include seed and demo accounts because no real person has finished a quest yet | `Impact` |
 | `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, ai_mode, ai_provider, ai_keys: { anthropic, gemini }, demo_mode, database }`, where each key is `"env-file"`, `"shell"` or null |
 | `POST /api/demo-login` | `DEMO_MODE` only: sign in without Auth0 | nothing |
