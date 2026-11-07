@@ -7,12 +7,13 @@ import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { dusk, Hero, HeroBar, Stars } from "@/components/ui/hero";
+import { Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { Avatar, Crown } from "@/components/ui/avatar";
 import { Coin } from "@/components/ui/quest-glyph";
 import { Podium } from "./podium";
 import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
+import { ClaimPeek } from "@/features/claim/claim-peek";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -87,12 +88,12 @@ export function CrewScreen() {
             <Link
               href="/claim"
               onClick={() => tick(0.6)}
-              className="group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
-              style={{ background: dusk }}
+              className="claim-card group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
             >
-              <Stars />
-              <p className="relative text-[13px] font-medium tracking-[0.02em] text-white/70">Claim · live this week</p>
+              <Stars className="hidden dark:block" />
+              <p className="relative text-[13px] font-medium tracking-[0.02em] text-white/85">Claim · live this week</p>
               <p className="relative mt-2 text-[20px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
+              <ClaimPeek crewId={crew.id} />
               <p className="relative mt-3 flex items-center gap-1 text-[15px] font-semibold">
                 Open the map
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="transition-transform group-hover:translate-x-0.5"><path d="M9 5l7 7-7 7" /></svg>

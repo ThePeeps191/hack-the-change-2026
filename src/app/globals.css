@@ -423,3 +423,19 @@ a {
 .flag-fly { transform-box: view-box; transform-origin: 6px 8px; animation: flag-fly 2.8s ease-in-out infinite; }
 @keyframes flag-fly { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-7deg) scaleX(.93); } }
 @media (prefers-reduced-motion: reduce) { .flag-fly { animation: none; } }
+
+/* The Claim card on Crew: by day a deeper patch of the same sky with a little
+   late sun in the corner; at night the dusk sky with stars. No purple, so it
+   sits in the page's blues instead of fighting them. */
+.claim-card {
+  background:
+    radial-gradient(90% 70% at 105% 115%, rgb(255 205 150 / .45), transparent 60%),
+    linear-gradient(165deg, #2c69c2 0%, #3a78cf 60%, #4782d4 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .claim-card {
+    background:
+      radial-gradient(90% 70% at 105% 115%, rgb(255 190 140 / .16), transparent 60%),
+      linear-gradient(170deg, #1a3466 0%, #22407a 60%, #2a4c88 100%);
+  }
+}
