@@ -1,87 +1,188 @@
 @import "tailwindcss";
 
 /*
-  Design tokens. PLACEHOLDER VALUES: the UI area is finalising the look, so the
-  values will change but these names won't. Use them through Tailwind
-  (bg-surface, text-ink-muted, rounded-card, shadow-card, ease-spring...) and
-  never hardcode a colour, radius or shadow in a component.
+  Amble: "quiet field, living objects".
+  Near-monochrome ink on soft paper (light) or deep ink (dark, follows the
+  system). One daylight-blue accent for actions and live things. Quest types
+  are small coloured marks, never boxes. Use tokens through Tailwind
+  (bg-surface, text-ink-muted, rounded-card, shadow-card, font-display...).
+  Never hardcode a colour, radius or shadow in a component.
 */
 @theme {
-  /* Surfaces and ink */
-  --color-canvas: #f6f3ec;      /* page background */
-  --color-surface: #fffdf8;     /* cards */
-  --color-sunken: #ece7dc;      /* wells, skeletons, inputs */
-  --color-line: #ddd5c6;        /* borders, dividers */
-  --color-ink: #1f2a24;         /* primary text */
-  --color-ink-muted: #5a6560;   /* secondary text */
-  --color-ink-faint: #8a928c;   /* captions, disabled */
+  --color-canvas: #f6f6f2;
+  --color-surface: #ffffff;
+  --color-sunken: #ecece7;
+  --color-line: #e2e2dc;
+  --color-ink: #121412;
+  --color-ink-muted: #5c605b;
+  --color-ink-faint: #8e928d;
 
-  /* Brand */
-  --color-accent: #2f6b4f;      /* primary actions */
-  --color-accent-strong: #24553e;
-  --color-accent-soft: #dcebe1;
-  --color-on-accent: #fffdf8;
-  --color-sky: #cfe3ee;
-  --color-sun: #f2c14e;
+  --color-accent: #2f66f5;
+  --color-accent-strong: #1f4fd1;
+  --color-accent-soft: #e6edfe;
+  --color-on-accent: #ffffff;
 
-  /* Quest types */
-  --color-local: #2f6b4f;
-  --color-anywhere: #c8643b;
-  --color-event: #3f6fa8;
+  /* Quest types: small marks only */
+  --color-local: #1f9a59;
+  --color-anywhere: #ee6a2c;
+  --color-event: #d99a00;
+  --color-on-blaze: #ffffff;
 
-  /* Status */
-  --color-success: #2f7d4f;
-  --color-success-soft: #dcefe2;
-  --color-danger: #b4402f;
-  --color-danger-soft: #f6e0da;
-  --color-warning: #a8730f;
-  --color-warning-soft: #f7ebcc;
-  --color-coin: #96650a;        /* AA on surface; reads in sunlight */
+  --color-success: #1d8a50;
+  --color-success-soft: #e2f3e8;
+  --color-danger: #c53b22;
+  --color-danger-soft: #fae5df;
+  --color-warning: #8a5d00;
+  --color-warning-soft: #f8eccb;
+  --color-coin: #121412;
+  --color-sun: #f4b63f;
 
-  /* Type */
-  --font-display: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-funnel-display), system-ui, sans-serif;
+  --font-body: var(--font-funnel-sans), system-ui, sans-serif;
+  --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
 
-  /* Radius */
+  /* The sky hero panel and the dark notification toasts */
+  --color-sky-top: #4f8fdc;
+  --color-sky-mid: #7fb3ea;
+  --color-sky-bottom: #b9d6f3;
+  --color-on-sky: #ffffff;
+  --color-toast: #0d0e0d;
+  --color-on-toast: #ffffff;
+
   --radius-chip: 999px;
-  --radius-control: 14px;
-  --radius-card: 22px;
-  --radius-sheet: 28px;
+  --radius-control: 16px;
+  --radius-card: 24px;
+  --radius-sheet: 32px;
 
-  /* Elevation */
-  --shadow-card: 0 1px 0 rgb(31 42 36 / 0.04), 0 2px 8px rgb(31 42 36 / 0.06);
-  --shadow-lift: 0 2px 0 rgb(31 42 36 / 0.04), 0 12px 32px rgb(31 42 36 / 0.12);
+  --shadow-card: 0 1px 2px rgb(18 20 18 / 0.04), 0 4px 16px rgb(18 20 18 / 0.05);
+  --shadow-lift: 0 2px 6px rgb(18 20 18 / 0.06), 0 18px 48px rgb(18 20 18 / 0.14);
+  --shadow-press: 0 1px 0 rgb(255 255 255 / 0.25) inset, 0 6px 18px rgb(47 102 245 / 0.28);
 
-  /* Motion */
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 140ms;
-  --duration-base: 240ms;
-  --duration-slow: 420ms;
+  --duration-base: 260ms;
+  --duration-slow: 560ms;
 }
 
 :root {
   color-scheme: light;
+  --hairline: rgb(18 20 18 / 0.08);
+  --scrim: rgb(246 246 242 / 0.6);
 }
 
-/* Mascot motion. Disabled by the reduced-motion rule below. */
-@keyframes pip-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
-@keyframes pip-look { 0%, 100% { transform: rotate(-6deg) } 50% { transform: rotate(6deg) } }
-@keyframes pip-walk { 0%, 100% { transform: translateY(0) rotate(-3deg) } 50% { transform: translateY(-4px) rotate(3deg) } }
-@keyframes pip-hop { 0%, 100% { transform: translateY(0) scale(1) } 40% { transform: translateY(-14px) scale(1.04, .96) } }
-@keyframes ripple { from { transform: scale(.6); opacity: .5 } to { transform: scale(2.2); opacity: 0 } }
-@keyframes rise { from { transform: translateY(12px); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-canvas: #0c0d0c;
+    --color-surface: #151715;
+    --color-sunken: #1c1e1c;
+    --color-line: #262926;
+    --color-ink: #f1f2ee;
+    --color-ink-muted: #a3a7a1;
+    --color-ink-faint: #6e726d;
+    --color-accent: #6b93ff;
+    --color-accent-strong: #8aaaff;
+    --color-accent-soft: #18233f;
+    --color-on-accent: #07102a;
+    --color-local: #4cc985;
+    --color-anywhere: #ff8a52;
+    --color-event: #f2bf3a;
+    --color-success: #5cd593;
+    --color-success-soft: #13291c;
+    --color-danger: #ff8b72;
+    --color-danger-soft: #34160f;
+    --color-warning: #f2c35a;
+    --color-warning-soft: #2e240c;
+    --color-coin: #f1f2ee;
+    --color-sky-top: #10264a;
+    --color-sky-mid: #1b3a6b;
+    --color-sky-bottom: #29508a;
+    --color-toast: #1f2220;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+    --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.4), 0 18px 48px rgb(0 0 0 / 0.55);
+    --shadow-press: 0 1px 0 rgb(255 255 255 / 0.2) inset, 0 6px 22px rgb(107 147 255 / 0.3);
+    --hairline: rgb(255 255 255 / 0.07);
+    --scrim: rgb(12 13 12 / 0.55);
+  }
+}
+
+@keyframes rise { from { transform: translateY(14px); opacity: 0; filter: blur(6px) } to { transform: none; opacity: 1; filter: blur(0) } }
+@keyframes ripple { from { transform: scale(.6); opacity: .45 } to { transform: scale(2.6); opacity: 0 } }
+@keyframes breathe { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.06) } }
+@keyframes draw { from { stroke-dashoffset: var(--len, 200) } to { stroke-dashoffset: 0 } }
+@keyframes develop { from { filter: blur(18px) saturate(0) brightness(1.2) } to { filter: blur(0) saturate(1) brightness(1) } }
+@keyframes shimmer { from { background-position: -200% 0 } to { background-position: 200% 0 } }
 
 html {
-  background: var(--color-sunken);
+  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-canvas);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+input,
+textarea {
+  caret-color: var(--color-accent);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+}
+
+* {
+  scrollbar-color: var(--color-line) transparent;
+  scrollbar-width: thin;
+}
+
+.hairline {
+  box-shadow: inset 0 -1px 0 var(--hairline);
+}
+
+/* Rows separated by inset hairlines, no boxes. */
+.rows > * {
+  position: relative;
+}
+.rows > * + *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--hairline);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-sunken) 25%, var(--color-line) 50%, var(--color-sunken) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -93,4 +194,47 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Globe map markers: a coloured dot in a white ring; the label shows when picked. */
+.amble-marker {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+.amble-marker-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: 0 0 0 3px #fff, 0 4px 14px rgb(0 0 0 / 0.28);
+  transition: transform var(--duration-base) var(--ease-spring);
+}
+.amble-marker[data-selected] .amble-marker-dot {
+  transform: scale(1.35);
+}
+.amble-marker-label {
+  position: absolute;
+  top: 40px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--color-toast);
+  color: var(--color-on-toast);
+  font: 600 12px/1.2 var(--font-body);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--duration-base) var(--ease-out-soft), transform var(--duration-base) var(--ease-out-soft);
+  pointer-events: none;
+}
+.amble-marker[data-selected] .amble-marker-label {
+  opacity: 1;
+  transform: none;
+}
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
 }

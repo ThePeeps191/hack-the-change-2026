@@ -1,0 +1,199 @@
+"use client";
+import * as maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { useEffect, useRef } from "react";
+import { CAMPUS_CENTER } from "@/lib/config";
+import { tick } from "@/lib/feedback";
+
+type MLMap = maplibregl.Map;
+
+// MapLibre 6 loads its worker by URL, which the bundler can't resolve, so we
+// serve a copy from /public. Re-copy it if you bump maplibre-gl:
+//   cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs public/maplibre/worker-<version>.js
+maplibregl.setWorkerUrl("/maplibre/worker-6.16.0.js");
+
+export type GlobeMarker = { id: string; lat: number; lng: number; color: string; label: string };
+
+const STYLE = {
+  light: "https://tiles.openfreemap.org/styles/positron",
+  dark: "https://tiles.openfreemap.org/styles/dark",
+};
+
+const isDark = () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Globe projection, a soft daylight atmosphere and 3D buildings. Re-applied
+// whenever the style (re)loads, e.g. when the system theme flips.
+function dress(map: MLMap, dark: boolean) {
+  map.setProjection({ type: "globe" });
+  map.setSky({
+    "sky-color": dark ? "#10264a" : "#4f8fdc",
+    "horizon-color": dark ? "#29508a" : "#b9d6f3",
+    "fog-color": dark ? "#0c0d0c" : "#f6f6f2",
+    "sky-horizon-blend": 0.6,
+    "horizon-fog-blend": 0.6,
+    "fog-ground-blend": 0.7,
+    "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 6, 1, 9, 0],
+  });
+  if (map.getSource("openmaptiles") && !map.getLayer("amble-3d")) {
+    const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+    map.addLayer(
+      {
+        id: "amble-3d",
+        type: "fill-extrusion",
+        source: "openmaptiles",
+        "source-layer": "building",
+        minzoom: 14,
+        paint: {
+          "fill-extrusion-color": dark ? "#2a2f33" : "#f3f1ea",
+          "fill-extrusion-height": ["coalesce", ["get", "render_height"], 8],
+          "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
+          "fill-extrusion-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.82],
+        },
+      },
+      firstSymbol,
+    );
+  }
+}
+
+function markerEl(m: GlobeMarker, onPick: (id: string) => void) {
+  const el = document.createElement("button");
+  el.type = "button";
+  el.setAttribute("aria-label", m.label);
+  el.className = "amble-marker";
+  el.style.setProperty("--c", m.color);
+  el.innerHTML = `<span class="amble-marker-dot"></span><span class="amble-marker-label">${m.label.replace(/[<>&]/g, "")}</span>`;
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+    onPick(m.id);
+  });
+  return el;
+}
+
+// A 3D globe that drag-rotates with quiet detent ticks, like an alarm-time
+// picker. It opens on the whole Earth and dives down to campus.
+export default function GlobeMap({
+  markers,
+  selected,
+  onSelect,
+  focus,
+  className = "",
+}: {
+  markers: GlobeMarker[];
+  selected?: string | null;
+  onSelect?: (id: string) => void;
+  focus?: { lat: number; lng: number } | null;
+  className?: string;
+}) {
+  const box = useRef<HTMLDivElement>(null);
+  const map = useRef<MLMap | null>(null);
+  const pins = useRef(new Map<string, maplibregl.Marker>());
+  const pick = useRef(onSelect);
+  useEffect(() => {
+    pick.current = onSelect;
+  }, [onSelect]);
+
+  // Create the map once.
+  useEffect(() => {
+    if (!box.current) return;
+    const dark = isDark();
+    const m = new maplibregl.Map({
+      container: box.current,
+      style: STYLE[dark ? "dark" : "light"],
+      center: [CAMPUS_CENTER.lng + 40, CAMPUS_CENTER.lat - 20],
+      zoom: 0.35,
+      attributionControl: { compact: true },
+      maxPitch: 70,
+    });
+    map.current = m;
+    m.on("style.load", () => dress(m, isDark()));
+    m.once("load", () => {
+      box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
+      const target = { center: [CAMPUS_CENTER.lng, CAMPUS_CENTER.lat] as [number, number], zoom: 15.4, pitch: 56, bearing: -24 };
+      if (reduced()) m.jumpTo(target);
+      else setTimeout(() => m.flyTo({ ...target, duration: 4600, curve: 1.4, essential: false }), 1400);
+    });
+
+    // Detent ticks while the person drags, spins or zooms.
+    let anchor = m.getCenter();
+    let zoomAnchor = m.getZoom();
+    let last = 0;
+    const onMove = (e: { originalEvent?: Event }) => {
+      if (!e.originalEvent) return; // ignore our own fly-to animations
+      const now = performance.now();
+      const p = m.project(anchor);
+      const { width, height } = m.getContainer().getBoundingClientRect();
+      const moved = Math.hypot(p.x - width / 2, p.y - height / 2);
+      const zoomed = Math.abs(m.getZoom() - zoomAnchor);
+      if ((moved > 42 || zoomed > 0.35) && now - last > 45) {
+        tick(0.5);
+        last = now;
+        anchor = m.getCenter();
+        zoomAnchor = m.getZoom();
+      }
+    };
+    const reset = () => {
+      anchor = m.getCenter();
+      zoomAnchor = m.getZoom();
+    };
+    m.on("move", onMove);
+    m.on("movestart", reset);
+
+    const ro = new ResizeObserver(() => m.resize());
+    ro.observe(box.current);
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onTheme = () => m.setStyle(STYLE[mq.matches ? "dark" : "light"]);
+    mq.addEventListener("change", onTheme);
+
+    const placed = pins.current;
+    return () => {
+      mq.removeEventListener("change", onTheme);
+      ro.disconnect();
+      placed.clear();
+      m.remove();
+      map.current = null;
+    };
+  }, []);
+
+  // Keep markers in sync.
+  useEffect(() => {
+    const m = map.current;
+    if (!m) return;
+    const keep = new Set(markers.map((k) => k.id));
+    for (const [id, mk] of pins.current) {
+      if (!keep.has(id)) {
+        mk.remove();
+        pins.current.delete(id);
+      }
+    }
+    for (const k of markers) {
+      const existing = pins.current.get(k.id);
+      if (existing) {
+        existing.setLngLat([k.lng, k.lat]);
+        existing.getElement().style.setProperty("--c", k.color);
+        continue;
+      }
+      const mk = new maplibregl.Marker({ element: markerEl(k, (id) => pick.current?.(id)), anchor: "center" }).setLngLat([k.lng, k.lat]).addTo(m);
+      pins.current.set(k.id, mk);
+    }
+  }, [markers]);
+
+  useEffect(() => {
+    for (const [id, mk] of pins.current) mk.getElement().toggleAttribute("data-selected", id === selected);
+  }, [selected, markers]);
+
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !focus) return;
+    m.flyTo({ center: [focus.lng, focus.lat], zoom: Math.max(m.getZoom(), 16), pitch: 58, duration: reduced() ? 0 : 1600, essential: false });
+  }, [focus]);
+
+  return (
+    <div
+      ref={box}
+      className={`size-full ${className}`}
+      style={{ background: "radial-gradient(120% 90% at 50% 100%, var(--color-sky-bottom), var(--color-sky-top))" }}
+    />
+  );
+}
