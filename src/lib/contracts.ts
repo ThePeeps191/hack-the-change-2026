@@ -6,6 +6,15 @@ export type ProofKind = "photo" | "video" | "gps";
 
 export type Source = { title: string; uri: string };
 
+export type QuestTag = "newcomer" | "give-back" | "skill-swap" | "calm" | "step-free" | "side-by-side" | "daytime";
+
+// Comfort settings. Matching and quest choice respect them.
+export type Prefs = {
+  pace?: "any" | "short" | "step-free";
+  social?: "chatty" | "side-by-side";
+  language?: string; // BCP 47, e.g. "en", "fr", "zh"
+};
+
 export type Quest = {
   id: string;
   title: string;
@@ -19,6 +28,8 @@ export type Quest = {
   coins: number;
   place_name: string | null;
   sources: Source[];
+  // Added: see the tags in docs/JUDGING.md. Optional on purpose.
+  tags?: QuestTag[];
 };
 
 export type User = {
@@ -27,6 +38,7 @@ export type User = {
   avatar_url: string | null;
   email_verified: boolean;
   age_confirmed_at: string | null;
+  prefs: Prefs;
   coins: number;
   created_at: string;
 };
@@ -45,6 +57,8 @@ export type Match = {
   you_accepted?: boolean;
   // Added: rough distance to the partner, never their location.
   distance_m?: number | null;
+  // Added: quests you've finished together before, once both have accepted.
+  times_together?: number;
 };
 
 export type RunMember = {
@@ -86,6 +100,8 @@ export type Recap = {
   distance_m?: number;
   coins?: number;
   partner?: Partner | null;
+  // Added: quests finished with this partner, including this one.
+  times_together?: number;
 };
 
 export type CrewMember = {
@@ -135,7 +151,24 @@ export type Dashboard = {
   streak_days: number;
   rating?: number;
   history: HistoryItem[];
+  // Added: the human metrics from docs/JUDGING.md. Private, never ranked.
+  active_minutes_week: number;
+  weekly_goal_min: number; // the 150-minute Canadian guideline
+  familiar_faces: FamiliarFace[];
+  small_hellos: SmallHello[];
+  new_places: number;
+  mood: MoodSummary;
 };
+
+// Someone you've done 2+ quests with.
+export type FamiliarFace = { display_name: string; avatar_url: string | null; quests_together: number; hours_together: number };
+
+// A quest with someone new, as a moment rather than a tally.
+export type SmallHello = { run_id: string; display_name: string; quest_title: string; at: string };
+
+export type MoodSummary = { before_avg: number | null; after_avg: number | null; checkins: number };
+
+export type Checkin = { phase: "before" | "after"; mood: number };
 
 export type Zone = {
   id: string;
@@ -150,6 +183,11 @@ export type Zone = {
   // Added: what best_result measures, e.g. "seconds", "reps", "metres".
   result_unit?: string;
   quest?: Quest;
+  // Added: whether a smaller result wins (a faster time), and your team's run
+  // for this zone that hasn't been turned into an attempt yet.
+  lower_is_better?: boolean;
+  my_run_id?: string | null;
+  my_run_ready?: boolean; // that run has approved proof, so a result can be sent
 };
 
 export type GameTeam = { id: string; game_id: string; crew_id: string; name: string };

@@ -1,11 +1,8 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { writeRecap } from "@/lib/gemini";
-import { fail, ok } from "@/lib/http";
-import { getRun } from "@/mocks/store";
+import { ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { getRecap } from "@/server/recaps";
 
-export async function GET(_req: Request, ctx: RouteContext<"/api/runs/[id]/recap">) {
+export const GET = authed<RouteContext<"/api/runs/[id]/recap">>(async (user, _req, ctx) => {
   const { id } = await ctx.params;
-  const run = getRun(id);
-  if (!run) return fail("run not found", 404);
-  return ok(await writeRecap(id, run.quest));
-}
+  return ok(await getRecap(user, id));
+});
