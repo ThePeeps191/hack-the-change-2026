@@ -1,4 +1,4 @@
-// The product name isn't decided (Skip, Amble or Outbound). Change it here only.
+// Change the product name here only.
 export const APP_NAME = "Amble";
 export const APP_TAGLINE = "twenty minutes, someone new, somewhere outside";
 

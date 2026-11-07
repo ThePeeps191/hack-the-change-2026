@@ -17,21 +17,27 @@ export const categoryLabel: Record<Category, string> = {
   explore: "Explore",
 };
 
+// Checked in order, so the specific kinds (a walk, a plank) win over loose
+// words like "talk" that turn up in any description.
 const guesses: [RegExp, Category][] = [
-  [/snack|food|coffee|drink|lunch|eat|cafe/, "food"],
-  [/book|librar|study|read|lecture/, "study"],
-  [/oval|olympic|rink|skat|gym|court|field|game/, "sport"],
-  [/poster|event|talk|show|concert|gig|art|music|theatre/, "arts"],
-  [/view|mountain|window|park|tree|river|sunset|garden/, "outdoors"],
-  [/kilomet|walk|route|loop|stroll|km\b/, "walk"],
-  [/plank|push|squat|stretch|hold|reps|jump/, "fitness"],
+  [/kilomet|\bwalk|\broute\b|\bloop\b|stroll|\bkm\b/, "walk"],
+  [/plank|push-?up|squat|stretch|\breps\b|jump|\brun\b|running|backwards/, "fitness"],
+  [/snack|food|coffee|drink|lunch|\beat\b|cafe/, "food"],
+  [/\bbook|librar|study|lecture/, "study"],
+  [/\boval\b|olympic|rink|skat|\bgym\b|\bcourt\b|\bfield\b|ping ?pong|table tennis|frisbee/, "sport"],
+  [/poster|\bevent|\btalk\b|\bshow\b|concert|\bgig\b|\bart\b|\barts\b|music|theatre|gallery/, "arts"],
+  [/\bview\b|mountain|window|\bpark\b|\btree|river|sunset|garden|\bbird|\bduck|\bplane|sky/, "outdoors"],
 ];
 
 export function categoryOf(q: Pick<Quest, "title" | "description" | "place_name" | "tags">): Category {
   const tagged = q.tags?.find((t): t is Category => (categories as readonly string[]).includes(t.toLowerCase()));
   if (tagged) return tagged.toLowerCase() as Category;
-  const text = [q.title, q.place_name, q.description].join(" ").toLowerCase();
-  return guesses.find(([re]) => re.test(text))?.[1] ?? "explore";
+  // The title says what the quest is about most clearly, so it gets first say.
+  for (const text of [q.title, [q.title, q.place_name, q.description].join(" ")]) {
+    const hit = guesses.find(([re]) => re.test(text.toLowerCase()));
+    if (hit) return hit[1];
+  }
+  return "explore";
 }
 
 // Each icon as plain SVG markup, so the same drawing works in React and in

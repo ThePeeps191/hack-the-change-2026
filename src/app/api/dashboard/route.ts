@@ -1,7 +1,5 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
 import { ok } from "@/lib/http";
-import { mockDashboard } from "@/mocks/dashboard";
+import { authed } from "@/lib/route";
+import { getDashboard } from "@/server/dashboard";
 
-export async function GET() {
-  return ok(mockDashboard());
-}
+export const GET = authed(async (user) => ok(await getDashboard(user)));

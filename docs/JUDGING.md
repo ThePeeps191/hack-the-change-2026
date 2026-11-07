@@ -10,6 +10,8 @@ If any of these is missing, nothing else matters.
 - [ ] Title is exactly `TEAM ID - TEAM NAME - Amble`.
 - [ ] A **2 to 5 minute video** of the product working: real phones, real campus, a real quest.
 - [ ] A **public GitHub link**. The repo is public, so check that no key has ever been committed.
+- [ ] **AI use disclosed on Devpost.** Not disclosing it can mean disqualification and a report to MLH.
+- [ ] **Everyone can explain the code.** An inability to explain any technical design or code can mean disqualification, and all members must attend judging in person. Read [ARCHITECTURE.md](ARCHITECTURE.md) before judging.
 - [ ] It runs as intended for anyone with the link. Have a demo login and a bot partner for judges who are alone (see Demo in PLAN.md).
 - [ ] It looks complete: every tab works, with no "coming soon" and no dead buttons. Anything unfinished gets hidden, not shown broken.
 - [ ] Prescreening also needs us at least *satisfactory* in **Idea** (innovation, impact) and **Effectiveness** (it works and is usable).

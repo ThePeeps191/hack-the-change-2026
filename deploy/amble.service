@@ -1,0 +1,18 @@
+[Unit]
+Description=Amble
+After=network.target
+
+[Service]
+User=amble
+WorkingDirectory=/opt/amble/current
+EnvironmentFile=/opt/amble/shared/.env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=UPLOADS_DIR=/opt/amble/shared/uploads
+Environment=PGLITE_DIR=/opt/amble/shared/pglite/data
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

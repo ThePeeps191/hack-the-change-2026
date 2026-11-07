@@ -1,5 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { QUEST_MINUTES } from "@/lib/config";
@@ -12,6 +13,8 @@ import { useGoFree } from "@/features/matching/use-go-free";
 import { GlyphTile, QuestCard } from "@/features/quests/quest-card";
 import { Carousel } from "@/components/ui/carousel";
 import { Coin } from "@/components/ui/quest-glyph";
+import { InviteCard } from "@/features/invites/invite-card";
+import { ResumeBanner } from "./resume-banner";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
 function today() {
@@ -19,6 +22,7 @@ function today() {
 }
 
 export function HomeScreen() {
+  const router = useRouter();
   const { go, busy, error } = useGoFree();
   const [d, setD] = useState<Dashboard | null>(null);
   const [quests, setQuests] = useState<Quest[] | null>(null);
@@ -32,7 +36,8 @@ export function HomeScreen() {
     api.dashboard().then(setD).catch(() => {});
     api.quests().then(setQuests).catch(() => setQuests([]));
     api.crews().then((c) => setCrewId(c[0]?.id)).catch(() => {});
-  }, []);
+    api.me().then((u) => { if (!u.age_confirmed_at) router.replace("/welcome"); }).catch(() => {});
+  }, [router]);
 
   const nearby = (quests ?? []).filter((q) => q.type !== "anywhere");
   const shown = more ? nearby : nearby.slice(0, 3);
@@ -67,6 +72,7 @@ export function HomeScreen() {
       </Hero>
 
       {error && <div className="pt-3"><Notice tone="danger">{error}</Notice></div>}
+      <ResumeBanner />
 
       <section className="px-4 pt-6" aria-labelledby="nearby">
         <Hand as="h2" className="mb-3 px-1 text-[28px] leading-none font-bold text-ink">
@@ -136,6 +142,7 @@ export function HomeScreen() {
       )}
 
       <QuestSheet quest={open} crewId={crewId} onClose={() => setOpen(null)} />
+      <InviteCard />
     </AppShell>
   );
 }

@@ -9,10 +9,10 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import { dusk, Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
-import { QuestCard } from "@/features/quests/quest-card";
 import { Avatar, Crown } from "@/components/ui/avatar";
 import { Coin } from "@/components/ui/quest-glyph";
 import { Podium } from "./podium";
+import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -25,15 +25,17 @@ export function CrewScreen() {
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
+  const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
     api.leaderboard().then(setBoard).catch(() => setBoard([]));
-  }, []);
+  };
+
+  useEffect(reload, []);
 
   async function copy() {
     if (!crew) return;
     tick(0.8);
-    const link = `${location.origin}/crew?join=${crew.invite_code}`;
+    const link = `${location.origin}/join/${crew.invite_code}`;
     try {
       if (navigator.share) await navigator.share({ title: `Join ${crew.name}`, url: link });
       else await navigator.clipboard.writeText(link);
@@ -79,6 +81,7 @@ export function CrewScreen() {
       </Hero>
 
       <div className="space-y-7 px-4 pt-6">
+        {crew === null && <NoCrewActions onDone={reload} />}
         {crew && (
           <motion.div {...rise(0)}>
             <Link
@@ -158,10 +161,12 @@ export function CrewScreen() {
           <section aria-labelledby="shared">
             <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold"><span id="shared">do one together</span></Hand>
             <div className="flex flex-col gap-2.5">
-              {crew.shared_quests.map((q) => <QuestCard key={q.id} quest={q} />)}
+              {crew.shared_quests.map((q) => <StartQuestCard key={q.id} crewId={crew.id} quest={q} />)}
             </div>
           </section>
         )}
+
+        {crew && <AnywhereQuests crew={crew} onChange={reload} />}
       </div>
     </AppShell>
   );

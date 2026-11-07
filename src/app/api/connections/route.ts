@@ -1,15 +1,13 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { ok } from "@/lib/http";
-import type { Connection } from "@/lib/contracts";
-import { mockPartner, mockPartnerId } from "@/mocks/user";
+import { body, fail, ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { listConnections, stayInTouch } from "@/server/people";
 
 // People I've connected with.
-export async function GET() {
-  const people: Connection[] = [{ user_id: mockPartnerId, ...mockPartner }];
-  return ok(people);
-}
+export const GET = authed(async (user) => ok(await listConnections(user)));
 
 // Opt in to stay in touch. Connected only when both people opt in.
-export async function POST() {
-  return ok({ connected: true });
-}
+export const POST = authed(async (user, req) => {
+  const { run_id } = await body<{ run_id: string }>(req);
+  if (!run_id) return fail("run_id is required");
+  return ok(await stayInTouch(user, run_id));
+});

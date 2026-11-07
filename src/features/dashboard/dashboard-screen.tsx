@@ -11,9 +11,9 @@ import { Odometer } from "@/components/ui/odometer";
 import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
 import { EmptyStamp, Entry, FaceCard, Stamp, Weather, WeekStrip } from "./you-bits";
+import { type Comfort, toComfort, toPrefs } from "@/features/onboarding/prefs";
+import { ProfileLinks } from "./profile-links";
 
-type Comfort = { pace: "stroll" | "walk" | "brisk"; talk: "side" | "chatty"; stepFree: boolean };
-const COMFORT_KEY = "amble:comfort";
 const defaults: Comfort = { pace: "walk", talk: "side", stepFree: false };
 
 function BigRing({ value, goal }: { value: number; goal: number }) {
@@ -51,21 +51,15 @@ export function DashboardScreen() {
   const [sound, setSoundState] = useState(true);
 
   useEffect(() => {
-    api.me().then(setMe).catch(() => {});
+    api.me().then((u) => { setMe(u); setComfort(toComfort(u.prefs)); }).catch(() => {});
     api.dashboard().then(setD).catch(() => {});
-    try {
-      const saved = localStorage.getItem(COMFORT_KEY);
-      if (saved) setComfort({ ...defaults, ...JSON.parse(saved) }); // eslint-disable-line react-hooks/set-state-in-effect -- read client-only storage after mount
-    } catch {}
-    setSoundState(soundOn());
+    setSoundState(soundOn()); // eslint-disable-line react-hooks/set-state-in-effect -- read client-only storage after mount
   }, []);
 
   function update(patch: Partial<Comfort>) {
     const next = { ...comfort, ...patch };
     setComfort(next);
-    try {
-      localStorage.setItem(COMFORT_KEY, JSON.stringify(next));
-    } catch {}
+    api.updateMe({ prefs: toPrefs(next, me?.prefs.language) }).then(setMe).catch(() => {});
   }
 
   const active = d?.active_minutes_week ?? 0;
@@ -145,7 +139,7 @@ export function DashboardScreen() {
         )}
 
         <div id="comfort" className="scroll-mt-6">
-          <Section id="comfort-title" title="how you like to meet" note="We use these to pick quests and partners that suit you. Saved on this phone.">
+          <Section id="comfort-title" title="how you like to meet" note="We use these to pick quests that suit you both. Saved to your account.">
             <div className="space-y-4 rounded-[24px] bg-surface p-4 shadow-card">
               <div>
                 <p className="mb-2 px-1 text-[14px] font-medium text-ink-muted">Pace</p>
@@ -187,6 +181,7 @@ export function DashboardScreen() {
             </div>
           </Section>
         </div>
+        <ProfileLinks />
       </div>
     </AppShell>
   );
