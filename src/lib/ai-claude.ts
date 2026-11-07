@@ -68,7 +68,7 @@ export async function generateQuestsLive(lat: number, lng: number, count: number
     messages: [
       {
         role: "user",
-        content: `It's ${localTime()} in Calgary. These real places are within a short walk:\n\n${list}\n\nWrite ${count} quests, each at a different place from the list. Pick places that are public and very likely open right now; skip any whose hours say they're closed. Refer to each place by its number.${wanted}\n\nFor each quest: duration_min from 5 to 20, coins from 10 to 50 (more for more effort), and tags from: ${VALID_TAGS.join(", ")}.${language ? `\n\nWrite every title and description in the language with BCP 47 code "${language}".` : ""}`,
+        content: `It's ${localTime()} in Calgary. These real places are within a short walk:\n\n${list}\n\nWrite ${count} quests, each at a different place from the list. Pick places that are public and very likely open right now; skip any whose hours say they're closed. Give each place's number in the place field only, and call it by its name in the text.${wanted}\n\nFor each quest: duration_min from 5 to 20, coins from 10 to 50 (more for more effort), and tags from: ${VALID_TAGS.join(", ")}.${language ? `\n\nWrite every title and description in the language with BCP 47 code "${language}".` : ""}`,
       },
     ],
     output_config: { effort: "medium", format: zodOutputFormat(QuestPlan) },
@@ -81,10 +81,12 @@ export async function generateQuestsLive(lat: number, lng: number, count: number
   for (const q of res.parsed_output.quests) {
     const place = places[q.place];
     if (!place) continue;
+    // In case the list numbering slips into the text, e.g. "(place 2)".
+    const tidy = (s: string) => s.replace(/\s*\(\s*place\s*#?\d+\s*\)/gi, "").replace(/\bplace\s*#?\d+\b/gi, place.name);
     const safe = toSafeQuest(
-      { ...q, type: "local", lat: place.lat, lng: place.lng, radius_m: 90, place_name: place.name },
+      { ...q, title: tidy(q.title), description: tidy(q.description), type: "local", lat: place.lat, lng: place.lng, radius_m: 90, place_name: place.name },
       { lat, lng },
-      [{ title: "OpenStreetMap", uri: place.url }],
+      place.url ? [{ title: "OpenStreetMap", uri: place.url }] : [],
     );
     if (safe) quests.push(safe);
   }

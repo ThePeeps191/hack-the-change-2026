@@ -81,7 +81,7 @@ export async function one<T = Row>(text: string, params: unknown[] = []): Promis
 }
 
 // Every query() inside fn joins the transaction. A throw rolls it all back.
-// Don't call after() or anything slow (Gemini) in here.
+// Don't call after() or anything slow (the AI) in here.
 export async function transaction<T>(fn: () => Promise<T>): Promise<T> {
   if (inTransaction.getStore()) return fn();
   const e = await engine();

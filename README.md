@@ -18,12 +18,14 @@ Put your keys in `.env`, using `.env.example` for the names. It's gitignored and
 
 ```sh
 bun install
-PORT=3001 bun run dev     # pick a free port; mock login and mock Gemini by default
+PORT=3001 bun run dev     # pick a free port; mock login and mock AI by default
 bun run check             # route types, tsc and eslint
 bun run build
 ```
 
-With no `.env` at all, the whole app runs for real on your laptop: embedded Postgres in `.data/` migrates and seeds itself, and mock login and mock Gemini mean no accounts or keys.
+With no `.env` at all, the whole app runs for real on your laptop: embedded Postgres in `.data/` migrates and seeds itself, and mock login and mock AI mean no accounts or keys.
+
+To use the real AI, run with `AI_MODE=live`. It uses Claude Haiku 5.5 with `ANTHROPIC_API_KEY`, from `.env` if it's there, otherwise from your shell. Set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` to use Gemini instead. `/api/health` shows which is active.
 
 - **Alone:** you're Sam, and a bot partner, Priya, matches you after about 4 s, accepts, and sends proof after you do.
 - **As two people:** open `/?as=alice` in one tab and `/?as=bob` in another. Each tab stays that person, and they really match each other.
@@ -38,7 +40,7 @@ Read [how Amble works](docs/ARCHITECTURE.md) to find your way around, and [deplo
 | `src/lib/api.ts` | Typed client for every endpoint. Screens call this, never `fetch` directly |
 | `src/server/` | All the rules: matching, runs, proof, crews, Claim, dashboard |
 | `src/lib/config.ts` | `APP_NAME` and other constants |
-| `src/lib/gemini.ts`, `auth.ts`, `db.ts` | Server seams with mock and live branches |
+| `src/lib/ai.ts`, `auth.ts`, `db.ts` | Server seams with mock and live branches. `ai.ts` picks Claude (`ai-claude.ts`) or Gemini (`gemini-live.ts`) |
 | `src/app/api/**` | Thin routes that call `src/server/` |
 | `db/migrations/` | The schema, as timestamped SQL files |
 | `scripts/smoke.ts` | Tests the whole product over HTTP: `BASE_URL=http://localhost:3001 bun run smoke` |

@@ -7,9 +7,9 @@ import { Button, buttonClass } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const KEPT: [string, string][] = [
-  ["your location while searching", "used to find someone nearby, then deleted the moment you're matched. your partner only sees a rough distance."],
+  ["your location while searching", "used to find someone nearby, then deleted the moment you're matched. your partner only sees a rough distance. to find places for quests we look up the area, rounded to about 100 m, on OpenStreetMap."],
   ["your route during a quest", "recorded only while a quest is active, shown only to you, and deleted after 30 days."],
-  ["proof photos and videos", "checked by Gemini, Google's AI, and seen only by the people on that quest."],
+  ["proof photos and videos", "checked by an AI model (Claude by Anthropic, or Google's Gemini), and seen only by the people on that quest."],
   ["your name", "a first name, shown only after you both say yes. we never share your email or contact details."],
   ["mood check-ins", "only ever shown to you, never ranked, and always optional."],
 ];

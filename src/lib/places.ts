@@ -1,9 +1,15 @@
 import "server-only";
+import { starterQuests } from "./starter-quests";
 
-// Real, named, public places near a point, from OpenStreetMap (free, no key).
-// This is what keeps AI-written quests at real spots: the model picks from this
-// list, and the coordinates always come from here, never from the model.
-// © OpenStreetMap contributors, ODbL. Quests link back to each place.
+// Real, named, public places near a point. This is what keeps AI-written quests
+// at real spots: the model picks from this list, and the coordinates always come
+// from here, never from the model.
+//
+// 1. OpenStreetMap, through the Overpass API (free, no key). Overpass is often
+//    overloaded, so a few mirrors are tried with short timeouts, and a failure
+//    is remembered for a few minutes so nobody waits on it twice.
+// 2. Our own curated places from data/quests/, which are always there.
+// © OpenStreetMap contributors, ODbL. Quests link back to each OSM place.
 
 export type Place = {
   name: string;
@@ -12,14 +18,18 @@ export type Place = {
   lng: number;
   metres: number;
   opening_hours: string | null;
-  url: string;
+  url: string | null;
 };
 
-const OVERPASS_URL = process.env.OVERPASS_URL || "https://overpass-api.de/api/interpreter";
+const MIRRORS = process.env.OVERPASS_URL
+  ? [process.env.OVERPASS_URL]
+  : ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
 const RADIUS_M = 900;
+const CURATED_RADIUS_M = 3000;
 const MAX_PLACES = 30;
 const CACHE_MS = 60 * 60_000;
-const TIMEOUT_MS = 8000;
+const FAILURE_MS = 5 * 60_000;
+const TIMEOUT_MS = 5000;
 
 // Public spots two people can walk into and do something together. No bars,
 // no private buildings, nothing that needs a ticket.
@@ -41,6 +51,7 @@ type Element = {
 };
 
 const cache = new Map<string, { at: number; places: Place[] }>();
+let overpassDownSince = 0;
 
 function metres(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
   const rad = Math.PI / 180;
@@ -58,24 +69,62 @@ function kindOf(tags: Record<string, string>) {
   return "place";
 }
 
+// OpenStreetMap places, plus our curated ones, nearest first. Empty only when
+// both have nothing near this point.
 export async function placesNear(lat: number, lng: number): Promise<Place[]> {
+  const fromOsm = await osmPlaces(lat, lng).catch((e) => {
+    console.error("OpenStreetMap places unavailable, using curated places:", (e as Error).message);
+    return [] as Place[];
+  });
+  const names = new Set(fromOsm.map((p) => p.name.toLowerCase()));
+  const merged = [...fromOsm, ...curatedPlaces(lat, lng).filter((p) => !names.has(p.name.toLowerCase()))];
+  return merged.sort((a, b) => a.metres - b.metres).slice(0, MAX_PLACES);
+}
+
+// The places our hand-written quests use, which we know are real and public.
+function curatedPlaces(lat: number, lng: number): Place[] {
+  const seen = new Set<string>();
+  const out: Place[] = [];
+  for (const q of starterQuests()) {
+    if (!q.place_name || q.lat == null || q.lng == null || seen.has(q.place_name)) continue;
+    seen.add(q.place_name);
+    const away = metres({ lat, lng }, { lat: q.lat, lng: q.lng });
+    if (away <= CURATED_RADIUS_M) out.push({ name: q.place_name, kind: "campus spot", lat: q.lat, lng: q.lng, metres: away, opening_hours: null, url: null });
+  }
+  return out;
+}
+
+async function osmPlaces(lat: number, lng: number): Promise<Place[]> {
   // Rounded to about 100 m before it leaves our server: enough to find places,
   // not enough to pinpoint anyone. Also the cache key.
   const at = { lat: Math.round(lat * 1000) / 1000, lng: Math.round(lng * 1000) / 1000 };
   const key = `${at.lat},${at.lng}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < CACHE_MS) return hit.places;
+  if (Date.now() - overpassDownSince < FAILURE_MS) throw new Error("Overpass was down a moment ago");
 
   const around = `(around:${RADIUS_M},${at.lat},${at.lng})`;
-  const query = `[out:json][timeout:8];(${FILTERS.map((f) => `nwr${around}${f}["name"];`).join("")});out center 120;`;
-  const res = await fetch(OVERPASS_URL, {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": "Amble/0.1 (hackathon project)" },
-    body: `data=${encodeURIComponent(query)}`,
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`OpenStreetMap answered ${res.status}`);
-  const { elements = [] } = (await res.json()) as { elements?: Element[] };
+  const query = `[out:json][timeout:5];(${FILTERS.map((f) => `nwr${around}${f}["name"];`).join("")});out center 120;`;
+  let elements: Element[] | null = null;
+  for (const url of MIRRORS) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": "Amble/0.1 (hackathon project)" },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!res.ok) continue;
+      elements = ((await res.json()) as { elements?: Element[] }).elements ?? [];
+      break;
+    } catch {
+      // try the next mirror
+    }
+  }
+  if (!elements) {
+    overpassDownSince = Date.now();
+    throw new Error("every Overpass mirror failed or timed out");
+  }
 
   const seen = new Set<string>();
   const places: Place[] = [];
