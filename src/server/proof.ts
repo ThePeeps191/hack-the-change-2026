@@ -1,8 +1,8 @@
 import "server-only";
 import type { User, Verdict } from "@/lib/contracts";
 import { one, query } from "@/lib/db";
-import { DEMO_MODE, GEMINI_MODE } from "@/lib/env";
-import { judgeProof } from "@/lib/gemini";
+import { DEMO_MODE, AI_MODE } from "@/lib/env";
+import { judgeProof } from "@/lib/ai";
 import { HttpError, notFound } from "@/lib/route";
 import { isAllowedMedia, MAX_UPLOAD_BYTES, saveUpload, uploadPath } from "@/lib/uploads";
 import { advance, applyVerdict, questForRun, runForMember } from "./runs";
@@ -56,7 +56,7 @@ export async function submitProof(user: User, runId: string, form: FormData): Pr
     [
       id, runId, user.id, path ? `/api/media/${id}` : null, path, file?.type ?? null, num(form.get("lat")), num(form.get("lng")),
       typeof takenAt === "string" && !Number.isNaN(Date.parse(takenAt)) ? takenAt : null,
-      GEMINI_MODE === "mock" && form.get("mock_verdict") === "rejected" ? "rejected" : null,
+      AI_MODE === "mock" && form.get("mock_verdict") === "rejected" ? "rejected" : null,
     ],
   );
   return { verdict: { status: "pending", reason: "" }, submissionId: id };

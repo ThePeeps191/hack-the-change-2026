@@ -1,8 +1,12 @@
 import { databaseKind } from "@/lib/db";
-import { AUTH_MODE, DEMO_MODE, GEMINI_MODE } from "@/lib/env";
+import { AI_MODE, AI_PROVIDER, AUTH_MODE, DEMO_MODE } from "@/lib/env";
 import { ok } from "@/lib/http";
+import { secret } from "@/lib/secrets";
 import { safe } from "@/lib/route";
 
 export const GET = safe(async () =>
-  ok({ ok: true, auth_mode: AUTH_MODE, gemini_mode: GEMINI_MODE, demo_mode: DEMO_MODE, database: await databaseKind() }),
+  ok({ ok: true, auth_mode: AUTH_MODE, ai_mode: AI_MODE, ai_provider: AI_PROVIDER,
+    // Where each key came from ("env-file", "shell" or null). Never the key itself.
+    ai_keys: { anthropic: secret("ANTHROPIC_API_KEY").source, gemini: secret("GEMINI_API_KEY").source },
+    demo_mode: DEMO_MODE, database: await databaseKind() }),
 );

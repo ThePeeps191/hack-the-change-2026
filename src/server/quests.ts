@@ -1,8 +1,8 @@
 import "server-only";
 import type { Prefs, Quest, QuestTag, QuestType } from "@/lib/contracts";
 import { one, query, refreshStarterQuests } from "@/lib/db";
-import { GEMINI_MODE } from "@/lib/env";
-import { generateQuests } from "@/lib/gemini";
+import { AI_MODE } from "@/lib/env";
+import { generateQuests } from "@/lib/ai";
 import { notFound } from "@/lib/route";
 import { distanceM } from "./safety";
 
@@ -111,7 +111,7 @@ const warming = new Set<string>();
 // wait to be matched, so a fresh one is ready when both say yes. One call per
 // area at a time, and it's fine if it finishes after they've been paired.
 export async function warmQuests(lat: number, lng: number, prefs: Prefs) {
-  if (GEMINI_MODE === "mock") return;
+  if (AI_MODE === "mock") return;
   const area = `${lat.toFixed(2)},${lng.toFixed(2)}`;
   if (warming.has(area)) return;
   warming.add(area);
@@ -127,7 +127,7 @@ export async function warmQuests(lat: number, lng: number, prefs: Prefs) {
 // reused, so nobody gets someone else's language.
 async function recentlyWritten(lat: number, lng: number, request: { prefs?: Prefs; prefer_tags?: QuestTag[] }) {
   const language = request.prefs?.language;
-  if (GEMINI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
+  if (AI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
   const rows = await query<QuestRow>(
     "select * from quests where not starter and language is null and lat is not null and created_at > now() - make_interval(hours => $1) order by created_at desc limit 100",
     [CACHE_HOURS],
@@ -156,7 +156,7 @@ export function chooseForPair(quests: Quest[], wanted: QuestTag[], prefs: Prefs[
 export async function pickPairQuest(lat: number, lng: number, prefs: Prefs[]): Promise<Quest> {
   const wanted = tagsFor(prefs);
   const language = prefs.find((p) => p.language)?.language;
-  if (GEMINI_MODE === "mock" && wanted.length === 0) return getQuest(DEMO_PAIR_QUEST);
+  if (AI_MODE === "mock" && wanted.length === 0) return getQuest(DEMO_PAIR_QUEST);
   const quests = await questsNear(lat, lng, 5, { prefs: { language }, prefer_tags: wanted }, { timeoutMs: ACCEPT_TIMEOUT_MS, enough: 1 });
   return chooseForPair(quests, wanted, prefs) ?? getQuest(DEMO_PAIR_QUEST);
 }
