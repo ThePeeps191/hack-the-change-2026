@@ -27,7 +27,7 @@ One campus (UCalgary) for six weeks, open to any adult with a campus email. Week
 ### 3. The felt-better rate
 
 - **Why:** this is the most direct sign that a quest helped someone's day. Brief contact with weak ties measurably lifts mood (Sandstrom and Dunn, 2014).
-- **What the app counts today:** an optional one-tap check-in after each quest, relative to before (5 better, 3 the same, 1 worse). The felt-better rate is the share at 4 or 5 (`checkins`, `phase = 'after'`). Each person only sees their own pattern; `/impact` shows only the total.
+- **What the app counts today:** an optional one-tap check-in after each quest, stored 1 to 5 (`checkins`, `phase = 'after'`). The felt-better rate is the share at 4 or 5. `docs/CONTRACTS.md` defines the after tap as relative to before (5 better, 3 the same, 1 worse), but the screen today labels it Rough to Great, so `/impact` says "good or better" rather than "better than before" until the labels match. Each person only sees their own pattern; `/impact` shows only the total.
 - **In the pilot:** the felt-better rate per week, and how it changes with repeat partners against first meetings. We'd add the UCLA 3-item loneliness scale to the week 0 and week 6 surveys. It isn't in the app today.
 - **Honest limit:** the check-in is optional, so people who enjoyed it may answer more. We'd report the response rate next to the felt-better rate.
 

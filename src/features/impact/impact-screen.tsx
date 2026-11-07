@@ -19,11 +19,12 @@ const fmt = (n: number) => n.toLocaleString("en-CA");
 // The shared rolling digits, or a plain number when the person prefers reduced
 // motion (the Odometer blurs its digits for a moment even then).
 // Done in CSS (motion-reduce:), so the server and the phone render the same.
+// className is for type only; Count owns the display, so only one ever shows.
 function Count({ value, delay = 0, className }: { value: number | string; delay?: number; className: string }) {
   return (
     <>
       <span className="motion-reduce:hidden"><Odometer value={value} delay={delay} className={className} /></span>
-      <span className={`hidden tabular-nums motion-reduce:inline-flex ${className}`}>{value}</span>
+      <span className={`hidden tabular-nums motion-reduce:inline-block ${className}`}>{value}</span>
     </>
   );
 }
@@ -50,7 +51,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 }
 
 function DemoLabel() {
-  return <span className="inline-block rounded-full border border-white/60 px-2.5 py-0.5 text-[12px] font-semibold tracking-wide text-on-sky">demo data</span>;
+  return <span className="inline-block shrink-0 rounded-full bg-surface px-2.5 py-1 text-[12px] font-semibold tracking-wide text-ink [text-shadow:none]">demo data</span>;
 }
 
 export function ImpactScreen({ impact }: { impact: Impact | null }) {
@@ -59,12 +60,19 @@ export function ImpactScreen({ impact }: { impact: Impact | null }) {
       <AppShell nav={false}>
         <Hero className="pb-9">
           <HeroBar left={<HeroIcon href="/" label="Open Amble" d="M14.5 5.5L8 12l6.5 6.5" />} center="amble" />
-          <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">time outside, together</Hand>
-          {impact ? <SkyNumbers impact={impact} /> : (
-            <p className="mx-auto mt-4 max-w-[30ch] px-6 text-center text-[16px] leading-snug text-on-sky/95">
-              The numbers didn&apos;t load just now. Give it a moment and try again.
-            </p>
-          )}
+          {/* A deeper patch of sky behind the words, so white text keeps 3:1
+              contrast where the sky fades to pale blue. All of it is large text. */}
+          <div className="relative">
+            <div aria-hidden className="pointer-events-none absolute -inset-x-16 -top-8 -bottom-20 bg-[radial-gradient(closest-side,var(--color-sky-top)_72%,transparent)]" />
+            <div className="relative">
+              <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">time outside, together</Hand>
+              {impact ? <SkyNumbers impact={impact} /> : (
+                <p className="mx-auto mt-4 max-w-[24ch] px-6 text-center text-[19px] leading-snug font-bold">
+                  The numbers didn&apos;t load just now. Give it a moment and try again.
+                </p>
+              )}
+            </div>
+          </div>
         </Hero>
 
         {impact ? <Body impact={impact} /> : (
@@ -78,17 +86,15 @@ export function ImpactScreen({ impact }: { impact: Impact | null }) {
 }
 
 function SkyNumbers({ impact }: { impact: Impact }) {
-  const weeks = Math.round((impact.minutes_outside / WEEKLY_GUIDELINE_MIN) * 10) / 10;
   return (
-    <div className="mt-6 flex flex-col items-center px-6 text-center">
-      {impact.source === "demo" && <DemoLabel />}
-      <Count value={fmt(impact.minutes_outside)} delay={150} className="mt-3 inline-flex font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
-      <p className="mt-2 text-[16px] font-medium text-on-sky/95">minutes outside, added up across everyone</p>
-      <p className="mt-4 max-w-[32ch] text-[15px] leading-snug text-balance text-on-sky/90">
-        {impact.quests_completed === 0
-          ? "No quests finished yet. The first one starts the count."
-          : `${fmt(impact.quests_completed)} ${impact.quests_completed === 1 ? "quest" : "quests"} finished and ${impact.km_walked} km on foot. That's ${weeks} ${weeks === 1 ? "week" : "weeks"} of Canada's 150-minute activity guideline.`}
-      </p>
+    <div className="mt-5 px-6 text-center">
+      <div className="flex flex-col items-center">
+        {impact.source === "demo" && <DemoLabel />}
+        <div className="mt-3">
+          <Count value={fmt(impact.minutes_outside)} delay={150} className="font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
+        </div>
+        <p className="mt-2 max-w-[24ch] text-[19px] leading-snug font-bold text-balance">minutes outside, added up across everyone</p>
+      </div>
     </div>
   );
 }
@@ -96,8 +102,14 @@ function SkyNumbers({ impact }: { impact: Impact }) {
 function Body({ impact }: { impact: Impact }) {
   const met = impact.people_met_someone_new;
   const pairs = impact.familiar_pairs;
+  const weeks = Math.round((impact.minutes_outside / WEEKLY_GUIDELINE_MIN) * 10) / 10;
   return (
-    <div className="flex flex-1 flex-col gap-10 pt-9 pb-10">
+    <div className="flex flex-1 flex-col gap-10 pt-7 pb-10">
+      <p className="px-6 text-[17px] leading-relaxed">
+        {impact.quests_completed === 0
+          ? "No quests finished yet. The first one starts the count."
+          : `${fmt(impact.quests_completed)} ${impact.quests_completed === 1 ? "quest" : "quests"} finished and ${impact.km_walked} km on foot. Added up, that's ${weeks} ${weeks === 1 ? "week" : "weeks"} of the 150 active minutes Canada's guidelines suggest for one adult.`}
+      </p>
       <Section id="met" title="people met">
         <p className="text-[18px] leading-relaxed">
           <Num value={fmt(met)} delay={250} /> {met === 1 ? "person has" : "people have"} met someone new on a quest.
@@ -132,7 +144,7 @@ function Body({ impact }: { impact: Impact }) {
             <Link href="/privacy" className="font-semibold text-ink underline">your data</Link>.
           </li>
         </ul>
-        <a href={METRICS_DOC} className="mt-5 inline-flex min-h-11 items-center text-[15px] font-semibold text-accent underline">
+        <a href={METRICS_DOC} target="_blank" rel="noreferrer" className="mt-5 inline-flex min-h-11 items-center text-[15px] font-semibold text-accent underline">
           What we&apos;d measure in a pilot
         </a>
       </Section>
@@ -161,12 +173,12 @@ function Felt({ impact }: { impact: Impact }) {
         </div>
         {pct == null ? (
           <p className="mt-4 text-[17px] leading-relaxed text-on-sky/95">
-            Nobody has checked in after a quest yet. It&apos;s one optional tap at the end: better, the same or worse than before.
+            Nobody has checked in after a quest yet. It&apos;s one optional tap at the end of a quest.
           </p>
         ) : (
           <>
-            <Count value={`${pct}%`} delay={200} className="mt-5 inline-flex font-[family-name:var(--font-display)] text-[56px] leading-none font-semibold tracking-[-0.04em]" />
-            <p className="mt-2 text-[17px] leading-snug text-on-sky/95">of after-quest check-ins said they felt better than before.</p>
+            <div className="mt-5"><Count value={`${pct}%`} delay={200} className="font-[family-name:var(--font-display)] text-[56px] leading-none font-semibold tracking-[-0.04em]" /></div>
+            <p className="mt-2 text-[17px] leading-snug text-on-sky/95">of after-quest check-ins said they felt good or better.</p>
             <p className="mt-3 text-[14px] leading-snug text-on-sky/80">
               From {fmt(impact.checkins_after)} one-tap {impact.checkins_after === 1 ? "check-in" : "check-ins"}. Each person only ever sees their own; this is the total.
             </p>

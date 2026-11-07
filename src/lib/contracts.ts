@@ -222,6 +222,6 @@ export type Impact = {
   people_met_someone_new: number; // distinct people who finished a pair quest with another person
   familiar_pairs: number; // pairs of people who finished 2+ quests together
   checkins_after: number; // after-quest mood check-ins
-  felt_better_pct: number | null; // share of those at 4 or 5 (better than before), null with none
+  felt_better_pct: number | null; // share of those at 4 or 5 on the 1 to 5 after tap, null with none
   generated_at: string;
 };
