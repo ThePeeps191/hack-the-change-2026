@@ -82,7 +82,7 @@ pre { font: 12px/1.5 var(--mono); background: var(--bg); border: 1px solid var(-
         <select id="filepick" aria-label="Quest file"></select>
         <button type="button" id="newfile">New file</button>
       </div>
-      <span class="hint">One file per place. Every change is written to the file straight away.</span>
+      <span class="hint">All starter quests live in quests.json. Every change is written to the file straight away.</span>
     </section>
 
     <section>
@@ -256,7 +256,7 @@ function fitToQuests() {
 
 $("filepick").addEventListener("change", () => loadFile($("filepick").value));
 $("newfile").addEventListener("click", async () => {
-  let name = (prompt("New quest file, one per place (e.g. science-b):") || "").trim().toLowerCase().replace(/\s+/g, "-");
+  let name = (prompt("New quest file (normally everything goes in quests.json):") || "").trim().toLowerCase().replace(/\s+/g, "-");
   if (!name) return;
   if (!name.endsWith(".json")) name += ".json";
   if (!/^[a-z0-9][a-z0-9_-]*\.json$/.test(name)) return setStatus("Use letters, numbers and dashes, like science-b.json.");

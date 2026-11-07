@@ -157,7 +157,7 @@ src/
   features/          one folder per feature: matching, quests, proof, recap, crews, claim, dashboard
   lib/               contracts.ts, db, auth, gemini
   mocks/             fixtures for mock mode
-data/quests/         hand-tuned starter quests, one file per place
+data/quests/         hand-tuned starter quests, all in quests.json
 db/migrations/       timestamped SQL files
 ```
 
