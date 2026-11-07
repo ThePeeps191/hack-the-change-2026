@@ -22,8 +22,13 @@ export function setSound(on: boolean) {
   } catch {}
 }
 
+// Browsers block audio and vibration until the person has tapped the page.
+function activated() {
+  return typeof navigator === "undefined" || !("userActivation" in navigator) || navigator.userActivation.hasBeenActive;
+}
+
 function audio() {
-  if (!soundOn()) return null;
+  if (!soundOn() || !activated()) return null;
   try {
     ctx ??= new AudioContext();
     if (ctx.state === "suspended") void ctx.resume();
@@ -34,6 +39,7 @@ function audio() {
 }
 
 function buzz(pattern: number | number[]) {
+  if (!activated()) return;
   try {
     navigator.vibrate?.(pattern);
   } catch {}

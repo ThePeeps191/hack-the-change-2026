@@ -16,7 +16,7 @@ type State = "searching" | "found" | "waiting" | "matched" | "ended";
 
 // How far apart the two of you are drawn, per state. At "matched" the shapes
 // overlap and the goo merges them into one.
-const gap: Record<State, number> = { searching: 150, found: 96, waiting: 58, matched: 16, ended: 150 };
+const gap: Record<State, number> = { searching: 150, found: 96, waiting: 58, matched: 48, ended: 150 };
 
 export function MatchScreen() {
   const router = useRouter();
@@ -76,16 +76,29 @@ export function MatchScreen() {
               <span className="absolute size-24 -translate-x-[75px] rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />
             </>
           )}
-          <Liquid fill="#ffffff" blur={9} contrast={22} shadow="0 10px 30px rgba(13,40,90,.18)">
-            <Liquid.Item x={-d / 2} y={0} transition="bouncy">
-              <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">you</div>
+          <Liquid fill="#ffffff" blur={9} contrast={22} shadow="0 10px 30px rgba(13,40,90,.18)" className="h-[140px] w-[340px]">
+            <Liquid.Item x={-d / 2} y={0} transition="bouncy" className="absolute top-[28px] left-[128px]">
+              <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">{state === "matched" ? "" : "you"}</div>
             </Liquid.Item>
-            <Liquid.Item x={d / 2} y={0} scale={state === "searching" || state === "ended" ? 0.001 : 1} transition="bouncy" delay={80}>
+            <Liquid.Item x={d / 2} y={0} scale={state === "searching" || state === "ended" ? 0.001 : 1} transition="bouncy" delay={80} className="absolute top-[28px] left-[128px]">
               <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">
-                {state === "matched" && name ? name : state === "found" || state === "waiting" ? "?" : ""}
+                {state === "found" || state === "waiting" ? "?" : ""}
               </div>
             </Liquid.Item>
           </Liquid>
+          <AnimatePresence>
+            {state === "matched" && (
+              <motion.span
+                className="pointer-events-none absolute text-[16px] font-semibold text-[var(--color-sky-top)]"
+                initial={{ opacity: 0, filter: "blur(6px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.35, duration: 0.4 }}
+              >
+                you + {name ?? "them"}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
         <AnimatePresence mode="wait">
           <motion.div
@@ -137,7 +150,6 @@ export function MatchScreen() {
           )}
           {state === "matched" && match?.run_id && <ButtonLink size="lg" href={`/quest/${match.run_id}`}>See our quest</ButtonLink>}
           {state === "ended" && <ButtonLink size="lg" href="/">Back to today</ButtonLink>}
-          {state === "matched" && <p className="text-center text-[13px] text-ink-faint">You can leave or report from the quest at any time.</p>}
         </div>
       </div>
     </AppShell>
