@@ -11,6 +11,7 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastPill, toastQuiet } from "@/components/ui/toast";
+import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
 
 type State = "searching" | "found" | "waiting" | "matched" | "ended";
 
@@ -69,7 +70,13 @@ export function MatchScreen() {
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
           center={state === "matched" ? "matched" : "finding someone"}
         />
-        <div className="relative mx-auto mt-4 grid h-[220px] place-items-center">
+        <motion.div
+          className="relative mx-auto mt-4 grid h-[220px] w-full place-items-center"
+          animate={state === "matched" ? { y: 0 } : { y: [0, -7, 0] }}
+          transition={state === "matched" ? { duration: 0.4 } : { duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Specks gather={state === "matched"} />
+          {state === "matched" && <Burst />}
           {state === "searching" && (
             <>
               <span className="absolute size-24 -translate-x-[75px] rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_infinite]" />
@@ -99,7 +106,7 @@ export function MatchScreen() {
               </motion.span>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
         <AnimatePresence mode="wait">
           <motion.div
             key={state}
@@ -117,7 +124,12 @@ export function MatchScreen() {
               {state === "ended" && "that one slipped away"}
             </Hand>
             <p className="mx-auto mt-2 max-w-[30ch] text-[15px] leading-snug text-on-sky/85">
-              {state === "searching" && "Anyone free within a short walk. Usually under a minute."}
+              {state === "searching" && (
+                <>
+                  <PlaceTicker />
+                  <span className="mt-1 block text-[13px] text-on-sky/65">Usually under a minute · <Elapsed /></span>
+                </>
+              )}
               {state === "found" && "Say yes and we'll both get the same quest."}
               {state === "waiting" && "Waiting for them to say yes too."}
               {state === "matched" && "Your quest is ready. Head to the spot and say hi."}
@@ -145,11 +157,27 @@ export function MatchScreen() {
 
         <div className="mt-auto space-y-2 pb-[max(24px,env(safe-area-inset-bottom))]">
           {(state === "searching" || state === "waiting") && (
-            <button onClick={cancel} disabled={acting} className="flex min-h-14 w-full items-center justify-center rounded-full text-[16px] font-semibold text-on-sky/90 hover:bg-white/15">
+            <button
+              onClick={cancel}
+              disabled={acting}
+              className="mx-auto flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/14 px-6 text-[16px] font-semibold text-on-sky shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] ring-1 ring-white/20 backdrop-blur-md transition-transform hover:bg-white/20 active:scale-[0.96]"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
               Never mind
             </button>
           )}
-          {state === "matched" && match?.run_id && <ButtonLink size="lg" variant="onSky" href={`/quest/${match.run_id}`}>See our quest</ButtonLink>}
+          {state === "matched" && match?.run_id && (
+            <motion.div initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 22, delay: 0.5 }}>
+              <ButtonLink size="lg" variant="onSky" href={`/quest/${match.run_id}`} className="group">
+                See our quest
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </ButtonLink>
+            </motion.div>
+          )}
           {state === "ended" && <ButtonLink size="lg" variant="onSky" href="/">Back to today</ButtonLink>}
         </div>
       </div>
