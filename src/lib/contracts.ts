@@ -19,6 +19,8 @@ export type Quest = {
   coins: number;
   place_name: string | null;
   sources: Source[];
+  // Added: optional tags, e.g. newcomer, give-back, skill-swap, calm, step-free, side-by-side.
+  tags?: string[];
 };
 
 export type User = {
@@ -135,6 +137,20 @@ export type Dashboard = {
   streak_days: number;
   rating?: number;
   history: HistoryItem[];
+  // Added: human metrics (see docs/JUDGING.md). All optional.
+  active_minutes_week?: number; // walking minutes during quests this week
+  active_goal_minutes?: number; // 150, the Canadian 24-Hour Movement Guidelines target
+  familiar_faces?: FamiliarFace[]; // people you've done 2+ quests with
+  new_places?: { name: string; lat: number; lng: number; first_visit: string }[];
+  mood?: { after_better: number; checkins: number }; // check-ins where you felt better after
+};
+
+export type FamiliarFace = {
+  display_name: string;
+  avatar_url: string | null;
+  quests_together: number;
+  minutes_together: number;
+  last_seen: string;
 };
 
 export type Zone = {

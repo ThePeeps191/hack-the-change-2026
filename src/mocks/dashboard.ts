@@ -21,5 +21,17 @@ export function mockDashboard(): Dashboard {
       partner: partners[i % partners.length] ? { display_name: partners[i % partners.length]!, avatar_url: null } : null,
       distance_m: 400 + i * 180,
     })),
+    active_minutes_week: 86,
+    active_goal_minutes: 150,
+    familiar_faces: [
+      { display_name: "Priya", avatar_url: null, quests_together: 3, minutes_together: 58, last_seen: "2026-11-06T19:30:00Z" },
+      { display_name: "Theo", avatar_url: null, quests_together: 2, minutes_together: 37, last_seen: "2026-11-05T18:10:00Z" },
+    ],
+    new_places: [
+      { name: "Taylor Family Digital Library, 4th floor", lat: 51.0777, lng: -114.1293, first_visit: "2026-11-06T19:10:00Z" },
+      { name: "Rozsa Centre", lat: 51.0749, lng: -114.1297, first_visit: "2026-11-02T17:40:00Z" },
+      { name: "Olympic Oval", lat: 51.0766, lng: -114.1357, first_visit: "2026-11-03T20:05:00Z" },
+    ],
+    mood: { after_better: 8, checkins: 10 },
   };
 }
