@@ -1,76 +1,133 @@
 "use client";
-import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import type { Zone } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
-import { AppShell, TopBar } from "@/components/ui/app-shell";
-import { Card, Chip, Skeleton } from "@/components/ui/card";
-import { MiniMap } from "@/features/map/mini-map";
+import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Skeleton } from "@/components/ui/card";
+import type { GlobeMarker } from "@/components/map/globe-map";
 import { NoGame, ZoneActions } from "./claim-actions";
 
-// GET /api/games/current is your crew's active game.
+const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
+  ssr: false,
+  loading: () => <div className="size-full animate-pulse" style={{ background: "linear-gradient(180deg, var(--color-sky-top), var(--color-sky-bottom))" }} />,
+});
+
+// TODO(backend): there's no "my active game" endpoint yet, so this asks for
+// "current" and the mock returns the demo game.
 const GAME_ID = "current";
+
+const colors = { free: "#9aa09a", ours: "var(--color-accent)", theirs: "var(--color-anywhere)" };
 
 export function ClaimScreen() {
   const [started, setStarted] = useState(0);
   const { data: game, error } = usePoll(() => api.game(GAME_ID), { ms: 5000, key: started });
-  const [pickedId, setPickedId] = useState<string | null>(null);
-  const picked = game?.zones.find((z) => z.id === pickedId) ?? null;
+  const [picked, setPicked] = useState<string | null>(null);
+  const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
   const us = game?.teams[0];
+  const them = game?.teams[1];
 
   const tone = (z: Zone) => (z.held_by_team_id == null ? "free" : z.held_by_team_id === us?.id ? "ours" : "theirs");
-  const colors = { free: "var(--color-ink-faint)", ours: "var(--color-accent)", theirs: "var(--color-anywhere)" };
+  const markers = useMemo<GlobeMarker[]>(
+    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)] })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tone depends only on game
+    [game],
+  );
+  const zone = game?.zones.find((z) => z.id === picked) ?? null;
+  const held = { ours: 0, theirs: 0, free: 0 };
+  for (const z of game?.zones ?? []) held[tone(z)]++;
+
+  function choose(id: string) {
+    const z = game?.zones.find((x) => x.id === id);
+    setPicked(id);
+    if (z) setFocus({ lat: z.lat, lng: z.lng });
+  }
 
   return (
     <AppShell>
-      <TopBar back="/crew" title="claim" right={game && <Chip tone="accent">{game.name}</Chip>} />
-      <div className="space-y-3 px-4">
+      <div className="relative h-[62dvh] min-h-[380px] overflow-hidden rounded-b-[36px] shadow-card">
+        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} />
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-[max(8px,env(safe-area-inset-top))]">
+          <Link href="/crew" aria-label="Back to crew" className="pointer-events-auto grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M14.5 5.5L8 12l6.5 6.5" />
+            </svg>
+          </Link>
+          {game && (
+            <div className="pointer-events-auto flex items-center gap-3 rounded-full bg-surface/85 px-4 py-2 text-[14px] font-semibold text-ink shadow-card backdrop-blur-md">
+              <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-accent" />{held.ours}</span>
+              <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-anywhere" />{held.theirs}</span>
+              <span className="flex items-center gap-1.5 text-ink-muted"><span className="size-2.5 rounded-full bg-[#9aa09a]" />{held.free}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-4 px-4 pt-5">
         {!game && error ? (
           <NoGame onStarted={() => setStarted((n) => n + 1)} />
         ) : !game ? (
-          <Skeleton className="aspect-square w-full rounded-card" />
+          <Skeleton className="h-28 rounded-[24px]" />
         ) : (
           <>
-            <div className="flex gap-3 text-[13px] font-semibold text-ink-muted">
-              <span className="flex items-center gap-1.5"><i className="size-3 rounded-full bg-accent" />{us?.name}</span>
-              {game.teams[1] && <span className="flex items-center gap-1.5"><i className="size-3 rounded-full bg-anywhere" />{game.teams[1].name}</span>}
+            <div className="px-1">
+              <Hand as="h1" className="text-[34px] leading-none font-bold">{game.name.toLowerCase()}</Hand>
+              <p className="mt-1.5 text-[15px] text-ink-muted">
+                <span className="font-semibold text-accent">{us?.name}</span>
+                {them && <> vs <span className="font-semibold text-anywhere">{them.name}</span></>}. Beat a zone&apos;s best to take it.
+              </p>
             </div>
-            <MiniMap
-              pins={game.zones.map((z) => ({
-                id: z.id,
-                lat: z.lat,
-                lng: z.lng,
-                label: z.name,
-                node: (
-                  <button
-                    onClick={() => setPickedId(z.id)}
-                    aria-label={`${z.name}, ${tone(z)}`}
-                    className="size-11 rounded-full border-4 border-surface shadow-card transition-transform active:scale-95"
-                    style={{ background: colors[tone(z)], outline: picked?.id === z.id ? "3px solid var(--color-ink)" : undefined }}
-                  />
-                ),
-              }))}
-            />
-            <Card className="p-4">
-              {picked ? (
-                <>
-                  <div className="flex items-center justify-between">
-                    <p className="text-lg font-bold">{picked.name}</p>
-                    <Chip tone={tone(picked) === "ours" ? "success" : tone(picked) === "theirs" ? "warning" : "neutral"}>
-                      {tone(picked) === "ours" ? "yours" : tone(picked) === "theirs" ? "theirs" : "unclaimed"}
-                    </Chip>
+
+            <AnimatePresence mode="wait">
+              {zone ? (
+                <motion.div
+                  key={zone.id}
+                  className="rounded-[24px] bg-surface p-5 shadow-card"
+                  initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <div className="flex items-center gap-2 text-[13px] text-ink-muted">
+                    <span className="size-2 rounded-full" style={{ background: colors[tone(zone)] }} />
+                    {tone(zone) === "ours" ? `Held by ${us?.name}` : tone(zone) === "theirs" ? `Held by ${them?.name}` : "Nobody holds this yet"}
                   </div>
-                  <p className="mt-1 text-sm text-ink-muted">
-                    {picked.best_result != null
-                      ? `best so far: ${picked.best_result} ${picked.result_unit ?? ""}. beat it to take the zone.`
-                      : "nobody has claimed this yet. finish its challenge to take it."}
-                  </p>
-                  <ZoneActions game={game} zone={picked} />
-                </>
+                  <p className="mt-2 text-[22px] leading-tight font-semibold tracking-[-0.01em]">{zone.name}</p>
+                  {zone.quest && <p className="mt-1.5 text-[15px] leading-snug text-ink-muted">{zone.quest.description}</p>}
+                  <div className="mt-4 flex items-baseline gap-2 border-t border-[var(--hairline)] pt-3">
+                    {zone.best_result != null ? (
+                      <>
+                        <span className="font-[family-name:var(--font-display)] text-[30px] leading-none font-semibold tabular-nums">{zone.best_result}</span>
+                        <span className="text-[14px] text-ink-muted">{zone.result_unit ?? ""} to beat</span>
+                      </>
+                    ) : (
+                      <span className="text-[15px] text-ink-muted">Finish the challenge to take it.</span>
+                    )}
+                  </div>
+                  <ZoneActions game={game} zone={zone} />
+                </motion.div>
               ) : (
-                <p className="text-sm text-ink-muted">tap a zone to see its challenge and who holds it.</p>
+                <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  {game.zones.map((z) => (
+                    <li key={z.id}>
+                      <button onClick={() => choose(z.id)} className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left hover:bg-sunken/60">
+                        <span className="size-2.5 shrink-0 rounded-full" style={{ background: colors[tone(z)] }} />
+                        <span className="flex-1 text-[16px] font-medium">{z.name}</span>
+                        <span className="text-[14px] text-ink-muted tabular-nums">{z.best_result != null ? `${z.best_result} ${z.result_unit ?? ""}` : "open"}</span>
+                      </button>
+                    </li>
+                  ))}
+                </motion.ul>
               )}
-            </Card>
+            </AnimatePresence>
+            {zone && (
+              <button onClick={() => setPicked(null)} className="mx-auto flex min-h-11 items-center px-4 text-[14px] font-medium text-ink-faint hover:text-ink-muted">
+                All zones
+              </button>
+            )}
           </>
         )}
       </div>

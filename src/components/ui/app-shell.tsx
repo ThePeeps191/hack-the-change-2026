@@ -1,41 +1,71 @@
 "use client";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { tick } from "@/lib/feedback";
+import { useGoFree } from "@/features/matching/use-go-free";
 
-const tabs = [
-  { href: "/", label: "today", icon: "M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z" },
-  { href: "/map", label: "map", icon: "M9 4l6 2 5-2v14l-5 2-6-2-5 2V6zM9 4v14M15 6v14" },
-  { href: "/crew", label: "crew", icon: "M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 19c0-3 2.5-5 5-5s5 2 5 5M13 15c1-.7 2-1 3-1 2.5 0 5 2 5 5" },
-  { href: "/me", label: "you", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20c0-4 3.5-6 8-6s8 2 8 6" },
-];
+const side = [
+  { href: "/", label: "Today", icon: "M12 3.5l8 6.2V20a.5.5 0 0 1-.5.5h-5v-6h-5v6h-5A.5.5 0 0 1 4 20V9.7z" },
+  { href: "/map", label: "Map", icon: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.5 12h17M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z" },
+  null, // centre: the main action
+  { href: "/crew", label: "Crew", icon: "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.8c1.9.7 3.2 2.5 3.5 5.2" },
+  { href: "/me", label: "You", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.8 3.7-6 7.5-6s6.7 2.2 7.5 6" },
+] as const;
 
-// Phone-first column. On wider screens it stays a centred column so nothing
-// stretches, and the tab bar sits at the bottom of that column.
+// Phone-first column, centred on wide screens. The bottom is a quiet row of
+// five icons: four places, and the main action in the middle.
 export function AppShell({ children, nav = true }: { children: ReactNode; nav?: boolean }) {
   const path = usePathname();
+  const { go, busy } = useGoFree();
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas md:border-x md:border-line">
-      <div className="flex flex-1 flex-col">{children}</div>
+    <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas">
+      <div className={`flex flex-1 flex-col ${nav ? "pb-24" : ""}`}>{children}</div>
       {nav && (
         <nav
           aria-label="main"
-          className="sticky bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)]"
+          className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-canvas from-55% to-transparent pt-6 pb-[max(10px,env(safe-area-inset-bottom))]"
         >
-          <ul className="grid grid-cols-4">
-            {tabs.map((t) => {
-              const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+          <ul className="flex items-center justify-around px-4">
+            {side.map((t, i) => {
+              if (!t) {
+                return (
+                  <li key="go">
+                    <button
+                      onClick={go}
+                      disabled={busy}
+                      aria-label="I'm free: find someone nearby"
+                      className="grid size-14 place-items-center rounded-full bg-accent text-on-accent shadow-press transition-transform active:scale-95 disabled:opacity-60"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <circle cx="8.5" cy="12" r="3.2" />
+                        <circle cx="15.5" cy="12" r="3.2" />
+                      </svg>
+                    </button>
+                  </li>
+                );
+              }
+              const active = t.href === "/" ? path === "/" : path.startsWith(t.href) || (t.href === "/crew" && path.startsWith("/claim"));
               return (
-                <li key={t.href}>
+                <li key={i}>
                   <Link
                     href={t.href}
+                    aria-label={t.label}
                     aria-current={active ? "page" : undefined}
-                    className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[12px] font-semibold ${active ? "text-accent" : "text-ink-faint hover:text-ink-muted"}`}
+                    onClick={() => !active && tick(0.6)}
+                    className={`relative grid size-12 place-items-center rounded-full transition-colors ${active ? "text-ink" : "text-ink-faint hover:text-ink-muted"}`}
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={t.icon} />
                     </svg>
-                    {t.label}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-dot"
+                        className="absolute bottom-0.5 size-1 rounded-full bg-ink"
+                        transition={{ type: "spring", stiffness: 500, damping: 34 }}
+                      />
+                    )}
                   </Link>
                 </li>
               );
@@ -49,21 +79,33 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
 
 export function TopBar({ title, back, right }: { title?: ReactNode; back?: string; right?: ReactNode }) {
   return (
-    <header className="flex min-h-14 items-center gap-2 px-4 pt-[env(safe-area-inset-top)]">
-      {back && (
-        <Link href={back} aria-label="back" className="-ml-2 grid size-11 place-items-center rounded-full text-ink-muted hover:bg-sunken hover:text-ink">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M15 5l-7 7 7 7" />
+    <header className="flex min-h-14 items-center gap-2 px-3 pt-[env(safe-area-inset-top)]">
+      {back ? (
+        <Link href={back} aria-label="Back" className="grid size-11 place-items-center rounded-full text-ink hover:bg-sunken">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M14.5 5.5L8 12l6.5 6.5" />
           </svg>
         </Link>
+      ) : (
+        <span className="w-11" />
       )}
-      <div className="flex-1 text-[17px] font-bold">{title}</div>
-      {right}
+      <div className="flex-1 text-center text-[15px] font-semibold">{title}</div>
+      <div className="flex min-w-11 justify-end">{right}</div>
     </header>
   );
 }
 
 export function Notice({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "warning" | "danger" }) {
-  const tones = { neutral: "bg-sunken text-ink-muted", warning: "bg-warning-soft text-warning", danger: "bg-danger-soft text-danger" };
-  return <p className={`rounded-control px-4 py-3 text-sm ${tones[tone]}`} role="status">{children}</p>;
+  const dots = { neutral: "bg-ink-faint", warning: "bg-warning", danger: "bg-danger" };
+  return (
+    <p className="flex items-start gap-2.5 px-5 py-2 text-[14px] leading-snug text-ink-muted" role="status">
+      <span className={`mt-1.5 size-1.5 shrink-0 rounded-full ${dots[tone]}`} />
+      {children}
+    </p>
+  );
+}
+
+// A small handwritten label, for section names and short status lines.
+export function Hand({ children, className = "", as: As = "p" }: { children: ReactNode; className?: string; as?: "p" | "h1" | "h2" | "span" }) {
+  return <As className={`font-[family-name:var(--font-hand)] ${className}`}>{children}</As>;
 }

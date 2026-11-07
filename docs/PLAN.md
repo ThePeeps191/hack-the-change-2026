@@ -157,7 +157,7 @@ src/
   features/          one folder per feature: matching, quests, proof, recap, crews, claim, dashboard
   lib/               contracts.ts, db, auth, gemini
   server/            the rules: matching, runs, proof, crews, games, dashboard
-data/quests/         hand-tuned starter quests, one file per place
+data/quests/         hand-tuned starter quests, all in quests.json
 db/migrations/       timestamped SQL files
 deploy/              server setup, see deploy/README.md
 scripts/             db-migrate, smoke (tests the whole product over HTTP)

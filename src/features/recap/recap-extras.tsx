@@ -1,5 +1,4 @@
 import type { Recap } from "@/lib/contracts";
-import { Card } from "@/components/ui/card";
 
 // The verified photos, and a quiet note when the same two people meet again.
 export function RecapExtras({ recap }: { recap: Recap }) {
@@ -11,15 +10,15 @@ export function RecapExtras({ recap }: { recap: Recap }) {
         <div className={`grid gap-2 ${recap.photos.length > 1 ? "grid-cols-2" : ""}`}>
           {recap.photos.map((src) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={src} src={src} alt="verified proof from this quest" className="aspect-square w-full rounded-card bg-sunken object-cover" />
+            <img key={src} src={src} alt="Verified proof from this quest" className="aspect-square w-full rounded-[24px] bg-sunken object-cover shadow-card" />
           ))}
         </div>
       )}
       {again && (
-        <Card className="p-4">
-          <p className="font-semibold">that&apos;s {recap.times_together} quests with {recap.partner!.display_name}</p>
-          <p className="mt-1 text-sm text-ink-muted">friendships start with time spent together. you&apos;re on your way.</p>
-        </Card>
+        <section className="rounded-[24px] bg-surface p-5 shadow-card">
+          <p className="text-[17px] font-semibold">That&apos;s {recap.times_together} quests with {recap.partner!.display_name}</p>
+          <p className="mt-1 text-[14px] leading-snug text-ink-muted">Friendships start with time spent together. You&apos;re on your way.</p>
+        </section>
       )}
     </>
   );

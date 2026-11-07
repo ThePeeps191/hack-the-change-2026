@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 
-const MOODS = ["rough", "low", "okay", "good", "great"];
+const MOODS = ["Rough", "Low", "Okay", "Good", "Great"];
 
 function answered(key: string) {
   try {
@@ -29,15 +29,15 @@ export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "
 
   if (done) return null;
   return (
-    <Card className="p-4">
-      <p className="font-semibold">{phase === "before" ? "how are you, honestly?" : "and now?"}</p>
-      <p className="mt-0.5 text-[13px] text-ink-muted">just for you. skip it if you like.</p>
+    <Card className="rounded-[24px] p-5">
+      <p className="text-[17px] font-semibold">{phase === "before" ? "How are you, honestly?" : "And now?"}</p>
+      <p className="mt-0.5 text-[13px] text-ink-muted">Just for you. Skip it if you like.</p>
       <div className="mt-3 grid grid-cols-5 gap-1.5" role="group" aria-label="how you feel">
         {MOODS.map((label, i) => (
           <button
             key={label}
             onClick={() => answer(i + 1)}
-            className="min-h-11 rounded-control border border-line bg-surface px-1 text-[13px] font-semibold text-ink-muted hover:border-accent hover:text-ink"
+            className="min-h-11 rounded-control bg-sunken px-1 text-[13px] font-semibold text-ink-muted hover:bg-accent-soft hover:text-ink"
           >
             {label}
           </button>

@@ -292,8 +292,8 @@ async function main() {
   check(dash.new_places?.length === 1 && !!dash.new_places[0].first_visit, "new places have a first visit", dash.new_places);
   const seeded = (await sam.get<Dashboard>("/api/dashboard")).data;
   check(!!seeded.familiar_faces?.some((f) => f.display_name === "Priya" && f.quests_together >= 2 && f.minutes_together > 0), "repeat partners are familiar faces", seeded.familiar_faces);
-  const prefs = await alice.patch<User>("/api/me", { prefs: { pace: "step-free", social: "side-by-side", language: "fr", junk: 1 } });
-  check(prefs.data.prefs.pace === "step-free" && !("junk" in prefs.data.prefs), "comfort settings saved and cleaned", prefs.data.prefs);
+  const prefs = await alice.patch<User>("/api/me", { prefs: { pace: "short", step_free: true, social: "side-by-side", language: "fr", junk: 1 } });
+  check(prefs.data.prefs.pace === "short" && prefs.data.prefs.step_free === true && !("junk" in prefs.data.prefs), "comfort settings saved and cleaned", prefs.data.prefs);
   const exported = (await alice.get<{ location_pings: unknown[]; runs: unknown[] }>("/api/me/export")).data;
   check(exported.location_pings.length === 2 && exported.runs.length === 1, "export includes your data");
   const gone = await alice.del("/api/me");

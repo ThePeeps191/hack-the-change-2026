@@ -29,8 +29,8 @@ export function ShareLink({ url, title }: { url: string; title: string }) {
       </div>
       <p className="max-w-full truncate text-sm text-ink-muted">{url}</p>
       <div className="grid w-full grid-cols-2 gap-2">
-        <Button onClick={share}>share</Button>
-        <Button variant="secondary" onClick={copy}>{copied ? "copied" : "copy link"}</Button>
+        <Button onClick={share}>Share</Button>
+        <Button variant="secondary" onClick={copy}>{copied ? "Copied" : "Copy link"}</Button>
       </div>
     </div>
   );

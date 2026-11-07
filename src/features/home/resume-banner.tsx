@@ -14,9 +14,9 @@ export function ResumeBanner() {
 
   if (!run) return null;
   return (
-    <div className="px-4 pt-3">
-      <Link href={`/quest/${run.id}`} className="flex min-h-12 items-center justify-between gap-3 rounded-control bg-accent-soft px-4 py-3 font-semibold text-accent-strong">
-        <span className="truncate">back to: {run.quest.title}</span>
+    <div className="px-4 pt-4">
+      <Link href={`/quest/${run.id}`} className="flex min-h-14 items-center justify-between gap-3 rounded-[20px] bg-toast px-5 py-3 text-[15px] font-semibold text-on-toast shadow-lift">
+        <span className="truncate">Back to your quest: {run.quest.title}</span>
         <span aria-hidden>→</span>
       </Link>
     </div>

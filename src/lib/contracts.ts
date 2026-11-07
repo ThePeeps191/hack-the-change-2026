@@ -10,7 +10,8 @@ export type QuestTag = "newcomer" | "give-back" | "skill-swap" | "calm" | "step-
 
 // Comfort settings. Matching and quest choice respect them.
 export type Prefs = {
-  pace?: "any" | "short" | "step-free";
+  pace?: "any" | "short" | "brisk";
+  step_free?: boolean;
   social?: "chatty" | "side-by-side";
   language?: string; // BCP 47, e.g. "en", "fr", "zh"
 };

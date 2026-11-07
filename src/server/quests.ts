@@ -132,7 +132,7 @@ async function recentlyWritten(lat: number, lng: number, request: { prefs?: Pref
 // What the pair's comfort settings ask of a quest.
 export function tagsFor(prefs: Prefs[]): QuestTag[] {
   const tags: QuestTag[] = [];
-  if (prefs.some((p) => p.pace === "step-free")) tags.push("step-free");
+  if (prefs.some((p) => p.step_free)) tags.push("step-free");
   if (prefs.some((p) => p.social === "side-by-side")) tags.push("side-by-side");
   return tags;
 }

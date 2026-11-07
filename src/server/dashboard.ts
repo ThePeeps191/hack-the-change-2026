@@ -71,12 +71,11 @@ export async function getDashboard(user: User): Promise<Dashboard> {
   const weekAgo = Date.now() - 7 * 86_400_000;
   const activeWeek = done.filter((r) => r.completed_at.getTime() > weekAgo).reduce((sum, r) => sum + minutes(r), 0);
 
-  // Quests with a check-in on both sides, and how many of those ended better.
+  // "How do you feel?" after a quest is relative to before: 5 better, 3 the
+  // same, 1 worse. This counts how often you came back better.
   const mood = await one<{ after_better: number; checkins: number }>(
-    `select count(*)::int as checkins, (count(*) filter (where a.mood > b.mood))::int as after_better
-     from checkins b
-     join checkins a on a.run_id = b.run_id and a.user_id = b.user_id and a.phase = 'after'
-     where b.user_id = $1 and b.phase = 'before'`,
+    `select count(*)::int as checkins, (count(*) filter (where mood >= 4))::int as after_better
+     from checkins where user_id = $1 and phase = 'after'`,
     [user.id],
   );
 

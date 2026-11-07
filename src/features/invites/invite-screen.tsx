@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { QUEST_MINUTES } from "@/lib/config";
 import { getPosition } from "@/lib/geo";
-import { AppShell, Notice, TopBar } from "@/components/ui/app-shell";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Mascot } from "@/components/ui/mascot";
+import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
+import { ButtonLink, MagneticButton } from "@/components/ui/button";
+import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 
 export function InviteScreen() {
   const { code } = useParams<{ code: string }>();
@@ -28,26 +27,27 @@ export function InviteScreen() {
       const match = await api.acceptInvite(code, { lat: pos.lat, lng: pos.lng });
       router.push(match.run_id ? `/quest/${match.run_id}` : "/match");
     } catch (e) {
-      setError(e instanceof ApiError && e.status !== 0 ? e.message : "couldn't reach amble. check your signal and try again?");
+      setError(e instanceof ApiError && e.status !== 0 ? e.message : "Couldn't reach Amble. Check your signal and try again.");
       setBusy(false);
     }
   }
 
   return (
     <AppShell nav={false}>
-      <TopBar back="/" title="an invite" />
-      <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <Mascot mood="matched" size={96} />
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight">free for {QUEST_MINUTES} min?</h1>
-        <p className="mt-2 max-w-[32ch] text-ink-muted">someone you met wants to do a small quest with you.</p>
-        <Card className="mt-5 w-full p-4 text-left text-sm text-ink-muted">
-          you&apos;ll meet at the quest spot, somewhere public. you only share a first name, and you can leave any time.
-        </Card>
+      <Hero className="pb-10">
+        <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="an invite" />
+        <Hand as="h1" className="mt-6 text-center text-[40px] leading-none font-bold">free for {QUEST_MINUTES} min?</Hand>
+        <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/85">Someone you just met wants to do a small quest with you.</p>
+      </Hero>
+      <div className="flex flex-1 flex-col px-4 pt-6">
+        <p className="rounded-[24px] bg-surface p-5 text-[15px] leading-snug text-ink-muted shadow-card">
+          You&apos;ll meet at the quest spot, somewhere public. You only share a first name, and you can leave any time.
+        </p>
       </div>
-      <div className="space-y-2 px-4 pb-6">
+      <div className="space-y-2 px-4 pt-6 pb-6">
         {error && <Notice tone="warning">{error}</Notice>}
-        <Button size="lg" onClick={accept} disabled={busy}>{busy ? "starting…" : "yes, let's go"}</Button>
-        <ButtonLink size="lg" variant="quiet" href="/">not this time</ButtonLink>
+        <MagneticButton onClick={accept} disabled={busy}>{busy ? "Starting…" : "Yes, let's go"}</MagneticButton>
+        <ButtonLink size="lg" variant="quiet" href="/">Not this time</ButtonLink>
       </div>
     </AppShell>
   );

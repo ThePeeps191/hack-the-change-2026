@@ -3,7 +3,6 @@ import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { Notice } from "@/components/ui/app-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { ShareLink } from "./share-link";
 
 // For someone you've just met in person: no nearby search, just a link.
@@ -18,7 +17,7 @@ export function InviteCard() {
     try {
       setLink((await api.createInvite()).url);
     } catch (e) {
-      setError(e instanceof ApiError && e.status === 403 ? e.message : "couldn't make a link just now. try again?");
+      setError(e instanceof ApiError && e.status === 403 ? e.message : "Couldn't make a link just now. Try again?");
     } finally {
       setBusy(false);
     }
@@ -26,25 +25,25 @@ export function InviteCard() {
 
   if (!link) {
     return (
-      <div className="px-4 pt-3">
+      <div className="px-4 pt-2 pb-4">
         {error && <div className="mb-2"><Notice tone="warning">{error}</Notice></div>}
         <Button variant="quiet" className="w-full" onClick={create} disabled={busy}>
-          {busy ? "making a link…" : "invite someone you've met"}
+          {busy ? "Making a link…" : "Just met someone? Send them a quest"}
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="px-4 pt-3">
-      <Card className="space-y-3 p-4">
+    <div className="px-4 pt-2 pb-4">
+      <section className="space-y-4 rounded-[24px] bg-surface p-5 shadow-card">
         <div>
-          <p className="font-semibold">send this to them</p>
-          <p className="mt-1 text-sm text-ink-muted">when they say yes, you&apos;ll both get the same quest. the link lasts 30 minutes.</p>
+          <p className="text-[17px] font-semibold">Send this to them</p>
+          <p className="mt-1 text-[14px] leading-snug text-ink-muted">When they say yes, you&apos;ll both get the same quest. The link lasts 30 minutes.</p>
         </div>
-        <ShareLink url={link} title="do a 20-minute quest with me" />
-        <ButtonLink className="w-full" variant="secondary" href="/match">wait for them</ButtonLink>
-      </Card>
+        <ShareLink url={link} title="Do a 20-minute quest with me" />
+        <ButtonLink className="w-full" variant="secondary" href="/match">Wait for them</ButtonLink>
+      </section>
     </div>
   );
 }

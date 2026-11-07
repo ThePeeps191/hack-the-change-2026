@@ -67,7 +67,8 @@ export async function updateProfile(user: User, patch: { display_name?: string; 
 
 function cleanPrefs(p: Prefs): Prefs {
   const out: Prefs = {};
-  if (p.pace === "any" || p.pace === "short" || p.pace === "step-free") out.pace = p.pace;
+  if (p.pace === "any" || p.pace === "short" || p.pace === "brisk") out.pace = p.pace;
+  if (typeof p.step_free === "boolean") out.step_free = p.step_free;
   if (p.social === "chatty" || p.social === "side-by-side") out.social = p.social;
   if (typeof p.language === "string" && /^[a-zA-Z-]{2,12}$/.test(p.language)) out.language = p.language;
   return out;
