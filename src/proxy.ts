@@ -6,7 +6,7 @@ import { auth0 } from "@/lib/auth0";
 //
 // /api is excluded on purpose: routes check the session themselves, and running
 // proxy on them would buffer uploads and cap them at 10 MB.
-const PUBLIC_PAGES = ["/login", "/privacy"];
+const PUBLIC_PAGES = ["/login", "/privacy", "/impact"];
 
 export async function proxy(req: NextRequest) {
   if (process.env.AUTH_MODE !== "live") return NextResponse.next();

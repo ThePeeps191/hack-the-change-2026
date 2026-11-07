@@ -194,6 +194,15 @@ export async function seedDemoData(query: Query) {
     );
   }
 
+  // After-quest check-ins for the made-up people (never the bot), so "how people
+  // felt" on /impact has something to show. That page labels it demo data.
+  const AFTER: [number, string, number][] = [
+    [1, "mock|sam", 5], [2, "mock|sam", 4], [2, "seed|theo", 4], [3, "mock|sam", 5], [4, "mock|sam", 3], [4, "seed|mina", 5], [5, "mock|sam", 4],
+  ];
+  for (const [n, sub, mood] of AFTER) {
+    await query("insert into checkins (run_id, user_id, phase, mood) values ($1, $2, 'after', $3) on conflict do nothing", [runId(n), person(sub), mood]);
+  }
+
   await query("insert into games (id, name, created_by) values ($1, 'saturday on campus', $2) on conflict do nothing", [SEED_GAME, sam]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'the long way round') on conflict do nothing", [TEAM_US, SEED_GAME, crewId(1)]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'north campus walkers') on conflict do nothing", [TEAM_THEM, SEED_GAME, crewId(2)]);
