@@ -1,4 +1,4 @@
-# Real-world quest app: the idea
+# Real-world quest website: the idea
 
 Snapshot of the "Idea overview" tab, taken 2026-11-07. The [Google Doc](https://docs.google.com/document/d/1luz-W3rodfUkmfI5yC7BfK8iMFM8vNJVtRyhC5iib8E/edit?usp=sharing) is the source of truth, so if the two disagree, the doc wins. Agents without access to it should use this copy.
 
@@ -6,69 +6,77 @@ Hack the Change 2026, Prompt 1 (health, social connection and well-being). Worki
 
 ## Summary
 
-A web app that turns wherever you are into a Jet Lag-style game you play with friends. Gemini is the game master: it writes quests for your area, checks the proof, and turns each match into a short recap you can share.
+A web app with two ways to get people outside together: short 20-minute quests you do with someone new nearby, and longer games you play with your friends. Gemini writes the quests for your area, checks the proof, and makes a short recap of each one.
 
-## How it works
+## System 1: 20-minute quests with someone new
 
-### Quest types
+You open the app when you have about 20 minutes free. Send requests to strangers through airdrop for activity links.
 
-1. **Local quests:** Gemini writes them for your area using live Google Maps data, such as what's open, what's nearby and today's weather. Calgary and UCalgary get a hand-tuned starter set for local impact, for example finding a specific book in the Central Library.
-2. **Anywhere quests:** fitness quests that work in any city, such as running 3 km or holding a 2-minute plank, so friends in different cities can compete on the same quest.
-3. **Event quests:** Gemini uses Google Search to find what's on today, such as club fairs, games or free talks.
+- **Matching:** pairs two people who are close by and free right now; both have to accept before anything is shared.
+- **The quest gives you a reason to talk:** a shared task instead of small talk, such as finding the oldest book on one floor of the library, or trying a snack neither of you has had at the campus market.
+- **It ends cleanly:** after about 20 minutes you both submit proof, Gemini confirms it, and the quest is done. You can choose to stay in touch or add each other as friends; otherwise no contact details are shared.
+- **Safety:** public places and daylight only, a verified account for the first version (for example a student email), and a way to report someone.
 
-### What Gemini does
+## System 2: playing with friends
 
-- **Game master:** writes quests, scales difficulty to the group, and keeps them safe (walking, public places, daylight).
-- **Referee:** checks photo and video proof against the quest, the location and the time window, so no human judge is needed.
-- **Producer:** after a match, writes a recap with a map replay of each team's route, the verified clips and narration.
+Friend groups (crews) play longer games together, live or on their own time.
 
-### Friends, ratings and personas
-
-- **Crews:** friend groups play together or against each other, live or on their own time.
-- **Ratings:** chess-style ratings per category (fitness, exploring, social). Quests have ratings too, so everyone competes at their own level.
-- **Coins and leaderboard:** completing a quest earns coins toward a crew leaderboard.
-- **Personas:** each player earns a persona from the quests they do, such as the Explorer, the Speedrunner or the Foodie, which gives friends something to talk about.
-- **Dashboard:** each user's stats, quest history and a map of completed quests with event icons.
+- **Shared quests:** friends send each other quests and do them together or race each other.
+- **Anywhere quests:** fitness quests that work in any city, such as running 3 km or holding a 2-minute plank, so friends in different cities can still compete.
+- **Coins and leaderboard:** completed quests earn coins toward a crew leaderboard.
+- **Dashboard:** each user's quest history and a map of completed quests with event icons.
 
 ### Game modes
 
 - **Claim (main mode):** teams claim zones by completing that zone's challenge, and a rival team can steal a zone by beating the result. Inspired by Jet Lag's Battle 4 America.
 - **Hide and seek (stretch goal):** one team hides in an area while the others narrow it down with questions the app answers from GPS.
 
+The two systems feed each other: someone you meet on a 20-minute quest can join your crew.
+
+## What Gemini does in both
+
+- **Writes quests:** local quests from live Google Maps data (what's open, what's nearby, the weather) and event quests from Google Search (club fairs, games, free talks). Calgary and UCalgary get a hand-tuned starter set for local impact.
+- **Checks proof:** compares photos and short videos against the quest, the location and the time window, so no human judge is needed.
+- **Makes recaps:** a short summary of each quest or match with the route, the verified photos and narration.
+
 ## Why this idea
 
 - **Loneliness:** 23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada, 2021](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)).
 - **Inactivity:** only 46% of Canadian adults get the recommended 150 minutes of activity a week ([Statistics Canada, 2026](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021c-eng.htm)).
-- **Prompt fit:** health (walking, running, time outdoors), social connection (played with friends, including friends in other cities), well-being (play and novelty), and communities (sends people to local shops, parks, libraries and campus events).
-- **Why now:** Gemini's Grounding with Google Maps, launched in October 2025, covers more than 250 million places, which makes an AI game master practical for any neighbourhood ([Google](https://blog.google/technology/developers/grounding-google-maps-gemini-api/)).
+- **Prompt fit:** health (every quest gets people walking or moving outdoors), social connection (meeting someone new and playing with friends), well-being (play, novelty and time outside), and communities (quests send people to local shops, parks, libraries and campus events).
+- **Why now:** Gemini's Grounding with Google Maps, launched in October 2025, covers more than 250 million places, which makes it practical to write good local quests for any area ([Google](https://blog.google/technology/developers/grounding-google-maps-gemini-api/)).
+- Lack of stranger-stranger connection and contact.
 
 ## What makes it different
 
-City-game apps already exist, such as Zone Tag, We Clue and Hide and Chase, but they need someone to design the map or approve the photos. Ours needs neither.
-
-- **No setup:** Gemini builds a game for any area in seconds.
-- **AI referee:** proof is checked automatically.
-- **Recap:** every match ends with a shareable episode.
-- **Fair ratings and personas:** everyone competes at their own level and gets an identity from how they play.
+- **A short, structured way to meet people:** meetup apps such as Zugo and Friending match nearby people for open-ended hangouts. Ours gives two people one 20-minute task, so there's nothing to plan and a natural end.
+- **No setup for friend games:** city-game apps such as Zone Tag and We Clue need someone to design the map or approve photos. Gemini builds and judges ours for any area.
+- **A recap for every quest:** something to share afterwards.
 
 ## Tech stack (draft)
 
 - Mobile-first website that can be added to the home screen, shared by link or QR code.
-- Gemini API for quest generation (Maps and Search grounding), photo and video checks, and the recap script and voice.
-- Tiger Data for GPS trails, quest history and leaderboards.
-- Auth0 for login and user metrics, Vultr for hosting, and a GoDaddy Registry domain.
+- Matching service that pairs nearby people who are free now.
+- Gemini API for quest generation (Maps and Search grounding), photo and video checks, and recaps.
+- Tiger Data for location history, quest history and leaderboards.
+- Auth0 for login and account verification, Vultr for hosting, and a GoDaddy Registry domain.
 
 ## Open questions
 
 - Name and mascot.
+- Safety rules for meeting someone new: age limit, verification and reporting.
 - Keep hide and seek, or drop it.
+- Whether to add ratings and personas later.
 - Whether a TensorFlow vision model adds anything beyond Gemini's checks.
 - Motion context, such as telling transit apart from walking: now or later.
 
 ## Earlier brainstorm
 
-From Tab 1 of the doc. These notes are not commitments but may help during planning:
+From Tab 1 of the doc. These notes aren't commitments, but they may help:
 
+- Activities last 20 minutes at most.
+- Challenges tied to Calgary landmarks, like Jet Lag the Game, such as finding a specific book in the Central Library.
+- Public AirDrop links for reaching strangers.
+- Design wishes: a mascot, custom icons for each event type, and a unified design system.
 - The demo should use ideas curated to the UCalgary campus if it's a video, and be interactive with judges if in person, since we have a domain.
-- Design wishes: a mascot, custom icons per event type, and a unified design system.
-- Public AirDrop links as a way to share the app.
+- Auth0 is a sponsor track.
