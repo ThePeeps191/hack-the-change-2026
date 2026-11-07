@@ -1,5 +1,10 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { Suspense } from "react";
+import { ProofScreen } from "@/features/proof/proof-screen";
 
 export default function Page() {
-  return <Placeholder title="proof" note="capture a photo or video, then the verdict" />;
+  return (
+    <Suspense>
+      <ProofScreen />
+    </Suspense>
+  );
 }

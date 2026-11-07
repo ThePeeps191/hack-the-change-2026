@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { QuestScreen } from "@/features/quests/quest-screen";
 
 export default function Page() {
-  return <Placeholder title="active quest" note="quest card and the 20-minute timer" />;
+  return <QuestScreen />;
 }

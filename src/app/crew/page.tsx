@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { CrewScreen } from "@/features/crews/crew-screen";
 
 export default function Page() {
-  return <Placeholder title="crew" note="your crew, shared quests and the leaderboard" />;
+  return <CrewScreen />;
 }

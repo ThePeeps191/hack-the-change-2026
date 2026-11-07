@@ -20,6 +20,6 @@ export const mockGame: Game = {
     { id: "z2", game_id, name: "Mac Hall", lat: 51.0786, lng: -114.1306, radius_m: 70, quest_id: "a1b2c3d4-0002-4000-8000-000000000001", held_by_team_id: them, best_result: 4, result_unit: "snacks" },
     { id: "z3", game_id, name: "Olympic Oval", lat: 51.0766, lng: -114.1357, radius_m: 120, quest_id: "a1b2c3d4-0003-4000-8000-000000000001", held_by_team_id: null, best_result: null, result_unit: "seconds" },
     { id: "z4", game_id, name: "Rozsa Centre", lat: 51.0749, lng: -114.1297, radius_m: 80, quest_id: "a1b2c3d4-0004-4000-8000-000000000001", held_by_team_id: them, best_result: 3, result_unit: "posters" },
-    { id: "z5", game_id, name: "Social Sciences", lat: 51.0794, lng: -114.131, radius_m: 90, quest_id: "a1b2c3d4-0099-4000-8000-000000000002", held_by_team_id: null, best_result: null, result_unit: "seconds" },
+    { id: "z5", game_id, name: "Kinesiology", lat: 51.0771, lng: -114.1332, radius_m: 90, quest_id: "a1b2c3d4-0099-4000-8000-000000000002", held_by_team_id: null, best_result: null, result_unit: "seconds" },
   ],
 };

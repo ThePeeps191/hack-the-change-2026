@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/ui/placeholder";
+import { DashboardScreen } from "@/features/dashboard/dashboard-screen";
 
 export default function Page() {
-  return <Placeholder title="you" note="quests done, km moved, people met, coins" />;
+  return <DashboardScreen />;
 }

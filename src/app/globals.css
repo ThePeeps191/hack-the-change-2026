@@ -36,7 +36,7 @@
   --color-danger-soft: #f6e0da;
   --color-warning: #a8730f;
   --color-warning-soft: #f7ebcc;
-  --color-coin: #d9a520;
+  --color-coin: #96650a;        /* AA on surface; reads in sunlight */
 
   /* Type */
   --font-display: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
@@ -64,8 +64,16 @@
   color-scheme: light;
 }
 
+/* Mascot motion. Disabled by the reduced-motion rule below. */
+@keyframes pip-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
+@keyframes pip-look { 0%, 100% { transform: rotate(-6deg) } 50% { transform: rotate(6deg) } }
+@keyframes pip-walk { 0%, 100% { transform: translateY(0) rotate(-3deg) } 50% { transform: translateY(-4px) rotate(3deg) } }
+@keyframes pip-hop { 0%, 100% { transform: translateY(0) scale(1) } 40% { transform: translateY(-14px) scale(1.04, .96) } }
+@keyframes ripple { from { transform: scale(.6); opacity: .5 } to { transform: scale(2.2); opacity: 0 } }
+@keyframes rise { from { transform: translateY(12px); opacity: 0 } to { transform: none; opacity: 1 } }
+
 html {
-  background: var(--color-canvas);
+  background: var(--color-sunken);
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
