@@ -202,7 +202,7 @@ export function ProofScreen() {
               value={result}
               onChange={(e) => setResult(e.target.value)}
               placeholder="0"
-              className="w-24 rounded-[14px] bg-white/10 px-3 py-2 text-right font-[family-name:var(--font-display)] text-[24px] font-semibold text-white tabular-nums outline-none placeholder:text-white/30 focus:bg-white/15"
+              className="no-spin w-24 rounded-[14px] bg-white/10 px-3 py-2 text-right font-[family-name:var(--font-display)] text-[24px] font-semibold text-white tabular-nums outline-none placeholder:text-white/30 focus:bg-white/15 focus-visible:outline-none"
             />
             <span className="w-14 text-[14px] text-white/60">{zone.result_unit}</span>
           </label>

@@ -29,11 +29,11 @@ function useSecondsLeft(endsAt: string | undefined) {
   return left;
 }
 
-function memberLine(m: RunMember, you: boolean) {
+function memberLine(m: RunMember, you: boolean, placed: boolean) {
   const who = you ? "You" : m.display_name;
   if (m.verdict?.status === "pending") return `${who}: checking the proof`;
   if (m.submitted) return `${who}: proof's in`;
-  return `${who}: on the way`;
+  return `${who}: ${placed ? "on the way" : "not yet"}`;
 }
 
 export function QuestScreen() {
@@ -68,7 +68,7 @@ export function QuestScreen() {
       <Hero className="pb-14">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d={back} />}
-          center={partner ? `with ${partner.display_name}` : "your quest"}
+          center={run.mode === "pair" && partner ? `with ${partner.display_name}` : others.length > 1 ? "with your crew" : others.length === 1 ? `with ${partner?.display_name}` : run.mode === "claim" ? "claim attempt" : "on your own"}
         />
         <div className="flex flex-col items-center pt-2" role="timer" aria-label={left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
           {active ? (
@@ -143,7 +143,7 @@ export function QuestScreen() {
         {run.members.map((m, i) => (
           <li key={m.user_id} className="flex items-center gap-2.5 text-[15px] text-ink-muted">
             <span className={`size-2 rounded-full ${m.submitted ? "bg-success" : m.verdict?.status === "pending" ? "bg-accent animate-pulse" : "bg-line"}`} />
-            {memberLine(m, i === 0)}
+            {memberLine(m, i === 0, q.place_name != null)}
           </li>
         ))}
       </ul>
