@@ -6,6 +6,8 @@ Danny, Siddhant, Aaron and Jonas are building a mobile-first website in 24 hours
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
 - `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
 
+The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
+
 Dozens of Claude sessions work here at once. You have full permission to run commands, open PRs and merge them, so don't stop to ask for approval. Only ask the human about a product decision that would change the demo. This is a 24-hour build: tech debt doesn't matter, a working demo does. Nothing below is enforced, so use your judgement and bend a rule when that's clearly faster.
 
 ## How to work
