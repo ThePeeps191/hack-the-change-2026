@@ -6,6 +6,8 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
 - `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
 - `docs/ARCHITECTURE.md`: how the code fits together and why
+- `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
+- `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
 
 The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
 
