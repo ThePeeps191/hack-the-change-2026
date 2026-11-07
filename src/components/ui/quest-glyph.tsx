@@ -17,6 +17,20 @@ export const categoryLabel: Record<Category, string> = {
   explore: "Explore",
 };
 
+// Each category has its own hue, so you can tell a food quest from a walk at a
+// glance on the map and in lists. The tile is a light tint of the hue with the
+// icon in a deep shade of it (the .cat-tint class in globals.css), like avatars.
+export const categoryHue: Record<Category, number> = {
+  food: 22,
+  study: 245,
+  sport: 352,
+  arts: 300,
+  outdoors: 135,
+  walk: 172,
+  fitness: 40,
+  explore: 205,
+};
+
 // Checked in order, so the specific kinds (a walk, a plank) win over loose
 // words like "talk" that turn up in any description.
 const guesses: [RegExp, Category][] = [
@@ -47,7 +61,7 @@ export const glyphMarkup: Record<Category, string> = {
   study: '<path d="M12 6.8C10 5.3 7.2 4.8 4 5.2v12.6c3.2-.4 6 .1 8 1.6 2-1.5 4.8-2 8-1.6V5.2c-3.2-.4-6 .1-8 1.6z"/><path d="M12 6.8v12.6"/>',
   sport: '<circle cx="12" cy="12" r="8"/><path d="M4.5 9.5c3 1.2 4.6 3.6 4.9 10M19.5 9.5c-3 1.2-4.6 3.6-4.9 10M7 5.6c2.7 1.6 7.3 1.6 10 0"/>',
   arts: '<path d="M6.5 4.5h11v15h-11z"/><path d="M9.5 9h5M9.5 12h5M9.5 15h2.5"/><circle cx="12" cy="4.5" r=".9" fill="currentColor" stroke="none"/>',
-  outdoors: '<path d="M3 18.5l5.5-8 3.8 5 2.7-3.5 6 6.5z"/><circle cx="16.5" cy="6.5" r="2"/>',
+  outdoors: '<path d="M12 3.5l-4.8 6.3h2.6L5.5 15.5h13l-4.3-5.7h2.6z"/><path d="M12 15.5v4.5"/>',
   walk: '<path d="M6 18c2.5-.2 3.2-2.4 4.4-5.2C11.8 9.6 13.6 8 18 6.5" stroke-dasharray="0.1 3.1" stroke-width="2.1"/><circle cx="5.5" cy="18" r="1.8"/><path d="M18 3.8v5M18 3.8l2.6 1.3L18 6.4"/>',
   fitness: '<circle cx="12" cy="13.5" r="6.5"/><path d="M12 13.5V10M10 3.5h4M12 3.5V7M17.4 7.6l1.1-1.1"/>',
   explore: '<circle cx="12" cy="12" r="8"/><path d="M14.8 9.2l-1.6 4-4 1.6 1.6-4z"/>',

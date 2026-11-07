@@ -1,6 +1,6 @@
 "use client";
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
-import { useEffect, useId, type ReactNode } from "react";
+import { animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
+import { useEffect, useId, useSyncExternalStore, type ReactNode } from "react";
 
 // The sun's path across the sky as a progress bar. It rises on the left at 0
 // and sets on the right when you reach the goal, leaving a warm trail behind
@@ -36,9 +36,43 @@ const RINGS = [0, 1, 2, 3].map((k) => {
   };
 });
 
+// Specks of light drifting along the part of the day you've had, from sunrise
+// toward the sun, like warmth flowing along the path. Each speck has its own
+// start, a slightly different distance from the arc and its own size, and it
+// fades in and out over its trip. They're decoration and stand for nothing.
+const SPECKS = [
+  { phase: 0, off: -5, size: 1.6 },
+  { phase: 0.17, off: 4.5, size: 1.1 },
+  { phase: 0.34, off: -2, size: 1.3 },
+  { phase: 0.5, off: 6, size: 0.9 },
+  { phase: 0.67, off: -6.5, size: 1.2 },
+  { phase: 0.84, off: 2.5, size: 1.5 },
+];
+
+function Speck({ clock, t, phase, off, size }: { clock: MotionValue<number>; t: MotionValue<number>; phase: number; off: number; size: number }) {
+  const at = (c: number, v: number) => {
+    const f = (c + phase) % 1;
+    const a = Math.PI * (1 - f * v);
+    return { f, x: CX + (R + off) * Math.cos(a), y: CY - (R + off) * Math.sin(a) };
+  };
+  const cx = useTransform([clock, t], ([c, v]: number[]) => at(c, v).x);
+  const cy = useTransform([clock, t], ([c, v]: number[]) => at(c, v).y);
+  const opacity = useTransform([clock, t], ([c, v]: number[]) => (v < 0.04 ? 0 : Math.sin(Math.PI * at(c, v).f) * 0.85));
+  return <motion.circle r={size} fill="#fff3d1" style={{ cx, cy, opacity }} />;
+}
+
+const noop = () => () => {};
+const yes = () => true;
+const no = () => false;
+
 export function SunArc({ progress, children, caption, className = "" }: { progress: number; children?: ReactNode; caption?: ReactNode; className?: string }) {
   const id = `sun${useId().replace(/[^a-z0-9]/gi, "")}`;
   const reduce = useReducedMotion();
+  // False on the server and during hydration, true after: the moving parts
+  // only appear once we know the phone's motion setting, so the first render
+  // matches the server exactly.
+  const mounted = useSyncExternalStore(noop, yes, no);
+  const moving = mounted && !reduce;
   const t = useMotionValue(0);
   const target = Math.max(0, Math.min(1, progress));
 
@@ -54,6 +88,12 @@ export function SunArc({ progress, children, caption, className = "" }: { progre
   const x = useTransform(t, (v) => CX + R * Math.cos(Math.PI * (1 - v)));
   const y = useTransform(t, (v) => CY - R * Math.sin(Math.PI * (1 - v)));
   const offset = useTransform(t, (v) => 1 - v);
+  const clock = useMotionValue(0);
+  useEffect(() => {
+    if (reduce) return;
+    const a = animate(clock, [0, 1], { duration: 7, repeat: Infinity, ease: "linear" });
+    return () => a.stop();
+  }, [clock, reduce]);
 
   return (
     <div className={`mx-auto w-full max-w-[320px] ${className}`}>
@@ -71,13 +111,14 @@ export function SunArc({ progress, children, caption, className = "" }: { progre
           <path d={PATH} fill="none" stroke="rgb(255 255 255 / .4)" strokeWidth="2.2" strokeLinecap="round" strokeDasharray="0.1 8" />
           {/* the part of the day you've had, in rough crayon */}
           <motion.path d={PATH} fill="none" stroke="#ffe2a6" strokeWidth="3.2" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" filter={`url(#${id}r)`} style={{ strokeDashoffset: offset }} />
+          {moving && SPECKS.map((p, i) => <Speck key={i} clock={clock} t={t} {...p} />)}
           {/* the sun: a solid core, a pale flat ring, then specks diffusing outward */}
           <motion.g style={{ x, y }}>
             <circle r="13" fill="#ffe3a3" opacity={0.28} />
             {RINGS.map(({ k, dots }) => (
               <motion.g
                 key={k}
-                animate={reduce ? undefined : { rotate: k % 2 ? -360 : 360 }}
+                animate={moving ? { rotate: k % 2 ? -360 : 360 } : undefined}
                 transition={{ duration: 50 + k * 22, repeat: Infinity, ease: "linear" }}
               >
                 {dots.map((d, i) => (

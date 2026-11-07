@@ -405,3 +405,16 @@ a {
 @media (prefers-color-scheme: dark) {
   .avatar { background: hsl(var(--h) 35% 24%); color: hsl(var(--h) 80% 82%); }
 }
+
+/* Category tints: a light tint of the category's hue with the icon in a deep
+   shade (quest tiles), and the same on map pins. */
+.cat-tint { background: hsl(var(--h) 80% 93%); color: hsl(var(--h) 62% 32%); }
+.amble-marker[data-tint] .amble-pin-face,
+.amble-marker[data-tint] .amble-pin-tip { background: hsl(var(--h) 80% 93%); }
+.amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 62% 32%); }
+@media (prefers-color-scheme: dark) {
+  .cat-tint { background: hsl(var(--h) 32% 22%); color: hsl(var(--h) 75% 80%); }
+  .amble-marker[data-tint] .amble-pin-face,
+  .amble-marker[data-tint] .amble-pin-tip { background: hsl(var(--h) 32% 24%); }
+  .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 75% 82%); }
+}

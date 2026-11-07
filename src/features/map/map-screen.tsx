@@ -11,7 +11,7 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
-import { categoryOf, glyphSvg } from "@/components/ui/quest-glyph";
+import { categoryOf, glyphSvg, categoryHue } from "@/components/ui/quest-glyph";
 import { QuestCard } from "@/features/quests/quest-card";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
@@ -85,7 +85,7 @@ export function MapScreen() {
     return groups.map((g) => {
       const q = g[0];
       const label = `${q.place_name ?? q.title}${g.length > 1 ? ` · ${g.length} quests` : ""}`;
-      return { id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label, icon: glyphSvg(categoryOf(q), 20) };
+      return { id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label, icon: glyphSvg(categoryOf(q), 20), hue: categoryHue[categoryOf(q)] };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute only when the visible set changes
   }, [quests, filter, here]);

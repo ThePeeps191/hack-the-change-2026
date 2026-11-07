@@ -12,7 +12,17 @@ type MLMap = maplibregl.Map;
 //   cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs public/maplibre/worker-<version>.js
 maplibregl.setWorkerUrl("/maplibre/worker-6.16.0.js");
 
-export type GlobeMarker = { id: string; lat: number; lng: number; color: string; label: string; icon?: string };
+export type GlobeMarker = { id: string; lat: number; lng: number; color: string; label: string; icon?: string; hue?: number };
+
+// A pin with a hue gets a light tint of it and its icon in a deep shade.
+function tint(el: HTMLElement, hue?: number) {
+  if (hue == null) {
+    delete el.dataset.tint;
+    return;
+  }
+  el.dataset.tint = "";
+  el.style.setProperty("--h", String(hue));
+}
 
 const STYLE = {
   light: "https://tiles.openfreemap.org/styles/positron",
@@ -67,6 +77,7 @@ function markerEl(m: GlobeMarker, onPick: (id: string) => void) {
     ? `<span class="amble-pin"><span class="amble-pin-face">${m.icon}</span><span class="amble-pin-tip"></span></span>${label}`
     : `<span class="amble-marker-dot"></span>${label}`;
   if (m.icon) el.dataset.pin = "";
+  tint(el, m.hue);
   el.addEventListener("click", (e) => {
     e.stopPropagation();
     onPick(m.id);
@@ -241,6 +252,7 @@ export default function GlobeMap({
       if (existing) {
         existing.setLngLat([k.lng, k.lat]);
         existing.getElement().style.setProperty("--c", k.color);
+        tint(existing.getElement(), k.hue);
         continue;
       }
       const mk = new maplibregl.Marker({ element: markerEl(k, (id) => pick.current?.(id)), anchor: "center" }).setLngLat([k.lng, k.lat]).addTo(m);
