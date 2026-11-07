@@ -60,6 +60,9 @@ export function QuestScreen() {
   }
 
   const q = run.quest;
+  // The card only renders on the phone, after the run has loaded, so reading
+  // the colour scheme here can't cause a hydration mismatch.
+  const dark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [you, ...others] = run.members;
   const partner = others[0];
   const active = run.status === "active";
@@ -103,34 +106,34 @@ export function QuestScreen() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       >
-        <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
+        <BorderBeam size="md" theme={dark ? "dark" : "light"} colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="glass-card rounded-[28px] text-ink">
           <article className="relative rounded-[28px] p-5">
-            <div className="flex items-center gap-2 text-[13px] text-white/60">
-              <CategoryIcon category={categoryOf(q)} size={20} className="on-dark text-white" />
+            <div className="flex items-center gap-2 text-[13px] text-ink-muted">
+              <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
               <span>{categoryLabel[categoryOf(q)]}</span>
-              <span className="text-white/40">· {q.proof} proof</span>
-              <span className="ml-auto flex items-center gap-1 font-semibold text-white tabular-nums"><Coin size={14} />{q.coins}</span>
+              <span className="text-ink-faint">· {q.proof} proof</span>
+              <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}</span>
             </div>
             <h1 className="mt-3 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
             </h1>
-            <p className="mt-2.5 text-[16px] leading-relaxed text-white/70">{q.description}</p>
+            <p className="mt-2.5 text-[16px] leading-relaxed text-ink-muted">{q.description}</p>
             {q.place_name && (
-              <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-white/50" aria-hidden>
+              <div className="mt-5 flex items-center gap-3 border-t border-[var(--hairline)] pt-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-ink-faint" aria-hidden>
                   <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
                   <circle cx="12" cy="10" r="2.2" />
                 </svg>
                 <span className="flex-1 text-[15px] font-medium">{q.place_name}</span>
                 {mapsUrl && active && !you?.submitted && (
-                  <a href={mapsUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center px-1 text-[15px] font-semibold text-[#8fb0ff]">
+                  <a href={mapsUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center px-1 text-[15px] font-semibold text-accent">
                     Walk there
                   </a>
                 )}
               </div>
             )}
             {q.sources.length > 0 && (
-              <p className="mt-2 text-[12px] leading-snug text-white/40">
+              <p className="mt-2 text-[12px] leading-snug text-ink-faint">
                 From{" "}
                 {q.sources.map((s, i) => (
                   <span key={s.uri}>
@@ -140,13 +143,13 @@ export function QuestScreen() {
                 ))}
               </p>
             )}
-            <ul className="mt-4 space-y-2 border-t border-white/10 pt-4" aria-label="Who's done what">
+            <ul className="mt-4 space-y-2 border-t border-[var(--hairline)] pt-4" aria-label="Who's done what">
               {run.members.map((m, i) => (
-                <li key={m.user_id} className="flex items-center gap-3 text-[14px] text-white/80">
+                <li key={m.user_id} className="flex items-center gap-3 text-[14px] text-ink-muted">
                   <span className="relative">
                     <Avatar name={m.display_name} size={30} />
                     {(m.submitted || m.verdict?.status === "pending") && (
-                      <span className={`absolute -right-1 -bottom-1 grid size-[15px] place-items-center rounded-full ring-2 ring-[#1d3a70] ${m.submitted ? "bg-white text-[#1d3a70]" : "bg-[#8fb0ff]"}`} aria-hidden>
+                      <span className={`absolute -right-1 -bottom-1 grid size-[15px] place-items-center rounded-full ring-2 ring-[var(--color-surface)] ${m.submitted ? "bg-accent text-on-accent" : "bg-accent"}`} aria-hidden>
                         {m.submitted ? (
                           <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 6.3l2.3 2.2 4.7-5" /></svg>
                         ) : (
