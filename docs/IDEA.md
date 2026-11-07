@@ -2,7 +2,7 @@
 
 Snapshot of the "Idea overview" tab, taken 2026-11-07. The [Google Doc](https://docs.google.com/document/d/1luz-W3rodfUkmfI5yC7BfK8iMFM8vNJVtRyhC5iib8E/edit?usp=sharing) is the source of truth, so if the two disagree, the doc wins. Agents without access to it should use this copy.
 
-Hack the Change 2026, Prompt 1 (health, social connection and well-being). Working name to be decided; shortlist: Skip, Amble, Outbound.
+Hack the Change 2026, Prompt 1 (health, social connection and well-being). The name is Amble.
 
 ## Summary
 
@@ -63,7 +63,7 @@ The two systems feed each other: someone you meet on a 20-minute quest can join 
 
 ## Open questions
 
-- Name and mascot.
+- Mascot.
 - Safety rules for meeting someone new: age limit, verification and reporting.
 - Keep hide and seek, or drop it.
 - Whether to add ratings and personas later.
