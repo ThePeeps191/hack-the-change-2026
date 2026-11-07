@@ -264,3 +264,53 @@ a {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* The orb: the centre "I'm free" button. */
+@property --orb-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes orb-turn { to { --orb-a: 360deg } }
+@keyframes orb-breathe { 0%, 100% { opacity: .55; transform: scale(1) } 50% { opacity: .9; transform: scale(1.12) } }
+.orb {
+  --hx: 34%;
+  --hy: 26%;
+  isolation: isolate;
+}
+.orb-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgb(90 150 255 / .55), transparent 68%);
+  filter: blur(6px);
+  z-index: -1;
+  animation: orb-breathe 3.6s ease-in-out infinite;
+}
+.orb-swirl {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 120%, rgb(20 60 200 / .55), transparent 60%),
+    conic-gradient(from var(--orb-a), #2f66f5, #9cc3ff, #eaf3ff, #5d8dff, #1f4fd1, #8fb8ff, #2f66f5);
+  animation: orb-turn 7s linear infinite;
+  box-shadow: inset 0 -6px 14px rgb(10 30 120 / .45), 0 8px 22px rgb(47 102 245 / .45);
+}
+.orb:active .orb-swirl { animation-duration: 1.2s }
+.orb-gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: radial-gradient(circle at var(--hx) var(--hy), rgb(255 255 255 / .95) 0, rgb(255 255 255 / .35) 16%, transparent 42%);
+  mix-blend-mode: screen;
+}
+.orb-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .55), inset 0 2px 1px rgb(255 255 255 / .6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb-swirl, .orb-glow { animation: none }
+}

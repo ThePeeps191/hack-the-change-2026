@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { Odometer } from "./odometer";
 
 // Soft clouds drifting low across the sky. Each is a few overlapping puffs,
@@ -48,8 +48,11 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
       {!fill && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-full -z-10 h-72"
-          style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-sky-bottom) 22%, transparent), transparent)" }}
+          className="pointer-events-none absolute inset-x-0 top-[55%] -z-10 h-[620px]"
+          style={{
+            background:
+              "linear-gradient(180deg, color-mix(in oklab, var(--color-sky-bottom) 34%, transparent) 0%, color-mix(in oklab, var(--color-sky-bottom) 20%, transparent) 30%, color-mix(in oklab, var(--color-sky-bottom) 9%, transparent) 58%, color-mix(in oklab, var(--color-sky-bottom) 3%, transparent) 80%, transparent 100%)",
+          }}
         />
       )}
     </div>
@@ -80,30 +83,46 @@ export function HeroIcon({ href, label, d, onClick }: { href?: string; label: st
   );
 }
 
+// A progress arc on the sky. The glow is a blurred copy of the arc drawn
+// through a filter with room to spread, so it never clips to a box. The arc's
+// head carries a small bright cap, like a light moving round a dial.
+export function Arc({ progress, size, stroke, color, track = true }: { progress: number; size: number; stroke: number; color: string; track?: boolean }) {
+  const id = `arc${useId().replace(/[^a-z0-9]/gi, "")}`;
+  const r = 50 - stroke / 2 - 4;
+  const c = 2 * Math.PI * r;
+  const p = Math.max(0.001, Math.min(1, progress));
+  const arc = {
+    cx: 50,
+    cy: 50,
+    r,
+    fill: "none",
+    stroke: color,
+    strokeWidth: stroke,
+    strokeLinecap: "round" as const,
+    strokeDasharray: c,
+    strokeDashoffset: c * (1 - p),
+    className: "transition-[stroke-dashoffset] duration-[1400ms] ease-[var(--ease-out-soft)]",
+  };
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className="absolute inset-0 -rotate-90 overflow-visible" aria-hidden>
+      <defs>
+        <filter id={id} x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation={stroke * 0.9} />
+        </filter>
+      </defs>
+      {track && <circle cx="50" cy="50" r={r} fill="rgb(255 255 255 / 0.1)" stroke="rgb(255 255 255 / 0.22)" strokeWidth={stroke} />}
+      <circle {...arc} filter={`url(#${id})`} opacity={0.55} />
+      <circle {...arc} />
+    </svg>
+  );
+}
+
 // A ring stat: an arc for progress, a big number, and a label beneath.
 export function Ring({ value, label, progress, color }: { value: number | string; label: string; progress: number; color: string }) {
-  const r = 40;
-  const c = 2 * Math.PI * r;
-  const p = Math.max(0, Math.min(1, progress));
   return (
     <div className="flex flex-col items-center gap-1.5">
       <div className="relative grid size-[96px] place-items-center">
-        <svg viewBox="0 0 100 100" className="absolute inset-0 -rotate-90" aria-hidden>
-          <circle cx="50" cy="50" r={r} fill="rgb(255 255 255 / 0.14)" stroke="rgb(255 255 255 / 0.28)" strokeWidth="5" />
-          <circle
-            cx="50"
-            cy="50"
-            r={r}
-            fill="none"
-            stroke={color}
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={c}
-            strokeDashoffset={c * (1 - p)}
-            className="transition-[stroke-dashoffset] duration-[1200ms] ease-[var(--ease-out-soft)]"
-            style={{ filter: `drop-shadow(0 0 6px ${color})` }}
-          />
-        </svg>
+        <Arc progress={progress} size={96} stroke={5} color={color} />
         <Odometer value={value} className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]" />
       </div>
       <span className="text-[13px] font-medium text-on-sky/90">{label}</span>

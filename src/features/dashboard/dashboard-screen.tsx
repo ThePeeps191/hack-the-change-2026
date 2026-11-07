@@ -7,7 +7,7 @@ import { setSound, soundOn } from "@/lib/feedback";
 import { distance, shortDate } from "@/lib/format";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar } from "@/components/ui/hero";
+import { Arc, Hero, HeroBar } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { QuestIcon } from "@/components/ui/quest-icon";
 import { Segmented } from "@/components/ui/segmented";
@@ -21,27 +21,9 @@ const defaults: Comfort = { pace: "walk", talk: "side", stepFree: false };
 const FRIEND_MINUTES = 50 * 60;
 
 function BigRing({ value, goal }: { value: number; goal: number }) {
-  const r = 70;
-  const c = 2 * Math.PI * r;
-  const p = Math.max(0, Math.min(1, value / goal));
   return (
     <div className="relative grid size-[180px] place-items-center">
-      <svg viewBox="0 0 160 160" className="absolute inset-0 -rotate-90" aria-hidden>
-        <circle cx="80" cy="80" r={r} fill="rgb(255 255 255 / 0.12)" stroke="rgb(255 255 255 / 0.25)" strokeWidth="9" />
-        <circle
-          cx="80"
-          cy="80"
-          r={r}
-          fill="none"
-          stroke="#8ff0b4"
-          strokeWidth="9"
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - p)}
-          className="transition-[stroke-dashoffset] duration-[1400ms] ease-[var(--ease-out-soft)]"
-          style={{ filter: "drop-shadow(0 0 8px #8ff0b4)" }}
-        />
-      </svg>
+      <Arc progress={value / goal} size={180} stroke={8} color="#9cf2bf" />
       <div className="flex flex-col items-center">
         <Odometer value={value} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
         <span className="mt-1 text-[13px] font-medium text-on-sky/85">of {goal} min</span>

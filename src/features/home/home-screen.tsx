@@ -9,8 +9,9 @@ import { MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon, icons, Ring, RoundButton } from "@/components/ui/hero";
 import { useGoFree } from "@/features/matching/use-go-free";
-import { QuestCard } from "@/features/quests/quest-card";
-import { QuestIcon } from "@/components/ui/quest-icon";
+import { GlyphTile, QuestCard } from "@/features/quests/quest-card";
+import { Carousel } from "@/components/ui/carousel";
+import { Coin } from "@/components/ui/quest-glyph";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
 function today() {
@@ -108,27 +109,28 @@ export function HomeScreen() {
             <Hand as="h2" className="text-[28px] leading-none font-bold text-ink"><span id="anywhere">anywhere</span></Hand>
             <p className="mt-1 text-[14px] text-ink-muted">Short ones to do on your own or with your crew.</p>
           </div>
-          <div className="mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-4 px-4 pb-3 no-scrollbar">
-            {anywhere.map((q, i) => (
-              <motion.button
-                key={q.id}
-                type="button"
-                onClick={() => setOpen(q)}
-                initial={{ opacity: 0, x: 24, filter: "blur(6px)" }}
-                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="flex w-[64%] shrink-0 snap-start flex-col rounded-[22px] bg-surface p-4 text-left shadow-card transition-transform active:scale-[0.98]"
-              >
-                <span className="flex items-center gap-2 text-[13px] text-ink-muted">
-                  <QuestIcon type="anywhere" size={8} />
-                  {q.duration_min} min
-                  <span className="ml-auto font-semibold text-ink tabular-nums">+{q.coins}</span>
-                </span>
-                <span className="mt-6 text-[19px] leading-[1.15] font-semibold tracking-[-0.01em] text-pretty">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
-                <span className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-ink-muted">{q.description}</span>
-              </motion.button>
-            ))}
+          <div className="mt-3">
+            <Carousel
+              label="Anywhere quests"
+              items={anywhere.map((q) => ({
+                key: q.id,
+                node: (
+                  <button
+                    type="button"
+                    onClick={() => setOpen(q)}
+                    className="flex h-full w-full flex-col rounded-[24px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] active:scale-[0.98]"
+                  >
+                    <span className="flex items-center justify-between">
+                      <GlyphTile quest={q} size={40} />
+                      <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums"><Coin size={14} />{q.coins}</span>
+                    </span>
+                    <span className="mt-5 text-[19px] leading-[1.15] font-semibold tracking-[-0.01em] text-pretty">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
+                    <span className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-ink-muted">{q.description}</span>
+                    <span className="mt-auto pt-3 text-[13px] font-medium text-ink-faint">{q.duration_min} min · {q.proof === "gps" ? "your route is the proof" : `${q.proof} proof`}</span>
+                  </button>
+                ),
+              }))}
+            />
           </div>
         </section>
       )}
