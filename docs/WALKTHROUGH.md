@@ -115,6 +115,8 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - **New places:** places you visited for the first time.
 - **Mood before and after,** from the optional check-in (`checkins`), so you can see whether you usually feel better afterwards.
 
+**The public `/impact` page** adds the same kinds of numbers up across everyone. `getImpact` in `src/server/impact.ts` runs one SQL query over finished quests: total minutes outside, km walked, how many people met someone new, how many pairs met twice or more, and the share of after-quest check-ins at 4 or 5. It returns counts only, never names or places, and is served at `GET /api/impact` without a login. Priya, the bot, never counts. Seed, mock and demo-login accounts count only when no real person has finished a quest yet, and then the page says "demo data". What we'd measure in a pilot is in [METRICS.md](METRICS.md).
+
 ## The UI, briefly
 
 - `src/app/` holds the pages, one folder per URL. Each page just renders a screen from `src/features/`.
