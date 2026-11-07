@@ -5,7 +5,7 @@ import path from "node:path";
 // Proof photos and videos live on disk, outside the app folder on the server so
 // deploys don't touch them. They're personal data: they're only ever served
 // through /api/media/:id, which checks you were on that quest.
-const dir = () => process.env.UPLOADS_DIR ?? path.join(process.cwd(), "uploads");
+const dir = () => process.env.UPLOADS_DIR || path.join(process.cwd(), "uploads");
 
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 
@@ -20,7 +20,7 @@ const EXTENSIONS: Record<string, string> = {
   "video/webm": ".webm",
 };
 
-export const isAllowedMedia = (type: string) => type in EXTENSIONS;
+export const isAllowedMedia = (type: string) => Object.hasOwn(EXTENSIONS, type);
 
 // Returns the file's name inside the uploads folder.
 export async function saveUpload(id: string, file: File) {

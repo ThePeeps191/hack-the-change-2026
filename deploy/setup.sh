@@ -24,7 +24,9 @@ apt-get install -y caddy
 id amble >/dev/null 2>&1 || useradd --system --create-home --home-dir /opt/amble --shell /usr/sbin/nologin amble
 mkdir -p /opt/amble/shared/uploads /opt/amble/shared/pglite /opt/amble/releases
 [ -d /opt/amble/repo ] || git clone "$REPO" /opt/amble/repo
-[ -f /opt/amble/shared/.env ] || cp /opt/amble/repo/.env.example /opt/amble/shared/.env
+# A new server starts with real login and Gemini, never the no-login mock mode.
+[ -f /opt/amble/shared/.env ] || sed -e 's/^AUTH_MODE=mock/AUTH_MODE=live/' -e 's/^GEMINI_MODE=mock/GEMINI_MODE=live/' \
+  -e "s|^APP_BASE_URL=.*|APP_BASE_URL=https://$DOMAIN|" /opt/amble/repo/.env.example > /opt/amble/shared/.env
 chmod 600 /opt/amble/shared/.env
 chown -R amble:amble /opt/amble
 
@@ -41,6 +43,6 @@ systemctl reload caddy
 
 echo
 echo "Done. Next:"
-echo "  1. Fill in /opt/amble/shared/.env, including APP_BASE_URL=https://$DOMAIN"
+echo "  1. Fill in the keys in /opt/amble/shared/.env (login and Gemini are already set to live)"
 echo "  2. systemctl start amble-deploy.timer"
 echo "  3. systemctl start amble-deploy, then journalctl -u amble-deploy -f to watch the first deploy"

@@ -38,6 +38,7 @@ create table quests (
   sources jsonb not null default '[]',
   tags jsonb not null default '[]',
   starter boolean not null default false,
+  language text, -- set when translated, so the area cache only reuses English
   created_at timestamptz not null default now()
 );
 

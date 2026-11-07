@@ -245,20 +245,24 @@ export async function startRun(user: User, body: { quest_id?: string; crew_id?: 
     if (!member) throw new HttpError(403, "you're not in that crew");
   }
 
-  const existing = crewId
-    ? await one<RunRow>(
+  // Friends tapping the same quest at the same moment must land on one run, so
+  // finding and creating happen under a lock for that crew and quest.
+  const run = await transaction(async () => {
+    if (crewId) {
+      await query("select pg_advisory_xact_lock(hashtext($1))", [`${crewId}:${quest.id}:${body.zone_id ?? ""}`]);
+      const existing = await one<RunRow>(
         `select * from quest_runs where crew_id = $1 and quest_id = $2 and status = 'active'
            and zone_id is not distinct from $3 and ends_at > now() order by started_at desc limit 1`,
         [crewId, quest.id, body.zone_id ?? null],
-      )
-    : null;
-  if (existing) {
-    await query("insert into run_members (run_id, user_id) values ($1, $2) on conflict do nothing", [existing.id, user.id]);
-    return toRun(existing, user.id);
-  }
-
-  // You're on the run from the start, and crewmates join when they tap it.
-  const run = await createRun({ quest, mode: body.zone_id ? "claim" : "crew", members: [user.id], crewId, zoneId: body.zone_id, teamId });
+      );
+      if (existing) {
+        await query("insert into run_members (run_id, user_id) values ($1, $2) on conflict do nothing", [existing.id, user.id]);
+        return existing;
+      }
+    }
+    // You're on the run from the start, and crewmates join when they tap it.
+    return createRun({ quest, mode: body.zone_id ? "claim" : "crew", members: [user.id], crewId, zoneId: body.zone_id, teamId });
+  });
   return toRun(run, user.id);
 }
 

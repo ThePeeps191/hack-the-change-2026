@@ -47,15 +47,16 @@ export async function getQuest(id: string) {
 }
 
 // Keeps what Gemini wrote, so runs and history can point at it.
-export async function saveQuests(quests: Quest[]) {
+export async function saveQuests(quests: Quest[], language?: string) {
+  const translated = language && !language.startsWith("en") ? language : null;
   for (const q of quests) {
     await query(
-      `insert into quests (id, title, description, type, lat, lng, radius_m, duration_min, proof, coins, place_name, sources, tags)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::text::jsonb, $13::text::jsonb)
+      `insert into quests (id, title, description, type, lat, lng, radius_m, duration_min, proof, coins, place_name, sources, tags, language)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::text::jsonb, $13::text::jsonb, $14)
        on conflict (id) do nothing`,
       [
         q.id, q.title, q.description, q.type, q.lat, q.lng, q.radius_m, q.duration_min, q.proof, q.coins, q.place_name,
-        JSON.stringify(q.sources ?? []), JSON.stringify(q.tags ?? []),
+        JSON.stringify(q.sources ?? []), JSON.stringify(q.tags ?? []), translated,
       ],
     );
   }
@@ -89,7 +90,7 @@ export async function questsNear(
   try {
     const quests = await withTimeout(generateQuests(lat, lng, count, request), timeoutMs);
     if (quests.length > 0) {
-      await saveQuests(quests);
+      await saveQuests(quests, request.prefs?.language);
       return quests;
     }
   } catch (e) {
@@ -122,7 +123,7 @@ async function recentlyWritten(lat: number, lng: number, request: { prefs?: Pref
   const language = request.prefs?.language;
   if (GEMINI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
   const rows = await query<QuestRow>(
-    "select * from quests where not starter and lat is not null and created_at > now() - make_interval(hours => $1) order by created_at desc limit 100",
+    "select * from quests where not starter and language is null and lat is not null and created_at > now() - make_interval(hours => $1) order by created_at desc limit 100",
     [CACHE_HOURS],
   );
   return rows.filter((q) => distanceM({ lat, lng }, { lat: q.lat!, lng: q.lng! }) <= CACHE_RADIUS_M).map(toQuest);

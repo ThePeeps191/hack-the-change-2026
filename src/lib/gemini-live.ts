@@ -8,7 +8,7 @@ import type { ProofInput, QuestRequest, RecapInput } from "./gemini";
 // Every failure here is caught by the server, which falls back to the starter
 // pack, so these functions just throw.
 
-const MODEL = process.env.GEMINI_MODEL ?? "gemini-3.8-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 const INLINE_LIMIT_BYTES = 18 * 1024 * 1024; // above this, media goes through the Files API
 const MAX_DISTANCE_M = 5000;
 

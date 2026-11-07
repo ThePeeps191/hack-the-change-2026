@@ -101,6 +101,7 @@ export async function deleteMyData(user: User) {
     await query("delete from connections where $1 in (user_a, user_b)", [user.id]);
     await query("update submissions set media_url = null, media_path = null, lat = null, lng = null where user_id = $1", [user.id]);
     await query("update matches set status = 'expired', updated_at = now() where status = 'pending' and $1 in (user_a, user_b)", [user.id]);
+    await query("update matches set lat = null, lng = null where $1 in (user_a, user_b)", [user.id]);
     await query(
       `update users set auth0_sub = 'deleted|' || id, display_name = 'someone', avatar_url = null,
          email_verified = false, age_confirmed_at = null, prefs = '{}', coins = 0

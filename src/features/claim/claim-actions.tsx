@@ -4,7 +4,7 @@ import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Game, Zone } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const field = "min-h-12 w-full rounded-control border border-line bg-surface px-4 text-ink placeholder:text-ink-faint";
@@ -90,7 +90,7 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
           <Button className="w-full" disabled={busy || result === ""} onClick={send}>send it</Button>
         </>
       ) : zone.my_run_id ? (
-        <ButtonLink className="w-full" href={`/quest/${zone.my_run_id}`}>back to the challenge</ButtonLink>
+        <Button className="w-full" disabled={busy} onClick={start}>{busy ? "joining…" : "join the challenge"}</Button>
       ) : (
         <Button className="w-full" disabled={busy} onClick={start}>{busy ? "starting…" : "take this challenge"}</Button>
       )}

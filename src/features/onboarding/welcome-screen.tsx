@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Prefs, User } from "@/lib/contracts";
@@ -46,6 +46,8 @@ function Choice<T extends string>({ name, options, value, onPick }: { name: stri
 // First-run setup, and the comfort settings page afterwards.
 export function WelcomeScreen() {
   const router = useRouter();
+  const nextParam = useSearchParams().get("next");
+  const next = nextParam?.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState("");
   const [adult, setAdult] = useState(false);
@@ -67,7 +69,7 @@ export function WelcomeScreen() {
     setError(false);
     try {
       await api.updateMe({ display_name: name, age_confirmed_at: new Date().toISOString(), prefs });
-      router.replace("/");
+      router.replace(next);
     } catch {
       setError(true);
       setBusy(false);

@@ -255,6 +255,35 @@ async function main() {
   const ratedUp = (await noa.get<Crew>(`/api/crews/${rival.id}`)).data.rating!;
   check(ratedUp > 1500, "stealing lifts the rating", ratedUp);
 
+  console.log("\nthings the review caught");
+  const photo = await fetch(BASE + recap.data.photos[0]);
+  check(photo.headers.get("x-content-type-options") === "nosniff", "media is served with nosniff");
+  const raceCrew = (await kim.post<Crew>("/api/crews", { name: `race ${tag}` })).data;
+  await lee.post("/api/crews/join", { invite_code: raceCrew.invite_code });
+  const both = await Promise.all([kim, lee].map((p) => p.post<QuestRun>("/api/runs", { quest_id: anywhere[0].id, crew_id: raceCrew.id })));
+  check(both[0].data.id === both[1].data.id, "crewmates tapping at once share one run", both.map((b) => b.data.id));
+  const ola = person("ola");
+  const pip = person("pip");
+  const op = await pairUp(ola, pip);
+  await Promise.all([ola.post(`/api/matches/${op.ma.id}/accept`), pip.post(`/api/matches/${op.ma.id}/accept`)]);
+  const opRun = (await ola.get<Match>("/api/match")).data.run_id!;
+  const html = new FormData();
+  html.set("media", new File(["<script>alert(1)</script>"], "x.html", { type: "constructor" }));
+  const sneaky = await fetch(`${BASE}/api/runs/${opRun}/submissions`, { method: "POST", headers: { "x-amble-user": `ola${tag}` }, body: html });
+  check(sneaky.status === 415, "a fake media type is refused", sneaky.status);
+  await ola.proof(opRun);
+  await pip.proof(opRun);
+  await settled(ola, opRun);
+  await settled(pip, opRun);
+  await poll(() => mine(ola, opRun), (r) => r.status === "completed");
+  const yeses = await Promise.all([ola, pip].map((p) => p.post<{ connected: boolean }>("/api/connections", { run_id: opRun })));
+  check(yeses.some((y) => y.data.connected), "two yeses at the same moment still connect", yeses.map((y) => y.data));
+  const claimMate = person("quin");
+  await claimMate.post("/api/crews/join", { invite_code: rival.invite_code });
+  const mateRun = (await noa.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
+  const joined = (await claimMate.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
+  check(joined.id === mateRun.id && joined.members.length === 2, "a claim teammate joins the open challenge", joined);
+
   console.log("\ndashboard and privacy");
   const dash = (await alice.get<Dashboard>("/api/dashboard")).data;
   check(dash.quests_done === 1 && dash.people_met === 1 && dash.small_hellos?.length === 1, "dashboard counts real quests", dash);

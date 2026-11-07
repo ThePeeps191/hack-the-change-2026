@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { QUEST_MINUTES } from "@/lib/config";
 import { getPosition } from "@/lib/geo";
@@ -14,6 +14,11 @@ export function InviteScreen() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Someone new has to confirm they're 18+ before meeting anyone.
+  useEffect(() => {
+    api.me().then((u) => { if (!u.age_confirmed_at) router.replace(`/welcome?next=/invite/${code}`); }).catch(() => {});
+  }, [code, router]);
 
   async function accept() {
     setBusy(true);

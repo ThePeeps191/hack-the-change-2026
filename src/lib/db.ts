@@ -26,7 +26,7 @@ const inTransaction = new AsyncLocalStorage<Runner>();
 
 async function connectEmbedded(): Promise<Engine> {
   const { PGlite } = await import("@electric-sql/pglite");
-  const dir = process.env.PGLITE_DIR ?? path.join(process.cwd(), ".data", "pglite");
+  const dir = process.env.PGLITE_DIR || path.join(process.cwd(), ".data", "pglite");
   if (!dir.startsWith("memory://")) mkdirSync(path.dirname(dir), { recursive: true });
   const lite = await PGlite.create(dir);
   return {

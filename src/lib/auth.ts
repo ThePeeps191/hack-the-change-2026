@@ -56,7 +56,7 @@ function isAllowedEmail(email: string | undefined) {
 }
 
 function sign(payload: string) {
-  return createHmac("sha256", process.env.AUTH0_SECRET ?? "amble-demo").update(payload).digest("base64url");
+  return createHmac("sha256", process.env.AUTH0_SECRET || "amble-demo").update(payload).digest("base64url");
 }
 
 export function makeDemoCookie(name: string) {

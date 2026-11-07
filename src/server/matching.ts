@@ -68,12 +68,16 @@ export async function timesTogether(a: string, b: string) {
   return row?.n ?? 0;
 }
 
+// Also where location is forgotten: searches nobody finished, and the meeting
+// point of any match that's no longer pending.
 async function expireStale(userId: string) {
   await query(
     `update matches set status = 'expired', updated_at = now()
      where status = 'pending' and expires_at < now() and $1 in (user_a, user_b)`,
     [userId],
   );
+  await query("delete from availability where expires_at < now()");
+  await query("update matches set lat = null, lng = null where status <> 'pending' and lat is not null");
 }
 
 // A pending match, or an accepted one whose quest is still going. The time check
@@ -240,7 +244,7 @@ async function finalize(matchId: string) {
     const fresh = await one<{ status: string }>("select status from matches where id = $1 for update", [matchId]);
     if (fresh?.status !== "pending") return; // the other person's request got here first
     await createRun({ quest, mode: "pair", members: [userA, userB], matchId });
-    await query("update matches set status = 'accepted', updated_at = now() where id = $1", [matchId]);
+    await query("update matches set status = 'accepted', lat = null, lng = null, updated_at = now() where id = $1", [matchId]);
   });
 }
 

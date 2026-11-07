@@ -58,7 +58,11 @@ export type RecapInput = {
 export async function writeRecap(input: RecapInput): Promise<{ summary: string; narration_url: string | null }> {
   if (GEMINI_MODE === "live") {
     try {
-      return { summary: await (await live()).writeRecapLive(input), narration_url: null };
+      const summary = await Promise.race([
+        (await live()).writeRecapLive(input),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timed out")), 15_000)),
+      ]);
+      return { summary, narration_url: null };
     } catch (e) {
       console.error("recap fell back to the plain summary:", (e as Error).message);
     }

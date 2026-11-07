@@ -19,6 +19,8 @@ export async function stayInTouch(user: User, runId: string) {
   const run = await runForMember(user, runId);
   if (run.mode !== "pair") throw new HttpError(400, "this only works for quests with someone new");
   return transaction(async () => {
+    // Locks the run, so two people saying yes at once still see each other's yes.
+    await query("select id from quest_runs where id = $1 for update", [runId]);
     await query("update run_members set stay_in_touch_at = coalesce(stay_in_touch_at, now()) where run_id = $1 and user_id = $2", [runId, user.id]);
     const other = await one<{ user_id: string; stay_in_touch_at: Date | null; is_bot: boolean }>(
       `select m.user_id, m.stay_in_touch_at, u.is_bot from run_members m join users u on u.id = m.user_id
