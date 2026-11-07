@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { QUEST_MINUTES } from "@/lib/config";
+import { CAMPUS_CENTER, QUEST_MINUTES } from "@/lib/config";
+import { getPosition } from "@/lib/geo";
 import type { Dashboard, Quest } from "@/lib/contracts";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { MagneticButton } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export function HomeScreen() {
   const [date, setDate] = useState("");
   const [open, setOpen] = useState<Quest | null>(null);
   const [crewId, setCrewId] = useState<string | undefined>();
+  const [here, setHere] = useState<{ lat: number; lng: number }>(CAMPUS_CENTER);
 
   useEffect(() => {
     setDate(today()); // eslint-disable-line react-hooks/set-state-in-effect -- client-only date avoids a hydration mismatch
@@ -37,9 +39,15 @@ export function HomeScreen() {
     api.quests().then(setQuests).catch(() => setQuests([]));
     api.crews().then((c) => setCrewId(c[0]?.id)).catch(() => {});
     api.me().then((u) => { if (!u.age_confirmed_at) router.replace("/welcome"); }).catch(() => {});
+    // Sort "nearby" from where you are, but only if location is already allowed:
+    // the home screen never pops a permission prompt. Otherwise sort from campus.
+    navigator.permissions?.query({ name: "geolocation" }).then((p) => {
+      if (p.state === "granted") getPosition().then((pos) => { if (!pos.approximate) setHere(pos); });
+    }).catch(() => {});
   }, [router]);
 
-  const nearby = (quests ?? []).filter((q) => q.type !== "anywhere");
+  const away = (q: Quest) => (q.lat == null || q.lng == null ? Infinity : (q.lat - here.lat) ** 2 + ((q.lng - here.lng) * Math.cos((here.lat * Math.PI) / 180)) ** 2);
+  const nearby = (quests ?? []).filter((q) => q.type !== "anywhere").sort((a, b) => away(a) - away(b));
   const shown = more ? nearby : nearby.slice(0, 3);
   const anywhere = (quests ?? []).filter((q) => q.type === "anywhere");
   const active = d?.active_minutes_week ?? 0;

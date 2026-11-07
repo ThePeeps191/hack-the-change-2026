@@ -11,7 +11,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Calgary Central Library",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free",
+      "side-by-side"
+    ]
   },
   {
     "id": "7f13908e-bee4-40ea-8707-2a5f90fa9973",
@@ -30,7 +35,7 @@
   {
     "id": "9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5",
     "title": "Run Backwards",
-    "description": "Film each other running 100m backwards, and then put the video backwards to see who's run looks more normal",
+    "description": "Film each other running 100m backwards, and then put the video backwards to see whose run looks more normal",
     "type": "local",
     "lat": 51.07271,
     "lng": -114.122726,
@@ -53,7 +58,11 @@
     "proof": "video",
     "coins": 25,
     "place_name": "West Campus Park",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "47a2b3e4-cd5e-423e-a238-5a82efbe70f1",
@@ -81,7 +90,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Inglewood Bird Sanctuary",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime",
+      "side-by-side"
+    ]
   },
   {
     "id": "4379f1a6-ae68-4d5d-99d6-156602a2435c",
@@ -100,7 +114,7 @@
   {
     "id": "48f489dd-3520-4ea9-9baa-bcf68dc6d2ad",
     "title": "Planespotting",
-    "description": "Identify and photography a Boeing 737, Airbus A320, and Boeing 787.",
+    "description": "Identify and photograph a Boeing 737, Airbus A320, and Boeing 787.",
     "type": "local",
     "lat": 51.119855,
     "lng": -114.018688,
@@ -123,7 +137,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Chinatown",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "daytime"
+    ]
   },
   {
     "id": "6a1a64b9-ef51-4116-ac70-e2a7d13140a8",
@@ -151,7 +169,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Centennial Place",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "48359d56-748a-4a9a-85b9-388c730a447c",
@@ -165,7 +187,10 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Schulich School of Engineering",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "step-free"
+    ]
   },
   {
     "id": "3143141c-f538-4b52-a123-76f36c91572b",
@@ -193,12 +218,16 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Nose Hill",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "0659901c-500b-41bd-8438-4f779d771b1b",
     "title": "Animal Bingo",
-    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and it's mother, an albino animal, swimming animal, crying child.",
+    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and its mother, an albino animal, a swimming animal, an animal eating.",
     "type": "local",
     "lat": 51.045434,
     "lng": -114.023184,
@@ -212,7 +241,7 @@
   {
     "id": "a1de2f32-a3d9-446c-a63c-85a79bea2386",
     "title": "Prince's guess",
-    "description": "Set a 10 minute timer, in that time you can wander anywhere and do anything other than looking it up online. Make a educated guess with the other person, who ever gets closer wins.",
+    "description": "Set a 10 minute timer, in that time you can wander anywhere and do anything other than looking it up online. Make an educated guess with the other person, whoever gets closer wins.",
     "type": "local",
     "lat": 51.055423,
     "lng": -114.069736,
@@ -225,7 +254,7 @@
   },
   {
     "id": "234822eb-a4f1-4559-831d-c0b0eafe4bcd",
-    "title": "God Damn Dam",
+    "title": "Hide and Seek at the Dam",
     "description": "Starting at the dam, one person position themselves some distance away such that they believe the other person could find them and take a photo in 10 minutes. Then swap roles. See who can estimate the hiding time better.",
     "type": "local",
     "lat": 51.000037,

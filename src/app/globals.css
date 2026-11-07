@@ -15,7 +15,7 @@
   --color-line: #e2e2dc;
   --color-ink: #121412;
   --color-ink-muted: #5c605b;
-  --color-ink-faint: #8e928d;
+  --color-ink-faint: #6f736e; /* 4.8:1 on white, AA for small text */
 
   --color-accent: #2f66f5;
   --color-accent-strong: #1f4fd1;
@@ -80,7 +80,7 @@
     --color-line: #262926;
     --color-ink: #f1f2ee;
     --color-ink-muted: #a3a7a1;
-    --color-ink-faint: #6e726d;
+    --color-ink-faint: #868a84; /* 5.1:1 on surface */
     --color-accent: #6b93ff;
     --color-accent-strong: #8aaaff;
     --color-accent-soft: #18233f;

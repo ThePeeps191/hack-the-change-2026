@@ -62,6 +62,7 @@ async function toMatch(m: MatchRow, userId: string): Promise<Match> {
     you_accepted: !!(m.user_a === userId ? m.a_accepted_at : m.b_accepted_at),
     distance_m: m.distance_m,
     times_together: together,
+    demo_partner: partnerId != null && partnerId === (await botId()),
   };
 }
 
