@@ -7,8 +7,8 @@ import { api } from "@/lib/api";
 import { chime, knock } from "@/lib/feedback";
 import { distance, walkMinutes } from "@/lib/format";
 import { usePoll } from "@/lib/use-poll";
-import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { AppShell, Hand } from "@/components/ui/app-shell";
+import { ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastPill, toastQuiet } from "@/components/ui/toast";
 
@@ -64,7 +64,7 @@ export function MatchScreen() {
 
   return (
     <AppShell nav={false}>
-      <Hero className="pb-10">
+      <Hero fill className="min-h-dvh">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
           center={state === "matched" ? "matched" : "finding someone"}
@@ -125,11 +125,10 @@ export function MatchScreen() {
             </p>
           </motion.div>
         </AnimatePresence>
-      </Hero>
 
-      <div className="flex flex-1 flex-col px-4 pt-5">
-        {approx && state === "searching" && <Notice tone="warning">We couldn&apos;t get your location, so we&apos;re using the middle of campus.</Notice>}
-        {error && <Notice tone="warning">Signal&apos;s patchy. We&apos;ll keep trying.</Notice>}
+      <div className="flex flex-1 flex-col px-4 pt-6">
+        {approx && state === "searching" && <p className="px-6 text-center text-[14px] text-on-sky/80">We couldn&apos;t get your location, so we&apos;re using the middle of campus.</p>}
+        {error && <p className="px-6 pt-1 text-center text-[14px] text-on-sky/80">Signal&apos;s patchy. We&apos;ll keep trying.</p>}
 
         <Toast
           show={state === "found"}
@@ -144,14 +143,17 @@ export function MatchScreen() {
           secondary={<button className={toastQuiet} onClick={() => respond(false)} disabled={acting}>Not now</button>}
         />
 
-        <div className="mt-auto space-y-2 pb-6">
+        <div className="mt-auto space-y-2 pb-[max(24px,env(safe-area-inset-bottom))]">
           {(state === "searching" || state === "waiting") && (
-            <Button variant="quiet" size="lg" onClick={cancel} disabled={acting}>Never mind</Button>
+            <button onClick={cancel} disabled={acting} className="flex min-h-14 w-full items-center justify-center rounded-full text-[16px] font-semibold text-on-sky/90 hover:bg-white/15">
+              Never mind
+            </button>
           )}
-          {state === "matched" && match?.run_id && <ButtonLink size="lg" href={`/quest/${match.run_id}`}>See our quest</ButtonLink>}
-          {state === "ended" && <ButtonLink size="lg" href="/">Back to today</ButtonLink>}
+          {state === "matched" && match?.run_id && <ButtonLink size="lg" variant="onSky" href={`/quest/${match.run_id}`}>See our quest</ButtonLink>}
+          {state === "ended" && <ButtonLink size="lg" variant="onSky" href="/">Back to today</ButtonLink>}
         </div>
       </div>
+      </Hero>
     </AppShell>
   );
 }

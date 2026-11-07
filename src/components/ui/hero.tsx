@@ -3,17 +3,53 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Odometer } from "./odometer";
 
-// The sky panel at the top of Today: the live state of your day.
-export function Hero({ children, className = "" }: { children: ReactNode; className?: string }) {
+// Soft clouds drifting low across the sky. Each is a few overlapping puffs,
+// blurred, moving very slowly; they sit behind the content.
+function Clouds() {
+  const banks = [
+    { left: "-14%", bottom: "-20%", w: 300, o: 0.4, d: "68s", dl: "0s" },
+    { left: "50%", bottom: "-24%", w: 340, o: 0.36, d: "84s", dl: "-30s" },
+    { left: "26%", top: "18%", w: 150, o: 0.16, d: "96s", dl: "-50s" },
+  ];
   return (
-    <section
-      className={`relative overflow-hidden rounded-b-[36px] pb-6 text-on-sky ${className}`}
-      style={{ background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)" }}
-    >
-      {/* a soft sun glow, top-right */}
-      <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
-      <div className="relative">{children}</div>
-    </section>
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {banks.map((b, i) => (
+        <div
+          key={i}
+          className="absolute animate-[drift_var(--d)_ease-in-out_infinite_alternate]"
+          style={{ left: b.left, bottom: b.bottom, top: b.top, width: b.w, height: b.w * 0.42, opacity: b.o, ["--d" as string]: b.d, animationDelay: b.dl }}
+        >
+          <span className="absolute bottom-0 left-0 h-[62%] w-[58%] rounded-full bg-white blur-[18px]" />
+          <span className="absolute bottom-[12%] left-[26%] h-full w-[46%] rounded-full bg-white blur-[20px]" />
+          <span className="absolute right-0 bottom-0 h-[70%] w-[52%] rounded-full bg-white blur-[18px]" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// The sky panel at the top of a screen: the live state of your day. Below it,
+// a faint wash of sky tints the paper so the two read as one place.
+export function Hero({ children, className = "", fill = false }: { children: ReactNode; className?: string; fill?: boolean }) {
+  return (
+    <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>
+      <section
+        className={`relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "rounded-b-[36px] pb-6"} ${className}`}
+        style={{ background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)" }}
+      >
+        {/* a soft sun glow, top-right */}
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
+        <Clouds />
+        <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>{children}</div>
+      </section>
+      {!fill && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-full -z-10 h-72"
+          style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-sky-bottom) 22%, transparent), transparent)" }}
+        />
+      )}
+    </div>
   );
 }
 

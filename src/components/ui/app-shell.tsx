@@ -20,7 +20,7 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
   const path = usePathname();
   const { go, busy } = useGoFree();
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas">
+    <div className="isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas">
       <div className={`flex flex-1 flex-col ${nav ? "pb-24" : ""}`}>{children}</div>
       {nav && (
         <nav
