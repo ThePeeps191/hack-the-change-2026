@@ -1,0 +1,15 @@
+# Hot files: many tasks want to change these, so no task owns them.
+# They change only in wave 0 or on a small hot branch. See CLAUDE.md.
+# One entry per line: an exact file or dir/**.
+# The planner adds the rest once the stack is chosen: the contracts directory,
+# the dependency manifest and lockfile, and any root config.
+
+CLAUDE.md
+README.md
+.gitignore
+.gitattributes
+.worktreeinclude
+.env.example
+.claude/**
+docs/**
+scripts/**
