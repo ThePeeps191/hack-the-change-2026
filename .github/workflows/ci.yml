@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Both are warnings. Nothing here blocks a merge.
+      - name: Tasks can't collide
+        continue-on-error: true
+        run: node scripts/task.mjs check-plan
+
+      - name: PR stayed inside its files
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: node scripts/task.mjs check-scope
+
+      # Wave 0 adds install, lint, typecheck, test and build steps here.
