@@ -98,20 +98,17 @@ export async function shareQuest(user: User, crewId: string, questId: string | u
   );
 }
 
-// Coins count every quest a member finishes. `delta` is the last 24 hours, for
-// the coins-landing animation.
+// The weekly board: coins the crew's members earned in the last 7 days, on any
+// quest, so a quiet week starts everyone level again. `delta` is the last 24
+// hours, for the coins-landing animation. A crew's own page shows all-time coins.
 export async function crewLeaderboard(): Promise<LeaderboardEntry[]> {
   const rows = await query<{ id: string; name: string; coins: number; rating: number; delta: number }>(
     `select c.id, c.name, c.rating,
-       coalesce(sum(u.coins), 0)::int as coins,
-       coalesce((
-         select sum(e.amount)::int from coin_events e
-         join crew_members cm on cm.user_id = e.user_id
-         where cm.crew_id = c.id and e.created_at > now() - interval '1 day'
-       ), 0) as delta
+       coalesce(sum(e.amount) filter (where e.created_at > now() - interval '7 days'), 0)::int as coins,
+       coalesce(sum(e.amount) filter (where e.created_at > now() - interval '1 day'), 0)::int as delta
      from crews c
      left join crew_members m on m.crew_id = c.id
-     left join users u on u.id = m.user_id
+     left join coin_events e on e.user_id = m.user_id
      group by c.id
      order by coins desc, c.name
      limit 50`,

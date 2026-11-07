@@ -9,6 +9,12 @@ import type { ProofInput, QuestRequest, RecapInput } from "./gemini";
 // pack, so these functions just throw.
 
 const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+
+// One line per call, for the cost-per-quest estimate. Only counts, never content.
+function logUsage(what: string, res: { usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number } }, count = 1) {
+  const u = res.usageMetadata;
+  if (u) console.log(`[gemini] ${what}: ${u.totalTokenCount ?? 0} tokens (${u.promptTokenCount ?? 0} in, ${u.candidatesTokenCount ?? 0} out) for ${count}`);
+}
 const INLINE_LIMIT_BYTES = 18 * 1024 * 1024; // above this, media goes through the Files API
 const MAX_DISTANCE_M = 5000;
 
@@ -112,6 +118,7 @@ Reply with only a JSON array. Each item has: title, description, type ("local" o
     });
   // If this model or key can't combine the two grounding tools, keep Maps.
   const res = await ask([{ googleMaps: {} }, { googleSearch: {} }]).catch(() => ask([{ googleMaps: {} }]));
+  logUsage("quests", res, count);
   const sources = sourcesFrom(res.candidates?.[0]?.groundingMetadata?.groundingChunks);
   const quests = parseJsonArray(res.text ?? "")
     .map((q) => toSafeQuest(q, { lat, lng }, sources))
@@ -175,6 +182,7 @@ export async function judgeProofLive(input: ProofInput): Promise<Pick<Verdict, "
       },
     },
   });
+  logUsage("proof", res);
   const verdict = JSON.parse(res.text ?? "{}") as { approved?: boolean; reason?: string };
   if (typeof verdict.approved !== "boolean") throw new Error("no verdict in the reply");
   return { status: verdict.approved ? "approved" : "rejected", reason: verdict.reason?.slice(0, 300) ?? "" };
@@ -187,6 +195,7 @@ export async function writeRecapLive(input: RecapInput): Promise<string> {
     model: MODEL,
     contents: [{ role: "user", parts: [...(photo ? [await mediaPart(photo.path, photo.type)] : []), { text: `${facts}\n\nWrite a two-sentence recap of this quest, in a warm, plain voice, as something they'd like to look back on. Use only the facts here and what the photo shows. Never describe anyone's appearance.` }] }],
   });
+  logUsage("recap", res);
   const summary = res.text?.trim();
   if (!summary) throw new Error("empty recap");
   return summary.slice(0, 500);

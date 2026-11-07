@@ -1,6 +1,7 @@
 import "server-only";
 import type { Checkin, Quest, QuestRun, RunMember, User, Verdict } from "@/lib/contracts";
 import { one, query, transaction } from "@/lib/db";
+import { DEMO_MODE } from "@/lib/env";
 import { HttpError, notFound } from "@/lib/route";
 import { awardCoins } from "./coins";
 import { getQuest, type QuestRow, toQuest } from "./quests";
@@ -11,7 +12,7 @@ import { distanceM } from "./safety";
 const GRACE_MS = 2 * 60_000;
 const BOT_SUBMIT_MS = 6000;
 // If a check never comes back (a restart, a hung call), don't strand anyone.
-export const STUCK_VERDICT_MS = 45_000;
+export const STUCK_VERDICT_MS = DEMO_MODE ? 20_000 : 45_000;
 
 export type RunRow = {
   id: string;

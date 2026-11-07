@@ -28,6 +28,14 @@ type Quest = {
 ## Other shared shapes
 
 ```ts
+// Comfort settings, on User.prefs. Matching and quest choice both use them.
+type Prefs = {
+  pace?: 'any' | 'short' | 'brisk';
+  step_free?: boolean;
+  social?: 'chatty' | 'side-by-side';
+  language?: string;        // BCP 47; quests are translated into it
+};
+
 type Match = {
   id: string;
   status: 'pending' | 'accepted' | 'declined' | 'expired';
@@ -109,7 +117,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/runs` | Start a crew or Claim quest: `{ quest_id, crew_id?, zone_id? }`. Pair runs come from `Match.run_id` | `QuestRun` |
 | `GET /api/runs/current` | The quest you're on, for resuming | `QuestRun` or null |
 | `GET /api/runs/:id` | Run status, polled. `members[0]` is always you | `QuestRun` |
-| `POST /api/runs/:id/checkins` | One-tap mood: `{ phase: 'before' or 'after', mood: 1 to 5 }` | nothing |
+| `POST /api/runs/:id/checkins` | One-tap mood: `{ phase, mood }`. Before is how you are, 1 to 5. After is relative: 5 better, 3 the same, 1 worse | nothing |
 | `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve pending proof by hand | `{ approved }` |
 | `GET /api/media/:id` | Proof media, for people on that quest | the file |
 | `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
@@ -123,8 +131,8 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/crews/:id` | Crew, members and shared quests | crew |
 | `POST /api/crews/join` | `{ invite_code }` | crew |
 | `POST /api/crews/:id/quests` | Share a quest with the crew: `{ quest_id }` | nothing |
-| `GET /api/leaderboard` | `?crew_id=` for one crew, otherwise all crews | ranked list |
-| `GET /api/dashboard` | Quests done, km moved, people met, coins, history | dashboard |
+| `GET /api/leaderboard` | `?crew_id=` ranks that crew's members by all-time coins. Otherwise all crews by coins this week, with `delta` for the last day | ranked list |
+| `GET /api/dashboard` | Quests done, km moved, people met, coins, history, and the human metrics: active minutes against 150, familiar faces, small hellos, new places, how often you felt better after | dashboard |
 | `POST /api/games` | Start a Claim game: `{ crew_id?, name?, rival_code? }` | game with zones |
 | `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
 | `GET /api/games/:id` | Game state for the map, polled | game with zones |

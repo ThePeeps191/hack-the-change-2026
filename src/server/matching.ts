@@ -17,7 +17,16 @@ const ENDED_VISIBLE_MS = 2 * 60_000; // how long a declined match stays visible 
 const BOT_SEARCH_MS = 4000;
 const BOT_ACCEPT_MS = 2000;
 
-type Availability = { user_id: string; lat: number; lng: number; expires_at: Date; created_at: Date };
+type Availability = { user_id: string; lat: number; lng: number; expires_at: Date; created_at: Date; prefs?: Prefs };
+
+const MISMATCH_PENALTY_M = 500;
+
+function mismatch(a: Prefs = {}, b: Prefs = {}) {
+  let penalty = 0;
+  if (a.social && b.social && a.social !== b.social) penalty += MISMATCH_PENALTY_M;
+  if ((a.pace === "short") !== (b.pace === "short") && a.pace && b.pace) penalty += MISMATCH_PENALTY_M;
+  return penalty;
+}
 
 type MatchRow = {
   id: string;
@@ -123,10 +132,13 @@ async function cancelPending(userId: string) {
 async function tryPair(userId: string) {
   await transaction(async () => {
     await query("select pg_advisory_xact_lock(4242)");
-    const me = await myAvailability(userId);
+    const me = await one<Availability>(
+      "select a.*, u.prefs from availability a join users u on u.id = a.user_id where a.user_id = $1 and a.expires_at > now()",
+      [userId],
+    );
     if (!me) return;
     const others = await query<Availability>(
-      `select a.* from availability a
+      `select a.*, u.prefs from availability a
        join users u on u.id = a.user_id
        where a.user_id <> $1 and a.expires_at > now() and not u.is_bot
          and not exists (
@@ -142,9 +154,9 @@ async function tryPair(userId: string) {
       [userId],
     );
     const nearest = others
-      .map((other) => ({ other, metres: distanceM(me, other) }))
+      .map((other) => ({ other, metres: distanceM(me, other), fit: mismatch(me.prefs, other.prefs) }))
       .filter((c) => c.metres <= MATCH_RADIUS_M)
-      .sort((a, b) => a.metres - b.metres)[0];
+      .sort((a, b) => a.metres + a.fit - (b.metres + b.fit))[0];
     if (!nearest) return;
     await insertMatch(me, nearest.other.user_id, nearest.metres, { lat: (me.lat + nearest.other.lat) / 2, lng: (me.lng + nearest.other.lng) / 2 });
     await query("delete from availability where user_id = $1 or user_id = $2", [me.user_id, nearest.other.user_id]);

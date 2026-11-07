@@ -31,11 +31,17 @@ export const toQuest = (r: QuestRow): Quest => ({
   tags: r.tags,
 });
 
-export async function listQuests(type: string | null) {
+// The starter pack, plus what Gemini wrote in the last few hours, in English or
+// in your language. Quests written for someone else's language stay theirs.
+export async function listQuests(type: string | null, language?: string) {
   await refreshStarterQuests();
-  const rows = type
-    ? await query<QuestRow>("select * from quests where type = $1 order by starter desc, id limit 200", [type])
-    : await query<QuestRow>("select * from quests order by starter desc, id limit 200");
+  const rows = await query<QuestRow>(
+    `select * from quests
+     where ($1::text is null or type = $1)
+       and (starter or (created_at > now() - make_interval(hours => $2) and (language is null or language = $3)))
+     order by starter desc, created_at desc, id limit 200`,
+    [type, CACHE_HOURS, language ?? null],
+  );
   return rows.map(toQuest);
 }
 

@@ -138,6 +138,14 @@ export async function seedDemoData(query: Query) {
     "insert into coin_events (id, user_id, crew_id, amount) values ($1, $2, $3, 30) on conflict do nothing",
     [seedId("b0000000", 1), sam, DEMO_CREW_ID],
   );
+  // This week's coins for everyone else, so the weekly board has a race on it.
+  for (const [i, [sub, , coins]] of PEOPLE.entries()) {
+    if (sub === "mock|sam" || sub.startsWith("bot|")) continue;
+    await query(
+      "insert into coin_events (id, user_id, amount, created_at) values ($1, $2, $3, now() - interval '2 days') on conflict do nothing",
+      [seedId("b0000000", 100 + i), person(sub), Math.round(coins / 3)],
+    );
+  }
 
   for (const [i, [questId, daysAgo, partner, metres]] of HISTORY.entries()) {
     const n = i + 1;

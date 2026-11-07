@@ -129,7 +129,7 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 | App | *Proposed:* one Next.js app in TypeScript, with Tailwind | Pages and API in one repo and one deploy, which means less to integrate |
 | Package manager | *Proposed:* bun, for installs only | Fast, and cheap on disk across dozens of worktrees. Install with `npm i -g bun` |
 | Database access | *Proposed:* plain SQL migrations and the `postgres` client | ORM migration journals conflict when branches run in parallel |
-| Map | *Proposed:* Google Maps JS API | Same vendor as the grounding data |
+| Map | MapLibre GL with free OpenFreeMap tiles | A 3D globe, and no key or quota to manage. Gemini's Maps grounding is separate and needs no map key |
 | Live updates | *Proposed:* poll every few seconds | Plenty for matching, and far simpler than websockets |
 | Uploads | *Proposed:* disk on the Vultr server | One server is enough for the demo |
 | Stranger invites | *Proposed:* share a link through the Web Share API, with QR as a backup | Websites can't call AirDrop directly, but the iPhone share sheet offers it |

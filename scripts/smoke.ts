@@ -23,8 +23,14 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Reply<T> = { status: number; data: T };
 
+// Everyone this run creates, so they can be marked not-free at the end, even
+// after a failure. Otherwise a crashed run leaves people "free" for 20 minutes
+// and the next run's Sam gets matched with them.
+const everyone: Record<string, string>[] = [];
+
 function person(name?: string) {
   const headers: Record<string, string> = name ? { "x-amble-user": `${name}${tag}` } : {};
+  everyone.push(headers);
   async function call<T>(method: string, path: string, body?: unknown): Promise<Reply<T>> {
     const isForm = body instanceof FormData;
     const res = await fetch(BASE + path, {
@@ -183,6 +189,24 @@ async function main() {
   await fay.del("/api/availability");
   await gus.del("/api/availability");
 
+  console.log("\ncomfort settings steer matching");
+  const quietA = person("quieta");
+  const chattyB = person("chattyb");
+  const quietC = person("quietc");
+  await quietA.patch("/api/me", { prefs: { social: "side-by-side" } });
+  await chattyB.patch("/api/me", { prefs: { social: "chatty" } });
+  await quietC.patch("/api/me", { prefs: { social: "side-by-side" } });
+  // B and C are 2.3 km apart, too far to pair with each other, so A chooses.
+  await chattyB.post("/api/availability", { lat: AT.lat, lng: AT.lng - 0.01428 }); // 1.0 km west, wants to chat
+  await quietC.post("/api/availability", { lat: AT.lat, lng: AT.lng + 0.01857 }); // 1.3 km east, side by side
+  check((await chattyB.get<Match | null>("/api/match")).data === null, "people out of range of each other stay unpaired");
+  await quietA.post("/api/availability", AT);
+  const fitA = (await quietA.get<Match>("/api/match")).data;
+  const fitC = (await quietC.get<Match>("/api/match")).data;
+  check(!!fitA && fitA.id === fitC?.id, "a similar person a bit further away beats a mismatch nearer by", { fitA, fitC });
+  await chattyB.del("/api/availability");
+  await quietA.post(`/api/matches/${fitA.id}/decline`);
+
   console.log("\ninvite link");
   const hana = person("hana");
   const ivan = person("ivan");
@@ -304,10 +328,18 @@ async function main() {
   check((await mine(bob, pairRun)).members.some((m) => m.display_name === "someone"), "a partner's history stays, without the name");
 
   console.log(`\n${checks - failures}/${checks} checks passed\n`);
-  process.exit(failures ? 1 : 0);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+async function cleanUp() {
+  await Promise.all(everyone.map((headers) => fetch(`${BASE}/api/availability`, { method: "DELETE", headers }).catch(() => {})));
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    failures++;
+  })
+  .finally(async () => {
+    await cleanUp();
+    process.exit(failures ? 1 : 0);
+  });

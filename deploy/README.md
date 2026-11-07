@@ -1,6 +1,6 @@
 # Deploying
 
-One Vultr server runs the app behind Caddy, which handles HTTPS. Nothing in GitHub needs setting up: the repo is public, so the server just checks `main` every minute, builds new commits in their own folder and switches over only if the build passes. A broken merge leaves the last good version live.
+One Vultr server runs the app behind Caddy, which handles HTTPS. Nothing in GitHub needs setting up: the repo is public, so the server just checks `main` every minute and builds new commits in their own folder. It only switches over if the build and migrations pass, and it rolls back if the new version doesn't answer `/api/health` within a minute. A broken merge leaves the last good version live.
 
 ## First time
 
