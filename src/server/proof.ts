@@ -1,8 +1,8 @@
 import "server-only";
 import type { User, Verdict } from "@/lib/contracts";
 import { one, query } from "@/lib/db";
-import { DEMO_MODE, GEMINI_MODE } from "@/lib/env";
-import { judgeProof } from "@/lib/gemini";
+import { DEMO_MODE, AI_MODE } from "@/lib/env";
+import { judgeProof } from "@/lib/ai";
 import { HttpError, notFound } from "@/lib/route";
 import { isAllowedMedia, MAX_UPLOAD_BYTES, saveUpload, uploadPath } from "@/lib/uploads";
 import { advance, applyVerdict, questForRun, runForMember } from "./runs";
@@ -10,7 +10,7 @@ import { distanceM, safetyRulesOn } from "./safety";
 
 const GPS_SLACK_M = 50; // phones are rarely more accurate than this indoors
 const WINDOW_SLACK_MS = 2 * 60_000;
-const GEMINI_TIMEOUT_MS = 30_000;
+const AI_TIMEOUT_MS = 30_000;
 
 type SubmissionRow = {
   id: string;
@@ -30,7 +30,7 @@ const num = (v: FormDataEntryValue | null) => {
 };
 
 // Saves the proof and returns a pending verdict straight away, so the phone
-// isn't held open while Gemini looks. Run judgeSubmission afterwards, with after().
+// isn't held open while the AI looks. Run judgeSubmission afterwards, with after().
 export async function submitProof(user: User, runId: string, form: FormData): Promise<{ verdict: Verdict; submissionId: string | null }> {
   const run = await advance(await runForMember(user, runId));
   const quest = await questForRun(run);
@@ -56,14 +56,14 @@ export async function submitProof(user: User, runId: string, form: FormData): Pr
     [
       id, runId, user.id, path ? `/api/media/${id}` : null, path, file?.type ?? null, num(form.get("lat")), num(form.get("lng")),
       typeof takenAt === "string" && !Number.isNaN(Date.parse(takenAt)) ? takenAt : null,
-      GEMINI_MODE === "mock" && form.get("mock_verdict") === "rejected" ? "rejected" : null,
+      AI_MODE === "mock" && form.get("mock_verdict") === "rejected" ? "rejected" : null,
     ],
   );
   return { verdict: { status: "pending", reason: "" }, submissionId: id };
 }
 
 // Location and time first, because they're free and can't be argued with. Then
-// Gemini looks at the media. If Gemini is down, the quest still counts: nobody
+// the AI looks at the media. If the AI is down, the quest still counts: nobody
 // should lose a real walk to our outage, and the reason says what happened.
 export async function judgeSubmission(id: string) {
   const sub = await one<SubmissionRow>("select * from submissions where id = $1", [id]);
@@ -88,7 +88,7 @@ export async function judgeSubmission(id: string) {
         taken_at: sub.taken_at?.toISOString() ?? null,
         mock_verdict: sub.mock_verdict,
       }),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timed out")), GEMINI_TIMEOUT_MS)),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timed out")), AI_TIMEOUT_MS)),
     ]);
     await applyVerdict(id, verdict.status === "rejected" ? "rejected" : "approved", verdict.reason);
   } catch (e) {

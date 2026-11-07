@@ -14,7 +14,7 @@ const KEPT: { icon: React.ReactNode; what: string; why: string }[] = [
   {
     icon: <g {...p}><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.2" /></g>,
     what: "Your location while searching",
-    why: "Used to find someone nearby, then deleted the moment you're matched. Your partner only sees a rough distance.",
+    why: "Used to find someone nearby, then deleted the moment you're matched. Your partner only sees a rough distance. To find places for quests we look up the area, rounded to about 100 m, on OpenStreetMap.",
   },
   {
     icon: <g {...p}><path d="M5 19c2.5-.3 3.5-2.6 4.6-5.4C11 10.3 13 8.6 19 6.5" strokeDasharray="0.1 3.2" strokeWidth={2.2} /><circle cx="5" cy="19" r="1.6" /><circle cx="19" cy="6.5" r="1.6" /></g>,
@@ -24,7 +24,7 @@ const KEPT: { icon: React.ReactNode; what: string; why: string }[] = [
   {
     icon: <g {...p}><rect x="3.5" y="6.5" width="17" height="13" rx="3" /><circle cx="12" cy="13" r="3.4" /><path d="M9 6.5l1.2-2h3.6l1.2 2" /></g>,
     what: "Proof photos and videos",
-    why: "Checked by Gemini, Google's AI, and seen only by the people on that quest.",
+    why: "Checked by an AI model (Claude by Anthropic, or Google's Gemini), and seen only by the people on that quest.",
   },
   {
     icon: <g {...p}><circle cx="12" cy="8.5" r="3.5" /><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5" /></g>,

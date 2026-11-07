@@ -81,7 +81,7 @@ export type QuestRun = {
 };
 
 export type Verdict = {
-  status: "pending" | "approved" | "rejected"; // pending until Gemini replies; poll GET /api/runs/:id
+  status: "pending" | "approved" | "rejected"; // pending until the AI replies; poll GET /api/runs/:id
   reason: string; // shown to the user, empty while pending
   // Added: coins awarded when approved.
   coins?: number;
