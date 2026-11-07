@@ -64,13 +64,13 @@ function hm(min: number) {
   return h ? `${h} h${m ? ` ${m} min` : ""}` : `${m} min`;
 }
 
-export function FaceCard({ face, i }: { face: FamiliarFace; i: number }) {
+export function FaceCard({ face, i, wide = false }: { face: FamiliarFace; i: number; wide?: boolean }) {
   const next = milestones.find((m) => m > face.minutes_together) ?? 3000;
   const prev = [...milestones].reverse().find((m) => m <= face.minutes_together) ?? 0;
   const p = Math.min(1, (face.minutes_together - prev) / (next - prev));
   return (
     <motion.li
-      className="flex w-[220px] shrink-0 snap-start flex-col rounded-[22px] bg-surface p-4 shadow-card ring-1 ring-[var(--hairline)]"
+      className={`flex ${wide ? "w-full" : "w-[220px]"} shrink-0 snap-start flex-col rounded-[22px] bg-surface p-4 shadow-card ring-1 ring-[var(--hairline)]`}
       initial={{ opacity: 0, x: 16 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
@@ -129,7 +129,7 @@ export function Stamp({ name, date, i }: { name: string; date: string; i: number
         style={{ borderColor: ink, color: ink, boxShadow: `inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px color-mix(in oklab, ${ink} 50%, transparent)` }}
       >
         <CategoryIcon category={categoryOf({ title: short, description: "", place_name: name, tags: [] })} size={20} />
-        <p className="mt-1 line-clamp-2 text-[12px] leading-tight font-bold tracking-[0.01em] uppercase">{short}</p>
+        <p className="mt-1 line-clamp-3 text-[11px] leading-[1.15] font-bold tracking-[0.01em] break-words uppercase">{short}</p>
         <p className="mt-1 text-[10px] font-semibold tracking-[0.12em] uppercase opacity-75">
           {d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
         </p>

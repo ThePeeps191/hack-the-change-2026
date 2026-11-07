@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
+import { getPosition } from "@/lib/geo";
+import { CAMPUS_CENTER } from "@/lib/config";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
@@ -30,6 +32,16 @@ function Icon({ d }: { d: string }) {
   );
 }
 
+type LatLng = { lat: number; lng: number };
+
+// Straight-line metres between two points; plenty for sorting a campus.
+function metres(a: LatLng, b: LatLng) {
+  const k = Math.PI / 180;
+  const x = (b.lng - a.lng) * k * Math.cos(((a.lat + b.lat) / 2) * k);
+  const y = (b.lat - a.lat) * k;
+  return Math.sqrt(x * x + y * y) * 6371000;
+}
+
 const frosted = "grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md transition-transform active:scale-95";
 
 export function MapScreen() {
@@ -39,9 +51,12 @@ export function MapScreen() {
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState<Quest | null>(null);
+  const [here, setHere] = useState<LatLng>(CAMPUS_CENTER);
 
   useEffect(() => {
     api.quests().then(setQuests).catch(() => setQuests([]));
+    // Only used to sort by distance on this phone; never sent or logged.
+    getPosition().then((p) => setHere({ lat: p.lat, lng: p.lng }));
   }, []);
 
   useEffect(() => {
@@ -51,16 +66,31 @@ export function MapScreen() {
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
 
-  const shown = (quests ?? [])
-    .filter((q) => (filter === "all" ? true : q.type === filter))
-    .sort((a, b) => Number(b.lat != null) - Number(a.lat != null));
+  // Nearest first; quests with no place go last.
+  const away = (q: Quest) => (q.lat != null && q.lng != null ? metres(here, { lat: q.lat, lng: q.lng }) : Infinity);
+  const shown = (quests ?? []).filter((q) => (filter === "all" ? true : q.type === filter)).sort((a, b) => away(a) - away(b));
   const placed = shown.filter((q) => q.lat != null && q.lng != null);
-  const markers = useMemo<GlobeMarker[]>(
-    () => placed.map((q) => ({ id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label: q.place_name ?? q.title, icon: glyphSvg(categoryOf(q), 20) })),
+  // Quests within about 60 m of each other share one pin, so pins never pile up.
+  const markers = useMemo<GlobeMarker[]>(() => {
+    const groups: Quest[][] = [];
+    for (const q of placed) {
+      const g = groups.find((x) => metres({ lat: x[0].lat!, lng: x[0].lng! }, { lat: q.lat!, lng: q.lng! }) < 60);
+      if (g) g.push(q);
+      else groups.push([q]);
+    }
+    return groups.map((g) => {
+      const q = g[0];
+      const label = `${q.place_name ?? q.title}${g.length > 1 ? ` · ${g.length} quests` : ""}`;
+      return { id: q.id, lat: q.lat!, lng: q.lng!, color: markColor[q.type], label, icon: glyphSvg(categoryOf(q), 20) };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute only when the visible set changes
-    [quests, filter],
-  );
+  }, [quests, filter, here]);
   const picked = shown.find((q) => q.id === selected) ?? null;
+  const pinFor = (id: string | null) => {
+    const q = placed.find((x) => x.id === id);
+    if (!q) return id;
+    return markers.find((m) => metres(m, { lat: q.lat!, lng: q.lng! }) < 60)?.id ?? id;
+  };
   const ordered = picked ? [picked, ...shown.filter((q) => q.id !== picked.id)] : shown;
 
   function choose(id: string) {
@@ -84,7 +114,7 @@ export function MapScreen() {
     <AppShell>
       <motion.header {...behind} className="px-5 pt-[max(18px,env(safe-area-inset-top))] pb-3">
         <Hand as="h1" className="text-[36px] leading-none font-bold">around you</Hand>
-        <p className="mt-1 text-[14px] text-ink-muted">Drag to spin the globe. Tap a pin to see what&apos;s there.</p>
+        <p className="mt-1 text-[14px] text-ink-muted">Drag to look around. Tap a pin to see what&apos;s there.</p>
       </motion.header>
 
       {/* The map keeps its slot in the page so nothing jumps when it opens up. */}
@@ -112,7 +142,7 @@ export function MapScreen() {
           }
           style={{ borderRadius: expanded ? 32 : 28 }}
         >
-          <GlobeMap markers={markers} selected={selected} onSelect={choose} focus={focus} />
+          <GlobeMap markers={markers} selected={pinFor(selected)} onSelect={choose} focus={focus} />
 
           <motion.div layout="position" className="absolute top-3 right-3 flex flex-col gap-2">
             <button onClick={toggle} aria-label={expanded ? "Shrink the map" : "Expand the map"} className={frosted}>
@@ -144,6 +174,9 @@ export function MapScreen() {
           onChange={(v) => {
             setFilter(v);
             setSelected(null);
+            // Fly to the nearest quest of this kind so the pins are in view.
+            const first = (quests ?? []).filter((q) => (v === "all" || q.type === v) && q.lat != null && q.lng != null).sort((a, b) => away(a) - away(b))[0];
+            if (first) setFocus({ lat: first.lat!, lng: first.lng! });
           }}
           options={[
             { value: "all", label: "Everything" },

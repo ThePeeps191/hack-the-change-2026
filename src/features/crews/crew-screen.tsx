@@ -74,7 +74,7 @@ export function CrewScreen() {
             <Hand as="h1" className="text-[38px] leading-none font-bold">{crew.name}</Hand>
             <Odometer value={crew.coins} delay={150} className="mt-3 font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
             <p className="mt-1 text-[14px] font-medium text-on-sky/85">
-              coins together{crew.rating != null && <> · crew rating {Math.round(crew.rating)}</>}
+              coins all time{crew.rating != null && <> · crew rating {Math.round(crew.rating)}</>}
             </p>
           </div>
         )}

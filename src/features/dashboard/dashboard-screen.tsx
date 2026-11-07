@@ -102,7 +102,7 @@ export function DashboardScreen() {
               <p className="px-1 text-[15px] text-ink-muted">Do a second quest with someone and they&apos;ll show up here.</p>
             ) : (
               <ul className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-2.5 overflow-x-auto px-4 pb-1">
-                {faces.map((f, i) => <FaceCard key={f.display_name} face={f} i={i} />)}
+                {faces.map((f, i) => <FaceCard key={f.display_name} face={f} i={i} wide={faces.length === 1} />)}
               </ul>
             )}
           </Section>
