@@ -22,3 +22,6 @@ dist/
 build/
 coverage/
 uploads/
+.playwright-mcp/
+.impeccable/mocks/
+.impeccable/review/
