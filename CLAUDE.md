@@ -71,7 +71,7 @@ If you do hit a merge conflict, resolve it in your worktree by keeping both side
 ## Pull requests
 
 - One task per PR, kept small. No set format: just say what changed.
-- Merge your own PR with `gh pr merge --squash`. No review or approval needed.
+- Merge your own PR with `gh pr merge --squash`. No review or approval needed. If it says "not mergeable" right after a push, GitHub is still checking: wait a few seconds and retry.
 - Delete branches once merged. `node scripts/task.mjs cleanup` clears any leftovers.
 
 **If main is red, stop and fix it.** Parallel PRs can each pass and still break together. Whoever notices first fixes it forward on a `<person>-hot-fix-main` branch, crossing ownership if needed. Don't merge anything else until main is green.
