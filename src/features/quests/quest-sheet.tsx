@@ -42,7 +42,7 @@ export function QuestSheet({
 
   // Reset AirDrop state when the sheet opens for a different quest (using useEffect, not in render).
   useEffect(() => {
-    setAirdropUrl(null);
+    setAirdropUrl(null); // eslint-disable-line react-hooks/set-state-in-effect -- reset when a different quest opens
     setAirdropError(null);
   }, [q?.id]);
 

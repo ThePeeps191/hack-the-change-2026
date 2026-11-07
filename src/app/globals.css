@@ -360,17 +360,17 @@ a {
 
 /* Podium steps: metal tints in light, quiet glows with a bright top edge in dark. */
 :root {
-  --podium-1: linear-gradient(180deg, #ffe7a8, #f6cd68);
-  --podium-2: linear-gradient(180deg, #e9edf3, #d7dde6);
-  --podium-3: linear-gradient(180deg, #f6dcc6, #e6b994);
-  --podium-ink: rgb(0 0 0 / .5);
+  --podium-1: #9cbcff;
+  --podium-2: #c4d6ff;
+  --podium-3: #dfe8ff;
+  --podium-ink: #1a3a8f;
   --podium-edge: rgb(255 255 255 / .7);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --podium-1: linear-gradient(180deg, rgb(246 205 104 / .32), rgb(246 205 104 / .08));
-    --podium-2: linear-gradient(180deg, rgb(215 221 230 / .22), rgb(215 221 230 / .05));
-    --podium-3: linear-gradient(180deg, rgb(230 185 148 / .26), rgb(230 185 148 / .06));
+    --podium-1: #3d6ef0;
+    --podium-2: #2a3f74;
+    --podium-3: #1f2c4d;
     --podium-ink: rgb(255 255 255 / .7);
     --podium-edge: rgb(255 255 255 / .35);
   }
@@ -395,3 +395,9 @@ a {
   animation: you-pulse 2.2s ease-out infinite;
 }
 @media (prefers-reduced-motion: reduce) { .amble-you::after { animation: none; opacity: 0 } }
+
+/* Flat avatars: one hue per person, a light tint with the initial in a deep shade. */
+.avatar { background: hsl(var(--h) 80% 90%); color: hsl(var(--h) 55% 32%); }
+@media (prefers-color-scheme: dark) {
+  .avatar { background: hsl(var(--h) 35% 24%); color: hsl(var(--h) 80% 82%); }
+}
