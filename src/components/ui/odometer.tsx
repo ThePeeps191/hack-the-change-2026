@@ -23,7 +23,8 @@ export function Odometer({ value, className = "", delay = 0 }: { value: number |
   }, [text, delay]);
 
   return (
-    <span className={`inline-flex tabular-nums ${className}`} aria-label={text} role="text">
+    <span className={`inline-flex tabular-nums ${className}`}>
+      <span className="sr-only">{text}</span>
       {shown.split("").map((ch, i) =>
         /\d/.test(ch) ? (
           <span key={i} aria-hidden className="relative inline-block h-[1em] overflow-hidden leading-none" style={{ width: "0.62em" }}>

@@ -40,12 +40,12 @@ export function InviteScreen() {
 
   return (
     <AppShell nav={false}>
-      <Hero fill className="min-h-dvh px-4 pb-[max(20px,env(safe-area-inset-bottom))]">
+      <Hero fill className="min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
         <Stars className="opacity-50" />
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="an invite" />
         <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">free for {QUEST_MINUTES} min?</Hand>
         <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">Someone you just met wants to do a small quest with you.</p>
-        <div className="mt-9">
+        <div className="mt-9 px-4">
           <SkySteps
             items={[
               { badge: PIN, title: "Meet at the quest spot", detail: "Always somewhere public." },
@@ -54,7 +54,7 @@ export function InviteScreen() {
             ]}
           />
         </div>
-        <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 pt-8">
+        <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 px-4 pt-8">
           {error && <Notice tone="warning">{error}</Notice>}
           <MagneticButton variant="onSky" onClick={accept} disabled={busy}>{busy ? "Starting…" : "Yes, let's go"}</MagneticButton>
           <Link className={skyQuiet} href="/">Not this time</Link>

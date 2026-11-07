@@ -52,11 +52,15 @@ export function MapScreen() {
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState<Quest | null>(null);
   const [here, setHere] = useState<LatLng>(CAMPUS_CENTER);
+  const [located, setLocated] = useState(false);
 
   useEffect(() => {
     api.quests().then(setQuests).catch(() => setQuests([]));
     // Only used to sort by distance on this phone; never sent or logged.
-    getPosition().then((p) => setHere({ lat: p.lat, lng: p.lng }));
+    getPosition().then((p) => {
+      setHere({ lat: p.lat, lng: p.lng });
+      setLocated(!p.approximate);
+    });
   }, []);
 
   useEffect(() => {
@@ -142,7 +146,7 @@ export function MapScreen() {
           }
           style={{ borderRadius: expanded ? 32 : 28 }}
         >
-          <GlobeMap markers={markers} selected={pinFor(selected)} onSelect={choose} focus={focus} />
+          <GlobeMap markers={markers} selected={pinFor(selected)} onSelect={choose} focus={focus} here={located ? here : null} fit />
 
           <motion.div layout="position" className="absolute top-3 right-3 flex flex-col gap-2">
             <button onClick={toggle} aria-label={expanded ? "Shrink the map" : "Expand the map"} className={frosted}>
@@ -188,7 +192,16 @@ export function MapScreen() {
           {quests === null
             ? [0, 1].map((i) => <Skeleton key={i} className="h-[104px] rounded-[20px]" />)
             : ordered.length === 0
-              ? <p className="px-1 py-3 text-[15px] text-ink-muted">Nothing of this kind nearby right now.</p>
+              ? (
+                  <div className="flex items-center justify-between gap-3 rounded-[20px] bg-surface px-4 py-3.5 shadow-card">
+                    <p className="text-[15px] text-ink-muted">Nothing of this kind nearby right now.</p>
+                    {filter !== "local" && (
+                      <button onClick={() => setFilter("local")} className="min-h-11 shrink-0 rounded-full bg-accent px-4 text-[15px] font-semibold text-on-accent active:scale-95">
+                        Try nearby
+                      </button>
+                    )}
+                  </div>
+                )
               : ordered.map((q) => (
                   <motion.button
                     layout

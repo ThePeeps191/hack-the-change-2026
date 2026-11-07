@@ -83,6 +83,8 @@ export default function GlobeMap({
   focus,
   className = "",
   intro = true,
+  here = null,
+  fit = false,
 }: {
   markers: GlobeMarker[];
   selected?: string | null;
@@ -90,11 +92,35 @@ export default function GlobeMap({
   focus?: { lat: number; lng: number } | null;
   className?: string;
   intro?: boolean;
+  // Your own position, drawn as a pulsing blue dot. Stays on this phone.
+  here?: { lat: number; lng: number } | null;
+  // Frame every marker when the map opens, instead of just campus.
+  fit?: boolean;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
   const pins = useRef(new Map<string, maplibregl.Marker>());
   const pick = useRef(onSelect);
+  const you = useRef<maplibregl.Marker | null>(null);
+  const loaded = useRef(false);
+  const framed = useRef(false);
+  const latest = useRef(markers);
+  useEffect(() => {
+    latest.current = markers;
+  }, [markers]);
+
+  // The camera that shows every marker, or null when there's one or none.
+  function frame(m: MLMap) {
+    const pts = latest.current;
+    if (!fit || pts.length < 2) return null;
+    const lngs = pts.map((p) => p.lng);
+    const lats = pts.map((p) => p.lat);
+    const cam = m.cameraForBounds(
+      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+      { padding: { top: 70, bottom: 50, left: 40, right: 40 }, maxZoom: 15.4 },
+    );
+    return cam ? { center: cam.center, zoom: cam.zoom ?? 13, pitch: 45, bearing: -24 } : null;
+  }
   useEffect(() => {
     pick.current = onSelect;
   }, [onSelect]);
@@ -115,7 +141,10 @@ export default function GlobeMap({
     m.on("style.load", () => dress(m, isDark()));
     m.once("load", () => {
       box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
-      const target = { center: [CAMPUS_CENTER.lng, CAMPUS_CENTER.lat] as [number, number], zoom: 15.4, pitch: 56, bearing: -24 };
+      loaded.current = true;
+      const framedCam = frame(m);
+      if (framedCam) framed.current = true;
+      const target = framedCam ?? { center: [CAMPUS_CENTER.lng, CAMPUS_CENTER.lat] as [number, number], zoom: 15.4, pitch: 56, bearing: -24 };
       // The whole-Earth dive plays once per visit; after that we open on campus.
       let seen = false;
       try {
@@ -167,6 +196,34 @@ export default function GlobeMap({
       map.current = null;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps -- create the map once; intro only matters then
+
+  // If the markers arrive after the map has opened, frame them once.
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !loaded.current || framed.current) return;
+    const cam = frame(m);
+    if (!cam) return;
+    framed.current = true;
+    m.flyTo({ ...cam, duration: reduced() ? 0 : 1400, essential: false });
+  }, [markers]); // eslint-disable-line react-hooks/exhaustive-deps -- frame is stable enough; run when markers land
+
+  // The "you are here" dot.
+  useEffect(() => {
+    const m = map.current;
+    if (!m) return;
+    if (!here) {
+      you.current?.remove();
+      you.current = null;
+      return;
+    }
+    if (!you.current) {
+      const el = document.createElement("span");
+      el.className = "amble-you";
+      el.setAttribute("aria-label", "You are here");
+      el.setAttribute("role", "img");
+      you.current = new maplibregl.Marker({ element: el, anchor: "center" }).setLngLat([here.lng, here.lat]).addTo(m);
+    } else you.current.setLngLat([here.lng, here.lat]);
+  }, [here]);
 
   // Keep markers in sync.
   useEffect(() => {

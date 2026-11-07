@@ -32,12 +32,12 @@ export function JoinScreen() {
 
   return (
     <AppShell nav={false}>
-      <Hero fill className="min-h-dvh px-4 pb-[max(20px,env(safe-area-inset-bottom))]">
+      <Hero fill className="min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
         <Stars className="opacity-50" />
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
         <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">join the crew?</Hand>
         <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">A crew is a few friends who get outside together, wherever each of you is.</p>
-        <div className="mt-9">
+        <div className="mt-9 px-4">
           <SkySteps
             items={[
               { badge: GROUP, title: "Do quests together", detail: "Or race each other from anywhere." },
@@ -46,7 +46,7 @@ export function JoinScreen() {
             ]}
           />
         </div>
-        <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 pt-8">
+        <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 px-4 pt-8">
           {error && <Notice tone="warning">{error}</Notice>}
           <MagneticButton variant="onSky" onClick={join} disabled={busy}>{busy ? "Joining…" : "Join the crew"}</MagneticButton>
           <Link className={skyQuiet} href="/">Not now</Link>
