@@ -40,9 +40,9 @@ export function JoinScreen() {
         <div className="mt-9 px-4">
           <SkySteps
             items={[
-              { badge: GROUP, title: "Do quests together", detail: "Or race each other from anywhere." },
-              { badge: COIN, title: "Earn coins as a crew", detail: "And climb the weekly board." },
-              { badge: FLAG, title: "Play Claim", detail: "Hold spots on the map." },
+              { badge: GROUP, title: "do quests together", detail: "Or race each other from anywhere." },
+              { badge: COIN, title: "earn coins as a crew", detail: "And climb the weekly board." },
+              { badge: FLAG, title: "play Claim", detail: "Hold spots on the map." },
             ]}
           />
         </div>

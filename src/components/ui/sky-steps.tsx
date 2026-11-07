@@ -1,28 +1,60 @@
 "use client";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-// A short list of frosted rows on the sky, each with a white badge, that
-// slides in one after another. Used where a screen explains what happens next.
+// A footpath drawn down the sky with a stop for each step, like a trail map.
+// Each stop is a white disc with a small drawing; the dotted path between two
+// stops wiggles a little and is revealed top to bottom (a clip-path), so it
+// looks like it's being walked. With reduced motion every step is instant
+// (duration 0), so the first render still matches the server.
 export function SkySteps({ items, delay = 0.3 }: { items: { badge: ReactNode; title: string; detail?: string }[]; delay?: number }) {
+  const reduce = useReducedMotion();
+  const at = (i: number) => delay + i * 0.32;
   return (
-    <ol className="relative mx-auto w-full max-w-[340px] space-y-3">
+    <ol className="relative mx-auto w-full max-w-[320px]">
       {items.map((s, i) => (
-        <motion.li
-          key={s.title}
-          className="flex items-center gap-4 rounded-[20px] bg-white/14 px-4 py-3.5 ring-1 ring-white/20 backdrop-blur-md"
-          initial={{ opacity: 0, x: -16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease, delay: delay + i * 0.12 }}
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-[16px] font-bold text-[var(--color-sky-top)]">{s.badge}</span>
-          <span className="text-left">
-            <span className="block text-[16px] font-semibold">{s.title}</span>
-            {s.detail && <span className="block text-[14px] text-on-sky/80">{s.detail}</span>}
-          </span>
-        </motion.li>
+        <li key={s.title} className="relative flex gap-4 pb-8 last:pb-0">
+          {i < items.length - 1 && (
+            <motion.div
+              aria-hidden
+              className="absolute top-12 bottom-1 left-[10px] w-6"
+              initial={{ clipPath: "inset(0 0 100% 0)" }}
+              animate={{ clipPath: "inset(0 0 0% 0)" }}
+              transition={reduce ? { duration: 0 } : { duration: 0.5, ease: "easeInOut", delay: at(i) + 0.2 }}
+            >
+              <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="block size-full overflow-visible">
+              <path
+                d={i % 2 ? "M12 0 C 0 35, 24 65, 12 100" : "M12 0 C 24 35, 0 65, 12 100"}
+                fill="none"
+                stroke="rgb(255 255 255 / .7)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeDasharray="0.5 7"
+                vectorEffect="non-scaling-stroke"
+              />
+              </svg>
+            </motion.div>
+          )}
+          <motion.span
+            className="relative grid size-11 shrink-0 place-items-center rounded-full bg-white text-[var(--color-sky-top)] shadow-[0_6px_16px_rgb(20_50_110/0.18)]"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 22, delay: at(i) }}
+          >
+            {s.badge}
+          </motion.span>
+          <motion.span
+            className="pt-1.5 text-left"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={reduce ? { duration: 0 } : { duration: 0.5, ease, delay: at(i) + 0.08 }}
+          >
+            <span className="block font-[family-name:var(--font-hand)] text-[24px] leading-[1.05] font-bold">{s.title}</span>
+            {s.detail && <span className="mt-1 block text-[15px] leading-snug text-on-sky/85">{s.detail}</span>}
+          </motion.span>
+        </li>
       ))}
     </ol>
   );

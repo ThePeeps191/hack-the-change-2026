@@ -38,6 +38,6 @@ export function Toast({
 }
 
 export const toastPill =
-  "inline-flex min-h-12 flex-1 items-center justify-center rounded-full bg-accent px-5 text-[16px] font-semibold text-white shadow-press transition-transform active:scale-95";
+  "inline-flex min-h-12 flex-1 items-center justify-center rounded-full bg-accent px-5 text-[16px] font-semibold text-white dark:text-[#07102a] shadow-press transition-transform active:scale-95";
 export const toastQuiet =
   "inline-flex min-h-12 items-center rounded-full px-5 text-[16px] font-semibold opacity-70 transition-opacity hover:opacity-100";

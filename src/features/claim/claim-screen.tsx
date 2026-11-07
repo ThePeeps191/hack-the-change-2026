@@ -21,6 +21,34 @@ const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
 const GAME_ID = "current";
 
 const colors = { free: "#9aa09a", ours: "var(--color-accent)", theirs: "var(--color-anywhere)" };
+// Each zone is a flag on the map: blue for your crew, orange for the rival
+// crew, plain white while nobody holds it. The words beside it say the same
+// thing, so colour is never the only clue.
+const hues = { ours: 222, theirs: 22, free: undefined } as const;
+//
+// A held zone's flag is filled and flies (the cloth sways from the pole,
+// .flag-fly in globals.css); an open zone's flag is a still, empty outline.
+const POLE = "M6 21V4";
+const FLYING = "M6 4h11l-2.5 4L17 12H6";
+const flagPaths = (held: boolean) => `<path d="${POLE}"/><path class="${held ? "flag-fly" : ""}" d="${FLYING}"/>`;
+const flagSvg = (held: boolean) =>
+  `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${flagPaths(held)}</svg>`;
+
+function Flag({ held, color, size }: { held: boolean; color: string; size: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
+      <path d={POLE} />
+      <path d={FLYING} fill={held ? color : "none"} fillOpacity=".22" className={held ? "flag-fly" : ""} />
+    </svg>
+  );
+}
+
+// "4 snacks", "1923", "38 seconds": a zone's best result in plain words.
+function best(z: Zone) {
+  if (z.best_result == null) return null;
+  if (z.result_unit === "year") return `from ${z.best_result}`;
+  return `${z.best_result} ${z.result_unit ?? ""}`.trim();
+}
 
 export function ClaimScreen() {
   const [started, setStarted] = useState(0);
@@ -32,7 +60,7 @@ export function ClaimScreen() {
 
   const tone = (z: Zone) => (z.held_by_team_id == null ? "free" : z.held_by_team_id === us?.id ? "ours" : "theirs");
   const markers = useMemo<GlobeMarker[]>(
-    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)] })),
+    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)], icon: flagSvg(tone(z) !== "free"), hue: hues[tone(z)] })),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- tone depends only on game
     [game],
   );
@@ -54,7 +82,7 @@ export function ClaimScreen() {
         animate={{ height: zone ? "46dvh" : "60dvh" }}
         transition={{ type: "spring", stiffness: 260, damping: 34 }}
       >
-        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} />
+        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} fit />
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-[max(8px,env(safe-area-inset-top))]">
           <Link href="/crew" aria-label="Back to crew" className="pointer-events-auto grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -62,10 +90,10 @@ export function ClaimScreen() {
             </svg>
           </Link>
           {game && (
-            <div className="pointer-events-auto flex items-center gap-3 rounded-full bg-surface/85 px-4 py-2 text-[14px] font-semibold text-ink shadow-card backdrop-blur-md">
-              <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-accent" />{held.ours}</span>
-              <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-anywhere" />{held.theirs}</span>
-              <span className="flex items-center gap-1.5 text-ink-muted"><span className="size-2.5 rounded-full bg-[#9aa09a]" />{held.free}</span>
+            <div className="pointer-events-auto flex items-center gap-2.5 rounded-full bg-surface/85 px-4 py-2 text-[13px] font-semibold text-ink shadow-card backdrop-blur-md" aria-label={`You hold ${held.ours}, they hold ${held.theirs}, ${held.free} open`}>
+              <span className="text-accent"><span className="tabular-nums">{held.ours}</span> yours</span>
+              <span className="text-rival"><span className="tabular-nums">{held.theirs}</span> theirs</span>
+              <span className="text-ink-muted"><span className="tabular-nums">{held.free}</span> open</span>
             </div>
           )}
         </div>
@@ -82,7 +110,7 @@ export function ClaimScreen() {
               <Hand as="h1" className="text-[34px] leading-none font-bold">{game.name.toLowerCase()}</Hand>
               <p className="mt-1.5 text-[15px] text-ink-muted">
                 <span className="font-semibold text-accent">{us?.name}</span>
-                {them && <> vs <span className="font-semibold text-anywhere">{them.name}</span></>}. Beat a zone&apos;s best to take it.
+                {them && <> vs <span className="font-semibold text-rival">{them.name}</span></>}. Beat a zone&apos;s best to take it.
               </p>
             </div>
 
@@ -96,12 +124,17 @@ export function ClaimScreen() {
                   exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="flex items-center gap-2 text-[13px] text-ink-muted">
-                    <span className="size-2 rounded-full" style={{ background: colors[tone(zone)] }} />
+                  <div className="flex items-center gap-1.5 text-[13px] font-medium text-ink-muted">
+                    <Flag held={tone(zone) !== "free"} color={colors[tone(zone)]} size={15} />
                     {tone(zone) === "ours" ? `Held by ${us?.name}` : tone(zone) === "theirs" ? `Held by ${them?.name}` : "Nobody holds this yet"}
                   </div>
                   <p className="mt-2 text-[22px] leading-tight font-semibold tracking-[-0.01em]">{zone.name}</p>
-                  {zone.quest && <p className="mt-1.5 text-[15px] leading-snug text-ink-muted">{zone.quest.description}</p>}
+                  {zone.quest && (
+                    <>
+                      <p className="mt-1 text-[16px] font-medium">{zone.quest.title.charAt(0).toUpperCase() + zone.quest.title.slice(1)}</p>
+                      <p className="mt-1 text-[15px] leading-snug text-ink-muted">{zone.quest.description}</p>
+                    </>
+                  )}
                   <div className="mt-4 flex items-baseline gap-2 border-t border-[var(--hairline)] pt-3">
                     {zone.best_result != null ? (
                       <>
@@ -118,10 +151,20 @@ export function ClaimScreen() {
                 <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   {game.zones.map((z) => (
                     <li key={z.id}>
-                      <button onClick={() => choose(z.id)} className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left hover:bg-sunken/60">
-                        <span className="size-2.5 shrink-0 rounded-full" style={{ background: colors[tone(z)] }} />
-                        <span className="flex-1 text-[16px] font-medium">{z.name}</span>
-                        <span className="text-[14px] text-ink-muted tabular-nums">{z.best_result != null ? `${z.best_result} ${z.result_unit ?? ""}` : "open"}</span>
+                      <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
+                        <Flag held={tone(z) !== "free"} color={colors[tone(z)]} size={22} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[16px] font-semibold">{z.name}</span>
+                          <span className="mt-0.5 block truncate text-[13px] text-ink-muted">
+                            {z.quest ? z.quest.title.charAt(0).toUpperCase() + z.quest.title.slice(1) : "Challenge"}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-right text-[13px] leading-tight">
+                          <span className={`block font-semibold ${tone(z) === "ours" ? "text-accent" : tone(z) === "theirs" ? "text-rival" : "text-ink-muted"}`}>
+                            {tone(z) === "ours" ? "Yours" : tone(z) === "theirs" ? "Theirs" : "Open"}
+                          </span>
+                          {best(z) && <span className="block text-ink-muted tabular-nums">{best(z)}</span>}
+                        </span>
                       </button>
                     </li>
                   ))}

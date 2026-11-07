@@ -114,7 +114,7 @@ export function ProofScreen() {
         </header>
 
         <p className="px-6 pb-4 text-center text-[15px] leading-snug text-white/70">
-          {run ? (kind === "gps" ? "Your walk is the proof. Just send it." : `One ${kind}: ${run.quest.title.charAt(0).toLowerCase() + run.quest.title.slice(1)}.`) : " "}
+          {run ? (kind === "gps" ? "Your walk is the proof. Just send it." : `One ${kind} for “${run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}”.`) : " "}
         </p>
 
         {/* The frame */}

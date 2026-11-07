@@ -106,7 +106,7 @@ export function QuestScreen() {
         <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-white/60">
-              <span className="grid size-7 place-items-center rounded-[9px] bg-white/10 text-white"><CategoryIcon category={categoryOf(q)} size={16} /></span>
+              <CategoryIcon category={categoryOf(q)} size={20} className="on-dark text-white" />
               <span>{categoryLabel[categoryOf(q)]}</span>
               <span className="text-white/40">· {q.proof} proof</span>
               <span className="ml-auto flex items-center gap-1 font-semibold text-white tabular-nums"><Coin size={14} />{q.coins}</span>

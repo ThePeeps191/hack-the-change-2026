@@ -40,9 +40,9 @@ export async function judgeProof(input: ProofInput): Promise<Pick<Verdict, "stat
   if (AI_MODE === "mock") {
     await new Promise((r) => setTimeout(r, 2000));
     if (input.mock_verdict === "rejected") {
-      return { status: "rejected", reason: "we can see a bookshelf, but not a title page. get a little closer to the first pages and try again?" };
+      return { status: "rejected", reason: "We can't quite see the quest in this one. Get a little closer and try again?" };
     }
-    return { status: "approved", reason: "that's the title page, and the date is right there. nice find." };
+    return { status: "approved", reason: "That counts. Nice one." };
   }
   return (await live()).judgeProofLive(input);
 }

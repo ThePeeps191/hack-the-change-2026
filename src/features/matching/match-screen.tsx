@@ -181,16 +181,14 @@ export function MatchScreen() {
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
             >
-              <p className="text-[12px] font-semibold tracking-[0.08em] uppercase opacity-55">Your quest</p>
+              <p className="text-[13px] font-medium opacity-60">Your quest</p>
               <div className="mt-2 flex items-start gap-3">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-black/5 dark:bg-white/10">
-                  <CategoryIcon category={categoryOf(run.quest)} size={22} />
-                </span>
+                <CategoryIcon category={categoryOf(run.quest)} size={28} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <p className="text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
-                  <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[14px]">
-                    <span className="opacity-65">{[run.quest.place_name, `${run.quest.duration_min} min`].filter(Boolean).join(" · ")}</span>
-                    <span className="flex items-center gap-1 font-semibold whitespace-nowrap tabular-nums"><Coin size={13} />{run.quest.coins}</span>
+                  <p className="mt-1 text-[14px] leading-snug">
+                    <span className="opacity-65">{run.quest.place_name ? `${run.quest.place_name} · ` : ""}<span className="whitespace-nowrap">{run.quest.duration_min} min</span> · </span>
+                    <span className="inline-flex items-center gap-1 align-[-2px] font-semibold whitespace-nowrap tabular-nums"><Coin size={13} />{run.quest.coins}</span>
                   </p>
                 </div>
               </div>

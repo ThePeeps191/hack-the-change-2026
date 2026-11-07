@@ -1,7 +1,7 @@
 "use client";
-import { AnimatePresence, motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { api } from "@/lib/api";
 import type { Recap } from "@/lib/contracts";
 import { chime } from "@/lib/feedback";
@@ -10,10 +10,9 @@ import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
-import { Segmented } from "@/components/ui/segmented";
+import { MoodCheck } from "@/features/checkin/mood-check";
 import { RecapExtras } from "./recap-extras";
 
-type Feel = "better" | "same" | "worse";
 
 // The walk you took, drawn as a line from the real route points. With no
 // route (location off, or an anywhere quest) we draw nothing rather than fake one.
@@ -31,7 +30,9 @@ export function RecapScreen() {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [error, setError] = useState(false);
   const [kept, setKept] = useState<null | "asked" | "connected">(null);
-  const [feel, setFeel] = useState<Feel | "">("");
+  // Only after mount, and never with reduced motion, so hydration matches.
+  const reduce = useReducedMotion();
+  const moving = useSyncExternalStore(() => () => {}, () => true, () => false) && !reduce;
 
   useEffect(() => {
     api.recap(runId).then((r) => { setRecap(r); chime(); }).catch(() => setError(true));
@@ -41,15 +42,6 @@ export function RecapScreen() {
     setKept("asked");
     const r = await api.connect(runId).catch(() => null);
     if (r?.connected) setKept("connected");
-  }
-
-  function pickFeel(v: Feel | "") {
-    setFeel(v);
-    // "after" check-ins are relative: 5 better, 3 the same, 1 worse.
-    if (v) api.checkin(runId, { phase: "after", mood: v === "better" ? 5 : v === "same" ? 3 : 1 }).catch(() => {});
-    try {
-      localStorage.setItem(`amble:feel:${runId}`, v);
-    } catch {}
   }
 
   const name = recap?.partner?.display_name;
@@ -82,6 +74,14 @@ export function RecapScreen() {
                 strokeDasharray="1"
                 style={{ ["--len" as string]: 1, animation: "draw 1.8s var(--ease-out-soft) .2s both" }}
               />
+              {/* you, walking it again: a dot follows the real route once the
+                  line has drawn, and stays where you finished */}
+              {moving && (
+                <circle r="5" fill="#fff" stroke="rgb(255 255 255 / .35)" strokeWidth="6" opacity="0">
+                  <set attributeName="opacity" to="1" begin="2s" />
+                  <animateMotion dur="2.6s" begin="2s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.25 1" path={routePath(recap.route)} />
+                </circle>
+              )}
             </>
           )}
         </svg>
@@ -120,35 +120,7 @@ export function RecapScreen() {
 
         {recap && <RecapExtras recap={recap} />}
 
-        {recap && (
-          <section aria-labelledby="feel">
-            <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold">
-              <span id="feel">how do you feel?</span>
-            </Hand>
-            <Segmented<Feel | "">
-              label="How you feel after the quest"
-              value={feel}
-              onChange={pickFeel}
-              options={[
-                { value: "better", label: "Better" },
-                { value: "same", label: "About the same" },
-                { value: "worse", label: "Worse" },
-              ]}
-            />
-            <AnimatePresence>
-              {feel && (
-                <motion.p
-                  className="px-1 pt-2 text-[14px] text-ink-muted"
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {feel === "better" ? "Noted. That's what this is for." : feel === "same" ? "Noted. Some days are like that." : "Thanks for being honest. Next time we'll keep it lighter."}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </section>
-        )}
+        {recap && <MoodCheck runId={runId} phase="after" />}
 
         {recap && name && (
           <section className="rounded-[24px] bg-surface p-5 shadow-card">

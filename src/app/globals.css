@@ -15,7 +15,7 @@
   --color-line: #e2e2dc;
   --color-ink: #121412;
   --color-ink-muted: #5c605b;
-  --color-ink-faint: #6f736e; /* 4.8:1 on white, AA for small text */
+  --color-ink-faint: #646862; /* 5.6:1 on white, 4.9:1 on the page */
 
   --color-accent: #2f66f5;
   --color-accent-strong: #1f4fd1;
@@ -42,9 +42,9 @@
   --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
 
   /* The sky hero panel and the dark notification toasts */
-  --color-sky-top: #4f8fdc;
-  --color-sky-mid: #7fb3ea;
-  --color-sky-bottom: #b9d6f3;
+  --color-sky-top: #3a70c8;
+  --color-sky-mid: #5287d6;
+  --color-sky-bottom: #a3c4ee;
   --color-on-sky: #ffffff;
   --color-toast: #0d0e0d;
   --color-on-toast: #ffffff;
@@ -396,8 +396,58 @@ a {
 }
 @media (prefers-reduced-motion: reduce) { .amble-you::after { animation: none; opacity: 0 } }
 
+/* On the sky, text has a soft shadow. Odometer digits sit in clipped boxes,
+   which would cut that shadow into rectangles, so there the shadow is drawn
+   around the whole number instead. */
+.sky .odo { text-shadow: none; filter: drop-shadow(0 1px 8px rgb(24 64 130 / 0.3)); }
 /* Flat avatars: one hue per person, a light tint with the initial in a deep shade. */
 .avatar { background: hsl(var(--h) 80% 90%); color: hsl(var(--h) 55% 32%); }
 @media (prefers-color-scheme: dark) {
   .avatar { background: hsl(var(--h) 35% 24%); color: hsl(var(--h) 80% 82%); }
 }
+
+/* Category accents: one detail of each quest icon in its category's hue. On a
+   selected (blue) pin it turns white like the rest of the icon. Claim's flag
+   pins colour the whole flag with --h (data-tint). */
+.cat-accent { color: hsl(var(--h) 68% 40%); }
+.amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 70% 45%); }
+.amble-marker[data-selected] .cat-accent,
+.amble-marker[data-pin][data-selected] .amble-pin-face { color: #fff; }
+.on-dark .cat-accent { color: hsl(var(--h) 75% 72%); }
+@media (prefers-color-scheme: dark) {
+  .cat-accent { color: hsl(var(--h) 75% 70%); }
+  .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 80% 72%); }
+}
+
+/* A held Claim flag sways gently from its pole. */
+.flag-fly { transform-box: view-box; transform-origin: 6px 8px; animation: flag-fly 2.8s ease-in-out infinite; }
+@keyframes flag-fly { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-7deg) scaleX(.93); } }
+@media (prefers-reduced-motion: reduce) { .flag-fly { animation: none; } }
+
+/* The Claim card on Crew: by day a deeper patch of the same sky with a little
+   late sun in the corner; at night the dusk sky with stars. No purple, so it
+   sits in the page's blues instead of fighting them. */
+.claim-card {
+  background:
+    radial-gradient(90% 70% at 105% 115%, rgb(255 205 150 / .45), transparent 60%),
+    linear-gradient(165deg, #2c69c2 0%, #3a78cf 60%, #4782d4 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .claim-card {
+    background:
+      radial-gradient(90% 70% at 105% 115%, rgb(255 190 140 / .16), transparent 60%),
+      linear-gradient(170deg, #1a3466 0%, #22407a 60%, #2a4c88 100%);
+  }
+}
+
+/* Passport stamps: each has its own ink (--ink). In dark mode the ink is
+   mixed with white so the small type stays readable on the dark page, and the
+   category icon stays one colour like a real stamp. */
+.stamp { color: var(--ink); border-color: var(--ink); }
+.stamp .cat-accent { color: inherit; }
+@media (prefers-color-scheme: dark) {
+  .stamp { color: color-mix(in oklab, var(--ink) 45%, white); border-color: color-mix(in oklab, var(--ink) 45%, white); }
+}
+/* Rival orange as text: deep enough for AA on the light page. */
+.text-rival { color: #b8501b; }
+@media (prefers-color-scheme: dark) { .text-rival { color: var(--color-anywhere); } }
