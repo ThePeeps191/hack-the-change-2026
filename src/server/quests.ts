@@ -1,12 +1,12 @@
 import "server-only";
 import type { Prefs, Quest, QuestTag, QuestType } from "@/lib/contracts";
 import { one, query, refreshStarterQuests } from "@/lib/db";
-import { GEMINI_MODE } from "@/lib/env";
-import { generateQuests } from "@/lib/gemini";
+import { AI_MODE } from "@/lib/env";
+import { generateQuests } from "@/lib/ai";
 import { notFound } from "@/lib/route";
 import { distanceM } from "./safety";
 
-const GEMINI_TIMEOUT_MS = 25_000; // grounded calls are slow, so nobody waits on this directly
+const AI_TIMEOUT_MS = 25_000; // writing quests is slow, so nobody waits on this directly
 const ACCEPT_TIMEOUT_MS = 5000; // what two people tapping "yes" will wait for, if warming missed
 const CACHE_HOURS = 6;
 const CACHE_RADIUS_M = 1000;
@@ -31,7 +31,7 @@ export const toQuest = (r: QuestRow): Quest => ({
   tags: r.tags,
 });
 
-// The starter pack, plus what Gemini wrote in the last few hours, in English or
+// The starter pack, plus what the AI wrote in the last few hours, in English or
 // in your language. Quests written for someone else's language stay theirs.
 export async function listQuests(type: string | null, language?: string) {
   await refreshStarterQuests();
@@ -52,7 +52,7 @@ export async function getQuest(id: string) {
   return toQuest(row);
 }
 
-// Keeps what Gemini wrote, so runs and history can point at it.
+// Keeps what the AI wrote, so runs and history can point at it.
 export async function saveQuests(quests: Quest[], language?: string) {
   const translated = language && !language.startsWith("en") ? language : null;
   for (const q of quests) {
@@ -82,14 +82,14 @@ async function starterNear(lat: number, lng: number) {
   return rows.map(toQuest).sort((a, b) => away(a as QuestRow) - away(b as QuestRow));
 }
 
-// Gemini first, and the starter pack if it's slow, down or returns nothing, so
+// The AI first, and the starter pack if it's slow, down or returns nothing, so
 // nobody ever gets an empty screen.
 export async function questsNear(
   lat: number,
   lng: number,
   count: number,
   request: { prefs?: Prefs; prefer_tags?: QuestTag[] } = {},
-  { timeoutMs = GEMINI_TIMEOUT_MS, enough = count } = {},
+  { timeoutMs = AI_TIMEOUT_MS, enough = count } = {},
 ) {
   const cached = await recentlyWritten(lat, lng, request);
   if (cached.length >= enough) return cached.slice(0, count);
@@ -107,11 +107,11 @@ export async function questsNear(
 
 const warming = new Set<string>();
 
-// Called the moment someone says they're free. Gemini writes quests while they
+// Called the moment someone says they're free. The AI writes quests while they
 // wait to be matched, so a fresh one is ready when both say yes. One call per
 // area at a time, and it's fine if it finishes after they've been paired.
 export async function warmQuests(lat: number, lng: number, prefs: Prefs) {
-  if (GEMINI_MODE === "mock") return;
+  if (AI_MODE === "mock") return;
   const area = `${lat.toFixed(2)},${lng.toFixed(2)}`;
   if (warming.has(area)) return;
   warming.add(area);
@@ -122,12 +122,12 @@ export async function warmQuests(lat: number, lng: number, prefs: Prefs) {
   }
 }
 
-// What Gemini wrote for this area in the last few hours. This is what keeps the
+// What the AI wrote for this area in the last few hours. This is what keeps the
 // cost per quest low: one call serves everyone nearby. Translated quests aren't
 // reused, so nobody gets someone else's language.
 async function recentlyWritten(lat: number, lng: number, request: { prefs?: Prefs; prefer_tags?: QuestTag[] }) {
   const language = request.prefs?.language;
-  if (GEMINI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
+  if (AI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
   const rows = await query<QuestRow>(
     "select * from quests where not starter and language is null and lat is not null and created_at > now() - make_interval(hours => $1) order by created_at desc limit 100",
     [CACHE_HOURS],
@@ -156,7 +156,7 @@ export function chooseForPair(quests: Quest[], wanted: QuestTag[], prefs: Prefs[
 export async function pickPairQuest(lat: number, lng: number, prefs: Prefs[]): Promise<Quest> {
   const wanted = tagsFor(prefs);
   const language = prefs.find((p) => p.language)?.language;
-  if (GEMINI_MODE === "mock" && wanted.length === 0) return getQuest(DEMO_PAIR_QUEST);
+  if (AI_MODE === "mock" && wanted.length === 0) return getQuest(DEMO_PAIR_QUEST);
   const quests = await questsNear(lat, lng, 5, { prefs: { language }, prefer_tags: wanted }, { timeoutMs: ACCEPT_TIMEOUT_MS, enough: 1 });
   return chooseForPair(quests, wanted, prefs) ?? getQuest(DEMO_PAIR_QUEST);
 }

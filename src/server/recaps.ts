@@ -1,7 +1,7 @@
 import "server-only";
 import type { Partner, Recap, User } from "@/lib/contracts";
 import { one, query } from "@/lib/db";
-import { writeRecap } from "@/lib/gemini";
+import { writeRecap } from "@/lib/ai";
 import { HttpError } from "@/lib/route";
 import { uploadPath } from "@/lib/uploads";
 import { timesTogether } from "./matching";

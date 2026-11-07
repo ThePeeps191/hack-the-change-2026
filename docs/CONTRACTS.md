@@ -1,6 +1,6 @@
 # Contracts
 
-The shapes everyone builds against, so the UI, backend and Gemini work can happen at the same time. This is a first draft to agree on at kickoff, based on the quest format in the Google Doc. After the scaffold, `src/lib/contracts.ts` holds the real types, including the ones this page leaves loose (`User`, `Crew`, `LeaderboardEntry`, `Dashboard`, `Game`, `Zone`) and a few optional fields the screens need (`Match.you_accepted`, `Match.distance_m`, `Verdict.coins`, recap stats). Add to these freely, and see `CLAUDE.md` for renames.
+The shapes everyone builds against, so the UI, backend and AI work can happen at the same time. This is a first draft to agree on at kickoff, based on the quest format in the Google Doc. After the scaffold, `src/lib/contracts.ts` holds the real types, including the ones this page leaves loose (`User`, `Crew`, `LeaderboardEntry`, `Dashboard`, `Game`, `Zone`) and a few optional fields the screens need (`Match.you_accepted`, `Match.distance_m`, `Verdict.coins`, recap stats). Add to these freely, and see `CLAUDE.md` for renames.
 
 Conventions: JSON uses `snake_case`, ids are UUID strings, times are ISO 8601, and errors look like `{ "error": "message" }`. Requests are authenticated by the session cookie.
 
@@ -56,7 +56,7 @@ type QuestRun = {
 };
 
 type Verdict = {
-  status: 'pending' | 'approved' | 'rejected';  // pending until Gemini replies; poll GET /api/runs/:id
+  status: 'pending' | 'approved' | 'rejected';  // pending until the AI replies; poll GET /api/runs/:id
   reason: string;           // shown to the user, empty while pending
 };
 
@@ -137,5 +137,5 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
 | `GET /api/games/:id` | Game state for the map, polled | game with zones |
 | `POST /api/games/:id/zones/:zone_id/attempts` | Claim or steal: `{ run_id, result }` | zone |
-| `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, gemini_mode, demo_mode, database }` |
+| `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, ai_mode, ai_provider, ai_keys: { anthropic, gemini }, demo_mode, database }`, where each key is `"env-file"`, `"shell"` or null |
 | `POST /api/demo-login` | `DEMO_MODE` only: sign in without Auth0 | nothing |

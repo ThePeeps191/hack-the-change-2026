@@ -1,6 +1,6 @@
 # Hack the Change 2026
 
-Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Gemini writes the quests, checks the proof and makes recaps.
+Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. An AI writes the quests, checks the proof and makes recaps: Claude Haiku 5.5 while we build, Gemini for the demo (`AI_PROVIDER`).
 
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
@@ -75,7 +75,7 @@ Otherwise tell the human it's merged and they can close the session. Humans can 
 Many sessions share each laptop and the same accounts:
 
 - **Ports:** start the dev server with a free `PORT`, and never kill a process you didn't start.
-- **Mocks by default:** `AUTH_MODE=mock` and `GEMINI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing.
+- **Mocks by default:** `AUTH_MODE=mock` and `AI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing (`AI_MODE=live`).
 - **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
 - **Database:** each worktree gets its own embedded Postgres in `.data/`, with made-up seed data, so you can't hurt anyone. Tiger Data is the live database: only point `DATABASE_URL` at it to test the real thing, and never drop, truncate or reset it.
 - **Deploys:** only `main` deploys.
@@ -87,7 +87,7 @@ Many sessions share each laptop and the same accounts:
 - Check for an existing helper or component before writing one.
 - Use the shared design tokens and components, or dozens of sessions will produce dozens of looks.
 - Design for a phone first, with real tap targets.
-- Show a usable screen when GPS is denied, Gemini is slow or down, or there's no signal.
+- Show a usable screen when GPS is denied, the AI is slow or down, or there's no signal.
 - Treat location, photos and video as personal data: don't log them, and use only made-up data in fixtures.
 - Quests stay safe: public places, daylight, walking pace.
 

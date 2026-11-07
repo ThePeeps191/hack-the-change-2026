@@ -42,4 +42,8 @@ With `DATABASE_URL` set, each deploy runs the migrations. If `DEMO_MODE` is set 
 
 ## For the demo
 
-`AUTH_MODE=live GEMINI_MODE=live DEMO_MODE=1` gives real Auth0 and Gemini, plus a "try the demo" button, the bot partner, and no daylight or location rules. Turn `DEMO_MODE` off for real use, because it also lets anyone in without a student email.
+`AUTH_MODE=live AI_MODE=live DEMO_MODE=1` gives real Auth0 and real AI, plus a "try the demo" button, the bot partner, and no daylight or location rules. Turn `DEMO_MODE` off for real use, because it also lets anyone in without a student email.
+
+### Swapping to Gemini before the demo
+
+Put `AI_PROVIDER=gemini` and `GEMINI_API_KEY=...` in `/opt/amble/shared/.env`, then run `systemctl restart amble`. Check `https://your.domain/api/health` says `"ai_provider":"gemini"`. Swap back with `AI_PROVIDER=claude`. The provider is read at startup, so it needs the restart; keys are re-read whenever `.env` changes.

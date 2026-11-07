@@ -1,14 +1,15 @@
 import "server-only";
 import type { Prefs, Quest, QuestTag, Verdict } from "./contracts";
-import { GEMINI_MODE } from "./env";
+import { AI_MODE, AI_PROVIDER } from "./env";
 import { starterQuests } from "./starter-quests";
 
-// Everything Gemini does sits behind these plain functions. GEMINI_MODE=mock
-// returns fixtures so dozens of sessions don't burn the shared quota, and the
-// real calls are in gemini-live.ts. The server handles timeouts, failures (it
-// falls back to the starter pack) and saving what comes back.
+// Everything the AI does sits behind these three plain functions. AI_MODE=mock
+// returns fixtures so dozens of sessions don't spend anyone's credits. With
+// AI_MODE=live, AI_PROVIDER picks the model: Claude (ai-claude.ts, the default)
+// or Gemini (gemini-live.ts). The server handles timeouts, failures (it falls
+// back to the starter pack) and saving what comes back.
 
-const live = () => import("./gemini-live");
+const live = () => (AI_PROVIDER === "gemini" ? import("./gemini-live") : import("./ai-claude"));
 
 export type QuestRequest = {
   // Comfort settings of everyone on the quest. Respect pace and social energy,
@@ -19,7 +20,7 @@ export type QuestRequest = {
 };
 
 export async function generateQuests(lat: number, lng: number, count = 3, request: QuestRequest = {}): Promise<Quest[]> {
-  if (GEMINI_MODE === "mock") return nearest(starterQuests(), lat, lng).slice(0, count);
+  if (AI_MODE === "mock") return nearest(starterQuests(), lat, lng).slice(0, count);
   return (await live()).generateQuestsLive(lat, lng, count, request);
 }
 
@@ -36,7 +37,7 @@ export type ProofInput = {
 // Location and time are checked before this runs (src/server/proof.ts), so this
 // answers one question: does the media show the quest being done?
 export async function judgeProof(input: ProofInput): Promise<Pick<Verdict, "status" | "reason">> {
-  if (GEMINI_MODE === "mock") {
+  if (AI_MODE === "mock") {
     await new Promise((r) => setTimeout(r, 2000));
     if (input.mock_verdict === "rejected") {
       return { status: "rejected", reason: "we can see a bookshelf, but not a title page. get a little closer to the first pages and try again?" };
@@ -56,7 +57,7 @@ export type RecapInput = {
 
 // Only the words: the server adds the route, photos and stats around them.
 export async function writeRecap(input: RecapInput): Promise<{ summary: string; narration_url: string | null }> {
-  if (GEMINI_MODE === "live") {
+  if (AI_MODE === "live") {
     try {
       const summary = await Promise.race([
         (await live()).writeRecapLive(input),
