@@ -94,7 +94,7 @@ export function HeroIcon({ href, label, d, onClick }: { href?: string; label: st
 
 // Round frosted icon button that sits beside the main pill.
 export function RoundButton({ href, label, d, onClick }: { href?: string; label: string; d: string; onClick?: () => void }) {
-  const cls = "grid size-[52px] shrink-0 place-items-center rounded-full bg-white/22 text-on-sky backdrop-blur-md transition-[background-color,transform] hover:bg-white/30 active:scale-95";
+  const cls = "glass-sky grid size-[52px] shrink-0 place-items-center rounded-full text-on-sky transition-transform active:scale-95";
   const svg = (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d={d} />

@@ -91,13 +91,17 @@ export function CrewScreen() {
               className="claim-card group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
             >
               <Stars className="hidden dark:block" />
-              <p className="relative text-[13px] font-medium tracking-[0.02em] text-white/85">Claim · live this week</p>
-              <p className="relative mt-2 text-[20px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
-              <ClaimPeek crewId={crew.id} />
-              <p className="relative mt-3 flex items-center gap-1 text-[15px] font-semibold">
-                Open the map
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="transition-transform group-hover:translate-x-0.5"><path d="M9 5l7 7-7 7" /></svg>
-              </p>
+              <div className="relative flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium tracking-[0.02em] text-white/85">Claim · live this week</p>
+                  <p className="mt-2 text-[19px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
+                  <p className="mt-3 flex items-center gap-1 text-[15px] font-semibold">
+                    Open the map
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="transition-transform group-hover:translate-x-0.5"><path d="M9 5l7 7-7 7" /></svg>
+                  </p>
+                </div>
+                <ClaimPeek crewId={crew.id} />
+              </div>
             </Link>
           </motion.div>
         )}
