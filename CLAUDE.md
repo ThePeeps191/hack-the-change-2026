@@ -1,6 +1,6 @@
 # Hack the Change 2026
 
-Danny, Siddhant, Aaron and Jonas are building a mobile-first website in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Gemini writes the quests, checks the proof and makes recaps.
+Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Gemini writes the quests, checks the proof and makes recaps.
 
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work

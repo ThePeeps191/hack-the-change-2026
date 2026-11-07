@@ -32,7 +32,7 @@ type Match = {
   status: 'pending' | 'accepted' | 'declined' | 'expired';
   source: 'nearby' | 'invite';
   partner: { display_name: string; avatar_url: string | null } | null;  // null until both accept
-  run_id: string | null;
+  run_id: string | null;   // the server creates the run once both accept; clients never create pair runs
 };
 
 // One group doing one quest
@@ -43,12 +43,12 @@ type QuestRun = {
   status: 'active' | 'completed' | 'expired';
   started_at: string;
   ends_at: string;
-  members: { user_id: string; display_name: string; submitted: boolean }[];
+  members: { user_id: string; display_name: string; submitted: boolean; verdict: Verdict | null }[];
 };
 
 type Verdict = {
-  status: 'approved' | 'rejected';
-  reason: string;           // shown to the user
+  status: 'pending' | 'approved' | 'rejected';  // pending until Gemini replies; poll GET /api/runs/:id
+  reason: string;           // shown to the user, empty while pending
 };
 
 type Recap = {
@@ -66,7 +66,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 
 | Table | Main columns |
 | --- | --- |
-| `users` | id, auth0_sub, display_name, avatar_url, email_verified, coins, created_at |
+| `users` | id, auth0_sub, display_name, avatar_url, email_verified, age_confirmed_at, coins, created_at |
 | `availability` | user_id, lat, lng, expires_at |
 | `matches` | id, user_a, user_b, status, source, invite_code, created_at |
 | `quests` | the Quest fields, plus created_at |
@@ -99,14 +99,17 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/invites` | Create a link to send a stranger | `{ code, url }` |
 | `POST /api/invites/:code/accept` | Open a stranger's invite | `Match` |
 | `POST /api/quests/generate` | `{ lat, lng, count? }` | `Quest[]` |
+| `GET /api/quests` | List quests, `?type=anywhere` for quests that work in any city | `Quest[]` |
 | `GET /api/quests/:id` | One quest | `Quest` |
-| `POST /api/runs` | Start a quest: `{ quest_id, match_id?, crew_id?, zone_id? }` | `QuestRun` |
+| `POST /api/runs` | Start a crew or Claim quest: `{ quest_id, crew_id?, zone_id? }`. Pair runs come from `Match.run_id` | `QuestRun` |
 | `GET /api/runs/:id` | Run status, polled | `QuestRun` |
-| `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at | `Verdict` |
+| `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
 | `GET /api/runs/:id/recap` | Recap for a finished run | `Recap` |
 | `POST /api/location` | Batch of pings: `{ run_id, points }` | nothing |
 | `POST /api/connections` | Opt in to stay in touch: `{ run_id }` | `{ connected }` |
+| `GET /api/connections` | People I've connected with | `{ user_id, display_name, avatar_url }[]` |
 | `POST /api/reports` | `{ reported_id, run_id, reason }` | nothing |
+| `GET /api/crews` | Crews I'm in | crew list |
 | `POST /api/crews` | `{ name }` | crew with `invite_code` |
 | `GET /api/crews/:id` | Crew, members and shared quests | crew |
 | `POST /api/crews/join` | `{ invite_code }` | crew |
