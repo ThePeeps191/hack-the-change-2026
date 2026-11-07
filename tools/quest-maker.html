@@ -59,16 +59,33 @@ li .t small { color: var(--muted); font-family: var(--mono); font-size: 11px; }
 .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
 pre { font: 12px/1.5 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow: auto; max-height: 220px; margin: 0; }
 .leaflet-container { font-family: var(--body); }
+/* Place search floats over the map, right of the zoom buttons. */
+.mapwrap { position: relative; height: 100%; min-height: 300px; }
+.search { position: absolute; top: 10px; left: 54px; right: 10px; max-width: 440px; z-index: 1000; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.search input, .search > button { background: var(--panel); box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25); }
+.search ul { grid-column: 1 / -1; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px; gap: 2px; max-height: 50vh; overflow-y: auto; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); }
+.search li { display: block; border: 0; border-radius: 6px; padding: 8px 10px; min-height: 44px; }
+.search li:hover, .search li:focus-visible { background: var(--bg); outline: none; }
+.search li b { display: block; }
+.search li small { display: block; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search li.note { color: var(--muted); cursor: default; min-height: 0; }
 @media (max-width: 820px) {
   .app { grid-template-columns: 1fr; grid-template-rows: 45vh auto; height: auto; }
-  #map { height: 45vh; }
+  .mapwrap, #map { height: 45vh; }
   aside { border-left: 0; border-top: 1px solid var(--line); }
 }
 </style>
 </head>
 <body>
 <div class="app">
-  <div id="map" aria-label="Map: click to place a challenge"></div>
+  <div class="mapwrap">
+    <div id="map" aria-label="Map: click to place a challenge"></div>
+    <form id="search" class="search" role="search">
+      <input id="q" type="search" placeholder="Search a place, e.g. MacEwan Hall" autocomplete="off" aria-label="Search for a place">
+      <button type="submit">Search</button>
+      <ul id="results" hidden></ul>
+    </form>
+  </div>
   <aside>
     <header>
       <h1>Amble <span>Quest Maker</span></h1>
@@ -171,6 +188,75 @@ const map = L.map("map").setView(UCALGARY, 16);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19, attribution: "&copy; OpenStreetMap contributors",
 }).addTo(map);
+
+// Place search via OpenStreetMap's Nominatim (free, no key). Its usage policy allows
+// at most one request a second and no search-as-you-type, so it runs on submit only.
+let lastSearch = 0;
+$("search").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const q = $("q").value.trim();
+  if (!q) return;
+  const waitMs = 1000 - (Date.now() - lastSearch);
+  if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
+  lastSearch = Date.now();
+  showResults([], "Searching…");
+  const b = map.getBounds();
+  // Prefer places in the current view (bounded=0 still allows results elsewhere).
+  const params = new URLSearchParams({ format: "jsonv2", q, limit: "6", "accept-language": "en",
+    viewbox: [b.getWest(), b.getNorth(), b.getEast(), b.getSouth()].map((v) => v.toFixed(5)).join(","), bounded: "0" });
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const hits = await r.json();
+    showResults(hits, hits.length ? "" : `No places found for "${q}". Try a building or street name.`);
+  } catch (err) {
+    showResults([], `Search isn't working right now (${err.message}). Click the map instead.`);
+  }
+});
+
+function showResults(hits, message) {
+  const ul = $("results");
+  ul.innerHTML = "";
+  ul.hidden = false;
+  if (message) {
+    const li = document.createElement("li");
+    li.className = "note";
+    li.textContent = message;
+    ul.append(li);
+  }
+  hits.forEach((h) => {
+    const name = h.name || h.display_name.split(",")[0];
+    const li = document.createElement("li");
+    li.tabIndex = 0;
+    li.innerHTML = "<b></b><small></small>";
+    li.querySelector("b").textContent = name;
+    li.querySelector("small").textContent = h.display_name;
+    const pick = () => pickPlace(h, name);
+    li.addEventListener("click", pick);
+    li.addEventListener("keydown", (e) => { if (e.key === "Enter") pick(); });
+    ul.append(li);
+  });
+}
+
+function pickPlace(h, name) {
+  const lat = +h.lat, lng = +h.lon;
+  $("results").hidden = true;
+  const bb = (h.boundingbox || []).map(Number); // [south, north, west, east]
+  if (bb.length === 4 && bb.every(isFinite)) map.fitBounds([[bb[0], bb[2]], [bb[1], bb[3]]], { maxZoom: 18 });
+  else map.setView([lat, lng], 18);
+  if ($("type").value === "anywhere") { $("type").value = "local"; $("type").dispatchEvent(new Event("change")); }
+  setDraft(lat, lng);
+  // Fill the place name unless the user already typed their own.
+  if (!$("place_name").value.trim() || $("place_name").dataset.auto) {
+    $("place_name").value = name;
+    $("place_name").dataset.auto = "1";
+  }
+  setStatus(`Pinned ${name}. Drag the pin to fine-tune, then fill in the challenge.`);
+}
+
+$("place_name").addEventListener("input", () => delete $("place_name").dataset.auto);
+$("q").addEventListener("keydown", (e) => { if (e.key === "Escape") $("results").hidden = true; });
+map.on("click", () => { $("results").hidden = true; });
 
 const layer = L.layerGroup().addTo(map);
 const draftIcon = L.divIcon({ className: "", html: pinHtml("var(--pin)", "+"), iconSize: [28, 36], iconAnchor: [14, 34] });
@@ -340,6 +426,7 @@ function fillForm(q) {
   $("duration_min").value = q.duration_min ?? 20;
   $("coins").value = q.coins ?? 25;
   $("place_name").value = q.place_name || "";
+  delete $("place_name").dataset.auto;
   $("lat").value = q.lat ?? "";
   $("lng").value = q.lng ?? "";
   $("type").dispatchEvent(new Event("change"));
