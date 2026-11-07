@@ -39,7 +39,10 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
       names: people.map((p) => p.display_name),
       duration_min: durationMin,
       distance_m: me?.distance_m ?? null,
-      photos: photos.map((p) => ({ path: uploadPath(p.media_path), type: p.media_type })),
+      // A photo that can't be found is left out rather than losing the recap.
+      photos: (
+        await Promise.all(photos.map(async (p) => ({ path: await uploadPath(p.media_path).catch(() => ""), type: p.media_type })))
+      ).filter((p) => p.path),
     });
     await query("insert into recaps (run_id, summary, narration_url) values ($1, $2, $3) on conflict (run_id) do nothing", [runId, saved.summary, saved.narration_url]);
   }

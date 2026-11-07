@@ -81,7 +81,7 @@ export async function judgeSubmission(id: string) {
     const verdict = await Promise.race([
       judgeProof({
         quest,
-        media_path: sub.media_path ? uploadPath(sub.media_path) : null,
+        media_path: sub.media_path ? await uploadPath(sub.media_path) : null,
         media_type: sub.media_type,
         lat: sub.lat,
         lng: sub.lng,
