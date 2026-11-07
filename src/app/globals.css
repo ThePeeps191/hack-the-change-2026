@@ -395,3 +395,8 @@ a {
   animation: you-pulse 2.2s ease-out infinite;
 }
 @media (prefers-reduced-motion: reduce) { .amble-you::after { animation: none; opacity: 0 } }
+
+/* On the sky, text has a soft shadow. Odometer digits sit in clipped boxes,
+   which would cut that shadow into rectangles, so there the shadow is drawn
+   around the whole number instead. */
+.sky .odo { text-shadow: none; filter: drop-shadow(0 1px 8px rgb(24 64 130 / 0.3)); }

@@ -10,7 +10,7 @@ export function RecapExtras({ recap }: { recap: Recap }) {
         <div className={`grid gap-2 ${recap.photos.length > 1 ? "grid-cols-2" : ""}`}>
           {recap.photos.map((src) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={src} src={src} alt="Verified proof from this quest" className="aspect-square w-full rounded-[24px] bg-sunken object-cover shadow-card" />
+            <img key={src} src={src} alt="Verified proof from this quest" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${recap.photos.length > 1 ? "aspect-square" : "aspect-[4/3] max-h-[240px]"}`} />
           ))}
         </div>
       )}

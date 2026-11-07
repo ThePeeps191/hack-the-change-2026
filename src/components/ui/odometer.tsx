@@ -23,7 +23,7 @@ export function Odometer({ value, className = "", delay = 0 }: { value: number |
   }, [text, delay]);
 
   return (
-    <span className={`inline-flex tabular-nums ${className}`}>
+    <span className={`odo inline-flex tabular-nums ${className}`}>
       <span className="sr-only">{text}</span>
       {shown.split("").map((ch, i) =>
         /\d/.test(ch) ? (

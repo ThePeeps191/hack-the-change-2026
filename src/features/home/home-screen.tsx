@@ -9,7 +9,9 @@ import type { Dashboard, Quest } from "@/lib/contracts";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar, HeroIcon, icons, Ring, RoundButton } from "@/components/ui/hero";
+import { Hero, HeroBar, HeroIcon, icons, RoundButton } from "@/components/ui/hero";
+import { Odometer } from "@/components/ui/odometer";
+import { SunArc } from "@/components/ui/sun-arc";
 import { useGoFree } from "@/features/matching/use-go-free";
 import { GlyphTile, QuestCard } from "@/features/quests/quest-card";
 import { Carousel } from "@/components/ui/carousel";
@@ -52,6 +54,8 @@ export function HomeScreen() {
   const anywhere = (quests ?? []).filter((q) => q.type === "anywhere");
   const active = d?.active_minutes_week ?? 0;
   const goal = d?.active_goal_minutes ?? 150;
+  const faces = d?.familiar_faces?.length ?? 0;
+  const places = d?.new_places?.length ?? 0;
 
   return (
     <AppShell>
@@ -61,11 +65,14 @@ export function HomeScreen() {
           center={date}
           right={<HeroIcon href="/map" label="Map" d={icons.map} />}
         />
-        <div className="mt-2 flex justify-center gap-3 px-4">
-          <Ring value={d ? active : 0} label="active min" progress={active / goal} color="#8ff0b4" />
-          <Ring value={d?.familiar_faces?.length ?? 0} label={(d?.familiar_faces?.length ?? 0) === 1 ? "familiar face" : "familiar faces"} progress={(d?.familiar_faces?.length ?? 0) / 5} color="#ffffff" />
-          <Ring value={d?.new_places?.length ?? 0} label="new places" progress={(d?.new_places?.length ?? 0) / 8} color="#ffbe7a" />
-        </div>
+        <SunArc caption={<span className="text-[13px] font-medium text-on-sky/90">of {goal} active min this week</span>} progress={active / goal} className="mt-1 px-6">
+          <Odometer value={d ? active : 0} className="font-[family-name:var(--font-display)] text-[40px] leading-none font-semibold tracking-[-0.03em]" />
+        </SunArc>
+        <p className="mt-2.5 flex items-center justify-center gap-2 text-[14px] font-medium text-on-sky/90">
+          <span><span className="font-semibold tabular-nums text-on-sky">{faces}</span> {faces === 1 ? "familiar face" : "familiar faces"}</span>
+          <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden className="opacity-60"><circle cx="3" cy="3" r="1.5" fill="currentColor" /></svg>
+          <span><span className="font-semibold tabular-nums text-on-sky">{places}</span> {places === 1 ? "new place" : "new places"}</span>
+        </p>
         <Hand as="h1" className="mt-5 text-center text-[38px] leading-none font-bold">free for {QUEST_MINUTES} min?</Hand>
         <p className="mx-auto mt-2 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/85">
           Someone nearby is too. You&apos;ll get one small thing to do together.

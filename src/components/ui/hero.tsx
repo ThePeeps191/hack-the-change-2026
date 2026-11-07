@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useId, type ReactNode } from "react";
-import { Odometer } from "./odometer";
+import type { ReactNode } from "react";
 
 // Soft clouds drifting low across the sky. Each is a few overlapping puffs,
 // blurred, moving very slowly; they sit behind the content.
@@ -28,22 +27,32 @@ function Clouds() {
   );
 }
 
-// The sky panel at the top of a screen: the live state of your day. Below it,
-// a faint wash of sky tints the paper so the two read as one place.
+// Fully opaque until the last 72px, then an eased fade (more stops than two,
+// so it doesn't band) down to nothing.
+const FADE =
+  "linear-gradient(180deg, #000 calc(100% - 72px), rgb(0 0 0 / .82) calc(100% - 56px), rgb(0 0 0 / .55) calc(100% - 38px), rgb(0 0 0 / .26) calc(100% - 20px), rgb(0 0 0 / .08) calc(100% - 8px), transparent 100%)";
+
+// The sky panel at the top of a screen: the live state of your day. It has no
+// hard bottom edge: the last 64px fade out through a mask (clouds and all), and
+// the page below slides up a little into that fade, so sky dissolves into
+// paper. Below that, a faint wash of sky tints the paper so the two read as one
+// place.
 export function Hero({ children, className = "", fill = false }: { children: ReactNode; className?: string; fill?: boolean }) {
   return (
     <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>
       <section
-        className={`relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "rounded-b-[36px] pb-6"} ${className}`}
+        className={`sky relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "pb-6"} ${className}`}
         style={{
           background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)",
           textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
+          ...(fill ? {} : { marginBottom: -36, maskImage: FADE, WebkitMaskImage: FADE }),
         }}
       >
         {/* a soft sun glow, top-right */}
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
         <Clouds />
         <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>{children}</div>
+        {!fill && <div aria-hidden className="h-16" />}
       </section>
       {!fill && (
         <div
@@ -80,53 +89,6 @@ export function HeroIcon({ href, label, d, onClick }: { href?: string; label: st
     <Link href={href} aria-label={label} className={cls}>{svg}</Link>
   ) : (
     <button aria-label={label} onClick={onClick} className={cls}>{svg}</button>
-  );
-}
-
-// A progress arc on the sky. The glow is a blurred copy of the arc drawn
-// through a filter with room to spread, so it never clips to a box. The arc's
-// head carries a small bright cap, like a light moving round a dial.
-export function Arc({ progress, size, stroke, color, track = true }: { progress: number; size: number; stroke: number; color: string; track?: boolean }) {
-  const id = `arc${useId().replace(/[^a-z0-9]/gi, "")}`;
-  const r = 50 - stroke / 2 - 4;
-  const c = 2 * Math.PI * r;
-  const p = Math.max(0.001, Math.min(1, progress));
-  const arc = {
-    cx: 50,
-    cy: 50,
-    r,
-    fill: "none",
-    stroke: color,
-    strokeWidth: stroke,
-    strokeLinecap: "round" as const,
-    strokeDasharray: c,
-    strokeDashoffset: c * (1 - p),
-    className: "transition-[stroke-dashoffset] duration-[1400ms] ease-[var(--ease-out-soft)]",
-  };
-  return (
-    <svg viewBox="0 0 100 100" width={size} height={size} className="absolute inset-0 -rotate-90 overflow-visible" aria-hidden>
-      <defs>
-        <filter id={id} x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation={stroke * 0.9} />
-        </filter>
-      </defs>
-      {track && <circle cx="50" cy="50" r={r} fill="rgb(255 255 255 / 0.1)" stroke="rgb(255 255 255 / 0.22)" strokeWidth={stroke} />}
-      <circle {...arc} filter={`url(#${id})`} opacity={0.55} />
-      <circle {...arc} />
-    </svg>
-  );
-}
-
-// A ring stat: an arc for progress, a big number, and a label beneath.
-export function Ring({ value, label, progress, color }: { value: number | string; label: string; progress: number; color: string }) {
-  return (
-    <div className="flex flex-col items-center gap-1.5">
-      <div className="relative grid size-[96px] place-items-center">
-        <Arc progress={progress} size={96} stroke={5} color={color} />
-        <Odometer value={value} className="font-[family-name:var(--font-display)] text-[26px] font-semibold tracking-[-0.02em]" />
-      </div>
-      <span className="text-[13px] font-medium text-on-sky/90">{label}</span>
-    </div>
   );
 }
 

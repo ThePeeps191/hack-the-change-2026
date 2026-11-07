@@ -9,10 +9,13 @@ import { Hero, Stars } from "@/components/ui/hero";
 import { SkySteps } from "@/components/ui/sky-steps";
 
 // How it works, in three beats, so the first screen explains itself.
+const glyph = (d: string) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={d} /></svg>
+);
 const steps = [
-  { n: "1", t: "Tap “I'm free”", d: "When you've got 20 minutes." },
-  { n: "2", t: "Meet at a public spot", d: "Someone nearby gets the same quest." },
-  { n: "3", t: "Do one small thing together", d: "Then go on with your day." },
+  { n: glyph("M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7.5V12l3 2"), t: "tap “I'm free”", d: "When you've got 20 minutes." },
+  { n: glyph("M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z"), t: "meet at a public spot", d: "Someone nearby gets the same quest." },
+  { n: glyph("M12 3.5l2.1 5.4 5.4 2.1-5.4 2.1L12 18.5l-2.1-5.4L4.5 11l5.4-2.1z"), t: "do one small thing together", d: "Then go on with your day." },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;

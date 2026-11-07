@@ -6,7 +6,8 @@ import type { Dashboard, User } from "@/lib/contracts";
 import { setSound, soundOn } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Arc, Hero, HeroBar } from "@/components/ui/hero";
+import { Hero, HeroBar } from "@/components/ui/hero";
+import { SunArc } from "@/components/ui/sun-arc";
 import { Odometer } from "@/components/ui/odometer";
 import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
@@ -15,18 +16,6 @@ import { type Comfort, toComfort, toPrefs } from "@/features/onboarding/prefs";
 import { ProfileLinks } from "./profile-links";
 
 const defaults: Comfort = { pace: "walk", talk: "side", stepFree: false };
-
-function BigRing({ value, goal }: { value: number; goal: number }) {
-  return (
-    <div className="relative grid size-[180px] place-items-center">
-      <Arc progress={value / goal} size={180} stroke={8} color="#9cf2bf" />
-      <div className="flex flex-col items-center">
-        <Odometer value={value} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
-        <span className="mt-1 text-[13px] font-medium text-on-sky/85">of {goal} min</span>
-      </div>
-    </div>
-  );
-}
 
 function Section({ id, title, children, note }: { id: string; title: string; children: React.ReactNode; note?: React.ReactNode }) {
   return (
@@ -68,6 +57,12 @@ export function DashboardScreen() {
   const places = d?.new_places ?? [];
   const mood = d?.mood;
 
+  // The server can log one quest twice, once with no route (0 m). Show the
+  // one with a route and drop the empty copy.
+  const journal = (d?.history ?? []).filter(
+    (h, _, all) => !(!h.distance_m && all.some((o) => o !== h && o.quest.id === h.quest.id && o.partner?.display_name === h.partner?.display_name && !!o.distance_m)),
+  );
+
   return (
     <AppShell>
       <Hero className="pb-8">
@@ -75,11 +70,11 @@ export function DashboardScreen() {
         <Hand as="h1" className="text-center text-[36px] leading-none font-bold">
           {me ? `hi, ${me.display_name.split(" ")[0].toLowerCase()}` : " "}
         </Hand>
-        <div className="mt-4 flex justify-center">
-          <BigRing value={active} goal={goal} />
-        </div>
+        <SunArc caption={<span className="text-[13px] font-medium text-on-sky/85">of {goal} active min this week</span>} progress={active / goal} className="mt-3 px-5">
+          <Odometer value={active} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
+        </SunArc>
         <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/85">
-          Active minutes this week. Canada&apos;s guidelines suggest {goal}.
+          Canada&apos;s movement guidelines suggest {goal} a week.
         </p>
         {d && <WeekStrip history={d.history} />}
         {d && (
@@ -130,10 +125,10 @@ export function DashboardScreen() {
           </Section>
         )}
 
-        {d && d.history.length > 0 && (
+        {journal.length > 0 && (
           <Section id="recent" title="recently">
             <ul className="rows overflow-hidden rounded-[24px] bg-surface shadow-card">
-              {d.history.map((h, i) => <Entry key={h.run_id} h={h} i={i} />)}
+              {journal.map((h, i) => <Entry key={h.run_id} h={h} i={i} />)}
             </ul>
           </Section>
         )}
