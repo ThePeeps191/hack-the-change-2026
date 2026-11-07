@@ -48,8 +48,13 @@ export function ClaimScreen() {
 
   return (
     <AppShell>
-      <div className="relative h-[62dvh] min-h-[380px] overflow-hidden rounded-b-[36px] shadow-card">
-        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} />
+      <motion.div
+        className="relative overflow-hidden rounded-b-[36px] shadow-card"
+        initial={false}
+        animate={{ height: zone ? "46dvh" : "60dvh" }}
+        transition={{ type: "spring", stiffness: 260, damping: 34 }}
+      >
+        <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} />
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-[max(8px,env(safe-area-inset-top))]">
           <Link href="/crew" aria-label="Back to crew" className="pointer-events-auto grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -64,7 +69,7 @@ export function ClaimScreen() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       <div className="space-y-4 px-4 pt-5">
         {!game && error ? (

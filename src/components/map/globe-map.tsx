@@ -78,12 +78,14 @@ export default function GlobeMap({
   onSelect,
   focus,
   className = "",
+  intro = true,
 }: {
   markers: GlobeMarker[];
   selected?: string | null;
   onSelect?: (id: string) => void;
   focus?: { lat: number; lng: number } | null;
   className?: string;
+  intro?: boolean;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const map = useRef<MLMap | null>(null);
@@ -110,7 +112,13 @@ export default function GlobeMap({
     m.once("load", () => {
       box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
       const target = { center: [CAMPUS_CENTER.lng, CAMPUS_CENTER.lat] as [number, number], zoom: 15.4, pitch: 56, bearing: -24 };
-      if (reduced()) m.jumpTo(target);
+      // The whole-Earth dive plays once per visit; after that we open on campus.
+      let seen = false;
+      try {
+        seen = sessionStorage.getItem("amble:globe-intro") === "1";
+        sessionStorage.setItem("amble:globe-intro", "1");
+      } catch {}
+      if (reduced() || !intro || seen) m.jumpTo(target);
       else setTimeout(() => m.flyTo({ ...target, duration: 4600, curve: 1.4, essential: false }), 1400);
     });
 
@@ -154,7 +162,7 @@ export default function GlobeMap({
       m.remove();
       map.current = null;
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- create the map once; intro only matters then
 
   // Keep markers in sync.
   useEffect(() => {
