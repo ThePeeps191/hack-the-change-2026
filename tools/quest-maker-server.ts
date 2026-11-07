@@ -16,7 +16,7 @@ const DIR = path.join(HERE, "..", "data", "quests");
 const PAGE = path.join(HERE, "quest-maker.html");
 const port = Number(process.env.PORT) || 8744;
 
-// Plain file names only (tfdl.json, science-b.json): no paths, no traversal.
+// Plain file names only (quests.json, science-b.json): no paths, no traversal.
 const NAME = /^[a-z0-9][a-z0-9_-]*\.json$/i;
 const fileFor = (name: string | null) => (name && NAME.test(name) ? path.join(DIR, name) : null);
 
@@ -47,7 +47,7 @@ const server = createServer(async (req, res) => {
     if (url.pathname === "/api/quests") {
       const name = url.searchParams.get("file");
       const file = fileFor(name);
-      if (!file) return send(res, 400, { error: "file must be a plain name like tfdl.json" });
+      if (!file) return send(res, 400, { error: "file must be a plain name like quests.json" });
 
       if (req.method === "GET") {
         let text: string;
