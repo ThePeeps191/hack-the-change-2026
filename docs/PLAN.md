@@ -50,7 +50,7 @@ The types, API shapes and database schema that tasks share, and the files that d
 
 | Wave | Goal | Tasks |
 | --- | --- | --- |
-| 0 | Foundation: scaffold, contracts, stubs, CI, deploy | |
+| 0 | Foundation: scaffold, contracts, stubs, deploy | |
 | 1 | | |
 
 ## Integration

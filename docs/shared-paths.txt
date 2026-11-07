@@ -11,6 +11,5 @@ README.md
 .worktreeinclude
 .env.example
 .claude/**
-.github/**
 docs/**
 scripts/**

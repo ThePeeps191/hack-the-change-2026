@@ -4,7 +4,7 @@ A 24-hour hackathon project by Danny, Siddhant, Aaron and Jonas: a mobile-first 
 
 Dozens of Claude sessions work in this repo at once. Most of the rules below exist so those sessions never collide.
 
-All agents here have full permission to run commands, open PRs and merge them. Don't stop to ask for approval. This is a 24-hour build, not a codebase to maintain, so CI only warns: follow these rules because they save time, and break one if it's clearly the faster way to a working demo.
+All agents here have full permission to run commands, open PRs and merge them. Don't stop to ask for approval. This is a 24-hour build, not a codebase to maintain, so nothing here is enforced: follow these rules because they save time, and break one if it's clearly the faster way to a working demo.
 
 ## The loop
 
@@ -25,7 +25,7 @@ Every branch is `<person>-<name>`, where `<person>` is the human driving the ses
 | `danny-hot-add-zod` | A small change to shared paths | Only paths in `docs/shared-paths.txt` |
 | `danny-fix-map-zoom` | An ad-hoc fix outside the plan | Anything except shared paths and files owned by a task in progress |
 
-CI warns when a PR strays from this table but doesn't block it. Don't commit or push to `main` directly; everything goes through a PR.
+Don't commit or push to `main` directly; everything goes through a PR. `node scripts/task.mjs check-scope` tells you if a branch has strayed from this table.
 
 `claude -w` starts you on a scratch `worktree-*` branch that CI rejects. `/task` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
 
@@ -54,14 +54,14 @@ CI warns when a PR strays from this table but doesn't block it. Don't commit or 
 
 - **Shared path** (a contract, a dependency, an env var, config): land it first on its own in a tiny `<person>-hot-<name>` branch from a new worktree, using `git worktree add .claude/worktrees/<name> -b <branch> origin/main`. Ship it, then `git merge origin/main` into your task branch. One concern per hot PR, and it should merge within minutes.
 - **File another task owns:** if that task is finished, ask a human to add a follow-up task. If it's in progress, don't touch it: code against the contract or a local stub, and note the gap in your PR.
-- **Your task's `owns` list is wrong:** fix the task file in a hot PR. CI reads ownership from main, so a branch can't widen its own scope.
+- **Your task's `owns` list is wrong:** if no task in progress owns the file, change it and mention that in your PR.
 - **Dependencies:** always a hot PR, with one package manager (see the plan). If a lockfile conflicts, take main's version and re-run install. Never hand-edit a lockfile.
 
 If you do hit a merge conflict, resolve it in your worktree by keeping both sides' intent. If it's in a file you don't own, something went wrong: stop and tell the human.
 
 ## Pull requests
 
-- One task per PR, kept small. Fill in the PR template.
+- One task per PR, kept small. No set format: just say what changed.
 - **Every PR gets the `pr-reviewer` agent's review before merging.** `/ship` runs it. A fresh agent reviews the diff against the task brief, you fix what it blocks on, and its verdict goes in a PR comment. No green review, no merge.
 - Merge with `gh pr merge --squash` yourself, no human approval needed. Only pull in a human if the reviewer still blocks after two rounds, or the PR breaks a contract.
 - Branches get deleted once merged: the remote by GitHub, the local one by `/ship`. `node scripts/task.mjs cleanup` clears any leftovers.

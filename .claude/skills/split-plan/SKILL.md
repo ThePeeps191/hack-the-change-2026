@@ -28,7 +28,7 @@ Wave 0 runs before everything else and owns the hot files. Keep it to as few tas
 - A stub directory for every feature, with mock data, so the app runs from the first commit
 - Mocks for Gemini and the other external services
 - Design tokens and base components
-- `.env.example`, stack entries in `.gitignore`, and real checks in `.github/workflows/ci.yml`
+- `.env.example` and stack entries in `.gitignore`
 - A deploy of `main`
 - `worktree.symlinkDirectories` in `.claude/settings.json`, if the chosen package manager is safe with it
 - The contracts directory, dependency manifest, lockfile and root config added to `docs/shared-paths.txt`
