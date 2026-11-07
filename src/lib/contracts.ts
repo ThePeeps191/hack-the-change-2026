@@ -210,3 +210,18 @@ export type Game = {
 export type Connection = { user_id: string; display_name: string; avatar_url: string | null };
 
 export type ApiError = { error: string };
+
+// Added: community-wide totals for the public /impact page (GET /api/impact).
+// Counts only, no names or places. Bots never count. "demo" means no real person
+// has finished a quest yet, so these include the made-up seed and demo accounts.
+export type Impact = {
+  source: "real" | "demo";
+  quests_completed: number;
+  minutes_outside: number; // added up across everyone on each finished quest
+  km_walked: number;
+  people_met_someone_new: number; // distinct people who finished a pair quest with another person
+  familiar_pairs: number; // pairs of people who finished 2+ quests together
+  checkins_after: number; // after-quest mood check-ins
+  felt_better_pct: number | null; // share of those at 4 or 5 (better than before), null with none
+  generated_at: string;
+};
