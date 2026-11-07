@@ -297,7 +297,7 @@ function release(args) {
 }
 
 // Only removes what can't lose work: clean worktrees whose branch has a merged PR,
-// or that /ship detached onto main. A deleted remote branch alone proves nothing,
+// or that were detached onto main after merging. A deleted remote branch alone proves nothing,
 // because release deletes one too, and squash merges hide from git's own ancestry.
 function hasMergedPr(branch) {
   try {

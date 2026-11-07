@@ -4,14 +4,23 @@ A 24-hour hackathon project by Danny, Siddhant, Aaron and Jonas: a mobile-first 
 
 Dozens of Claude sessions work in this repo at once. Most of the rules below exist so those sessions never collide.
 
-All agents here have full permission to run commands, open PRs and merge them. Don't stop to ask for approval. This is a 24-hour build, not a codebase to maintain, so nothing here is enforced: follow these rules because they save time, and break one if it's clearly the faster way to a working demo.
+All agents here have full permission to run commands, open PRs and merge them. Don't stop to ask for approval. This is a 24-hour build, not a codebase to maintain, and tech debt doesn't matter. Nothing here is enforced: follow these rules because they save time, and break one if it's clearly the faster way to a working demo.
 
 ## The loop
 
 1. **Start in a worktree.** Run `claude -w`, never work in the main checkout.
-2. **`/task`** claims your next ready task and implements it. `/task T-012` claims a specific one.
-3. **Commit as you go**, and push after each commit.
-4. **`/ship`** updates from main, verifies, opens the PR, runs the review agent, merges and deletes the branch.
+2. **Claim a task.** `node scripts/task.mjs claim` takes your next ready task, or `claim T-012` takes a specific one. It's atomic and switches you onto the task's branch. Read the brief it prints.
+3. **Build it,** committing and pushing as you go. Make your last commit set `status: done` in the task file.
+4. **Merge it.** Run `git fetch origin && git merge origin/main`, then `gh pr create --base main --fill`, then `gh pr merge --squash`. Then delete the branch:
+
+   ```
+   branch=$(git branch --show-current)
+   git push origin --delete "$branch"
+   git switch --detach origin/main
+   git branch -D "$branch"
+   ```
+
+Can't finish a task? Push what you have and run `node scripts/task.mjs release T-012` so someone else can claim it.
 
 Check the board with `node scripts/task.mjs list`. It reads from `origin/main` and GitHub, so it's always current. Don't keep status anywhere else.
 
@@ -27,7 +36,7 @@ Every branch is `<person>-<name>`, where `<person>` is the human driving the ses
 
 Don't commit or push to `main` directly; everything goes through a PR. `node scripts/task.mjs check-scope` tells you if a branch has strayed from this table.
 
-`claude -w` starts you on a scratch `worktree-*` branch. `/task` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
+`claude -w` starts you on a scratch `worktree-*` branch. `claim` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
 
 ## Commits
 
@@ -52,7 +61,7 @@ Don't commit or push to `main` directly; everything goes through a PR. `node scr
 
 ### When you need a file you don't own
 
-- **Shared path** (a contract, a dependency, an env var, config): land it first on its own in a tiny `<person>-hot-<name>` branch from a new worktree, using `git worktree add .claude/worktrees/<name> -b <branch> origin/main`. Ship it, then `git merge origin/main` into your task branch. One concern per hot PR, and it should merge within minutes.
+- **Shared path** (a contract, a dependency, an env var, config): land it first on its own in a tiny `<person>-hot-<name>` branch from a new worktree, using `git worktree add .claude/worktrees/<name> -b <branch> origin/main`. Merge it, then `git merge origin/main` into your task branch. One concern per hot PR, and it should merge within minutes.
 - **File another task owns:** if that task is finished, ask a human to add a follow-up task. If it's in progress, don't touch it: code against the contract or a local stub, and note the gap in your PR.
 - **Your task's `owns` list is wrong:** if no task in progress owns the file, change it and mention that in your PR.
 - **Dependencies:** always a hot PR, with one package manager (see the plan). If a lockfile conflicts, take main's version and re-run install. Never hand-edit a lockfile.
@@ -62,9 +71,8 @@ If you do hit a merge conflict, resolve it in your worktree by keeping both side
 ## Pull requests
 
 - One task per PR, kept small. No set format: just say what changed.
-- **Every PR gets the `pr-reviewer` agent's review before merging.** `/ship` runs it. A fresh agent reviews the diff against the task brief, you fix what it blocks on, and its verdict goes in a PR comment. No green review, no merge.
-- Merge with `gh pr merge --squash` yourself, no human approval needed. Only pull in a human if the reviewer still blocks after two rounds, or the PR breaks a contract.
-- Branches get deleted once merged: the remote by GitHub, the local one by `/ship`. `node scripts/task.mjs cleanup` clears any leftovers.
+- Merge your own PR with `gh pr merge --squash`. No review or approval needed.
+- Delete branches once merged. `node scripts/task.mjs cleanup` clears any leftovers.
 
 **If main is red, stop and fix it.** Parallel PRs can each pass and still break together. Whoever notices first fixes it forward on a `<person>-hot-fix-main` branch, crossing ownership if needed. Don't merge anything else until main is green.
 
@@ -96,7 +104,7 @@ Don't report work as finished until you've seen it work. Run the checks in `docs
 
 ## Follow-ups
 
-Noticed work outside your task? Don't do it, and don't edit other task files. Run `gh issue create --label follow-up` and mention it in your PR. A human or planner triages these.
+Noticed work outside your task? Don't do it, and don't edit other task files. Run `gh issue create` and mention it in your PR.
 
 ## When to stop and ask
 

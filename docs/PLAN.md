@@ -1,6 +1,13 @@
 # Plan
 
-**Status: not started.** Run `/split-plan` to fill this in. Product context is in [IDEA.md](IDEA.md).
+**Status: not started.** Product context is in [IDEA.md](IDEA.md).
+
+To fill this in, ask a Claude session to plan the project:
+
+1. Work back from the demo. A thin version of the whole loop beats complete pieces that don't connect.
+2. Make wave 0 the foundation: the scaffold, all dependencies, shared contracts, a stub directory with mock data for every feature, and design tokens. Add the contracts, manifest and lockfile to `docs/shared-paths.txt`.
+3. Write one `docs/tasks/T-012-short-slug.md` per task from `docs/tasks/_TEMPLATE.md`. Each brief has to stand alone, and tasks that can run in parallel can't own the same files.
+4. Run `node scripts/task.mjs check-plan` to confirm no parallel tasks share a path.
 
 The plan changes rarely and only through a hot branch. Live progress is not tracked here: run `node scripts/task.mjs list`.
 
