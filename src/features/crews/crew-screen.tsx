@@ -7,9 +7,9 @@ import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar } from "@/components/ui/hero";
+import { dusk, Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
-import { QuestCard } from "@/features/quests/quest-card";
+import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
 
 function Avatar({ name, ours = false }: { name: string; ours?: boolean }) {
   return (
@@ -30,15 +30,17 @@ export function CrewScreen() {
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
+  const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
     api.leaderboard().then(setBoard).catch(() => setBoard([]));
-  }, []);
+  };
+
+  useEffect(reload, []);
 
   async function copy() {
     if (!crew) return;
     tick(0.8);
-    const link = `${location.origin}/crew?join=${crew.invite_code}`;
+    const link = `${location.origin}/join/${crew.invite_code}`;
     try {
       if (navigator.share) await navigator.share({ title: `Join ${crew.name}`, url: link });
       else await navigator.clipboard.writeText(link);
@@ -84,16 +86,17 @@ export function CrewScreen() {
       </Hero>
 
       <div className="space-y-7 px-4 pt-6">
+        {crew === null && <NoCrewActions onDone={reload} />}
         {crew && (
           <motion.div {...rise(0)}>
             <Link
               href="/claim"
               onClick={() => tick(0.6)}
-              className="group relative block overflow-hidden rounded-[24px] bg-toast p-5 text-on-toast shadow-lift transition-transform active:scale-[0.985]"
+              className="group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
+              style={{ background: dusk }}
             >
-              <div aria-hidden className="pointer-events-none absolute -top-10 -right-6 size-40 rounded-full bg-accent/40 blur-3xl" />
-              <div aria-hidden className="pointer-events-none absolute -bottom-12 left-10 size-32 rounded-full bg-anywhere/30 blur-3xl" />
-              <div className="relative flex items-center gap-2 text-[13px] text-white/70">
+              <Stars />
+              <div className="relative flex items-center gap-2 text-[13px] text-white/75">
                 <span className="size-2 rounded-full bg-accent" />
                 <span className="size-2 rounded-full bg-anywhere" />
                 <span>Claim, live this week</span>
@@ -145,10 +148,12 @@ export function CrewScreen() {
           <section aria-labelledby="shared">
             <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold"><span id="shared">do one together</span></Hand>
             <div className="flex flex-col gap-2.5">
-              {crew.shared_quests.map((q) => <QuestCard key={q.id} quest={q} />)}
+              {crew.shared_quests.map((q) => <StartQuestCard key={q.id} crewId={crew.id} quest={q} />)}
             </div>
           </section>
         )}
+
+        {crew && <AnywhereQuests crew={crew} onChange={reload} />}
       </div>
     </AppShell>
   );

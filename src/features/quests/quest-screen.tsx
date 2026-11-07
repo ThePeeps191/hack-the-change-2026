@@ -10,6 +10,9 @@ import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
+import { MoodCheck } from "@/features/checkin/mood-check";
+import { ReportSheet } from "./report-sheet";
+import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
 import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
 
@@ -29,11 +32,11 @@ function useSecondsLeft(endsAt: string | undefined) {
   return left;
 }
 
-function memberLine(m: RunMember, you: boolean) {
+function memberLine(m: RunMember, you: boolean, placed: boolean) {
   const who = you ? "You" : m.display_name;
   if (m.verdict?.status === "pending") return `${who}: checking the proof`;
   if (m.submitted) return `${who}: proof's in`;
-  return `${who}: on the way`;
+  return `${who}: ${placed ? "on the way" : "not yet"}`;
 }
 
 export function QuestScreen() {
@@ -65,10 +68,11 @@ export function QuestScreen() {
 
   return (
     <AppShell nav={false}>
+      <RunTracker runId={run.id} active={active} />
       <Hero className="pb-14">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d={back} />}
-          center={partner ? `with ${partner.display_name}` : "your quest"}
+          center={run.mode === "pair" && partner ? `with ${partner.display_name}` : others.length > 1 ? "with your crew" : others.length === 1 ? `with ${partner?.display_name}` : run.mode === "claim" ? "claim attempt" : "on your own"}
         />
         <div className="flex flex-col items-center pt-2" role="timer" aria-label={left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
           {active ? (
@@ -98,34 +102,34 @@ export function QuestScreen() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       >
-        <BorderBeam size="md" theme="auto" colorVariant="ocean" duration={7} strength={0.7} borderRadius={28} active={active} className="rounded-[28px]">
-          <article className="rounded-[28px] bg-surface p-5 shadow-lift">
-            <div className="flex items-center gap-2 text-[13px] text-ink-muted">
+        <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
+          <article className="relative rounded-[28px] p-5">
+            <div className="flex items-center gap-2 text-[13px] text-white/60">
               <QuestIcon type={q.type} size={8} />
               <span>{questTypeLabel[q.type]}</span>
-              <span className="text-ink-faint">· {q.proof} proof</span>
-              <span className="ml-auto font-semibold text-ink tabular-nums">+{q.coins}</span>
+              <span className="text-white/40">· {q.proof} proof</span>
+              <span className="ml-auto font-semibold text-white tabular-nums">+{q.coins}</span>
             </div>
             <h1 className="mt-3 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
             </h1>
-            <p className="mt-2.5 text-[16px] leading-relaxed text-ink-muted">{q.description}</p>
+            <p className="mt-2.5 text-[16px] leading-relaxed text-white/70">{q.description}</p>
             {q.place_name && (
-              <div className="mt-5 flex items-center gap-3 border-t border-[var(--hairline)] pt-4">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-ink-faint" aria-hidden>
+              <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-white/50" aria-hidden>
                   <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
                   <circle cx="12" cy="10" r="2.2" />
                 </svg>
                 <span className="flex-1 text-[15px] font-medium">{q.place_name}</span>
                 {mapsUrl && (
-                  <a href={mapsUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center px-1 text-[15px] font-semibold text-accent">
+                  <a href={mapsUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center px-1 text-[15px] font-semibold text-[#8fb0ff]">
                     Walk there
                   </a>
                 )}
               </div>
             )}
             {q.sources.length > 0 && (
-              <p className="mt-2 text-[12px] leading-snug text-ink-faint">
+              <p className="mt-2 text-[12px] leading-snug text-white/40">
                 From{" "}
                 {q.sources.map((s, i) => (
                   <span key={s.uri}>
@@ -135,18 +139,19 @@ export function QuestScreen() {
                 ))}
               </p>
             )}
+            <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-4" aria-label="Who's done what">
+              {run.members.map((m, i) => (
+                <li key={m.user_id} className="flex items-center gap-2.5 text-[14px] text-white/75">
+                  <span className={`size-2 rounded-full ${m.submitted ? "bg-[#5cd593]" : m.verdict?.status === "pending" ? "animate-pulse bg-[#8fb0ff]" : "bg-white/25"}`} />
+                  {memberLine(m, i === 0, q.place_name != null)}
+                </li>
+              ))}
+            </ul>
           </article>
         </BorderBeam>
       </motion.div>
 
-      <ul className="space-y-1 px-6 pt-5" aria-label="Who's done what">
-        {run.members.map((m, i) => (
-          <li key={m.user_id} className="flex items-center gap-2.5 text-[15px] text-ink-muted">
-            <span className={`size-2 rounded-full ${m.submitted ? "bg-success" : m.verdict?.status === "pending" ? "bg-accent animate-pulse" : "bg-line"}`} />
-            {memberLine(m, i === 0)}
-          </li>
-        ))}
-      </ul>
+      {active && <div className="px-4 pt-5"><MoodCheck runId={run.id} phase="before" /></div>}
 
       {error && <div className="pt-2"><Notice tone="warning">Signal&apos;s patchy. We&apos;ll keep trying.</Notice></div>}
 
@@ -163,6 +168,7 @@ export function QuestScreen() {
         ) : (
           <ButtonLink size="lg" href={`/quest/${run.id}/proof`}>{pending ? "Checking your proof…" : "Add our proof"}</ButtonLink>
         )}
+        {active && run.mode === "pair" && partner && <ReportSheet runId={run.id} reportedId={partner.user_id} />}
       </div>
     </AppShell>
   );

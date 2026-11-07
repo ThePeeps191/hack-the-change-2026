@@ -5,6 +5,7 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
 - `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
+- `docs/ARCHITECTURE.md`: how the code fits together and why
 
 The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
 
@@ -76,7 +77,7 @@ Many sessions share each laptop and the same accounts:
 - **Ports:** start the dev server with a free `PORT`, and never kill a process you didn't start.
 - **Mocks by default:** `AUTH_MODE=mock` and `GEMINI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing.
 - **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
-- **Database:** the dev database is shared, so never drop, truncate or reset it.
+- **Database:** each worktree gets its own embedded Postgres in `.data/`, with made-up seed data, so you can't hurt anyone. Tiger Data is the live database: only point `DATABASE_URL` at it to test the real thing, and never drop, truncate or reset it.
 - **Deploys:** only `main` deploys.
 - **Secrets:** this repo is **public**. Keys go in `.env`, which is gitignored and normally copied into new worktrees. If yours is missing, copy it from the main checkout. Never put a key in code, logs, fixtures or PR text. If one leaks, tell the humans right away so it can be rotated.
 

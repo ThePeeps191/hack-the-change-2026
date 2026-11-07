@@ -1,9 +1,10 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
-import { generateQuests } from "@/lib/gemini";
 import { body, fail, ok } from "@/lib/http";
+import { authed } from "@/lib/route";
+import { questsNear, tagsFor } from "@/server/quests";
 
-export async function POST(req: Request) {
+export const POST = authed(async (user, req) => {
   const { lat, lng, count } = await body<{ lat: number; lng: number; count: number }>(req);
   if (typeof lat !== "number" || typeof lng !== "number") return fail("lat and lng are required");
-  return ok(await generateQuests(lat, lng, count ?? 3));
-}
+  const size = Math.min(Math.max(count ?? 3, 1), 10);
+  return ok(await questsNear(lat, lng, size, { prefs: user.prefs, prefer_tags: tagsFor([user.prefs]) }));
+});

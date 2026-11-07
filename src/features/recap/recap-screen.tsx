@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { Segmented } from "@/components/ui/segmented";
+import { RecapExtras } from "./recap-extras";
 
 type Feel = "better" | "same" | "worse";
 
@@ -45,6 +46,8 @@ export function RecapScreen() {
 
   function pickFeel(v: Feel | "") {
     setFeel(v);
+    // "after" check-ins are relative: 5 better, 3 the same, 1 worse.
+    if (v) api.checkin(runId, { phase: "after", mood: v === "better" ? 5 : v === "same" ? 3 : 1 }).catch(() => {});
     try {
       localStorage.setItem(`amble:feel:${runId}`, v);
     } catch {}
@@ -112,6 +115,8 @@ export function RecapScreen() {
             {recap.summary}
           </motion.p>
         )}
+
+        {recap && <RecapExtras recap={recap} />}
 
         {recap && (
           <section aria-labelledby="feel">

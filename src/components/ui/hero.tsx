@@ -3,17 +3,56 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Odometer } from "./odometer";
 
-// The sky panel at the top of Today: the live state of your day.
-export function Hero({ children, className = "" }: { children: ReactNode; className?: string }) {
+// Soft clouds drifting low across the sky. Each is a few overlapping puffs,
+// blurred, moving very slowly; they sit behind the content.
+function Clouds() {
+  const banks = [
+    { left: "-14%", bottom: "-30%", w: 300, o: 0.34, d: "68s", dl: "0s" },
+    { left: "50%", bottom: "-34%", w: 340, o: 0.3, d: "84s", dl: "-30s" },
+    { left: "26%", top: "18%", w: 150, o: 0.16, d: "96s", dl: "-50s" },
+  ];
   return (
-    <section
-      className={`relative overflow-hidden rounded-b-[36px] pb-6 text-on-sky ${className}`}
-      style={{ background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)" }}
-    >
-      {/* a soft sun glow, top-right */}
-      <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
-      <div className="relative">{children}</div>
-    </section>
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {banks.map((b, i) => (
+        <div
+          key={i}
+          className="absolute animate-[drift_var(--d)_ease-in-out_infinite_alternate]"
+          style={{ left: b.left, bottom: b.bottom, top: b.top, width: b.w, height: b.w * 0.42, opacity: b.o, ["--d" as string]: b.d, animationDelay: b.dl }}
+        >
+          <span className="absolute bottom-0 left-0 h-[62%] w-[58%] rounded-full bg-white blur-[18px]" />
+          <span className="absolute bottom-[12%] left-[26%] h-full w-[46%] rounded-full bg-white blur-[20px]" />
+          <span className="absolute right-0 bottom-0 h-[70%] w-[52%] rounded-full bg-white blur-[18px]" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// The sky panel at the top of a screen: the live state of your day. Below it,
+// a faint wash of sky tints the paper so the two read as one place.
+export function Hero({ children, className = "", fill = false }: { children: ReactNode; className?: string; fill?: boolean }) {
+  return (
+    <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>
+      <section
+        className={`relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "rounded-b-[36px] pb-6"} ${className}`}
+        style={{
+          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)",
+          textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
+        }}
+      >
+        {/* a soft sun glow, top-right */}
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
+        <Clouds />
+        <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>{children}</div>
+      </section>
+      {!fill && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-full -z-10 h-72"
+          style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-sky-bottom) 22%, transparent), transparent)" }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -84,6 +123,30 @@ export function RoundButton({ href, label, d, onClick }: { href?: string; label:
     <Link href={href} aria-label={label} className={cls}>{svg}</Link>
   ) : (
     <button aria-label={label} onClick={onClick} className={cls}>{svg}</button>
+  );
+}
+
+// A dusk sky: deep blue overhead, a warm glow at the horizon. For the few
+// surfaces that need to be dark (the live quest, Claim), so they still feel
+// like outdoors rather than a dashboard.
+export const dusk = "linear-gradient(170deg, #1a3466 0%, #22407a 52%, #4b4f86 82%, #a8697a 118%)";
+
+// A handful of faint stars, placed by hand so they never clump.
+export function Stars({ className = "" }: { className?: string }) {
+  const stars = [
+    [8, 14, 1.6], [22, 30, 1], [37, 9, 1.2], [55, 22, 1.8], [68, 8, 1], [82, 26, 1.4], [91, 12, 1],
+    [14, 52, 1], [46, 44, 1.1], [74, 48, 1], [88, 60, 1.3], [30, 68, 0.9],
+  ];
+  return (
+    <div aria-hidden className={`pointer-events-none absolute inset-0 ${className}`}>
+      {stars.map(([x, y, r], i) => (
+        <span
+          key={i}
+          className={`absolute rounded-full bg-white ${i % 4 === 0 ? "animate-[twinkle_4s_ease-in-out_infinite]" : ""}`}
+          style={{ left: `${x}%`, top: `${y}%`, width: r * 2, height: r * 2, opacity: 0.35 + (i % 3) * 0.2, animationDelay: `${i * 0.7}s` }}
+        />
+      ))}
+    </div>
   );
 }
 

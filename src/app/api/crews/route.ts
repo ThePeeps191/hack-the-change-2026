@@ -1,13 +1,11 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
 import { body, ok } from "@/lib/http";
-import { mockCrew } from "@/mocks/crews";
+import { authed } from "@/lib/route";
+import { createCrew, myCrews } from "@/server/crews";
 
 // Crews I'm in.
-export async function GET() {
-  return ok([mockCrew]);
-}
+export const GET = authed(async (user) => ok(await myCrews(user)));
 
-export async function POST(req: Request) {
+export const POST = authed(async (user, req) => {
   const { name } = await body<{ name: string }>(req);
-  return ok({ ...mockCrew, id: crypto.randomUUID(), name: name ?? "new crew", members: mockCrew.members.slice(0, 1), coins: 0 });
-}
+  return ok(await createCrew(user, name));
+});

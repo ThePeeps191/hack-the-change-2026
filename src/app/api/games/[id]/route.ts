@@ -1,7 +1,8 @@
-// Mock stub. Real implementation replaces the body; keep the response shape from docs/CONTRACTS.md.
 import { ok } from "@/lib/http";
-import { mockGame } from "@/mocks/claim";
+import { authed } from "@/lib/route";
+import { getGame } from "@/server/games";
 
-export async function GET() {
-  return ok(mockGame);
-}
+export const GET = authed<RouteContext<"/api/games/[id]">>(async (user, _req, ctx) => {
+  const { id } = await ctx.params;
+  return ok(await getGame(user, id));
+});

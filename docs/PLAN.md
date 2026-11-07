@@ -129,7 +129,7 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 | App | *Proposed:* one Next.js app in TypeScript, with Tailwind | Pages and API in one repo and one deploy, which means less to integrate |
 | Package manager | *Proposed:* bun, for installs only | Fast, and cheap on disk across dozens of worktrees. Install with `npm i -g bun` |
 | Database access | *Proposed:* plain SQL migrations and the `postgres` client | ORM migration journals conflict when branches run in parallel |
-| Map | *Proposed:* Google Maps JS API | Same vendor as the grounding data |
+| Map | MapLibre GL with free OpenFreeMap tiles | A 3D globe, and no key or quota to manage. Gemini's Maps grounding is separate and needs no map key |
 | Live updates | *Proposed:* poll every few seconds | Plenty for matching, and far simpler than websockets |
 | Uploads | *Proposed:* disk on the Vultr server | One server is enough for the demo |
 | Stranger invites | *Proposed:* share a link through the Web Share API, with QR as a backup | Websites can't call AirDrop directly, but the iPhone share sheet offers it |
@@ -156,14 +156,16 @@ src/
   components/ui/     design system
   features/          one folder per feature: matching, quests, proof, recap, crews, claim, dashboard
   lib/               contracts.ts, db, auth, gemini
-  mocks/             fixtures for mock mode
+  server/            the rules: matching, runs, proof, crews, games, dashboard
 data/quests/         hand-tuned starter quests, all in quests.json
 db/migrations/       timestamped SQL files
+deploy/              server setup, see deploy/README.md
+scripts/             db-migrate, smoke (tests the whole product over HTTP)
 ```
 
 ## Building in parallel
 
-- **Route stubs:** every API route exists from the start and returns mock data, so the UI calls real URLs and nothing changes when the real code lands.
+- **Real by default:** every API route runs the real logic on embedded Postgres, with no setup, so nobody waits on anybody's accounts.
 - **Mock login:** `AUTH_MODE=mock` matters beyond speed. Auth0 only accepts callback URLs it knows about, so sessions on random ports can't complete a real login.
 - **Mock Gemini:** `GEMINI_MODE=mock` returns fixtures, so dozens of sessions don't burn through the quota.
-- **Shared dev database:** one Tiger Data service for everyone, so migrations only add things.
+- **Own database per worktree:** embedded Postgres in `.data/`, so parallel sessions can't collide. Tiger Data is for the live site. Migrations still only add things.

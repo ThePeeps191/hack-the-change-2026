@@ -1,5 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { QUEST_MINUTES } from "@/lib/config";
@@ -10,26 +11,36 @@ import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon, icons, Ring, RoundButton } from "@/components/ui/hero";
 import { useGoFree } from "@/features/matching/use-go-free";
 import { QuestCard } from "@/features/quests/quest-card";
+import { InviteCard } from "@/features/invites/invite-card";
+import { ResumeBanner } from "./resume-banner";
+import { QuestIcon } from "@/components/ui/quest-icon";
+import { QuestSheet } from "@/features/quests/quest-sheet";
 
 function today() {
   return new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toLowerCase();
 }
 
 export function HomeScreen() {
+  const router = useRouter();
   const { go, busy, error } = useGoFree();
   const [d, setD] = useState<Dashboard | null>(null);
   const [quests, setQuests] = useState<Quest[] | null>(null);
   const [more, setMore] = useState(false);
   const [date, setDate] = useState("");
+  const [open, setOpen] = useState<Quest | null>(null);
+  const [crewId, setCrewId] = useState<string | undefined>();
 
   useEffect(() => {
     setDate(today()); // eslint-disable-line react-hooks/set-state-in-effect -- client-only date avoids a hydration mismatch
     api.dashboard().then(setD).catch(() => {});
     api.quests().then(setQuests).catch(() => setQuests([]));
-  }, []);
+    api.crews().then((c) => setCrewId(c[0]?.id)).catch(() => {});
+    api.me().then((u) => { if (!u.age_confirmed_at) router.replace("/welcome"); }).catch(() => {});
+  }, [router]);
 
   const nearby = (quests ?? []).filter((q) => q.type !== "anywhere");
   const shown = more ? nearby : nearby.slice(0, 3);
+  const anywhere = (quests ?? []).filter((q) => q.type === "anywhere");
   const active = d?.active_minutes_week ?? 0;
   const goal = d?.active_goal_minutes ?? 150;
 
@@ -60,6 +71,7 @@ export function HomeScreen() {
       </Hero>
 
       {error && <div className="pt-3"><Notice tone="danger">{error}</Notice></div>}
+      <ResumeBanner />
 
       <section className="px-4 pt-6" aria-labelledby="nearby">
         <Hand as="h2" className="mb-3 px-1 text-[28px] leading-none font-bold text-ink">
@@ -80,7 +92,7 @@ export function HomeScreen() {
                       exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
                       transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <QuestCard quest={q} />
+                      <QuestCard quest={q} onClick={() => setOpen(q)} />
                     </motion.div>
                   ))}
                 </AnimatePresence>
@@ -95,6 +107,40 @@ export function HomeScreen() {
           </button>
         )}
       </section>
+
+      {anywhere.length > 0 && (
+        <section className="pt-6" aria-labelledby="anywhere">
+          <div className="px-5">
+            <Hand as="h2" className="text-[28px] leading-none font-bold text-ink"><span id="anywhere">anywhere</span></Hand>
+            <p className="mt-1 text-[14px] text-ink-muted">Short ones to do on your own or with your crew.</p>
+          </div>
+          <div className="mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-4 px-4 pb-3 no-scrollbar">
+            {anywhere.map((q, i) => (
+              <motion.button
+                key={q.id}
+                type="button"
+                onClick={() => setOpen(q)}
+                initial={{ opacity: 0, x: 24, filter: "blur(6px)" }}
+                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="flex w-[64%] shrink-0 snap-start flex-col rounded-[22px] bg-surface p-4 text-left shadow-card transition-transform active:scale-[0.98]"
+              >
+                <span className="flex items-center gap-2 text-[13px] text-ink-muted">
+                  <QuestIcon type="anywhere" size={8} />
+                  {q.duration_min} min
+                  <span className="ml-auto font-semibold text-ink tabular-nums">+{q.coins}</span>
+                </span>
+                <span className="mt-6 text-[19px] leading-[1.15] font-semibold tracking-[-0.01em] text-pretty">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
+                <span className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-ink-muted">{q.description}</span>
+              </motion.button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <QuestSheet quest={open} crewId={crewId} onClose={() => setOpen(null)} />
+      <InviteCard />
     </AppShell>
   );
 }
