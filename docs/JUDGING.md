@@ -16,6 +16,28 @@ If any of these is missing, nothing else matters.
 
 Pass/fail checks: theme, functionality, innovation, completeness, technical feasibility, presentation. "Purely vibecoded" projects get cut, so the work has to show decisions a human made: the quests, the story, the metrics and why they were chosen.
 
+## Prompt fit: which focus areas we answer
+
+The objective asks for a working prototype that addresses **at least one focus area** under the chosen prompt. We're **Prompt 1**, and we claim two areas. Say both by name in the video, on Devpost and in the first 20 seconds of the pitch.
+
+**Focus area 1, Community Connection & Inclusion** ("reduce loneliness for vulnerable populations, e.g. seniors, newcomers, marginalized groups" and "encourage neighbourhood engagement, such as volunteering, skill-sharing and community building"):
+
+- **Who it's for, named:** newcomers (international students and people new to Calgary, who have no network yet), people living alone (including older adults on daytime walks), and anyone who finds it hard to start a conversation. 20 minutes with a task is lower pressure than "let's grab coffee".
+- **Newcomer quests:** practical, welcoming tasks that double as orientation, such as getting a library card at the Central Library, finding the free campus food pantry, trying a Calgary staple, or riding the C-Train one stop to a park. Gemini can **translate quest text** into the player's language, so the app works before your English does.
+- **Give-back quests (volunteering):** 20-minute micro-volunteering, such as a litter pick in a park, sorting at a community fridge or food bank drop-off, or returning carts at a library. Gemini's Search grounding finds real volunteer events today. A give-back quest earns the crew coins like any other.
+- **Skill-swap quests:** "teach each other one thing in 20 minutes" (a phrase in your language, a chess opening, a stretch). This is the skill-sharing the prompt names, and it gives strangers something to do other than small talk.
+- **Comfort settings, so it's inclusive:** pace and access (step-free, seated or short distance), social energy ("chatty" vs "side-by-side": quests you can do together without much talking), daytime-only, and language. Matching and quest generation respect them.
+
+**Focus area 2, Proactive Health & Wellness** ("support mental, physical or holistic well-being through habit tracking, mindfulness, or preventative care"):
+
+- **Habit, not streaks:** weekly active minutes against the 150-minute guideline (prevention, not punishment), shown as a gentle weekly trail rather than a streak you can break.
+- **Mindfulness built into the loop:** a one-tap check-in before and after each quest ("how are you, honestly?"). It takes a breath to answer, and over time it shows the user their own pattern ("you usually feel better after"). The optional monthly UCLA 3-item loneliness check closes the loop.
+- **Stress:** "calm" quests designed for decompression, such as a 20-minute phone-down walk to a view or noticing three things you can hear. Tagged so a stressed user can ask for one.
+
+**What this means for the contract:** quests get an optional `tags` field (`newcomer`, `give-back`, `skill-swap`, `calm`, `step-free`, `side-by-side`, `daytime`) and users get optional `prefs` (pace, social energy, language). Both are additive. Gemini area: generate and tag these. UI area: comfort settings in onboarding and the profile, tag chips on quest cards, and the check-in. Friends and demo: write the newcomer, give-back and skill-swap starter quests for campus.
+
+**Out of scope, on purpose:** areas 1.3 (telehealth, medical data) and Prompt 2. Don't drift into them in the pitch.
+
 ## The rubric, one row at a time
 
 Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
@@ -36,7 +58,8 @@ Each category is scored 1 to 5. The bullets are what a 5 looks like for us.
 
 - **The problem, with numbers:** 23% of Canadians aged 15 to 24 feel lonely always or often, and only 46% of adults get 150 active minutes a week (sources in IDEA.md).
 - **Measurable outcomes in the product itself** (see Metrics): active minutes against the national guideline, time spent with the same people, new places, and mood before and after. A judge can see impact for a single user on the dashboard.
-- **Inclusive by design:** walking pace, no fitness level assumed, works on any phone browser with no install, free, low-pressure copy, and "anywhere" quests for people who can't get to campus.
+- **Inclusive by design, for named groups:** newcomers, people living alone and anyone shy (see Prompt fit). Comfort settings (pace and access, side-by-side vs chatty, language), walking pace with no fitness level assumed, any phone browser with no install, free, low-pressure copy, and "anywhere" quests for people who can't get to campus.
+- **Neighbourhood engagement:** give-back (volunteering) and skill-swap quests turn a 20-minute gap into community work.
 - **Safe by design:** 18+, both people say yes, you meet at a public quest spot (never at each other's location), daylight quests, a report button that is always one tap away, and only a first name until both accept.
 - **Community and city:** quests send people to public libraries, campus events and local spots, on foot. That's sustainable mobility, and footfall for public spaces.
 
@@ -94,7 +117,7 @@ There are three layers, so the competitive parts never leak into stranger meetup
 
 The team owns the story. This is the skeleton it has to fit.
 
-1. **Hook (20 s):** one real moment, then the loneliness and activity numbers.
+1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers, and say the two focus areas by name.
 2. **System 1 live (90 s):** on a phone: free for 20 min, matched (bot partner if needed), a UCalgary quest, a photo, Gemini confirms it, the recap.
 3. **Why it works (30 s):** the human metrics on the dashboard, and safety in one sentence.
 4. **System 2 (30 s):** crew leaderboard, the Claim map, a zone stolen.
