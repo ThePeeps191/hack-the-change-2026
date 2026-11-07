@@ -14,7 +14,8 @@ import { MoodCheck } from "@/features/checkin/mood-check";
 import { ReportSheet } from "./report-sheet";
 import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
-import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
+import { categoryLabel, categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
+import { Avatar } from "@/components/ui/avatar";
 
 const back = "M14.5 5.5L8 12l6.5 6.5";
 
@@ -105,10 +106,10 @@ export function QuestScreen() {
         <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-white/60">
-              <QuestIcon type={q.type} size={8} />
-              <span>{questTypeLabel[q.type]}</span>
+              <span className="grid size-7 place-items-center rounded-[9px] bg-white/10 text-white"><CategoryIcon category={categoryOf(q)} size={16} /></span>
+              <span>{categoryLabel[categoryOf(q)]}</span>
               <span className="text-white/40">· {q.proof} proof</span>
-              <span className="ml-auto font-semibold text-white tabular-nums">+{q.coins}</span>
+              <span className="ml-auto flex items-center gap-1 font-semibold text-white tabular-nums"><Coin size={14} />{q.coins}</span>
             </div>
             <h1 className="mt-3 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
@@ -139,10 +140,21 @@ export function QuestScreen() {
                 ))}
               </p>
             )}
-            <ul className="mt-4 space-y-1.5 border-t border-white/10 pt-4" aria-label="Who's done what">
+            <ul className="mt-4 space-y-2 border-t border-white/10 pt-4" aria-label="Who's done what">
               {run.members.map((m, i) => (
-                <li key={m.user_id} className="flex items-center gap-2.5 text-[14px] text-white/75">
-                  <span className={`size-2 rounded-full ${m.submitted ? "bg-[#5cd593]" : m.verdict?.status === "pending" ? "animate-pulse bg-[#8fb0ff]" : "bg-white/25"}`} />
+                <li key={m.user_id} className="flex items-center gap-3 text-[14px] text-white/80">
+                  <span className="relative">
+                    <Avatar name={m.display_name} size={30} />
+                    {(m.submitted || m.verdict?.status === "pending") && (
+                      <span className={`absolute -right-1 -bottom-1 grid size-[15px] place-items-center rounded-full ring-2 ring-[#1d3a70] ${m.submitted ? "bg-white text-[#1d3a70]" : "bg-[#8fb0ff]"}`} aria-hidden>
+                        {m.submitted ? (
+                          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 6.3l2.3 2.2 4.7-5" /></svg>
+                        ) : (
+                          <span className="size-[5px] animate-ping rounded-full bg-white" />
+                        )}
+                      </span>
+                    )}
+                  </span>
                   {memberLine(m, i === 0, q.place_name != null)}
                 </li>
               ))}
@@ -155,7 +167,8 @@ export function QuestScreen() {
 
       {error && <div className="pt-2"><Notice tone="warning">Signal&apos;s patchy. We&apos;ll keep trying.</Notice></div>}
 
-      <div className="mt-auto space-y-1 px-4 pt-8 pb-6">
+      {/* The main action stays in reach at the bottom of the screen. */}
+      <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
         {run.status === "completed" ? (
           <ButtonLink size="lg" href={`/recap/${run.id}`}>See how it went</ButtonLink>
         ) : run.status === "expired" ? (

@@ -41,24 +41,47 @@ type StarterQuest = {
   tags?: string[];
 };
 
-// Copies data/quests/*.json into the quests table, so runs can reference them.
-// data/quests/ stays the source of truth for anything marked starter.
+// Quests that must exist (runs and zones point at them) but never show up in a
+// quest list: not starter, and dated long before the "recently written" window
+// that listQuests and the area cache look at. No schema change needed.
+const UNLISTED_AT = "2000-01-01T00:00:00Z";
+const CLAIM_QUESTS_FILE = path.join(process.cwd(), "data", "claim-quests.json");
+
+async function upsertQuest(query: Query, q: StarterQuest, listed: boolean) {
+  await query(
+    `insert into quests (id, title, description, type, lat, lng, radius_m, duration_min, proof, coins, place_name, sources, tags, starter, created_at)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::text::jsonb, $13::text::jsonb, $14, coalesce($15::timestamptz, now()))
+     on conflict (id) do update set
+       title = excluded.title, description = excluded.description, type = excluded.type,
+       lat = excluded.lat, lng = excluded.lng, radius_m = excluded.radius_m,
+       duration_min = excluded.duration_min, proof = excluded.proof, coins = excluded.coins,
+       place_name = excluded.place_name, sources = excluded.sources, tags = excluded.tags, starter = excluded.starter,
+       created_at = case when excluded.starter then quests.created_at else excluded.created_at end`,
+    [
+      q.id, q.title, q.description, q.type, q.lat, q.lng, q.radius_m, q.duration_min, q.proof, q.coins, q.place_name,
+      JSON.stringify(q.sources ?? []), JSON.stringify(q.tags ?? []), listed, listed ? null : UNLISTED_AT,
+    ],
+  );
+}
+
+// Copies data/quests/*.json into the quests table as the starter pack, and
+// data/claim-quests.json as the Claim board's own (unlisted) quests. A starter
+// quest removed from data/quests/ is unlisted, not deleted, because old runs
+// still point at it. data/quests/ stays the source of truth for the starter pack.
 export async function syncStarterQuests(query: Query) {
   const files = readdirSync(QUESTS_DIR).filter((f) => f.endsWith(".json")).sort();
   const quests = files.flatMap((f) => JSON.parse(readFileSync(path.join(QUESTS_DIR, f), "utf8")) as StarterQuest[]);
-  for (const q of quests) {
+  for (const q of quests) await upsertQuest(query, q, true);
+
+  const claim = JSON.parse(readFileSync(CLAIM_QUESTS_FILE, "utf8")) as StarterQuest[];
+  for (const q of claim) await upsertQuest(query, q, false);
+
+  // Never unlist everything because a file came back empty.
+  if (quests.length > 0) {
     await query(
-      `insert into quests (id, title, description, type, lat, lng, radius_m, duration_min, proof, coins, place_name, sources, tags, starter)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::text::jsonb, $13::text::jsonb, true)
-       on conflict (id) do update set
-         title = excluded.title, description = excluded.description, type = excluded.type,
-         lat = excluded.lat, lng = excluded.lng, radius_m = excluded.radius_m,
-         duration_min = excluded.duration_min, proof = excluded.proof, coins = excluded.coins,
-         place_name = excluded.place_name, sources = excluded.sources, tags = excluded.tags, starter = true`,
-      [
-        q.id, q.title, q.description, q.type, q.lat, q.lng, q.radius_m, q.duration_min, q.proof, q.coins, q.place_name,
-        JSON.stringify(q.sources ?? []), JSON.stringify(q.tags ?? []),
-      ],
+      `update quests set starter = false, created_at = $2::timestamptz
+       where starter and id not in (select jsonb_array_elements_text($1::text::jsonb))`,
+      [JSON.stringify(quests.map((q) => q.id)), UNLISTED_AT],
     );
   }
   return quests.length;
@@ -101,11 +124,11 @@ const CREWS: [number, string, string, number, string[]][] = [
 // [quest id, days ago, partner, metres walked]. Priya twice, so "familiar
 // faces" has something to show.
 const HISTORY: [string, number, string | null, number][] = [
-  ["a1b2c3d4-0001-4000-8000-000000000001", 0, "bot|priya", 640],
-  ["a1b2c3d4-0002-4000-8000-000000000001", 1, "seed|theo", 580],
-  ["a1b2c3d4-0001-4000-8000-000000000002", 2, "bot|priya", 760],
-  ["a1b2c3d4-0003-4000-8000-000000000001", 4, "seed|mina", 940],
-  ["a1b2c3d4-0004-4000-8000-000000000001", 6, null, 1120],
+  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "bot|priya", 640], // Play Ping Pong
+  ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580], // Downtown View
+  ["febb791a-b824-4680-97d1-fca36894e28b", 2, "bot|priya", 760], // Film a Duck
+  ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940], // Run Backwards
+  ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120], // The Wisdom of the Crowd
 ];
 
 export async function seedDemoData(query: Query) {

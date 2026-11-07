@@ -1,11 +1,24 @@
 # Hack the Change 2026
 
-Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Gemini writes the quests, checks the proof and makes recaps.
+Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. An AI writes the quests, checks the proof and makes recaps: Claude Haiku 5.5 while we build, Gemini for the demo (`AI_PROVIDER`).
 
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
 - `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
 - `docs/ARCHITECTURE.md`: how the code fits together and why
+- `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
+- `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
+
+## The organizers' rules bind every change
+
+These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, so they beat anything else in this file.
+
+- **Nothing may look unfinished.** Prescreening is pass/fail and the project must "appear complete". Hide a feature that isn't working; never ship a dead button, a "coming soon" or a placeholder.
+- **Every one of us must be able to explain any code.** If one of us can't, we can be disqualified. Keep code plain enough to explain in one sentence, and update `docs/WALKTHROUGH.md` when you change how something works.
+- **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
+- **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
+- **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
+- **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data, Vultr and GoDaddy Registry. Don't remove one without telling a human.
 
 The stack named in these files (Next.js, bun and so on) is the proposal in `docs/PLAN.md`. If it changes, update this file, `.env.example`, `.gitignore` and the README too.
 
@@ -25,7 +38,7 @@ git branch -m <person>-<short-name>
 
 If the session started with a random name, rename the branch anyway. The folder name doesn't matter.
 
-**3. See what's in flight, then sync.** Run `scripts/wip.sh` and `gh pr list` so you don't duplicate or collide with someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`.
+**3. See what's in flight, then sync.** Run `scripts/wip.sh` and `gh pr list` so you don't duplicate or collide with someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`. If you haven't read `docs/RUNBOOK.md` in this session, read it now, even if your session started before it existed.
 
 **4. Commit as you go and push each time.** Small working steps, short messages. Your first commit adds `docs/wip/<branch>.md`, saying who you are, what you're building and which files you'll touch (format in `docs/wip/README.md`). Keep its status line current, and delete the file in your last commit before merging. After your first commit, open a draft PR so everyone can see what you're on:
 
@@ -75,7 +88,7 @@ Otherwise tell the human it's merged and they can close the session. Humans can 
 Many sessions share each laptop and the same accounts:
 
 - **Ports:** start the dev server with a free `PORT`, and never kill a process you didn't start.
-- **Mocks by default:** `AUTH_MODE=mock` and `GEMINI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing.
+- **Mocks by default:** `AUTH_MODE=mock` and `AI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing (`AI_MODE=live`).
 - **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
 - **Database:** each worktree gets its own embedded Postgres in `.data/`, with made-up seed data, so you can't hurt anyone. Tiger Data is the live database: only point `DATABASE_URL` at it to test the real thing, and never drop, truncate or reset it.
 - **Deploys:** only `main` deploys.
@@ -87,7 +100,7 @@ Many sessions share each laptop and the same accounts:
 - Check for an existing helper or component before writing one.
 - Use the shared design tokens and components, or dozens of sessions will produce dozens of looks.
 - Design for a phone first, with real tap targets.
-- Show a usable screen when GPS is denied, Gemini is slow or down, or there's no signal.
+- Show a usable screen when GPS is denied, the AI is slow or down, or there's no signal.
 - Treat location, photos and video as personal data: don't log them, and use only made-up data in fixtures.
 - Quests stay safe: public places, daylight, walking pace.
 

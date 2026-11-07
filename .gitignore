@@ -26,3 +26,6 @@ uploads/
 .playwright-mcp/
 .impeccable/mocks/
 .impeccable/review/
+
+# Private notes for the team, e.g. the UI walkthrough for judging prep
+notes/

@@ -24,7 +24,7 @@ The scaffold is the one thing everyone waits on, so do it first and keep it smal
    - the app, with the repo layout below and `bun` set up
    - `src/lib/contracts.ts`, generated from CONTRACTS.md
    - every API route stubbed, returning mock data
-   - `AUTH_MODE=mock` and `GEMINI_MODE=mock` working
+   - `AUTH_MODE=mock` and `AI_MODE=mock` working
    - placeholder design tokens
 3. **Everyone else uses that time on accounts and direction:**
    - **Backend:** Tiger Data service, Auth0 tenant, Vultr server, domain
@@ -129,6 +129,7 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 | App | *Proposed:* one Next.js app in TypeScript, with Tailwind | Pages and API in one repo and one deploy, which means less to integrate |
 | Package manager | *Proposed:* bun, for installs only | Fast, and cheap on disk across dozens of worktrees. Install with `npm i -g bun` |
 | Database access | *Proposed:* plain SQL migrations and the `postgres` client | ORM migration journals conflict when branches run in parallel |
+| AI | Claude Haiku 5.5 while building, Gemini for the demo, behind one seam (`src/lib/ai.ts`, `AI_PROVIDER`) | Cheap and fast to build with; Gemini's Maps grounding and the MLH Gemini prize for the demo. Claude quests use real OpenStreetMap places, since it has no Maps grounding |
 | Map | MapLibre GL with free OpenFreeMap tiles | A 3D globe, and no key or quota to manage. Gemini's Maps grounding is separate and needs no map key |
 | Live updates | *Proposed:* poll every few seconds | Plenty for matching, and far simpler than websockets |
 | Uploads | *Proposed:* disk on the Vultr server | One server is enough for the demo |
@@ -155,7 +156,7 @@ src/
   app/               pages and API routes, found by file path
   components/ui/     design system
   features/          one folder per feature: matching, quests, proof, recap, crews, claim, dashboard
-  lib/               contracts.ts, db, auth, gemini
+  lib/               contracts.ts, db, auth, ai (Claude or Gemini)
   server/            the rules: matching, runs, proof, crews, games, dashboard
 data/quests/         hand-tuned starter quests, all in quests.json
 db/migrations/       timestamped SQL files
@@ -167,5 +168,5 @@ scripts/             db-migrate, smoke (tests the whole product over HTTP)
 
 - **Real by default:** every API route runs the real logic on embedded Postgres, with no setup, so nobody waits on anybody's accounts.
 - **Mock login:** `AUTH_MODE=mock` matters beyond speed. Auth0 only accepts callback URLs it knows about, so sessions on random ports can't complete a real login.
-- **Mock Gemini:** `GEMINI_MODE=mock` returns fixtures, so dozens of sessions don't burn through the quota.
+- **Mock AI:** `AI_MODE=mock` returns fixtures, so dozens of sessions don't burn through anyone's credits.
 - **Own database per worktree:** embedded Postgres in `.data/`, so parallel sessions can't collide. Tiger Data is for the live site. Migrations still only add things.

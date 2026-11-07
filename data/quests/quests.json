@@ -11,7 +11,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Calgary Central Library",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free",
+      "side-by-side"
+    ]
   },
   {
     "id": "7f13908e-bee4-40ea-8707-2a5f90fa9973",
@@ -30,7 +35,7 @@
   {
     "id": "9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5",
     "title": "Run Backwards",
-    "description": "Film each other running 100m backwards, and then put the video backwards to see who's run looks more normal",
+    "description": "Film each other running 100m backwards, and then put the video backwards to see whose run looks more normal",
     "type": "local",
     "lat": 51.07271,
     "lng": -114.122726,
@@ -53,7 +58,11 @@
     "proof": "video",
     "coins": 25,
     "place_name": "West Campus Park",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "47a2b3e4-cd5e-423e-a238-5a82efbe70f1",
@@ -81,7 +90,12 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Inglewood Bird Sanctuary",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime",
+      "side-by-side"
+    ]
   },
   {
     "id": "4379f1a6-ae68-4d5d-99d6-156602a2435c",
@@ -100,7 +114,7 @@
   {
     "id": "48f489dd-3520-4ea9-9baa-bcf68dc6d2ad",
     "title": "Planespotting",
-    "description": "Identify and photography a Boeing 737, Airbus A320, and Boeing 787.",
+    "description": "Identify and photograph a Boeing 737, Airbus A320, and Boeing 787.",
     "type": "local",
     "lat": 51.119855,
     "lng": -114.018688,
@@ -123,7 +137,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Chinatown",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "daytime"
+    ]
   },
   {
     "id": "6a1a64b9-ef51-4116-ac70-e2a7d13140a8",
@@ -151,7 +169,11 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Centennial Place",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "newcomer",
+      "step-free"
+    ]
   },
   {
     "id": "48359d56-748a-4a9a-85b9-388c730a447c",
@@ -165,7 +187,10 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Schulich School of Engineering",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "step-free"
+    ]
   },
   {
     "id": "3143141c-f538-4b52-a123-76f36c91572b",
@@ -182,104 +207,6 @@
     "sources": []
   },
   {
-    "id": "a1b2c3d4-0099-4000-8000-000000000001",
-    "title": "a slow kilometre",
-    "description": "Walk one kilometre at a pace where you can still talk. Your route is the proof.",
-    "type": "anywhere",
-    "lat": null,
-    "lng": null,
-    "radius_m": null,
-    "duration_min": 15,
-    "proof": "gps",
-    "coins": 15,
-    "place_name": null,
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0099-4000-8000-000000000002",
-    "title": "a two-minute plank",
-    "description": "Hold a plank for two minutes, breaks allowed. Film the last ten seconds.",
-    "type": "anywhere",
-    "lat": null,
-    "lng": null,
-    "radius_m": null,
-    "duration_min": 5,
-    "proof": "video",
-    "coins": 15,
-    "place_name": null,
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0002-4000-8000-000000000001",
-    "title": "a snack neither of you has had",
-    "description": "Walk the food court in MacEwan Student Centre and choose a snack or drink neither of you has tried. Split it, and photograph it before the first bite.",
-    "type": "local",
-    "lat": 51.0786,
-    "lng": -114.1306,
-    "radius_m": 70,
-    "duration_min": 20,
-    "proof": "photo",
-    "coins": 25,
-    "place_name": "MacEwan Student Centre",
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0003-4000-8000-000000000001",
-    "title": "find the 1988 rings",
-    "description": "The Olympic Oval was built for the 1988 Winter Games. Find something nearby that still shows it, and take a photo of the two of you with it.",
-    "type": "local",
-    "lat": 51.0766,
-    "lng": -114.1357,
-    "radius_m": 120,
-    "duration_min": 20,
-    "proof": "photo",
-    "coins": 30,
-    "place_name": "Olympic Oval",
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0004-4000-8000-000000000001",
-    "title": "a poster for something this week",
-    "description": "Walk to the Rozsa Centre and find a poster for a performance or talk coming up. Photograph it, and each pick the one you'd actually go to.",
-    "type": "event",
-    "lat": 51.0749,
-    "lng": -114.1297,
-    "radius_m": 80,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "Rozsa Centre",
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0001-4000-8000-000000000001",
-    "title": "the oldest book on the floor",
-    "description": "Pick one floor of the Taylor Family Digital Library. Between you, find the book with the oldest publication date on an open shelf, and photograph its title page.",
-    "type": "local",
-    "lat": 51.0777,
-    "lng": -114.1293,
-    "radius_m": 80,
-    "duration_min": 20,
-    "proof": "photo",
-    "coins": 30,
-    "place_name": "Taylor Family Digital Library",
-    "sources": []
-  },
-  {
-    "id": "a1b2c3d4-0001-4000-8000-000000000002",
-    "title": "the view from the top",
-    "description": "Find a window on the top floor of TFDL that faces the mountains. Photograph the view and agree on one thing you can both see.",
-    "type": "local",
-    "lat": 51.077405,
-    "lng": -114.129842,
-    "radius_m": 80,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "Taylor Family Digital Library",
-    "sources": []
-  },
-  {
     "id": "498fa389-ed95-4cdd-ad54-02fc87b8a002",
     "title": "City Wildlife",
     "description": "For 20 minutes, take pictures of as many wildlife animals as you can with 1 point for birds, 3 points for rodents, and 5 points for large mammals.",
@@ -291,12 +218,16 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "Nose Hill",
-    "sources": []
+    "sources": [],
+    "tags": [
+      "calm",
+      "daytime"
+    ]
   },
   {
     "id": "0659901c-500b-41bd-8438-4f779d771b1b",
     "title": "Animal Bingo",
-    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and it's mother, an albino animal, swimming animal, crying child.",
+    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and its mother, an albino animal, a swimming animal, an animal eating.",
     "type": "local",
     "lat": 51.045434,
     "lng": -114.023184,
@@ -310,7 +241,7 @@
   {
     "id": "a1de2f32-a3d9-446c-a63c-85a79bea2386",
     "title": "Prince's guess",
-    "description": "Set a 10 minute timer, in that time you can wander anywhere and do anything other than looking it up online. Make a educated guess with the other person, who ever gets closer wins.",
+    "description": "Set a 10 minute timer, in that time you can wander anywhere and do anything other than looking it up online. Make an educated guess with the other person, whoever gets closer wins.",
     "type": "local",
     "lat": 51.055423,
     "lng": -114.069736,
@@ -323,7 +254,7 @@
   },
   {
     "id": "234822eb-a4f1-4559-831d-c0b0eafe4bcd",
-    "title": "God Damn Dam",
+    "title": "Hide and Seek at the Dam",
     "description": "Starting at the dam, one person position themselves some distance away such that they believe the other person could find them and take a photo in 10 minutes. Then swap roles. See who can estimate the hiding time better.",
     "type": "local",
     "lat": 51.000037,

@@ -12,7 +12,7 @@ type MLMap = maplibregl.Map;
 //   cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs public/maplibre/worker-<version>.js
 maplibregl.setWorkerUrl("/maplibre/worker-6.16.0.js");
 
-export type GlobeMarker = { id: string; lat: number; lng: number; color: string; label: string };
+export type GlobeMarker = { id: string; lat: number; lng: number; color: string; label: string; icon?: string };
 
 const STYLE = {
   light: "https://tiles.openfreemap.org/styles/positron",
@@ -62,7 +62,11 @@ function markerEl(m: GlobeMarker, onPick: (id: string) => void) {
   el.setAttribute("aria-label", m.label);
   el.className = "amble-marker";
   el.style.setProperty("--c", m.color);
-  el.innerHTML = `<span class="amble-marker-dot"></span><span class="amble-marker-label">${m.label.replace(/[<>&]/g, "")}</span>`;
+  const label = `<span class="amble-marker-label">${m.label.replace(/[<>&]/g, "")}</span>`;
+  el.innerHTML = m.icon
+    ? `<span class="amble-pin"><span class="amble-pin-face">${m.icon}</span><span class="amble-pin-tip"></span></span>${label}`
+    : `<span class="amble-marker-dot"></span>${label}`;
+  if (m.icon) el.dataset.pin = "";
   el.addEventListener("click", (e) => {
     e.stopPropagation();
     onPick(m.id);
