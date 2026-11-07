@@ -1,111 +1,91 @@
 # Hack the Change 2026
 
-A 24-hour hackathon project by Danny, Siddhant, Aaron and Jonas: a mobile-first web app that turns wherever you are into a real-world quest game played with friends, with Gemini as game master and referee. Product details are in `docs/IDEA.md`; architecture, stack and scope are in `docs/PLAN.md`. Where the plan is still blank, nothing is decided, so don't assume a stack.
+Danny, Siddhant, Aaron and Jonas are building a mobile-first website in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Gemini writes the quests, checks the proof and makes recaps.
 
-Dozens of Claude sessions work in this repo at once. Most of the rules below exist so those sessions never collide.
+- `docs/IDEA.md`: what we're building and why
+- `docs/PLAN.md`: timeline, stack, scope and the rough split of work
+- `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
 
-All agents here have full permission to run commands, open PRs and merge them. Don't stop to ask for approval. This is a 24-hour build, not a codebase to maintain, and tech debt doesn't matter. Nothing here is enforced: follow these rules because they save time, and break one if it's clearly the faster way to a working demo.
+Dozens of Claude sessions work here at once. You have full permission to run commands, open PRs and merge them, so don't stop to ask for approval. Only ask the human about a product decision that would change the demo. This is a 24-hour build: tech debt doesn't matter, a working demo does. Nothing below is enforced, so use your judgement and bend a rule when that's clearly faster.
 
-## The loop
+## How to work
 
-1. **Start in a worktree.** Run `claude -w`, never work in the main checkout.
-2. **Claim a task.** `node scripts/task.mjs claim` takes your next ready task, or `claim T-012` takes a specific one. It's atomic and switches you onto the task's branch. Read the brief it prints.
-3. **Build it,** committing and pushing as you go. Make your last commit set `status: done` in the task file.
-4. **Merge it.** Run `git fetch origin && git merge origin/main`, then `gh pr create --base main --fill`, then `gh pr merge --squash`. Then delete the branch:
+**1. Get into a worktree before you change anything.** Never work on `main` or in the main checkout. If `git branch --show-current` says `main`, call the EnterWorktree tool with the name below. If you don't have that tool, use `git worktree add .claude/worktrees/<name> -b <name> origin/main`.
 
-   ```
-   branch=$(git branch --show-current)
-   git push origin --delete "$branch"
-   git switch --detach origin/main
-   git branch -D "$branch"
-   ```
+**2. Name it `<person>-<short-name>`,** for both the worktree and the branch: `danny-quest-card`, `jonas-claim-map`, `aaron-fix-login`. `<person>` is the human driving this session, from `git config hack.person`. If that's empty, ask them once and set it.
 
-Can't finish a task? Push what you have and run `node scripts/task.mjs release T-012` so someone else can claim it.
+Claude Code calls the branch `worktree-<name>`, so rename it straight away, before your first push:
 
-Check the board with `node scripts/task.mjs list`. It reads from `origin/main` and GitHub, so it's always current. Don't keep status anywhere else.
+```sh
+git branch -m <person>-<short-name>
+```
 
-## Branches
+If the session started with a random name, rename the branch anyway. The folder name doesn't matter.
 
-Every branch is `<person>-<name>`, where `<person>` is the human driving the session: `danny`, `siddhant`, `aaron` or `jonas`. Read it from `git config hack.person`. If that's unset, ask the human, then set it.
+**3. See what's in flight, then sync.** Run `gh pr list` so you don't duplicate someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`.
 
-| Branch | Use | May change |
-| --- | --- | --- |
-| `danny-t012-quest-api` | A planned task. `task.mjs claim` creates it, never create one by hand. | Only the task's `owns` paths and its own task file |
-| `danny-hot-add-zod` | A small change to shared paths | Only paths in `docs/shared-paths.txt` |
-| `danny-fix-map-zoom` | An ad-hoc fix outside the plan | Anything except shared paths and files owned by a task in progress |
+**4. Commit as you go and push each time.** Small working steps, short messages. After your first commit, open a draft PR so everyone can see what you're on:
 
-Don't commit or push to `main` directly; everything goes through a PR. `node scripts/task.mjs check-scope` tells you if a branch has strayed from this table.
+```sh
+git push -u origin HEAD
+gh pr create --draft --fill
+```
 
-`claude -w` starts you on a scratch `worktree-*` branch. `claim` moves you off it. For hot or ad-hoc work, run `git switch -c <person>-<name>` before your first commit.
+**5. Merge it yourself** when it works. No review or approval needed, and the PR needs no special format.
 
-## Commits
+```sh
+git fetch origin && git merge origin/main   # then check the app still runs
+git push
+gh pr ready
+gh pr merge --squash
+```
 
-- Commit each working step, not one big commit at the end. Small commits are your undo history and a pushed branch survives a crashed session.
-- Use a short imperative message with the task id when there is one: `T-012: add quest generation endpoint`.
-- Stage files by name, not with `git add .`, and read `git diff --staged` before committing.
-- Don't commit code that doesn't build unless the message says WIP.
-- Never force-push, and never rewrite history that's been pushed. To update from main use `git merge origin/main`, not rebase. PRs are squash-merged, so the merge commits disappear anyway.
+If it says "not mergeable" or "base branch was modified", GitHub is still catching up, so wait a few seconds and retry.
 
-## Staying out of each other's way
+**6. Clean up.** GitHub deletes the remote branch on merge. That branch is now finished, so never commit to it again. For more work in the same session, start fresh:
 
-**Stay inside your task's `owns` list.** The plan guarantees that parallel tasks own different files, and that guarantee is what prevents merge conflicts. Don't make drive-by fixes, renames, reformatting or refactors outside your files, however tempting. If you spot a problem elsewhere, file it (see Follow-ups).
+```sh
+git fetch origin
+git switch -c <person>-<next-thing> origin/main
+git branch -D <merged-branch>
+```
 
-**Don't create hot files.** A hot file is one that every feature wants to edit. Avoid them by design:
+Otherwise tell the human it's merged and they can close the session. Humans can run `scripts/cleanup.sh` from the main checkout to clear finished worktrees.
 
-- One file or directory per feature, route or quest type, found by convention (file-based routing, glob imports). Don't add central registries, barrel `index` files, or a single `types` or `utils` file that everyone appends to.
-- Database migrations are new timestamped files. Never edit an existing one.
-- Run the formatter only on files you own.
-- Don't add status logs, changelogs or progress notes to shared docs.
+## Working alongside everyone
 
-**Contracts come first.** Wave 0 defines shared types, API shapes and the schema, plus stubs and mock data, so features can be built in parallel against them. During parallel waves contracts only grow: add fields, don't rename or remove. If a contract truly must break, stop and ask a human.
+- **The areas in `docs/PLAN.md` are approximate.** Work wherever the job takes you. If you change something in another area, keep it small and say so in the PR.
+- **Small PRs, merged often.** Long-lived branches are what cause conflicts, so aim to merge within the hour.
+- **Dependencies and shared types go first.** Put them in their own small PR and merge it right away, so nobody else adds the same thing differently.
+- **Don't reformat, rename or reorganize code you aren't otherwise changing.** It conflicts with everyone at once.
+- **Prefer new files.** Give a feature its own folder rather than growing a shared file.
+- **Keep `docs/CONTRACTS.md` true.** Adding to a contract is always fine. If you rename or remove something, update it and every caller in the same PR.
+- **Database changes** are new timestamped files in `db/migrations/`, and they only add things. Never edit one that has merged.
+- **If `bun.lock` conflicts,** take main's copy and run `bun install`. Resolve other conflicts yourself, keeping what both sides intended.
+- **Don't use `git stash`.** The stash is shared across all worktrees, so you could pop someone else's work. Make a WIP commit instead.
+- **Keep git commands plain in a worktree.** Claude Code refuses long multi-step shell commands there, so if one is refused, split it up and run the steps separately.
+- **Never force-push, and never push to `main` directly.**
+- **If `main` is broken, fix that first,** on its own branch.
 
-### When you need a file you don't own
+## Running things
 
-- **Shared path** (a contract, a dependency, an env var, config): land it first on its own in a tiny `<person>-hot-<name>` branch from a new worktree, using `git worktree add .claude/worktrees/<name> -b <branch> origin/main`. Merge it, then `git merge origin/main` into your task branch. One concern per hot PR, and it should merge within minutes.
-- **File another task owns:** if that task is finished, ask a human to add a follow-up task. If it's in progress, don't touch it: code against the contract or a local stub, and note the gap in your PR.
-- **Your task's `owns` list is wrong:** if no task in progress owns the file, change it and mention that in your PR.
-- **Dependencies:** always a hot PR, with one package manager (see the plan). If a lockfile conflicts, take main's version and re-run install. Never hand-edit a lockfile.
+Many sessions share each laptop and the same accounts:
 
-If you do hit a merge conflict, resolve it in your worktree by keeping both sides' intent. If it's in a file you don't own, something went wrong: stop and tell the human.
+- **Ports:** start the dev server with a free `PORT`, and never kill a process you didn't start.
+- **Mocks by default:** `AUTH_MODE=mock` and `GEMINI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing.
+- **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
+- **Database:** the dev database is shared, so never drop, truncate or reset it.
+- **Deploys:** only `main` deploys.
+- **Secrets:** this repo is **public**. Keys go in `.env`, which is gitignored and normally copied into new worktrees. If yours is missing, copy it from the main checkout. Never put a key in code, logs, fixtures or PR text. If one leaks, tell the humans right away so it can be rotated.
 
-## Pull requests
+## Building
 
-- One task per PR, kept small. No set format: just say what changed.
-- Merge your own PR with `gh pr merge --squash`. No review or approval needed. If it says "not mergeable" right after a push, GitHub is still checking: wait a few seconds and retry.
-- Delete branches once merged. `node scripts/task.mjs cleanup` clears any leftovers.
+- Choose the simplest thing that works for the demo.
+- Check for an existing helper or component before writing one.
+- Use the shared design tokens and components, or dozens of sessions will produce dozens of looks.
+- Design for a phone first, with real tap targets.
+- Show a usable screen when GPS is denied, Gemini is slow or down, or there's no signal.
+- Treat location, photos and video as personal data: don't log them, and use only made-up data in fixtures.
+- Quests stay safe: public places, daylight, walking pace.
 
-**If main is red, stop and fix it.** Parallel PRs can each pass and still break together. Whoever notices first fixes it forward on a `<person>-hot-fix-main` branch, crossing ownership if needed. Don't merge anything else until main is green.
-
-**If the board shows a task claimed by `unknown`,** its branch is gone but the task never reached `status: done`, so its PR was closed or merged without it. Check what happened, then run `node scripts/task.mjs release T-012 --force`.
-
-## Running things in parallel
-
-Many worktrees share one machine and the same accounts, so:
-
-- **Ports:** the dev server must honour `PORT`. Pick a free port and never kill a process you didn't start.
-- **External APIs:** Gemini, Maps and the rest are rate-limited and shared by everyone. Tests and normal dev use mocks or fixtures, and live calls are for deliberate manual checks only.
-- **Database:** never run destructive commands against a shared database. Use a local or disposable one for tests.
-- **Deploys:** only `main` deploys. Don't deploy from a branch.
-- **Secrets:** this repo is **public**. Secrets live in `.env` or `.env.local`, are copied to worktrees via `.worktreeinclude`, and have their names (never values) listed in `.env.example`. Never paste a key into code, logs, PR text or fixtures. If one leaks, tell a human right away, because it has to be rotated.
-
-## Code
-
-- This is a 24-hour build. Choose the simplest thing that works for the demo, and don't add abstraction for a future that won't arrive.
-- Match the patterns around you. Before writing a helper, check whether one already exists.
-- Use the shared design tokens and components. Don't hardcode colours or one-off styles, or dozens of agents will produce dozens of looks.
-- It's a phone app first: check UI at phone width, with real tap targets.
-- Handle the failures users will actually hit: GPS denied, Gemini slow or down, no signal outdoors. Each should show a usable state, not a blank screen.
-- Treat location, photos and video as personal data. Don't log them, and use only made-up data in fixtures.
-- Gemini's quests must stay safe: walking, public places, daylight.
-
-## Done means verified
-
-Don't report work as finished until you've seen it work. Run the checks in `docs/PLAN.md`, and for anything visible actually open it and try it. Say plainly what you ran, what passed, and what you couldn't check. Never weaken or delete a test to get to green. Tick every "Done when" box in the brief, or say why not.
-
-## Follow-ups
-
-Noticed work outside your task? Don't do it, and don't edit other task files. Run `gh issue create` and mention it in your PR.
-
-## When to stop and ask
-
-Ask the human instead of guessing when the brief is ambiguous in a way that changes what you build, a contract must break, a dependency task isn't really done, or the same failure survives two different fix attempts.
+Before you call something done, run it and see it work, and say plainly what you did and didn't check.

@@ -13,8 +13,12 @@ CLAUDE.local.md
 .vscode/
 .idea/
 
-# Build output and dependencies (wave 0 adds stack-specific entries)
+# Build output and dependencies
 node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
 dist/
 build/
 coverage/
+uploads/
