@@ -8,8 +8,10 @@ import { ButtonLink, buttonClass } from "@/components/ui/button";
 import { Card, Chip, Skeleton } from "@/components/ui/card";
 import { Mascot } from "@/components/ui/mascot";
 import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
+import { MoodCheck } from "@/features/checkin/mood-check";
 import { GentleTimer } from "./gentle-timer";
 import { ReportPanel } from "./report-panel";
+import { RunTracker } from "./run-tracker";
 
 export function QuestScreen() {
   const { runId } = useParams<{ runId: string }>();
@@ -44,6 +46,7 @@ export function QuestScreen() {
 
   return (
     <AppShell nav={false}>
+      <RunTracker runId={run.id} active={run.status === "active"} />
       <TopBar
         back="/"
         title="your quest"
@@ -82,7 +85,9 @@ export function QuestScreen() {
           )}
         </Card>
 
-        <ul className="mt-3 flex gap-2">
+        {run.status === "active" && <div className="mt-3"><MoodCheck runId={run.id} phase="before" /></div>}
+
+        <ul className="mt-3 flex flex-wrap gap-2">
           {run.members.map((m, i) => (
             <li key={m.user_id}>
               <Chip tone={m.submitted ? "success" : "neutral"}>

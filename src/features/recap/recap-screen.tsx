@@ -8,6 +8,7 @@ import { AppShell, Notice, TopBar } from "@/components/ui/app-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, Skeleton, Stat } from "@/components/ui/card";
 import { Mascot } from "@/components/ui/mascot";
+import { MoodCheck } from "@/features/checkin/mood-check";
 
 export function RecapScreen() {
   const { runId } = useParams<{ runId: string }>();
@@ -53,6 +54,7 @@ export function RecapScreen() {
             <Card className="p-4">
               <p className="leading-relaxed">{recap.summary}</p>
             </Card>
+            <MoodCheck runId={runId} phase="after" />
             {recap.partner && (
               <Card className="p-4">
                 <p className="font-semibold">stay in touch with {recap.partner.display_name}?</p>

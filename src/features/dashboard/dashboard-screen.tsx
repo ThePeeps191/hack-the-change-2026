@@ -6,6 +6,7 @@ import { distance, shortDate } from "@/lib/format";
 import { AppShell, TopBar } from "@/components/ui/app-shell";
 import { Card, Skeleton, Stat } from "@/components/ui/card";
 import { QuestIcon } from "@/components/ui/quest-icon";
+import { HumanMetrics, ProfileLinks } from "./human-metrics";
 
 export function DashboardScreen() {
   const [me, setMe] = useState<User | null>(null);
@@ -24,6 +25,7 @@ export function DashboardScreen() {
           <Skeleton className="h-40 w-full rounded-card" />
         ) : (
           <>
+            <HumanMetrics d={d} />
             <Card className="grid grid-cols-2 gap-x-4 gap-y-5 p-5">
               <Stat label="quests done" value={d.quests_done} />
               <Stat label="moved" value={d.km_moved} unit="km" />
@@ -50,6 +52,7 @@ export function DashboardScreen() {
                 ))}
               </Card>
             </section>
+            <ProfileLinks />
           </>
         )}
       </div>

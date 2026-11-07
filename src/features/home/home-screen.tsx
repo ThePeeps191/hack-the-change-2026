@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { APP_NAME, QUEST_MINUTES } from "@/lib/config";
 import type { Quest, User } from "@/lib/contracts";
 import { getPosition } from "@/lib/geo";
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, Chip, Skeleton } from "@/components/ui/card";
 import { Mascot } from "@/components/ui/mascot";
 import { QuestRow } from "@/features/quests/quest-row";
+import { ResumeBanner } from "./resume-banner";
+import { InviteCard } from "@/features/invites/invite-card";
 
 function greeting() {
   const h = new Date().getHours();
@@ -27,9 +29,9 @@ export function HomeScreen() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api.me().then(setMe).catch(() => {});
+    api.me().then((u) => (u.age_confirmed_at ? setMe(u) : router.replace("/welcome"))).catch(() => {});
     api.quests().then((q) => setQuests(q.filter((x) => x.type !== "anywhere").slice(0, 3))).catch(() => setQuests([]));
-  }, []);
+  }, [router]);
 
   async function goFree() {
     setBusy(true);
@@ -38,8 +40,8 @@ export function HomeScreen() {
       const pos = await getPosition();
       await api.setFree(pos.lat, pos.lng);
       router.push(pos.approximate ? "/match?approx=1" : "/match");
-    } catch {
-      setError("couldn't reach amble just now. check your signal and try again?");
+    } catch (e) {
+      setError(e instanceof ApiError && e.status === 403 ? e.message : "couldn't reach amble just now. check your signal and try again?");
       setBusy(false);
     }
   }
@@ -50,6 +52,8 @@ export function HomeScreen() {
         <span className="text-xl font-extrabold tracking-tight">{APP_NAME.toLowerCase()}</span>
         {me && <Chip tone="neutral" className="tabular-nums">{me.coins} coins</Chip>}
       </header>
+
+      <ResumeBanner />
 
       <section className="flex flex-col items-center px-6 pt-8 pb-6 text-center">
         <Mascot mood="idle" size={88} />
@@ -73,6 +77,8 @@ export function HomeScreen() {
               : quests.map((q) => <QuestRow key={q.id} quest={q} />)}
         </Card>
       </section>
+
+      <InviteCard />
 
       <div className="mt-auto px-4 pt-6 pb-4">
         {error && <div className="mb-3"><Notice tone="danger">{error}</Notice></div>}

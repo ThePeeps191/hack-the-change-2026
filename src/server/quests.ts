@@ -6,7 +6,10 @@ import { generateQuests } from "@/lib/gemini";
 import { notFound } from "@/lib/route";
 import { distanceM } from "./safety";
 
-const GEMINI_TIMEOUT_MS = 6000;
+const GEMINI_TIMEOUT_MS = 25_000; // grounded calls are slow, so nobody waits on this directly
+const ACCEPT_TIMEOUT_MS = 5000; // what two people tapping "yes" will wait for, if warming missed
+const CACHE_HOURS = 6;
+const CACHE_RADIUS_M = 1000;
 // The System 1 demo quest: the TFDL book hunt.
 const DEMO_PAIR_QUEST = "a1b2c3d4-0001-4000-8000-000000000001";
 
@@ -72,9 +75,17 @@ async function starterNear(lat: number, lng: number) {
 
 // Gemini first, and the starter pack if it's slow, down or returns nothing, so
 // nobody ever gets an empty screen.
-export async function questsNear(lat: number, lng: number, count: number, request: { prefs?: Prefs; prefer_tags?: QuestTag[] } = {}) {
+export async function questsNear(
+  lat: number,
+  lng: number,
+  count: number,
+  request: { prefs?: Prefs; prefer_tags?: QuestTag[] } = {},
+  { timeoutMs = GEMINI_TIMEOUT_MS, enough = count } = {},
+) {
+  const cached = await recentlyWritten(lat, lng, request);
+  if (cached.length >= enough) return cached.slice(0, count);
   try {
-    const quests = await withTimeout(generateQuests(lat, lng, count, request), GEMINI_TIMEOUT_MS);
+    const quests = await withTimeout(generateQuests(lat, lng, count, request), timeoutMs);
     if (quests.length > 0) {
       await saveQuests(quests);
       return quests;
@@ -83,6 +94,36 @@ export async function questsNear(lat: number, lng: number, count: number, reques
     console.error("quest generation fell back to the starter pack:", (e as Error).message);
   }
   return (await starterNear(lat, lng)).slice(0, count);
+}
+
+const warming = new Set<string>();
+
+// Called the moment someone says they're free. Gemini writes quests while they
+// wait to be matched, so a fresh one is ready when both say yes. One call per
+// area at a time, and it's fine if it finishes after they've been paired.
+export async function warmQuests(lat: number, lng: number, prefs: Prefs) {
+  if (GEMINI_MODE === "mock") return;
+  const area = `${lat.toFixed(2)},${lng.toFixed(2)}`;
+  if (warming.has(area)) return;
+  warming.add(area);
+  try {
+    await questsNear(lat, lng, 5, { prefs, prefer_tags: tagsFor([prefs]) }, { enough: 3 });
+  } finally {
+    warming.delete(area);
+  }
+}
+
+// What Gemini wrote for this area in the last few hours. This is what keeps the
+// cost per quest low: one call serves everyone nearby. Translated quests aren't
+// reused, so nobody gets someone else's language.
+async function recentlyWritten(lat: number, lng: number, request: { prefs?: Prefs; prefer_tags?: QuestTag[] }) {
+  const language = request.prefs?.language;
+  if (GEMINI_MODE === "mock" || (language && !language.startsWith("en"))) return [];
+  const rows = await query<QuestRow>(
+    "select * from quests where not starter and lat is not null and created_at > now() - make_interval(hours => $1) order by created_at desc limit 100",
+    [CACHE_HOURS],
+  );
+  return rows.filter((q) => distanceM({ lat, lng }, { lat: q.lat!, lng: q.lng! }) <= CACHE_RADIUS_M).map(toQuest);
 }
 
 // What the pair's comfort settings ask of a quest.
@@ -107,7 +148,7 @@ export async function pickPairQuest(lat: number, lng: number, prefs: Prefs[]): P
   const wanted = tagsFor(prefs);
   const language = prefs.find((p) => p.language)?.language;
   if (GEMINI_MODE === "mock" && wanted.length === 0) return getQuest(DEMO_PAIR_QUEST);
-  const quests = await questsNear(lat, lng, 5, { prefs: { language }, prefer_tags: wanted });
+  const quests = await questsNear(lat, lng, 5, { prefs: { language }, prefer_tags: wanted }, { timeoutMs: ACCEPT_TIMEOUT_MS, enough: 1 });
   return chooseForPair(quests, wanted, prefs) ?? getQuest(DEMO_PAIR_QUEST);
 }
 

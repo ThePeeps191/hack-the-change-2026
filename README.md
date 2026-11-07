@@ -23,16 +23,25 @@ bun run check             # route types, tsc and eslint
 bun run build
 ```
 
-With no `.env` at all, the app runs on mocks: everyone is the made-up user "Sam", and the System 1 flow is clickable end to end (say you're free, a match appears after about 4 s, the partner accepts about 2 s after you). Send `mock_verdict=rejected` with a proof submission to see the rejection state.
+With no `.env` at all, the whole app runs for real on your laptop: embedded Postgres in `.data/` migrates and seeds itself, and mock login and mock Gemini mean no accounts or keys.
+
+- **Alone:** you're Sam, and a bot partner, Priya, matches you after about 4 s, accepts, and sends proof after you do.
+- **As two people:** open `/?as=alice` in one tab and `/?as=bob` in another. Each tab stays that person, and they really match each other.
+- **To see a rejection:** add `?mock=reject` to a proof URL.
+- **To reset:** stop the dev server and delete `.data/`.
+
+Read [how Amble works](docs/ARCHITECTURE.md) to find your way around, and [deploy/README.md](deploy/README.md) for the server.
 
 | Where | What |
 | --- | --- |
 | `src/lib/contracts.ts` | Shared types from `docs/CONTRACTS.md` |
 | `src/lib/api.ts` | Typed client for every endpoint. Screens call this, never `fetch` directly |
+| `src/server/` | All the rules: matching, runs, proof, crews, Claim, dashboard |
 | `src/lib/config.ts` | `APP_NAME` and other constants |
 | `src/lib/gemini.ts`, `auth.ts`, `db.ts` | Server seams with mock and live branches |
-| `src/app/api/**` | Route stubs returning mock data |
-| `src/mocks/` | Fixtures and the in-memory mock store |
+| `src/app/api/**` | Thin routes that call `src/server/` |
+| `db/migrations/` | The schema, as timestamped SQL files |
+| `scripts/smoke.ts` | Tests the whole product over HTTP: `BASE_URL=http://localhost:3001 bun run smoke` |
 | `data/quests/*.json` | UCalgary starter quests, one file per place |
 | `src/app/globals.css` | Design tokens (`bg-surface`, `text-ink-muted`, `rounded-card`...) |
 

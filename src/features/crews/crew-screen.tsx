@@ -6,21 +6,25 @@ import { AppShell, TopBar } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, Chip, Skeleton } from "@/components/ui/card";
 import { Mascot } from "@/components/ui/mascot";
+import { CrewActions, NoCrewActions } from "./crew-actions";
 
 export function CrewScreen() {
   const [crew, setCrew] = useState<Crew | null | undefined>(undefined);
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
 
-  useEffect(() => {
+  const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
     api.leaderboard().then(setBoard).catch(() => setBoard([]));
-  }, []);
+  };
+
+  useEffect(reload, []);
 
   return (
     <AppShell>
       <TopBar title="crew" right={crew && <Chip>code {crew.invite_code}</Chip>} />
       <div className="space-y-5 px-4">
         {crew === undefined && <Skeleton className="h-36 w-full rounded-card" />}
+        {crew === null && <NoCrewActions onDone={reload} />}
         {crew === null && (
           <Card className="flex flex-col items-center p-6 text-center">
             <Mascot mood="sleepy" size={64} />
@@ -46,6 +50,7 @@ export function CrewScreen() {
             <ButtonLink href="/claim" variant="secondary" className="mt-3 w-full">open claim map</ButtonLink>
           </section>
         )}
+        {crew && <CrewActions crew={crew} onChange={reload} />}
 
         <section>
           <h2 className="mb-2 px-1 text-[13px] font-semibold text-ink-muted">crews this week</h2>

@@ -7,7 +7,7 @@ import { POLL_MS } from "./config";
 // doesn't blank the screen.
 export function usePoll<T>(
   fn: () => Promise<T>,
-  { enabled = true, ms = POLL_MS, until }: { enabled?: boolean; ms?: number; until?: (data: T) => boolean } = {},
+  { enabled = true, ms = POLL_MS, until, key }: { enabled?: boolean; ms?: number; until?: (data: T) => boolean; key?: unknown } = {},
 ) {
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | null>(null);
@@ -39,7 +39,7 @@ export function usePoll<T>(
       alive = false;
       clearTimeout(timer);
     };
-  }, [enabled, ms]);
+  }, [enabled, ms, key]);
 
   return { data, error };
 }
