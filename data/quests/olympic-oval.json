@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a1b2c3d4-0003-4000-8000-000000000001",
+    "title": "find the 1988 rings",
+    "description": "The Olympic Oval was built for the 1988 Winter Games. Find something nearby that still shows it, and take a photo of the two of you with it.",
+    "type": "local",
+    "lat": 51.0766,
+    "lng": -114.1357,
+    "radius_m": 120,
+    "duration_min": 20,
+    "proof": "photo",
+    "coins": 30,
+    "place_name": "Olympic Oval",
+    "sources": []
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a1b2c3d4-0004-4000-8000-000000000001",
+    "title": "a poster for something this week",
+    "description": "Walk to the Rozsa Centre and find a poster for a performance or talk coming up. Photograph it, and each pick the one you'd actually go to.",
+    "type": "event",
+    "lat": 51.0749,
+    "lng": -114.1297,
+    "radius_m": 80,
+    "duration_min": 15,
+    "proof": "photo",
+    "coins": 20,
+    "place_name": "Rozsa Centre",
+    "sources": []
+  }
+]
