@@ -136,7 +136,21 @@ const $ = (id) => document.getElementById(id);
 
 let quests = [];
 let editingId = null;
-try { quests = JSON.parse(localStorage.getItem(STORE)) || []; } catch { quests = []; }
+
+// Imported or previously saved quests may hold coordinates as strings (or junk).
+// render() calls toFixed on them, so coerce to numbers here or the whole page dies.
+function normalize(q) {
+  const n = (v) => (v == null || v === "" || !isFinite(+v) ? null : +v);
+  q = { sources: [], ...q, id: q.id || uuid() };
+  q.lat = n(q.lat); q.lng = n(q.lng);
+  if (q.lat == null || q.lng == null) q.lat = q.lng = null;
+  q.radius_m = n(q.radius_m);
+  q.duration_min = n(q.duration_min) ?? 20;
+  q.coins = n(q.coins) ?? 25;
+  return q;
+}
+
+try { quests = (JSON.parse(localStorage.getItem(STORE)) || []).filter((q) => q && q.title).map(normalize); } catch { quests = []; }
 
 const map = L.map("map").setView(UCALGARY, 16);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -332,7 +346,7 @@ $("file").addEventListener("change", async () => {
     let added = 0;
     arr.forEach((q) => {
       if (!q || !q.title) return;
-      q = { sources: [], ...q, id: q.id || uuid() };
+      q = normalize(q);
       const i = quests.findIndex((x) => x.id === q.id);
       if (i >= 0) quests[i] = q; else { quests.push(q); added++; }
     });
