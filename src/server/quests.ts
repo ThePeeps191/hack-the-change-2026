@@ -10,8 +10,8 @@ const AI_TIMEOUT_MS = 25_000; // writing quests is slow, so nobody waits on this
 const ACCEPT_TIMEOUT_MS = 5000; // what two people tapping "yes" will wait for, if warming missed
 const CACHE_HOURS = 6;
 const CACHE_RADIUS_M = 1000;
-// The System 1 demo quest: the TFDL book hunt.
-const DEMO_PAIR_QUEST = "a1b2c3d4-0001-4000-8000-000000000001";
+// The System 1 demo quest: ping pong at Schulich, on campus. Must be in data/quests/.
+const DEMO_PAIR_QUEST = "48359d56-748a-4a9a-85b9-388c730a447c";
 
 export type QuestRow = Quest;
 
