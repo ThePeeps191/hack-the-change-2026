@@ -195,3 +195,46 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
+/* Globe map markers: a coloured dot in a white ring; the label shows when picked. */
+.amble-marker {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+.amble-marker-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: 0 0 0 3px #fff, 0 4px 14px rgb(0 0 0 / 0.28);
+  transition: transform var(--duration-base) var(--ease-spring);
+}
+.amble-marker[data-selected] .amble-marker-dot {
+  transform: scale(1.35);
+}
+.amble-marker-label {
+  position: absolute;
+  top: 40px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--color-toast);
+  color: var(--color-on-toast);
+  font: 600 12px/1.2 var(--font-body);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--duration-base) var(--ease-out-soft), transform var(--duration-base) var(--ease-out-soft);
+  pointer-events: none;
+}
+.amble-marker[data-selected] .amble-marker-label {
+  opacity: 1;
+  transform: none;
+}
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}

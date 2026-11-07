@@ -35,7 +35,7 @@ export function Segmented<T extends string>({
             {active && (
               <motion.span
                 layoutId={`seg-${id}`}
-                className="absolute inset-0 rounded-[10px] bg-surface shadow-card"
+                className="absolute inset-0 rounded-[10px] bg-surface shadow-card dark:bg-[#2c302c]"
                 transition={{ type: "spring", stiffness: 420, damping: 34 }}
               />
             )}
