@@ -108,7 +108,7 @@ export function HomeScreen() {
             <Hand as="h2" className="text-[28px] leading-none font-bold text-ink"><span id="anywhere">anywhere</span></Hand>
             <p className="mt-1 text-[14px] text-ink-muted">Short ones to do on your own or with your crew.</p>
           </div>
-          <div className="mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-4 px-4 pb-3 [scrollbar-width:none]">
+          <div className="mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-4 px-4 pb-3 no-scrollbar">
             {anywhere.map((q, i) => (
               <motion.button
                 key={q.id}

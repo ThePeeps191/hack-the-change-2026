@@ -256,3 +256,11 @@ a {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* Horizontal rows that scroll by swipe, with no visible bar. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
