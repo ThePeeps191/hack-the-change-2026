@@ -21,6 +21,8 @@
     --accent: #5cc187; --accent-ink: #0d1a12; --pin: #f08d4f; --danger: #ef7a6c; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+code { font: 12px var(--mono); }
 html, body { height: 100%; margin: 0; }
 body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--body); }
 .app { display: grid; grid-template-columns: 1fr 420px; height: 100%; }
@@ -71,7 +73,17 @@ pre { font: 12px/1.5 var(--mono); background: var(--bg); border: 1px solid var(-
     <header>
       <h1>Amble <span>Quest Maker</span></h1>
       <span class="hint">Click the map to drop a pin. Drag it to adjust.</span>
+      <span class="hint" id="offline-hint">Saving in this browser only. Run <code>bun tools/quest-maker-server.ts</code> to save straight into <code>data/quests/</code>.</span>
     </header>
+
+    <section id="filebar" hidden>
+      <h2>Saving to data/quests/ <span id="saved" class="chip">…</span></h2>
+      <div class="row">
+        <select id="filepick" aria-label="Quest file"></select>
+        <button type="button" id="newfile">New file</button>
+      </div>
+      <span class="hint">One file per place. Every change is written to the file straight away.</span>
+    </section>
 
     <section>
       <h2>Challenge <span id="editing" class="chip">new</span></h2>
@@ -141,7 +153,10 @@ let editingId = null;
 // render() calls toFixed on them, so coerce to numbers here or the whole page dies.
 function normalize(q) {
   const n = (v) => (v == null || v === "" || !isFinite(+v) ? null : +v);
-  q = { sources: [], ...q, id: q.id || uuid() };
+  // Copy without reordering keys, so re-saving an untouched file leaves it byte-identical.
+  q = { ...q };
+  if (!q.id) q.id = uuid();
+  if (!Array.isArray(q.sources)) q.sources = [];
   q.lat = n(q.lat); q.lng = n(q.lng);
   if (q.lat == null || q.lng == null) q.lat = q.lng = null;
   q.radius_m = n(q.radius_m);
@@ -169,10 +184,90 @@ function uuid() {
   return crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, () => (Math.random() * 16 | 0).toString(16));
 }
 
+// Live mode: served by tools/quest-maker-server.ts, every change is written to data/quests/<file>.
+// Otherwise (opened from disk) quests live in localStorage and leave via Download/Copy.
+const live = { on: false, file: null, files: [], timer: null };
+
 function save() {
-  try { localStorage.setItem(STORE, JSON.stringify(quests)); } catch {}
+  if (live.on) scheduleWrite();
+  else { try { localStorage.setItem(STORE, JSON.stringify(quests)); } catch {} }
   render();
 }
+
+function setSaved(text) { $("saved").textContent = text; }
+const questsUrl = (file) => `api/quests?file=${encodeURIComponent(file)}`;
+
+function scheduleWrite() {
+  if (!live.file) return setStatus("Pick or create a file first.");
+  setSaved("saving…");
+  clearTimeout(live.timer);
+  live.timer = setTimeout(writeFile, 250);
+}
+
+async function writeFile() {
+  clearTimeout(live.timer); live.timer = null;
+  const file = live.file;
+  try {
+    const r = await fetch(questsUrl(file), { method: "PUT", headers: { "content-type": "application/json" }, body: json() });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+    setSaved(`saved ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`);
+  } catch (err) {
+    setSaved("not saved");
+    setStatus(`Couldn't save ${file}: ${err.message}. Is the quest maker server still running?`);
+  }
+}
+
+// Finish any pending write before switching files or leaving the page.
+async function flush() { if (live.timer) await writeFile(); }
+addEventListener("beforeunload", () => {
+  if (live.timer) fetch(questsUrl(live.file), { method: "PUT", headers: { "content-type": "application/json" }, body: json(), keepalive: true });
+});
+
+function fillPicker() {
+  $("filepick").innerHTML = "";
+  live.files.forEach((f) => $("filepick").add(new Option(f, f, false, f === live.file)));
+}
+
+async function loadFile(name) {
+  await flush();
+  try {
+    const r = await fetch(questsUrl(name));
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+    quests = (Array.isArray(data) ? data : []).filter((q) => q && q.title).map(normalize);
+    live.file = name;
+    try { localStorage.setItem(STORE + ":file", name); } catch {}
+    $("filename").value = name;
+    fillPicker();
+    resetForm();
+    fitToQuests();
+    setSaved("loaded");
+    setStatus(`Editing data/quests/${name} (${quests.length} challenge${quests.length === 1 ? "" : "s"}).`);
+  } catch (err) {
+    setStatus(`Couldn't open ${name}: ${err.message}`);
+    fillPicker();
+  }
+}
+
+function fitToQuests() {
+  const pts = quests.filter((q) => q.lat != null).map((q) => [q.lat, q.lng]);
+  if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 17 });
+}
+
+$("filepick").addEventListener("change", () => loadFile($("filepick").value));
+$("newfile").addEventListener("click", async () => {
+  let name = (prompt("New quest file, one per place (e.g. science-b):") || "").trim().toLowerCase().replace(/\s+/g, "-");
+  if (!name) return;
+  if (!name.endsWith(".json")) name += ".json";
+  if (!/^[a-z0-9][a-z0-9_-]*\.json$/.test(name)) return setStatus("Use letters, numbers and dashes, like science-b.json.");
+  if (live.files.includes(name)) return loadFile(name);
+  await flush();
+  quests = [];
+  live.file = name;
+  await writeFile();
+  live.files = [...live.files, name].sort();
+  await loadFile(name);
+});
 
 function setStatus(msg) { $("status").textContent = msg; }
 
@@ -350,10 +445,9 @@ $("file").addEventListener("change", async () => {
       const i = quests.findIndex((x) => x.id === q.id);
       if (i >= 0) quests[i] = q; else { quests.push(q); added++; }
     });
-    $("filename").value = f.name;
+    if (!live.on) $("filename").value = f.name;
     save();
-    const pts = quests.filter((q) => q.lat != null).map((q) => [q.lat, q.lng]);
-    if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 17 });
+    fitToQuests();
     setStatus(`Imported ${arr.length} from ${f.name} (${added} new).`);
   } catch (err) { setStatus(`That file isn't valid JSON: ${err.message}`); }
   $("file").value = "";
@@ -365,8 +459,23 @@ $("clear").addEventListener("click", () => {
 });
 
 render();
-const pts = quests.filter((q) => q.lat != null).map((q) => [q.lat, q.lng]);
-if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 17 });
+fitToQuests();
+
+// If the quest maker server is serving this page, switch to live file saving.
+(async () => {
+  let info = null;
+  try { const r = await fetch("api/files"); if (r.ok) info = await r.json(); } catch {}
+  if (!info || !Array.isArray(info.files)) return;
+  live.on = true;
+  live.files = info.files;
+  $("filebar").hidden = false;
+  $("offline-hint").hidden = true;
+  let last = null;
+  try { last = localStorage.getItem(STORE + ":file"); } catch {}
+  const first = live.files.includes(last) ? last : live.files[0];
+  if (first) await loadFile(first);
+  else { quests = []; render(); setSaved("no file"); setStatus("No quest files yet. Press New file to start one."); }
+})();
 </script>
 </body>
 </html>
