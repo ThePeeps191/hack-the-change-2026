@@ -1,49 +1,28 @@
 "use client";
+import { motion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Prefs, User } from "@/lib/contracts";
-import { AppShell, Notice, TopBar } from "@/components/ui/app-shell";
+import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
-import { Card, Skeleton } from "@/components/ui/card";
-
-const field = "min-h-12 w-full rounded-control border border-line bg-surface px-4 text-ink";
-
-const PACE: { value: NonNullable<Prefs["pace"]>; label: string }[] = [
-  { value: "short", label: "Short and easy" },
-  { value: "any", label: "Any walk is fine" },
-  { value: "brisk", label: "Brisk" },
-];
-
-const SOCIAL: { value: NonNullable<Prefs["social"]>; label: string }[] = [
-  { value: "chatty", label: "Happy to chat" },
-  { value: "side-by-side", label: "Side by side, less talking" },
-];
+import { Skeleton } from "@/components/ui/card";
+import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
+import { Segmented } from "@/components/ui/segmented";
+import { Switch } from "@/components/ui/switch";
+import { type Comfort, toComfort, toPrefs } from "./prefs";
 
 const LANGUAGES = [
   ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["ar", "العربية"],
   ["hi", "हिन्दी"], ["pa", "ਪੰਜਾਬੀ"], ["tl", "Tagalog"], ["uk", "Українська"], ["ko", "한국어"],
 ];
 
-function Choice<T extends string>({ name, options, value, onPick }: { name: string; options: { value: T; label: string }[]; value: T | undefined; onPick: (v: T) => void }) {
-  return (
-    <div className="grid gap-2" role="radiogroup" aria-label={name}>
-      {options.map((o) => (
-        <button
-          key={o.value}
-          role="radio"
-          aria-checked={value === o.value}
-          onClick={() => onPick(o.value)}
-          className={`min-h-12 rounded-control border px-4 text-left font-semibold ${value === o.value ? "border-accent bg-accent-soft text-accent-strong" : "border-line bg-surface text-ink-muted"}`}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
-  );
-}
+const box = "rounded-[24px] bg-surface shadow-card";
+const label = "mb-2 px-1 text-[14px] font-medium text-ink-muted";
 
-// First-run setup, and the comfort settings page afterwards.
+// First-run setup, and the name and language page afterwards. It uses the same
+// controls and words as "how you like to meet" on the You page, so the two
+// never disagree, and it starts from what's saved so something is always picked.
 export function WelcomeScreen() {
   const router = useRouter();
   const nextParam = useSearchParams().get("next");
@@ -51,7 +30,8 @@ export function WelcomeScreen() {
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState("");
   const [adult, setAdult] = useState(false);
-  const [prefs, setPrefs] = useState<Prefs>({});
+  const [comfort, setComfort] = useState<Comfort>(toComfort({}));
+  const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
 
@@ -60,7 +40,8 @@ export function WelcomeScreen() {
       setMe(u);
       setName(u.display_name);
       setAdult(!!u.age_confirmed_at);
-      setPrefs(u.prefs);
+      setComfort(toComfort(u.prefs));
+      setLanguage(u.prefs.language ?? "en");
     }).catch(() => setError(true));
   }, []);
 
@@ -68,6 +49,7 @@ export function WelcomeScreen() {
     setBusy(true);
     setError(false);
     try {
+      const prefs: Prefs = { ...me?.prefs, ...toPrefs(comfort, language) };
       await api.updateMe({ display_name: name, age_confirmed_at: new Date().toISOString(), prefs });
       router.replace(next);
     } catch {
@@ -77,48 +59,98 @@ export function WelcomeScreen() {
   }
 
   const firstRun = me && !me.age_confirmed_at;
+  const update = (patch: Partial<Comfort>) => setComfort((c) => ({ ...c, ...patch }));
 
   return (
     <AppShell nav={false}>
-      <TopBar back={firstRun ? undefined : "/me"} title={firstRun ? "Welcome" : "Name and language"} />
-      <div className="flex-1 space-y-4 px-4">
-        {!me && !error && <Skeleton className="h-64 w-full rounded-card" />}
+      <Hero className="pb-8">
+        <HeroBar left={firstRun ? undefined : <HeroIcon href="/me" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center={firstRun ? undefined : "you"} />
+        <Hand as="h1" className="px-6 pt-2 text-center text-[40px] leading-none font-bold">{firstRun ? "nice to meet you" : "name and language"}</Hand>
+        <p className="mx-auto mt-2 max-w-[30ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/90">
+          {firstRun ? "A few quick things so your quests and partners suit you." : "Change these any time."}
+        </p>
+      </Hero>
+
+      <motion.div
+        className="flex-1 space-y-6 px-4 pt-6"
+        initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {!me && !error && <Skeleton className="h-64 w-full rounded-[24px]" />}
         {error && <Notice tone="warning">Couldn&apos;t save that. Check your signal and try again?</Notice>}
         {me && (
           <>
-            <Card className="space-y-2 p-4">
-              <label className="block font-semibold" htmlFor="name">What should people call you?</label>
-              <input id="name" className={field} value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />
-              <p className="text-[13px] text-ink-muted">A first name is plenty. It&apos;s only shown once you both say yes.</p>
-            </Card>
-            <Card className="space-y-2 p-4">
-              <p className="font-semibold">How do you like to move?</p>
-              <Choice name="pace" options={PACE} value={prefs.pace} onPick={(pace) => setPrefs({ ...prefs, pace })} />
-              <label className="flex min-h-11 items-center gap-3 px-1 text-[15px]">
-                <input type="checkbox" className="size-5 accent-[var(--color-accent)]" checked={!!prefs.step_free} onChange={(e) => setPrefs({ ...prefs, step_free: e.target.checked })} />
-                Step-free places only
-              </label>
-            </Card>
-            <Card className="space-y-2 p-4">
-              <p className="font-semibold">How much talking?</p>
-              <Choice name="social energy" options={SOCIAL} value={prefs.social} onPick={(social) => setPrefs({ ...prefs, social })} />
-            </Card>
-            <Card className="space-y-2 p-4">
-              <label className="block font-semibold" htmlFor="language">Quests in</label>
-              <select id="language" className={field} value={prefs.language ?? "en"} onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}>
-                {LANGUAGES.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
-              </select>
-            </Card>
+            <section>
+              <label className={`block ${label}`} htmlFor="name">What should people call you?</label>
+              <input
+                id="name"
+                className="min-h-14 w-full rounded-[18px] bg-surface px-4 text-[17px] font-medium text-ink shadow-card ring-1 ring-[var(--hairline)] outline-none focus:ring-2 focus:ring-accent"
+                value={name}
+                maxLength={40}
+                autoComplete="given-name"
+                onChange={(e) => setName(e.target.value)}
+              />
+              <p className="px-1 pt-2 text-[13px] text-ink-muted">A first name is plenty. It&apos;s only shown once you both say yes.</p>
+            </section>
+
+            <section>
+              <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold">how you like to meet</Hand>
+              <div className={`space-y-4 p-4 ${box}`}>
+                <div>
+                  <p className={label}>Pace</p>
+                  <Segmented
+                    label="Pace"
+                    value={comfort.pace}
+                    onChange={(pace) => update({ pace })}
+                    options={[
+                      { value: "stroll", label: "Easy stroll" },
+                      { value: "walk", label: "Walk" },
+                      { value: "brisk", label: "Brisk" },
+                    ]}
+                  />
+                </div>
+                <div>
+                  <p className={label}>Talking</p>
+                  <Segmented
+                    label="Talking"
+                    value={comfort.talk}
+                    onChange={(talk) => update({ talk })}
+                    options={[
+                      { value: "side", label: "Side by side" },
+                      { value: "chatty", label: "Happy to chat" },
+                    ]}
+                  />
+                </div>
+              </div>
+              <div className={`rows mt-2.5 overflow-hidden ${box}`}>
+                <Switch checked={comfort.stepFree} onChange={(stepFree) => update({ stepFree })} label="Step-free places only" hint="No stairs or steep paths on the way." />
+                <label className="flex min-h-14 items-center gap-3 px-4 py-2.5">
+                  <span className="flex-1">
+                    <span className="block text-[16px] font-medium">Quests in</span>
+                    <span className="block text-[13px] text-ink-muted">The language quests are written in.</span>
+                  </span>
+                  <select
+                    className="min-h-11 rounded-[12px] bg-sunken px-3 text-[15px] font-semibold text-ink outline-none focus:ring-2 focus:ring-accent"
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                  >
+                    {LANGUAGES.map(([code, l]) => <option key={code} value={code}>{l}</option>)}
+                  </select>
+                </label>
+              </div>
+            </section>
+
             {firstRun && (
-              <label className="flex min-h-12 items-center gap-3 px-1 font-semibold">
-                <input type="checkbox" className="size-5 accent-[var(--color-accent)]" checked={adult} onChange={(e) => setAdult(e.target.checked)} />
-                I&apos;m 18 or older
-              </label>
+              <div className={`overflow-hidden ${box}`}>
+                <Switch checked={adult} onChange={setAdult} label="I'm 18 or older" hint="Amble is for adults, so you meet other adults." />
+              </div>
             )}
           </>
         )}
-      </div>
-      <div className="px-4 pt-4 pb-6">
+      </motion.div>
+
+      <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))]">
         <Button size="lg" onClick={save} disabled={busy || !me || !name.trim() || !adult}>{busy ? "Saving…" : firstRun ? "Let's go" : "Save"}</Button>
       </div>
     </AppShell>
