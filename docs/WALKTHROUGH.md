@@ -128,7 +128,7 @@ One Vultr server runs the app behind Caddy, which handles HTTPS. Every minute a 
 
 ## Testing
 
-`scripts/smoke.ts` drives the whole product over HTTP as a dozen made-up people: matching, two people accepting at the same moment, proof, coins, Claim, access checks, data export and deletion. Run `BASE_URL=http://localhost:3001 bun run smoke`. It passes 86 of 86 checks. `bun run check` runs types and lint.
+`scripts/smoke.ts` drives the whole product over HTTP as a dozen made-up people: matching, two people accepting at the same moment, proof, coins, Claim, access checks, data export and deletion. Run `BASE_URL=http://localhost:3001 bun run smoke`. On Nov 7 evening it passed 85 of 86. The one failure is item 8 in the [JUDGING audit](JUDGING.md#audit-what-a-judge-sees-today): the starter pack no longer has any anywhere quests. `bun run check` runs types and lint.
 
 ## How we used AI to build it
 
