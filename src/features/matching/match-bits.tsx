@@ -2,6 +2,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { CAMPUS_CENTER } from "@/lib/config";
 
 // Small things that keep the match screen alive while you wait.
 
@@ -50,7 +51,10 @@ export function PlaceTicker() {
   useEffect(() => {
     api
       .quests()
-      .then((qs) => setPlaces([...new Set(qs.map((q) => q.place_name).filter((n): n is string => !!n))]))
+      .then((qs) => {
+        const near = qs.filter((q) => q.lat != null && q.lng != null && Math.abs(q.lat - CAMPUS_CENTER.lat) < 0.0135 && Math.abs(q.lng - CAMPUS_CENTER.lng) < 0.021);
+        setPlaces([...new Set(near.map((q) => q.place_name).filter((n): n is string => !!n))]);
+      })
       .catch(() => {});
   }, []);
   useEffect(() => {
