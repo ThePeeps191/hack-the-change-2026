@@ -7,8 +7,8 @@ import { Odometer } from "./odometer";
 // blurred, moving very slowly; they sit behind the content.
 function Clouds() {
   const banks = [
-    { left: "-14%", bottom: "-20%", w: 300, o: 0.4, d: "68s", dl: "0s" },
-    { left: "50%", bottom: "-24%", w: 340, o: 0.36, d: "84s", dl: "-30s" },
+    { left: "-14%", bottom: "-30%", w: 300, o: 0.34, d: "68s", dl: "0s" },
+    { left: "50%", bottom: "-34%", w: 340, o: 0.3, d: "84s", dl: "-30s" },
     { left: "26%", top: "18%", w: 150, o: 0.16, d: "96s", dl: "-50s" },
   ];
   return (
@@ -35,7 +35,10 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
     <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>
       <section
         className={`relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "rounded-b-[36px] pb-6"} ${className}`}
-        style={{ background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)" }}
+        style={{
+          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)",
+          textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
+        }}
       >
         {/* a soft sun glow, top-right */}
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
@@ -120,6 +123,30 @@ export function RoundButton({ href, label, d, onClick }: { href?: string; label:
     <Link href={href} aria-label={label} className={cls}>{svg}</Link>
   ) : (
     <button aria-label={label} onClick={onClick} className={cls}>{svg}</button>
+  );
+}
+
+// A dusk sky: deep blue overhead, a warm glow at the horizon. For the few
+// surfaces that need to be dark (the live quest, Claim), so they still feel
+// like outdoors rather than a dashboard.
+export const dusk = "linear-gradient(170deg, #1a3466 0%, #22407a 52%, #4b4f86 82%, #a8697a 118%)";
+
+// A handful of faint stars, placed by hand so they never clump.
+export function Stars({ className = "" }: { className?: string }) {
+  const stars = [
+    [8, 14, 1.6], [22, 30, 1], [37, 9, 1.2], [55, 22, 1.8], [68, 8, 1], [82, 26, 1.4], [91, 12, 1],
+    [14, 52, 1], [46, 44, 1.1], [74, 48, 1], [88, 60, 1.3], [30, 68, 0.9],
+  ];
+  return (
+    <div aria-hidden className={`pointer-events-none absolute inset-0 ${className}`}>
+      {stars.map(([x, y, r], i) => (
+        <span
+          key={i}
+          className={`absolute rounded-full bg-white ${i % 4 === 0 ? "animate-[twinkle_4s_ease-in-out_infinite]" : ""}`}
+          style={{ left: `${x}%`, top: `${y}%`, width: r * 2, height: r * 2, opacity: 0.35 + (i % 3) * 0.2, animationDelay: `${i * 0.7}s` }}
+        />
+      ))}
+    </div>
   );
 }
 

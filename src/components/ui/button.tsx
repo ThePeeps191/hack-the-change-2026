@@ -15,7 +15,7 @@ const variants: Record<Variant, string> = {
   quiet: "text-ink-muted hover:text-ink",
   danger: "text-danger hover:bg-danger-soft",
   // the white pill that sits on the sky panel and on dark toasts
-  onSky: "bg-white text-[#0d0e0d] shadow-[0_6px_20px_rgb(13_14_13/0.18)] hover:bg-white/95",
+  onSky: "bg-white text-[#0d0e0d] [text-shadow:none] shadow-[0_6px_20px_rgb(13_14_13/0.18)] hover:bg-white/95",
 };
 
 const sizes: Record<Size, string> = {

@@ -4,10 +4,6 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { tick } from "@/lib/feedback";
 
-// Remembers which Claim zone a run is attempting, so the proof screen can ask
-// for a result and post the attempt once Gemini approves.
-export const zoneKey = (runId: string) => `amble:zone:${runId}`;
-
 // Start a crew, solo or Claim run and go to it. Pair runs come from matching.
 export function useStartRun() {
   const router = useRouter();
@@ -21,11 +17,6 @@ export function useStartRun() {
     setError(null);
     try {
       const run = await api.startRun(body);
-      if (body.zone_id) {
-        try {
-          sessionStorage.setItem(zoneKey(run.id), body.zone_id);
-        } catch {}
-      }
       router.push(`/quest/${run.id}`);
     } catch {
       setError("That didn't start. Check your signal and try again.");

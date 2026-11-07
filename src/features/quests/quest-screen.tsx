@@ -98,7 +98,7 @@ export function QuestScreen() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       >
-        <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] bg-[#101211] text-white shadow-lift">
+        <BorderBeam size="md" theme="dark" colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="rounded-[28px] text-white shadow-lift" style={{ background: "linear-gradient(170deg, #1a3466 0%, #1d3a70 60%, #2b3f78 100%)" }}>
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-white/60">
               <QuestIcon type={q.type} size={8} />

@@ -2,23 +2,22 @@
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { api } from "@/lib/api";
-import type { Quest, Zone } from "@/lib/contracts";
+import type { Zone } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
 import type { GlobeMarker } from "@/components/map/globe-map";
-import { MagneticButton } from "@/components/ui/button";
-import { Notice } from "@/components/ui/app-shell";
-import { useStartRun } from "@/features/quests/use-start-run";
-import { GAME_ID } from "./game";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
   loading: () => <div className="size-full animate-pulse" style={{ background: "linear-gradient(180deg, var(--color-sky-top), var(--color-sky-bottom))" }} />,
 });
 
+// TODO(backend): there's no "my active game" endpoint yet, so this asks for
+// "current" and the mock returns the demo game.
+const GAME_ID = "current";
 
 const colors = { free: "#9aa09a", ours: "var(--color-accent)", theirs: "var(--color-anywhere)" };
 
@@ -26,11 +25,6 @@ export function ClaimScreen() {
   const { data: game } = usePoll(() => api.game(GAME_ID), { ms: 5000 });
   const [picked, setPicked] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
-  const run = useStartRun();
-  const [quests, setQuests] = useState<Quest[]>([]);
-  useEffect(() => {
-    api.quests().then(setQuests).catch(() => {});
-  }, []);
   const us = game?.teams[0];
   const them = game?.teams[1];
 
@@ -55,7 +49,7 @@ export function ClaimScreen() {
       <motion.div
         className="relative overflow-hidden rounded-b-[36px] shadow-card"
         initial={false}
-        animate={{ height: zone ? "42dvh" : "60dvh" }}
+        animate={{ height: zone ? "46dvh" : "60dvh" }}
         transition={{ type: "spring", stiffness: 260, damping: 34 }}
       >
         <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} />
@@ -102,10 +96,7 @@ export function ClaimScreen() {
                     {tone(zone) === "ours" ? `Held by ${us?.name}` : tone(zone) === "theirs" ? `Held by ${them?.name}` : "Nobody holds this yet"}
                   </div>
                   <p className="mt-2 text-[22px] leading-tight font-semibold tracking-[-0.01em]">{zone.name}</p>
-                  {(() => {
-                    const zq = zone.quest ?? quests.find((x) => x.id === zone.quest_id);
-                    return zq && <p className="mt-1.5 text-[15px] leading-snug text-ink-muted">{zq.description}</p>;
-                  })()}
+                  {zone.quest && <p className="mt-1.5 text-[15px] leading-snug text-ink-muted">{zone.quest.description}</p>}
                   <div className="mt-4 flex items-baseline gap-2 border-t border-[var(--hairline)] pt-3">
                     {zone.best_result != null ? (
                       <>
@@ -116,15 +107,6 @@ export function ClaimScreen() {
                       <span className="text-[15px] text-ink-muted">Finish the challenge to take it.</span>
                     )}
                   </div>
-                  {tone(zone) !== "ours" && (
-                    <div className="mt-4">
-                      <MagneticButton onClick={() => run.start({ quest_id: zone.quest_id, zone_id: zone.id, crew_id: us?.crew_id })} disabled={run.busy}>
-                        {run.busy ? "Starting…" : tone(zone) === "theirs" ? "Take it back" : "Claim it"}
-                      </MagneticButton>
-                    </div>
-                  )}
-                  {tone(zone) === "ours" && <p className="mt-3 text-[14px] text-ink-muted">Yours for now. Someone can still beat it.</p>}
-                  {run.error && <div className="pt-2"><Notice tone="danger">{run.error}</Notice></div>}
                 </motion.div>
               ) : (
                 <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
