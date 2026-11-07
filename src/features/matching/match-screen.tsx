@@ -71,6 +71,9 @@ export function MatchScreen() {
   }
 
   const name = match?.partner?.display_name;
+  // True when the partner is the demo bot. Optional in the contract, so we say
+  // so plainly instead of letting a practice partner pass for a real person.
+  const practice = (match as (typeof match & { demo_partner?: boolean }) | null)?.demo_partner === true;
   const d = gap[state];
 
   return (
@@ -142,7 +145,7 @@ export function MatchScreen() {
               )}
               {state === "found" && "They're free right now too."}
               {state === "waiting" && "Waiting for them to say yes too."}
-              {state === "matched" && "Your quest is ready. Head to the spot and say hi."}
+              {state === "matched" && (practice ? `${name ?? "They"} is a practice partner, so you can try the whole thing alone.` : "Your quest is ready. Head to the spot and say hi.")}
               {state === "ended" && "No worries. Try again whenever you're free."}
             </p>
           </motion.div>
@@ -159,6 +162,11 @@ export function MatchScreen() {
             <>
               {match?.distance_m != null && <>About {walkMinutes(match.distance_m)} min away ({distance(match.distance_m)}). </>}
               Say yes and you both get the same quest. You&apos;ll see their first name once you both agree, and you&apos;ll meet at the quest spot, never at each other&apos;s.
+              {practice && (
+                <span className="mt-2 block rounded-[14px] bg-black/5 px-3 py-2 text-[14px] font-medium opacity-100 dark:bg-white/10">
+                  This is a practice partner, so you can try the whole thing alone.
+                </span>
+              )}
             </>
           }
           action={<button className={toastPill} onClick={() => respond(true)} disabled={acting}>Yes, let&apos;s go</button>}

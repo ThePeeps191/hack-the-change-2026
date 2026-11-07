@@ -30,7 +30,7 @@ export function Segmented<T extends string>({
               if (!active) tick(0.7);
               onChange(o.value);
             }}
-            className={`relative flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] px-2 text-[14px] font-semibold transition-colors ${active ? "text-ink" : "text-ink-muted hover:text-ink"}`}
+            className={`relative flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-[11px] px-2 text-[14px] font-semibold transition-colors ${active ? "text-ink" : "text-ink/75 hover:text-ink"}`}
           >
             {active && (
               <motion.span
