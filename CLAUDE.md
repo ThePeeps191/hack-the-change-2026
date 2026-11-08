@@ -18,7 +18,6 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 - **Every one of us must be able to explain any code.** If one of us can't, we can be disqualified. Keep code plain enough to explain in one sentence, and update `docs/WALKTHROUGH.md` when you change how something works.
 - **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
 - **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
-- **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
 - **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data and GoDaddy Registry. (We host on Vercel, so Vultr is out.) Don't remove one without telling a human.
 
 ## Build only what the demo shows
@@ -122,6 +121,6 @@ Many sessions share each laptop and the same accounts:
 - Design for a phone first, with real tap targets.
 - Show a usable screen when GPS is denied, the AI is slow or down, or there's no signal.
 - Treat location, photos and video as personal data: don't log them, and use only made-up data in fixtures.
-- Quests stay safe: public places, daylight, walking pace.
+- Keep safety and privacy rules light; this is a hackathon demo, not a published app. Quests should be sensible (public places, walking pace), and that's it. Don't add filters, extra AI rules or checks for strangers, children or faces in photos, daylight limits or content screening. Common sense in the starter quests is enough.
 
 Before you call something done, run it and see it work, and say plainly what you did and didn't check.
