@@ -4,7 +4,7 @@ import { one, query } from "@/lib/db";
 import { DEMO_MODE, AI_MODE } from "@/lib/env";
 import { judgeProof } from "@/lib/ai";
 import { HttpError, notFound } from "@/lib/route";
-import { isAllowedMedia, MAX_UPLOAD_BYTES, saveUpload, uploadPath } from "@/lib/uploads";
+import { framesPath, isAllowedMedia, MAX_UPLOAD_BYTES, saveFrames, saveUpload, uploadPath } from "@/lib/uploads";
 import { advance, applyVerdict, questForRun, runForMember } from "./runs";
 import { distanceM, safetyRulesOn } from "./safety";
 
@@ -49,6 +49,10 @@ export async function submitProof(user: User, runId: string, form: FormData): Pr
 
   const id = crypto.randomUUID();
   const path = file && isAllowedMedia(file.type) ? await saveUpload(id, file) : null;
+  const frames = form.get("frames");
+  if (path && file?.type.startsWith("video/") && frames instanceof File && frames.type === "image/jpeg" && frames.size > 0 && frames.size < 1024 * 1024) {
+    await saveFrames(path, frames);
+  }
   const takenAt = form.get("taken_at");
   await query(
     `insert into submissions (id, run_id, user_id, media_url, media_path, media_type, lat, lng, taken_at, mock_verdict)
@@ -83,6 +87,7 @@ export async function judgeSubmission(id: string) {
         quest,
         media_path: sub.media_path ? await uploadPath(sub.media_path) : null,
         media_type: sub.media_type,
+        frames_path: sub.media_path && sub.media_type?.startsWith("video/") ? await framesPath(sub.media_path) : null,
         lat: sub.lat,
         lng: sub.lng,
         taken_at: sub.taken_at?.toISOString() ?? null,

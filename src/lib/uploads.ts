@@ -29,6 +29,20 @@ export const isAllowedMedia = (type: string) => Object.hasOwn(EXTENSIONS, type);
 
 const tempPath = (name: string) => path.join(dir(), path.basename(name));
 
+// A video's still frames for the AI (src/lib/video-frames.ts), saved beside it
+// and deleted with it.
+export const framesName = (videoName: string) => `${path.basename(videoName).replace(/\.[^.]+$/, "")}-frames.jpg`;
+
+export async function saveFrames(videoName: string, frames: File) {
+  await query("insert into uploads (name, data) values ($1, $2) on conflict (name) do update set data = excluded.data", [
+    framesName(videoName),
+    Buffer.from(await frames.arrayBuffer()),
+  ]);
+}
+
+// A file path for the video's frames, or null if the phone couldn't make them.
+export const framesPath = (videoName: string) => uploadPath(framesName(videoName)).catch(() => null);
+
 // Returns the upload's name, which is what submissions.media_path stores.
 export async function saveUpload(id: string, file: File) {
   const name = `${id}${EXTENSIONS[file.type]}`;
@@ -58,6 +72,7 @@ export async function uploadPath(name: string) {
 }
 
 export async function deleteUpload(name: string) {
-  await query("delete from uploads where name = $1", [path.basename(name)]);
+  await query("delete from uploads where name = $1 or name = $2", [path.basename(name), framesName(name)]);
   await rm(tempPath(name), { force: true });
+  await rm(tempPath(framesName(name)), { force: true });
 }
