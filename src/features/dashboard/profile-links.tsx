@@ -16,7 +16,7 @@ export function ProfileLinks() {
       {/* A plain link, not next/link: a prefetch would sign you out. */}
       {canSignOut && <a href="/api/signout" className={buttonClass("secondary", "lg")}>Sign out</a>}
       <nav aria-label="Your account" className="flex flex-wrap justify-center gap-x-6 text-[14px] font-medium text-ink-faint">
-        <Link href="/welcome" className="flex min-h-11 items-center hover:text-ink-muted">Name and language</Link>
+        <Link href="/welcome" className="flex min-h-11 items-center hover:text-ink-muted">Your name</Link>
         <Link href="/privacy" className="flex min-h-11 items-center hover:text-ink-muted">Your data</Link>
       </nav>
     </div>
