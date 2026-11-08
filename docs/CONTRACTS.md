@@ -130,6 +130,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/crews` | Crews I'm in | crew list |
 | `POST /api/crews` | `{ name }` | crew with `invite_code` |
 | `GET /api/crews/:id` | Crew, members and shared quests | crew |
+| `GET /api/crews/join?code=` | Check an invite code before joining (404 if no crew has it) | `{ name }` |
 | `POST /api/crews/join` | `{ invite_code }` | crew |
 | `POST /api/crews/:id/quests` | Share a quest with the crew: `{ quest_id }` | nothing |
 | `GET /api/leaderboard` | `?crew_id=` ranks that crew's members by all-time coins. Otherwise all crews by coins this week, with `delta` for the last day | ranked list |

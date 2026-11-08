@@ -127,6 +127,7 @@ export const api = {
   crews: () => call<Crew[]>("/api/crews"),
   createCrew: (name: string) => post<Crew>("/api/crews", { name }),
   crew: (id: string) => call<Crew>(`/api/crews/${id}`),
+  crewForCode: (code: string) => call<{ name: string }>(`/api/crews/join?code=${encodeURIComponent(code)}`),
   joinCrew: (invite_code: string) =>
     post<Crew>("/api/crews/join", { invite_code }),
   shareQuest: (crewId: string, quest_id: string) =>

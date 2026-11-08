@@ -19,9 +19,31 @@ export function JoinScreen() {
   const [error, setError] = useState<string | null>(null);
   // If you're already in the crew this link is for, say so instead of asking you to join.
   const [mine, setMine] = useState<string | null>(null);
+  // The crew's name, or why the code is no good, checked as soon as the page opens.
+  const [name, setName] = useState<string | null>(null);
+  const [bad, setBad] = useState<string | null>(null);
   useEffect(() => {
     api.crews().then((cs) => setMine(cs.find((c) => c.invite_code.toLowerCase() === code.toLowerCase())?.name ?? null)).catch(() => {});
+    api.crewForCode(code).then((c) => setName(c.name)).catch((e) => {
+      if (e instanceof ApiError && e.status === 404) setBad(e.message);
+    });
   }, [code]);
+
+  if (bad) {
+    return (
+      <AppShell nav={false}>
+        <Hero fill className="min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
+          <Stars className="opacity-50" />
+          <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
+          <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">oops</Hand>
+          <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">{bad}</p>
+          <div className="relative mx-auto mt-auto w-full max-w-[400px] px-4 pt-8">
+            <Link href="/" className={buttonClass("onSky", "lg", "w-full")}>Back to today</Link>
+          </div>
+        </Hero>
+      </AppShell>
+    );
+  }
 
   async function join() {
     setBusy(true);
@@ -42,7 +64,7 @@ export function JoinScreen() {
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
         <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">{mine ? "you're already in" : "join the crew?"}</Hand>
         <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">
-          {mine ? <>This link is for {mine}, and you&apos;re one of them.</> : "A crew is a few friends who get outside together, wherever each of you is."}
+          {mine ? <>This link is for {mine}, and you&apos;re one of them.</> : name ? <>{name} is a few friends who get outside together, wherever each of you is.</> : "A crew is a few friends who get outside together, wherever each of you is."}
         </p>
         {!mine && <div className="mt-9 px-4">
           <SkySteps
