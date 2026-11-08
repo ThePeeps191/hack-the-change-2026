@@ -55,7 +55,9 @@ Crews share quests and earn coins together, and the coins go toward a weekly boa
 
 The You tab is private and never ranked against anyone. It shows your active minutes against Canada's 150-minute guideline, your familiar faces (people you've done several quests with), new places you've been, and how you felt before and after each quest.
 
-## Inclusive and safe by design
+## Safety and privacy
+
+An app designed to get strangers to meet has to take safety seriously. You only ever meet at a public quest spot. Your partner sees a rough distance, then a first name once you both say yes.
 
 - **Comfort settings:** step-free places first, a short and easy pace, and side-by-side quests for people who'd rather not chat face to face.
 - **Public places only.** You meet at the quest spot, never at someone's location.
