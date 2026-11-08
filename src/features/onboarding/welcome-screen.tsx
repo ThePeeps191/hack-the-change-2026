@@ -13,15 +13,10 @@ import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
 import { type Comfort, toComfort, toPrefs } from "./prefs";
 
-const LANGUAGES = [
-  ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["ar", "العربية"],
-  ["hi", "हिन्दी"], ["pa", "ਪੰਜਾਬੀ"], ["tl", "Tagalog"], ["uk", "Українська"], ["ko", "한국어"],
-];
-
 const box = "rounded-[24px] bg-surface shadow-card";
 const label = "mb-2 px-1 text-[14px] font-medium text-ink-muted";
 
-// First-run setup, and the name and language page afterwards. It uses the same
+// First-run setup, and the name and comfort page afterwards. It uses the same
 // controls and words as "how you like to meet" on the You page, so the two
 // never disagree, and it starts from what's saved so something is always picked.
 export function WelcomeScreen() {
@@ -31,7 +26,6 @@ export function WelcomeScreen() {
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState("");
   const [comfort, setComfort] = useState<Comfort>(toComfort({}));
-  const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
 
@@ -40,7 +34,6 @@ export function WelcomeScreen() {
       setMe(u);
       setName(u.display_name);
       setComfort(toComfort(u.prefs));
-      setLanguage(u.prefs.language ?? "en");
     }).catch(() => setError(true));
   }, []);
 
@@ -48,7 +41,8 @@ export function WelcomeScreen() {
     setBusy(true);
     setError(false);
     try {
-      const prefs: Prefs = { ...me?.prefs, ...toPrefs(comfort, language) };
+      // Quests are hand-made in English, so there's no language choice; a saved one is kept.
+      const prefs: Prefs = { ...me?.prefs, ...toPrefs(comfort, me?.prefs.language) };
       // age_confirmed_at just marks "finished the welcome screen" now; there is no age question.
       await api.updateMe({ display_name: name, age_confirmed_at: new Date().toISOString(), prefs });
       router.replace(next);
@@ -66,7 +60,7 @@ export function WelcomeScreen() {
       <Split fill aside={
       <Hero className="pb-8">
         <HeroBar left={firstRun ? undefined : <HeroIcon href="/me" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center={firstRun ? undefined : "you"} />
-        <Hand as="h1" className="px-6 pt-2 text-center text-[40px] leading-none font-bold">{firstRun ? "nice to meet you" : "name and language"}</Hand>
+        <Hand as="h1" className="px-6 pt-2 text-center text-[40px] leading-none font-bold">{firstRun ? "nice to meet you" : "your name"}</Hand>
         <p className="mx-auto mt-2 max-w-[30ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/90">
           {firstRun ? "A few quick things so your quests and partners suit you." : "Change these any time."}
         </p>
@@ -127,19 +121,6 @@ export function WelcomeScreen() {
               </div>
               <div className={`rows mt-2.5 overflow-hidden ${box}`}>
                 <Switch checked={comfort.stepFree} onChange={(stepFree) => update({ stepFree })} label="Step-free places only" hint="No stairs or steep paths on the way." />
-                <label className="flex min-h-14 items-center gap-3 px-4 py-2.5">
-                  <span className="flex-1">
-                    <span className="block text-[16px] font-medium">Quests in</span>
-                    <span className="block text-[13px] text-ink-muted">The language quests are written in.</span>
-                  </span>
-                  <select
-                    className="min-h-11 rounded-[12px] bg-sunken px-3 text-[15px] font-semibold text-ink outline-none focus:ring-2 focus:ring-accent"
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                  >
-                    {LANGUAGES.map(([code, l]) => <option key={code} value={code}>{l}</option>)}
-                  </select>
-                </label>
               </div>
             </section>
 
