@@ -45,7 +45,7 @@ This is the main demo. Each step names the function that does it.
 7. **Proof.** You take a photo, and `POST /api/runs/:id/submissions` saves it and replies "pending" straight away. The check happens after the reply, through Next's `after()`, so your phone isn't kept waiting. `judgeSubmission` in `src/server/proof.ts` first checks place and time, which is free and can't be argued with: was the photo taken near the spot, during the quest? Then it asks the AI whether the photo shows the quest being done. If the AI gets it wrong on stage, `DEMO_MODE` adds a quiet "Approve by hand" on the proof screen (`approveByHand`), which also overturns a rejection.
 8. **Coins.** `applyVerdict` records the result and calls `awardCoins`. A unique index on `coin_events` means a quest can never pay twice, even if the code runs twice.
 9. **Finishing.** `settle` in `src/server/runs.ts` marks the run complete once everyone's proof is approved, or at time-up if your partner never sent theirs, so you still get your recap. Your You page only counts quests where your own proof was approved. It also works out how far each person walked from their own pings.
-10. **Recap.** `getRecap` in `src/server/recaps.ts` asks the AI for a two-line story once and keeps it. It shows your own route, never your partner's. Then you can choose to stay in touch, which only connects you if both say yes (`stayInTouch` in `src/server/people.ts`).
+10. **Recap.** `getRecap` in `src/server/recaps.ts` asks the AI for a two-line story once and keeps it. Your own route comes back with it (never your partner's), but the screen doesn't draw it: the meeting picture is a drawing, not a map. Then you can choose to stay in touch, which only connects you if both say yes (`stayInTouch` in `src/server/people.ts`).
 
 **Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds (25 seconds if you signed in with a real account, so two team phones that tap a little apart still find each other; `botWaitMs`), you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
 
@@ -93,7 +93,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 | "350 m away" on quest cards never leaves your phone | `QuestDistance` in `src/features/quests/quest-distance.tsx` works it out in the browser, only if location is already allowed (it never asks), and shows nothing otherwise. `SHOW_QUEST_DISTANCE` in `src/lib/config.ts` turns it off |
 | First name only, and only after both say yes | `toMatch`, and `firstName` in `auth.ts` |
 | Proof photos only go to people on that quest | `GET /api/media/:id` checks `run_members`, and serves files with a no-script sandbox |
-| Your route is shown only to you, and deleted after 30 days | `getRecap`, and the Tiger Data retention policy |
+| Your route is never shown to anyone else, and deleted after 30 days | `getRecap`, and the Tiger Data retention policy |
 | Download or delete everything | `exportMyData` and `deleteMyData` in `src/server/users.ts`, from `/privacy`. On the shared demo account (Sam, `AUTH_MODE=mock`) it deletes location and photos but keeps the made-up history, so the next judge still sees a full demo |
 | Report someone and you're never paired again | `report` in `people.ts`, and the `not exists` check in `tryPair` |
 | Keys never reach the browser | All AI and database calls are server-only (`import "server-only"`), and `/api/health` reports where a key came from, never the key itself |
@@ -141,19 +141,19 @@ Vercel hosts the app at https://amble.health and deploys every push to `main` (`
 
 ## How we used AI to build it
 
-We used Claude Code, an AI coding assistant, heavily, with many sessions in parallel, each in its own git worktree and branch, merged through small pull requests. The humans made the product decisions: the idea, which focus areas, the safety rules, the metrics and why, the quests themselves, and what to cut. The AI also runs inside the product (quests, proof, recaps). Both are disclosed on Devpost. Saying this plainly is better than being caught out.
+We used Claude Code, an AI coding assistant, heavily, with many sessions in parallel, each in its own git worktree and branch, merged through small pull requests. The humans made the product decisions: the idea, which focus areas, the safety rules, the metrics and why, the quests themselves, and what to cut. The AI also runs inside the product (proof checks and recaps; the quests are hand-made). Both are disclosed on Devpost. Saying this plainly is better than being caught out.
 
 ## Questions judges will ask
 
 Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
-**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs a verified email and happens in daylight only. During the quest, one tap opens "Help, leave or report" (`src/features/quests/report-sheet.tsx`): 911 and UCalgary Campus Security (403-220-5333, 24/7) at the top, "I need to go" to leave without blaming anyone, and a report, which ends the quest and means you're never paired with that person again.
+**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. With a real account, meeting strangers needs a verified email and happens in daylight (`assertCanMeet` in `src/server/safety.ts`); the judging site runs in demo mode, which switches that off so you can try it now. During the quest, one tap opens "Help, leave or report" (`src/features/quests/report-sheet.tsx`): 911 and UCalgary Campus Security (403-220-5333, 24/7) at the top, "I need to go" to leave without blaming anyone, and a report, which ends the quest and means you're never paired with that person again.
 
 **"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. After 45 seconds with nobody around, the match screen says so and offers an invite link for someone you're with (`src/features/matching/match-screen.tsx`), and stops promising "under a minute" after a minute. Crews and invite links work with zero strangers around. In the demo, Priya is a labelled practice partner.
 
-**"Can't people fake the photo?"** The server first checks the photo was taken near the place and during the quest, and the AI then checks it shows the task, rejecting screenshots. Someone could still fake it, but the reward is coins on a friendly board, so it isn't worth it. For Claim, which has a real winner, you need approved proof and a score that beats the best.
+**"Can't people fake the photo?"** For real accounts the server first checks the photo was taken near the place and during the quest (`checkPlaceAndTime`; demo mode skips it so judges can try indoors), and the AI then checks it shows the task. Someone could still fake it, but the reward is coins on a friendly board, so it isn't worth it. For Claim, which has a real winner, you need approved proof and a score that beats the best.
 
-**"What does the AI cost per user?"** One call writes several quests for an area, and they're shared with everyone within 1 km for 6 hours. Proof is one small image call. *(Quote the measured figure from Devpost here, once someone has measured it.)*
+**"What does the AI cost per user?"** About $0.0004 a call, measured on the Anthropic Console from our first live calls on Claude Haiku. A quest uses two calls, the proof check and the recap, so about a tenth of a cent per quest, or roughly $1 for 1,000 quests. Quests are hand-made, so writing them costs nothing.
 
 **"What happens when the AI is down or wrong?"** Quests are hand-written, so they don't depend on it. Proof counts anyway and says so, and the recap falls back to a plain summary. Every call has a timeout, so nothing hangs.
 
@@ -165,7 +165,7 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"Is Priya a real person?"** No. She's a bot partner, so a judge alone can try the whole flow. The app says so on screen.
 
-**"Where does location go?"** It's kept while you're searching and deleted the moment you're matched. During a quest it's recorded only to measure your own walk, shown only to you, and deleted after 30 days on Tiger Data.
+**"Where does location go?"** It's kept while you're searching and deleted the moment you're matched. We keep only the halfway point between you, to pick the quest. During a quest it's recorded only to measure how far you walked and your active minutes, never shown to anyone else, and deleted after 30 days on Tiger Data.
 
 **"Why Next.js, Postgres, Auth0?"** One deployable app with typed contracts on both sides, real SQL with transactions and locks for the race conditions in matching, and login we don't have to build or secure ourselves. Tiger Data gives us automatic expiry for location data.
 
