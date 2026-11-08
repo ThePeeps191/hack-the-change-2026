@@ -169,6 +169,13 @@ export function MatchScreen() {
             </Liquid.Item>
           </Liquid>
         </motion.div>
+        {/* Says each change out loud for screen readers. It stays mounted while the words below swap. */}
+        <p className="sr-only" role="status" aria-live="polite">
+          {state === "found" && "Someone nearby is free right now. Go together?"}
+          {state === "waiting" && "You said yes. Waiting for them."}
+          {state === "matched" && `Matched with ${name ?? "someone"}${practice ? ", a practice partner" : ""}. Your quest is ready.`}
+          {state === "ended" && "That match slipped away."}
+        </p>
         <AnimatePresence mode="wait">
           <motion.div
             key={state}

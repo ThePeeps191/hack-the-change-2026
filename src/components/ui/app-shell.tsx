@@ -41,7 +41,8 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
   const { go, busy } = useGoFree();
   return (
     <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "lg:max-w-none lg:pl-[232px]" : wide ? "lg:max-w-none" : ""}`}>
-      <div className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</div>
+      {/* The page itself, as the main landmark so screen readers can jump straight to it. */}
+      <main className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</main>
       {nav && (
         <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
           <Hand className="px-3 text-[38px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
