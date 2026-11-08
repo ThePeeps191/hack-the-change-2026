@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="skyD" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f4a99"/><stop offset=".6" stop-color="#3f73c8"/><stop offset="1" stop-color="#8fb3ea"/>
+    </linearGradient>
+    <radialGradient id="sunlight" cx=".74" cy=".2" r=".7">
+      <stop offset="0" stop-color="#d8e7ff" stop-opacity=".5"/><stop offset=".45" stop-color="#d8e7ff" stop-opacity=".12"/><stop offset="1" stop-color="#d8e7ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunBody" cx=".38" cy=".34" r=".7">
+      <stop offset="0" stop-color="#ffe08a"/><stop offset=".6" stop-color="#f6b93f"/><stop offset="1" stop-color="#ec9d24"/>
+    </radialGradient>
+    <radialGradient id="sunHalo" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffd877" stop-opacity=".6"/><stop offset="1" stop-color="#ffd877" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe0c4"/><stop offset="1" stop-color="#b3cfa6"/></linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#eee4cf"/></linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="12" result="b"/>
+      <feFlood flood-color="#0f2a5c" flood-opacity=".32"/><feComposite in2="b" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <symbol id="cloud" viewBox="0 0 120 50">
+    <path d="M18 44c-10 0-16-6-16-13 0-8 7-13 15-12 2-9 11-16 22-15 8 0 15 5 18 11 3-2 7-3 11-3 11 0 19 8 19 17h9c8 0 13 6 13 11v4z" fill="#fff"/>
+  </symbol>
+
+  <!-- the a itself: a thick shaded ring and stem, the tail curling forward, the sun in the bowl -->
+  <symbol id="a-mark" viewBox="0 0 512 512">
+    <g filter="url(#soft)">
+      <circle cx="232" cy="270" r="104" fill="none" stroke="url(#cream)" stroke-width="54"/>
+      <path d="M336 160 V 316 C 336 364, 360 388, 410 388" fill="none" stroke="url(#cream)" stroke-width="54" stroke-linecap="round"/>
+    </g>
+    <circle cx="232" cy="270" r="94" fill="url(#sunHalo)"/>
+    <circle cx="232" cy="270" r="50" fill="url(#sunBody)"/>
+    <ellipse cx="214" cy="250" rx="11" ry="7" fill="#fff6d6" opacity=".55"/>
+    <path d="M150 210 a 104 104 0 0 1 60 -38" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" opacity=".7"/>
+  </symbol>
+
+  <!-- G as you saw it: clouds and a hill behind the a -->
+  <symbol id="letter" viewBox="0 0 512 512">
+    <rect width="512" height="512" fill="url(#skyD)"/>
+    <rect width="512" height="512" fill="url(#sunlight)"/>
+    <use href="#cloud" x="44" y="72" width="104" height="43" opacity=".95"/>
+    <use href="#cloud" x="372" y="96" width="80" height="33" opacity=".8"/>
+    <path d="M-20 430 C 140 392, 360 398, 540 432 V 540 H -20 Z" fill="url(#hillBack)"/>
+    <use href="#a-mark" width="512" height="512"/>
+  </symbol>
+
+  <!-- the same a on plain sky, no clouds or hill -->
+  <symbol id="letter-clean" viewBox="0 0 512 512">
+    <rect width="512" height="512" fill="url(#skyD)"/>
+    <rect width="512" height="512" fill="url(#sunlight)"/>
+    <use href="#a-mark" width="512" height="512"/>
+  </symbol>
+
+  <symbol id="letter-mono" viewBox="0 0 512 512">
+    <circle cx="236" cy="276" r="96" fill="none" stroke="currentColor" stroke-width="54"/>
+    <path d="M336 168 V 316 C 336 362, 360 384, 404 384" fill="none" stroke="currentColor" stroke-width="54" stroke-linecap="round"/>
+    <circle cx="236" cy="276" r="40" fill="currentColor"/>
+  </symbol>
+<rect width="512" height="512" fill="url(#skyD)"/><rect width="512" height="512" fill="url(#sunlight)"/><use href="#a-mark" width="512" height="512"/></svg>
