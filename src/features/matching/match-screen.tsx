@@ -182,7 +182,7 @@ export function MatchScreen() {
           {state === "found" && "Someone nearby is free right now. Go together?"}
           {state === "waiting" && "You said yes. Waiting for them."}
           {state === "matched" && `Matched with ${name ?? "someone"}${practice ? ", a practice partner" : ""}. Your quest is ready.`}
-          {state === "ended" && "That match slipped away."}
+          {state === "ended" && (idle ? "Not looking right now." : "That match slipped away.")}
         </p>
         <AnimatePresence mode="wait">
           <motion.div
