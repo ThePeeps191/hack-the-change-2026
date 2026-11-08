@@ -112,7 +112,7 @@ export function JoinScreen() {
         <Stars className="opacity-50" />
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
         <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">{heading}</Hand>
-        <p id="jc-line" aria-live="polite" className="relative mx-auto mt-3 min-h-[3lh] max-w-[30ch] px-4 text-center text-[16px] leading-snug text-balance text-on-sky/90">{line}</p>
+        <p id="jc-line" aria-live="polite" className="relative mx-auto mt-3 min-h-[4lh] max-w-[30ch] px-4 text-center text-[16px] leading-snug text-balance text-on-sky/90">{line}</p>
 
         <div className="relative mt-7 px-4">
           <label htmlFor="jc-code" className="mb-2 block text-center">

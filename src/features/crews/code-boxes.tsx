@@ -81,6 +81,7 @@ export function CodeBoxes({
         ref={row}
         aria-hidden
         className="flex h-[54px] items-center justify-center gap-[5px]"
+        data-wrong={state === "wrong" ? "" : undefined}
         animate={state === "wrong" && !reduce ? { x: [0, -9, 8, -5, 3, 0] } : { x: 0 }}
         transition={{ duration: 0.42, ease: "easeOut" }}
       >

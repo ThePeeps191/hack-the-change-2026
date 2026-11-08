@@ -36,7 +36,7 @@ export async function submitProof(user: User, runId: string, form: FormData): Pr
   const quest = await questForRun(run);
 
   const approved = await one("select 1 as yes from submissions where run_id = $1 and user_id = $2 and verdict = 'approved'", [runId, user.id]);
-  if (approved) return { verdict: { status: "approved", reason: "you've already done this one.", coins: quest.coins }, submissionId: null };
+  if (approved) return { verdict: { status: "approved", reason: "this one was already checked. The coins are yours.", coins: quest.coins }, submissionId: null };
   if (run.status !== "active") throw new HttpError(409, "this quest has ended.");
 
   const media = form.get("media");

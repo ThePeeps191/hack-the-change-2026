@@ -774,6 +774,8 @@ a {
 .jc-box.jc-box-active {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .6), 0 0 0 2px #fff, 0 6px 18px rgb(10 30 70 / .14);
 }
+/* A wrong code: the boxes keep a warm edge until you change it. */
+[data-wrong] > .jc-box:not(.jc-box-locked) { box-shadow: inset 0 0 0 1.5px #ffc9a8, 0 0 14px rgb(255 170 120 / .25); }
 @keyframes jc-blink { 0%, 45% { opacity: 1 } 55%, 100% { opacity: 0 } }
 .jc-caret { animation: jc-blink 1s step-end infinite; }
 @media (prefers-reduced-motion: reduce) {
@@ -802,10 +804,11 @@ a {
 
   /* The accent blue. White text keeps 4.8:1 or more down the whole face. */
   .tb-primary {
-    --tb-face: linear-gradient(180deg, var(--color-accent), color-mix(in oklab, var(--color-accent), var(--color-accent-strong) 55%));
+    /* a little deeper and calmer than the accent itself, so it reads as ink, not neon */
+    --tb-face: linear-gradient(180deg, color-mix(in oklab, var(--color-accent), #24345e 18%), color-mix(in oklab, var(--color-accent-strong), #24345e 22%));
     --tb-shell: linear-gradient(180deg, color-mix(in oklab, var(--color-accent), white 38%), color-mix(in oklab, var(--color-accent-strong), black 18%));
     --tb-highlight: rgb(255 255 255 / 0.26);
-    --tb-drop: 0 1px 2px rgb(18 20 18 / 0.12), 0 8px 18px -6px rgb(47 102 245 / 0.45);
+    --tb-drop: 0 1px 2px rgb(18 20 18 / 0.14), 0 6px 14px -6px rgb(18 20 18 / 0.28);
     --tb-pressed: var(--color-accent-strong);
     --tb-sink: rgb(10 20 60 / 0.35);
     --tb-drop-pressed: 0 1px 1px rgb(18 20 18 / 0.12);
@@ -842,7 +845,7 @@ a {
       --tb-face: linear-gradient(180deg, color-mix(in oklab, var(--color-accent), white 8%), color-mix(in oklab, var(--color-accent), black 10%));
       --tb-shell: linear-gradient(180deg, color-mix(in oklab, var(--color-accent), white 45%), color-mix(in oklab, var(--color-accent), black 45%));
       --tb-highlight: rgb(255 255 255 / 0.35);
-      --tb-drop: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 20px -6px rgb(107 147 255 / 0.35);
+      --tb-drop: 0 1px 2px rgb(0 0 0 / 0.5), 0 6px 16px -6px rgb(0 0 0 / 0.6);
       --tb-pressed: color-mix(in oklab, var(--color-accent), black 10%);
       --tb-sink: rgb(0 0 0 / 0.35);
       --tb-drop-pressed: 0 1px 1px rgb(0 0 0 / 0.5);
@@ -854,6 +857,13 @@ a {
       --tb-drop: 0 1px 2px rgb(0 0 0 / 0.5), 0 6px 16px -6px rgb(0 0 0 / 0.6);
       --tb-pressed: var(--color-canvas);
       --tb-sink: rgb(0 0 0 / 0.5);
+    }
+    /* the white pill, softened to warm paper so it doesn't glare at night */
+    .tb-on-sky {
+      --tb-face: linear-gradient(180deg, #ecebe4, #d9d8d0);
+      --tb-shell: linear-gradient(180deg, #f6f5ef, #8f9399);
+      --tb-highlight: rgb(255 255 255 / 0.7);
+      --tb-pressed: #d2d1c9;
     }
   }
   @media (prefers-color-scheme: dark) and (hover: hover) {
@@ -922,8 +932,7 @@ a {
 /* the reading light: a soft band that sweeps top to bottom */
 .ps-sweep {
   position: absolute; inset-inline: 0; top: 0; height: 45%;
-  background: linear-gradient(180deg, transparent, rgb(255 255 255 / .22) 50%, transparent);
-  mix-blend-mode: soft-light;
+  background: linear-gradient(180deg, transparent, rgb(255 255 255 / .16) 50%, transparent);
   opacity: 0;
   transform: translateY(-100%);
 }
@@ -949,3 +958,13 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .rm .rm-reveal, .rm .rm-bloom, .rm .rm-rays { animation: none; transform: none; opacity: 1; }
 }
+
+/* The proof screen's magnifying glass drifting over the photo while it's checked. */
+.looking-glass { animation: looking-glass 3.2s ease-in-out infinite; }
+@keyframes looking-glass {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(7px, -5px) rotate(4deg); }
+  50% { transform: translate(0, -9px) rotate(0deg); }
+  75% { transform: translate(-7px, -5px) rotate(-4deg); }
+}
+@media (prefers-reduced-motion: reduce) { .looking-glass { animation: none; } }
