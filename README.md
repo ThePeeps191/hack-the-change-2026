@@ -14,7 +14,7 @@
 
 ---
 
-Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place: a game of ping-pong to 13 in the engineering building, say. There's something to do besides small talk, and a natural ending. Snap a photo, an AI checks it, and you get a recap of your walk. If you both want to, you stay in touch.
+Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place: a game of foosball in the engineering building, say. There's something to do besides small talk, and a natural ending. Snap a photo, an AI checks it, and you get a recap of your walk. If you both want to, you stay in touch.
 
 With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
 
