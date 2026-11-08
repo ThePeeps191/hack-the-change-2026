@@ -14,6 +14,7 @@ import { Coin } from "@/components/ui/quest-glyph";
 import { Podium } from "./podium";
 import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
 import { ClaimPeek } from "@/features/claim/claim-peek";
+import { InviteSheet } from "./invite-sheet";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -24,7 +25,7 @@ const rise = (i: number) => ({
 export function CrewScreen() {
   const [crew, setCrew] = useState<Crew | null | undefined>(undefined);
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [inviting, setInviting] = useState(false);
 
   const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
@@ -32,18 +33,6 @@ export function CrewScreen() {
   };
 
   useEffect(reload, []);
-
-  async function copy() {
-    if (!crew) return;
-    tick(0.8);
-    const link = `${location.origin}/join/${crew.invite_code}`;
-    try {
-      if (navigator.share) await navigator.share({ title: `Join ${crew.name}`, url: link });
-      else await navigator.clipboard.writeText(link);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
-  }
 
   const members = crew ? [...crew.members].sort((a, b) => b.coins - a.coins) : [];
 
@@ -54,11 +43,11 @@ export function CrewScreen() {
           center="crew"
           right={
             crew && (
-              <button onClick={copy} className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-on-sky/95 hover:bg-white/15">
+              <button onClick={() => { tick(0.6); setInviting(true); }} className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-on-sky/95 hover:bg-white/15">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M12 4v11M7.5 8.5L12 4l4.5 4.5M5 14v5h14v-5" />
                 </svg>
-                {copied ? "Copied" : "Invite"}
+                Invite
               </button>
             )
           }
@@ -173,6 +162,7 @@ export function CrewScreen() {
 
         {crew && <AnywhereQuests crew={crew} onChange={reload} />}
       </div>
+      {crew && <InviteSheet open={inviting} onClose={() => setInviting(false)} name={crew.name} code={crew.invite_code} />}
     </AppShell>
   );
 }
