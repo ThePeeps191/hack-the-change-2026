@@ -110,7 +110,7 @@ export function ClaimScreen() {
               <Hand as="h1" className="text-[34px] leading-none font-bold">{game.name.toLowerCase()}</Hand>
               <p className="mt-1.5 text-[15px] text-ink-muted">
                 <span className="font-semibold text-accent">{us?.name}</span>
-                {them && <> vs <span className="font-semibold text-rival">{them.name}</span></>}. Beat a zone&apos;s best to take it.
+                {them && <> vs <span className="font-semibold text-rival">{them.name}</span></>}. Beat a zone&apos;s best to take it, and hold the most zones to win.
               </p>
             </div>
 

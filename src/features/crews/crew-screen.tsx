@@ -124,7 +124,8 @@ export function CrewScreen() {
         )}
 
         <section aria-labelledby="week">
-          <Hand as="h2" className="mb-2.5 px-1 text-[26px] leading-none font-bold"><span id="week">this week</span></Hand>
+          <Hand as="h2" className="mb-1 px-1 text-[26px] leading-none font-bold"><span id="week">this week</span></Hand>
+          <p className="mb-2.5 px-1 text-[13px] leading-snug text-ink-muted">Every quest earns coins for you and your crew. The crew with the most this week tops the board.</p>
           <div className="overflow-hidden rounded-[24px] bg-surface shadow-card">
             {board === null && <div className="p-4"><Skeleton className="h-44 w-full rounded-[18px]" /></div>}
             {board && board.length > 0 && <Podium top={board.slice(0, 3)} ours={crew?.id} />}
