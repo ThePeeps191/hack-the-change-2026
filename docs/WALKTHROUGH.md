@@ -90,6 +90,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 | --- | --- |
 | Location is forgotten once you're matched | `tryPair` deletes both `availability` rows. `expireStale` clears the meeting point of finished matches |
 | Your partner never sees where you are | `toMatch` only returns `distance_m` |
+| "350 m away" on quest cards never leaves your phone | `QuestDistance` in `src/features/quests/quest-distance.tsx` works it out in the browser, only if location is already allowed (it never asks), and shows nothing otherwise. `SHOW_QUEST_DISTANCE` in `src/lib/config.ts` turns it off |
 | First name only, and only after both say yes | `toMatch`, and `firstName` in `auth.ts` |
 | Proof photos only go to people on that quest | `GET /api/media/:id` checks `run_members`, and serves files with a no-script sandbox |
 | Your route is shown only to you, and deleted after 30 days | `getRecap`, and the Tiger Data retention policy |

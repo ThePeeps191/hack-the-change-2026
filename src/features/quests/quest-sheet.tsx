@@ -17,6 +17,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { ShareLink } from "@/features/invites/share-link";
 import { useGoFree } from "@/features/matching/use-go-free";
 import { useStartRun } from "./use-start-run";
+import { QuestDistance } from "./quest-distance";
 
 const proofLine = {
   photo: "One photo",
@@ -113,6 +114,7 @@ export function QuestSheet({
               <dd className="mt-0.5 text-[17px] font-semibold tabular-nums">
                 {q.duration_min} min
               </dd>
+              <dd className="text-[12px] font-medium text-ink-faint tabular-nums empty:hidden"><QuestDistance quest={q} prefix="" /></dd>
             </div>
             <div className="border-x border-[var(--hairline)]">
               <dt className="text-[12px] font-medium text-ink-faint">Proof</dt>
