@@ -145,10 +145,19 @@ export async function judgeProofLive(input: ProofInput): Promise<Pick<Verdict, "
   return { status: res.parsed_output.approved ? "approved" : "rejected", reason: res.parsed_output.reason.slice(0, 300) };
 }
 
+const RecapText = z.object({
+  recap: z.string().describe("the two-sentence recap, and nothing else"),
+});
+
+// Two sentences never run this long. A longer reply, or one that talks about the
+// prompt, means the model drafted out loud, so writeRecap uses the plain summary.
+const MAX_RECAP_CHARS = 420;
+const THINKING_OUT_LOUD = /\b(facts provided|the facts|correct that|I'll|I will|let me|instructions)\b/i;
+
 export async function writeRecapLive(input: RecapInput): Promise<string> {
   const photo = input.photos.find((p) => p.type.startsWith("image/"));
   const facts = `Quest: "${input.quest.title}" at ${input.quest.place_name ?? "a spot nearby"}. People: ${input.names.join(" and ")}. ${input.duration_min} minutes.${input.distance_m ? ` ${input.distance_m} metres walked.` : ""}`;
-  const res = await client().messages.create({
+  const res = await client().messages.parse({
     model: MODEL,
     max_tokens: 16000,
     messages: [
@@ -158,20 +167,17 @@ export async function writeRecapLive(input: RecapInput): Promise<string> {
           ...(photo ? [{ type: "image" as const, source: { type: "base64" as const, media_type: "image/jpeg" as const, data: await asJpeg(photo.path) } }] : []),
           {
             type: "text",
-            text: `${facts}\n\nWrite a two-sentence recap of this quest, in a warm, plain voice, as something they'd like to look back on. Use only these facts and what the photo shows. Never describe anyone's appearance. Reply with just the recap.`,
+            text: `${facts}\n\nWrite a two-sentence recap of this quest, in a warm, plain voice, as something they'd like to look back on. Use only these facts and what the photo shows. Never describe anyone's appearance. Write only the finished recap: no drafts, corrections or notes about these instructions.`,
           },
         ],
       },
     ],
-    output_config: { effort: "low" },
+    output_config: { effort: "low", format: zodOutputFormat(RecapText) },
   });
   refused(res);
   logUsage("recap", res.usage);
-  const summary = res.content
-    .filter((b): b is Anthropic.TextBlock => b.type === "text")
-    .map((b) => b.text)
-    .join("")
-    .trim();
+  const summary = res.parsed_output?.recap.trim();
   if (!summary) throw new Error("empty recap");
-  return summary.slice(0, 500);
+  if (summary.length > MAX_RECAP_CHARS || THINKING_OUT_LOUD.test(summary)) throw new Error("the recap wasn't clean");
+  return summary;
 }
