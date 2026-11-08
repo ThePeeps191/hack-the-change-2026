@@ -59,13 +59,13 @@ The You tab is private and never ranked against anyone. It shows your active min
 
 An app designed to get strangers to meet has to take safety seriously. You only ever meet at a public quest spot. Your partner sees a rough distance, then a first name once you both say yes.
 
-- **Comfort settings:** step-free places first, a short and easy pace, and side-by-side quests for people who'd rather not chat face to face.
-- **Public places only.** You meet at the quest spot, never at someone's location.
-- **Little personal data.** Your location is deleted the moment you're matched. You can download or delete everything from the privacy page, which also says which AI sees your photos.
-- **Built-in meeting rules.** For real accounts, meeting someone new needs a verified email and happens in daylight (8 AM to 5 PM), and proof must be taken near the spot during the quest. The judging site runs in demo mode, which switches these off so anyone can try Amble from a desk at any hour.
-- **Help one tap away.** During a quest, "Help, leave or report" shows 911 and UCalgary Campus Security, lets you leave without blaming anyone, or report. If you report someone, you're never paired with them again.
-- **Pick the quest, then the person.** Open any quest and tap "Find someone to do it with": whoever you're matched with does that one.
-- **Honest when it's quiet.** If nobody's free nearby after 45 seconds, Amble says so and offers a link to send to someone you're with.
+During a quest, one tap opens 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report. If you report someone, you're never paired with them again.
+
+Your location is deleted the moment you're matched, and routes are deleted after 30 days. You can download or delete everything from the privacy page, which also says which AI sees your photos.
+
+For real accounts, meeting someone new needs a verified email and happens in daylight (8 AM to 5 PM), and proof has to be taken near the spot during the quest. The judging site runs in demo mode, which turns those off so you can try it from a desk at any hour.
+
+There are comfort settings too: step-free places first, an easier pace, and side-by-side quests if you'd rather not chat face to face.
 
 ## How it works
 
