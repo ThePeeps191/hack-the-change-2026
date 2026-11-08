@@ -28,7 +28,7 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
   const path = usePathname();
   const { go, busy } = useGoFree();
   return (
-    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "with-rail lg:ml-[264px] lg:max-w-none" : wide ? "lg:max-w-none" : ""}`}>
+    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "with-rail lg:ml-[264px] lg:max-w-none lg:bg-transparent" : wide ? "lg:max-w-none" : ""}`}>
       {/* The page itself, as the main landmark so screen readers can jump straight to it. */}
       <main className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</main>
       {nav && (

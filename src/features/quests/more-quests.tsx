@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import type { Quest } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { Coin } from "@/components/ui/quest-glyph";
-import { GlyphTile, QuestMetaLine } from "./quest-card";
+import { glowAt, GlyphTile, QuestMetaLine } from "./quest-card";
 
 // The quests past the first few, folded into one card that opens like a
 // dropdown into short rows. Today and Map both use it, so "more quests" looks
@@ -14,7 +14,7 @@ export function MoreQuests({ quests, onPick }: { quests: Quest[]; onPick: (q: Qu
   const id = useId();
   if (quests.length === 0) return null;
   return (
-    <motion.div layout className="overflow-hidden rounded-[22px] bg-surface shadow-card ring-1 ring-[var(--hairline)]">
+    <motion.div layout onPointerMove={glowAt} className="quest-card overflow-hidden rounded-[22px] bg-surface shadow-card ring-1 ring-[var(--hairline)]">
       <button
         onClick={() => { tick(0.6); setOpen((o) => !o); }}
         aria-expanded={open}
