@@ -92,17 +92,23 @@ export async function exportMyData(user: User) {
 // Removes what's personal and keeps an anonymous row, so a partner's history
 // and the crew totals stay intact. The login is unlinked, so signing in again
 // starts a fresh account.
+//
+// Sam is different. With AUTH_MODE=mock every visitor is Sam, so the next judge
+// would find the demo empty. For Sam we delete what a visitor added (location,
+// availability, photos) and keep the login, crew and made-up history.
 export async function deleteMyData(user: User) {
   const files = await query<{ media_path: string }>("select media_path from submissions where user_id = $1 and media_path is not null", [user.id]);
+  const shared = (await one<{ auth0_sub: string }>("select auth0_sub from users where id = $1", [user.id]))?.auth0_sub === "mock|sam";
   await transaction(async () => {
     await query("delete from availability where user_id = $1", [user.id]);
     await query("delete from location_pings where user_id = $1", [user.id]);
     await query("delete from checkins where user_id = $1", [user.id]);
-    await query("delete from crew_members where user_id = $1", [user.id]);
-    await query("delete from connections where $1 in (user_a, user_b)", [user.id]);
     await query("update submissions set media_url = null, media_path = null, lat = null, lng = null where user_id = $1", [user.id]);
     await query("update matches set status = 'expired', updated_at = now() where status = 'pending' and $1 in (user_a, user_b)", [user.id]);
     await query("update matches set lat = null, lng = null where $1 in (user_a, user_b)", [user.id]);
+    if (shared) return;
+    await query("delete from crew_members where user_id = $1", [user.id]);
+    await query("delete from connections where $1 in (user_a, user_b)", [user.id]);
     await query(
       `update users set auth0_sub = 'deleted|' || id, display_name = 'someone', avatar_url = null,
          email_verified = false, age_confirmed_at = null, prefs = '{}', coins = 0
