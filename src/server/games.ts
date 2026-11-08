@@ -6,6 +6,7 @@ import { HttpError, notFound } from "@/lib/route";
 import { CAMPUS_ZONES } from "./db/claim-zones";
 import { getQuest } from "./quests";
 import { advance, loadRun } from "./runs";
+import { claimBounds } from "@/lib/claim-bounds";
 
 type GameRow = { id: string; name: string; status: Game["status"]; created_by: string; created_at: Date };
 
@@ -133,6 +134,8 @@ export async function attemptZone(user: User, gameId: string, zoneId: string, bo
   const runId = run.id;
   await transaction(async () => {
     const zone = await one<ZoneRow & { lower_is_better: boolean }>("select * from zones where id = $1 and game_id = $2 for update", [zoneId, gameId]);
+    const { min, max } = claimBounds(zone?.result_unit);
+    if (result < min || result > max) throw new HttpError(400, `that result looks off. it should be between ${min} and ${max}${zone?.result_unit ? ` ${zone.result_unit}` : ""}.`);
     if (!zone) throw notFound("zone");
     const used = await one("select 1 as yes from zone_attempts where run_id = $1", [runId]);
     if (used) throw new HttpError(409, "that run has already been counted");
