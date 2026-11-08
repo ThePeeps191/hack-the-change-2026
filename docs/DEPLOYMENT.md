@@ -32,7 +32,9 @@ Changing a variable does nothing until a redeploy (Vercel → Deployments → Re
 
 ## How a deploy works
 
-1. A merge to `main` triggers a Vercel build. Other branches are skipped.
+1. A merge to `main` triggers a Vercel build. Other branches don't create a deployment at all (`git.deploymentEnabled` in `vercel.json`).
+
+**The Hobby plan allows 100 deployments a day.** On Nov 7 we hit it within hours, because every pushed branch used to create one, and merges stopped going live ("Deployment rate limited"). If merges stop showing up on amble.health, check the Vercel status on the latest `main` commit first.
 2. The production build runs `scripts/db-migrate.ts` on Tiger first: new files in `db/migrations/`, the starter quests from `data/quests/`, and the demo seed (because `DEMO_MODE=1`). Then `next build`.
 3. Proof photos and videos are stored in Postgres (`uploads` table), because Vercel functions have no lasting disk. Vercel refuses uploads over 4.5 MB, so the phone shrinks photos first (`src/lib/shrink-photo.ts`) and clips must be short.
 
