@@ -31,7 +31,7 @@ Open [amble.health](https://amble.health) on your phone and tap Try the demo. Yo
 
 We were inspired by AR games like Pokemon Go, and the challenges especially by the game show Jet Lag: The Game, which is full of collaborative challenges tied to real places.
 
-We built it for Hack the Change's Prompt 1, through two focus areas: **community connection and inclusion**, and **proactive health and wellness**.
+We built it for Prompt 1 of Hack the Change, under community connection and inclusion, and proactive health and wellness.
 
 ## What it does
 
