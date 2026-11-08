@@ -16,7 +16,7 @@ Hackathon judges are a secondary audience for the demo, which runs on the UCalga
 
 Amble gets people outside together, in two ways:
 
-- **System 1, 20-minute quests with someone new:** say you're free, get matched with someone nearby who is also free (both accept first), do one short shared task, submit proof, and Gemini checks it. It ends cleanly, and you can add each other as friends if you both want.
+- **System 1, 20-minute quests with someone new:** say you're free, get matched with someone nearby who is also free (both accept first), do one short shared task, submit proof, and the AI (Claude) checks it. It ends cleanly, and you can add each other as friends if you both want.
 - **System 2, crews:** friend groups play longer games: shared quests, races, "anywhere" fitness quests for friends in different cities, coins, a crew leaderboard, and Claim mode, where teams take map zones by completing that zone's challenge and rivals steal them by beating the result.
 
 Success means more minutes outside, more steps and more new people met, without the app feeling like a chore or a scoreboard.
@@ -25,13 +25,13 @@ Prompt: Hack the Change 2026, health, social connection and well-being. The cont
 
 ## Positioning
 
-Quests are hand-made by us, so every one is safe and worth doing. Gemini is the referee and producer: it checks photo and video proof against the quest, place and time, and writes the recap. City-game apps like Zone Tag and We Clue need a human to approve photos. Amble doesn't.
+Quests are hand-made by us, so every one is safe and worth doing. The AI (Claude Haiku) is the referee and producer: it checks photo and video proof against the quest, place and time, and writes the recap. City-game apps like Zone Tag and We Clue need a human to approve photos. Amble doesn't.
 
 ## Operating Context
 
 - Phone held in one hand, outdoors, often walking, sometimes in bright sun, sometimes at dusk or after dark (Calgary sunset is around 17:00 in November).
 - Opened from a shared link or QR code and added to the home screen. There's no app store.
-- Patchy signal outdoors, GPS sometimes denied, Gemini sometimes slow.
+- Patchy signal outdoors, GPS sometimes denied, the AI sometimes slow.
 - Strangers meet at the quest location, never at each other's location.
 
 ## Capabilities and Constraints
@@ -39,9 +39,9 @@ Quests are hand-made by us, so every one is safe and worth doing. Gemini is the 
 - Quest types: `local` (a place nearby), `anywhere` (fitness, works in any city), `event` (something on today).
 - Proof types: photo, video, GPS route.
 - Shared quest shape and API: `docs/CONTRACTS.md` and `src/lib/contracts.ts`.
-- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Gemini, hosted on Vercel at amble.health.
+- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Claude Haiku for the AI, hosted on Vercel at amble.health. A Gemini path exists in the code but isn't used.
 - Safety: 18+, quests stay public, daylight and walking pace, report button, meet at the quest spot.
-- The UI is built against mocks (`AUTH_MODE=mock`, `GEMINI_MODE=mock`) behind `src/lib/api.ts`.
+- The UI is built against mocks (`AUTH_MODE=mock`, `AI_MODE=mock`) behind `src/lib/api.ts`.
 - **Undecided:** the ratings model (proposed separately), personas, and hide and seek (a stretch goal).
 
 ## Brand Commitments
@@ -63,7 +63,7 @@ Quests are hand-made by us, so every one is safe and worth doing. Gemini is the 
 2. **Safe before clever.** Mutual accept, public places, meeting at the spot, and an easy report button are visible and never buried.
 3. **Calm over competitive.** Stranger quests are cooperative and feed well-being stats. Head-to-head ratings live only where play really is competitive (crew vs crew).
 4. **Show, don't announce.** Real quest cards, real places, real states. The mascot reacts instead of explaining.
-5. **Works when things fail.** GPS denied, no signal or a slow Gemini each gets a usable, friendly state.
+5. **Works when things fail.** GPS denied, no signal or a slow AI each gets a usable, friendly state.
 
 ## Accessibility & Inclusion
 
