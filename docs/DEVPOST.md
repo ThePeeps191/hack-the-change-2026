@@ -9,7 +9,7 @@ A starting point for the Devpost submission. The friends and demo area owns the 
 - [ ] GitHub link: https://github.com/ThePeeps191/hack-the-change-2026 (public)
 - [ ] All four team members added: Danny, Siddhant, Aaron, Jonas
 - [ ] The description below, including the AI disclosure
-- [ ] Gallery images uploaded, 3:2, from `docs/images/devpost/`. The proof images in them are drawn stand-ins, so retake those with real photos first
+- [ ] Gallery images uploaded, 3:2, from `docs/images/devpost/`
 - [ ] The live link works on a phone, and the "Try the demo" button works
 - [x] The prize categories ticked (done on Devpost): Best Use of Auth0, Best Use of Tiger Data, Best Domain Name from GoDaddy Registry (`.health` is a GoDaddy Registry TLD) and Best Local Impact. Not Gemini (the demo runs Claude) and not Vultr (we host on Vercel)
 
