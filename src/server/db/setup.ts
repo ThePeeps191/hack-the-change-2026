@@ -260,7 +260,7 @@ export async function seedDemoData(query: Query) {
     );
   }
 
-  await query("insert into games (id, name, created_by) values ($1, 'saturday on campus', $2) on conflict do nothing", [SEED_GAME, sam]);
+  await query("insert into games (id, name, created_by) values ($1, 'the weekend on campus', $2) on conflict (id) do update set name = excluded.name", [SEED_GAME, sam]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'the long way round') on conflict do nothing", [TEAM_US, SEED_GAME, crewId(1)]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'north campus walkers') on conflict do nothing", [TEAM_THEM, SEED_GAME, crewId(2)]);
   const team = { us: TEAM_US, them: TEAM_THEM };

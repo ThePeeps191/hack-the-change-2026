@@ -42,7 +42,7 @@ export function NoCrewActions({ onDone }: { onDone: () => void }) {
       </section>
       <section className="space-y-2.5 rounded-[24px] bg-surface p-5 shadow-card">
         <label className="block text-[17px] font-semibold" htmlFor="crew-code">Got a code from a friend?</label>
-        <input id="crew-code" className={field} value={code} autoCapitalize="characters" placeholder="MAPLE-42" onChange={(e) => setCode(e.target.value)} />
+        <input id="crew-code" className={field} value={code} autoCapitalize="characters" placeholder="e.g. BIRCH-58Q" onChange={(e) => setCode(e.target.value)} />
         <Button variant="secondary" className="w-full" disabled={busy || !code.trim()} onClick={() => run(() => api.joinCrew(code))}>Join</Button>
       </section>
     </div>

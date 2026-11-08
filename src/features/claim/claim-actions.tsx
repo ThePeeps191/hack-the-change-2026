@@ -5,7 +5,7 @@ import { api, ApiError } from "@/lib/api";
 import type { Game, Zone } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
-import { claimBounds } from "@/lib/claim-bounds";
+import { claimBounds, unitLabel } from "@/lib/claim-bounds";
 import { timeKey } from "@/features/quests/problem-set";
 
 const field = "min-h-12 w-full rounded-control bg-sunken px-4 text-[16px] text-ink placeholder:text-ink-faint";
@@ -37,7 +37,7 @@ export function NoGame({ onStarted }: { onStarted: (game: Game) => void }) {
       </div>
       {error && <Notice tone="warning">{error}</Notice>}
       <label className="block text-[14px] font-medium text-ink-muted" htmlFor="rival">Rival crew&apos;s code (optional)</label>
-      <input id="rival" className={field} value={rival} autoCapitalize="characters" placeholder="CEDAR-17" onChange={(e) => setRival(e.target.value)} />
+      <input id="rival" className={field} value={rival} autoCapitalize="characters" placeholder="e.g. BIRCH-58Q" onChange={(e) => setRival(e.target.value)} />
       <Button className="w-full" disabled={busy} onClick={start}>{busy ? "Starting…" : "Start the game"}</Button>
     </section>
   );
@@ -95,7 +95,7 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
       {outcome && <Notice>{outcome}</Notice>}
       {zone.my_run_id && zone.my_run_ready ? (
         <>
-          <label className="block text-[14px] font-medium text-ink-muted" htmlFor="result">Your result{zone.result_unit ? ` (${zone.result_unit})` : ""}</label>
+          <label className="block text-[14px] font-medium text-ink-muted" htmlFor="result">Your result{zone.result_unit ? ` (${unitLabel(zone.result_unit)})` : ""}</label>
           <input id="result" className={field} type="number" inputMode="decimal" min={claimBounds(zone.result_unit).min} max={claimBounds(zone.result_unit).max} value={result} onChange={(e) => setResult(e.target.value)} />
           <Button className="w-full" disabled={busy || result === ""} onClick={send}>Send it</Button>
         </>
