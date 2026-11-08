@@ -77,6 +77,32 @@ We wrote every quest by hand, at real public places around UCalgary and Calgary.
 
 Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
 
+<details>
+<summary>More screenshots</summary>
+<br>
+
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/aaron-and-siddhant/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Siddhant" width="250">
+  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
+</p>
+
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/crew-page.jpg" alt="The crew page: the crew's own character, its name and its coins" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
+  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+</p>
+
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/aaron-and-siddhant/help.jpg" alt="Help, leave or report: 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report" width="250">
+  <img src="docs/images/aaron-and-siddhant/privacy.jpg" alt="The privacy page: what Amble keeps and why" width="250">
+</p>
+
+<p align="center"><sub>From amble.health on two demo accounts, Aaron and Siddhant. The Claim result is a test entry, and the history on the You tab is the demo's sample data.</sub></p>
+
+</details>
+
 ## AI disclosure
 
 We built Amble with Claude Code as our coding assistant. It wrote much of the code, while we made the product decisions, wrote the quests and other content by hand, and reviewed the changes. Dozens of sessions ran in parallel, each in its own git worktree with small pull requests, using the rules in [CLAUDE.md](CLAUDE.md). At one point our merges used up the hosting platform's daily deploy limit.
