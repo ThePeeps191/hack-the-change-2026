@@ -36,7 +36,7 @@ On the side are the AI (`src/lib/ai.ts`), login (`src/lib/auth.ts`) and real pla
 
 This is the main demo. Each step names the function that does it.
 
-1. **"I'm free."** The phone asks for GPS (`getPosition` in `src/lib/geo.ts`). If that's denied or slow, it falls back to the middle of campus and says so on screen. It then calls `POST /api/availability`, which runs `setFree` in `src/server/matching.ts`. That stores your location for 20 minutes, after `assertCanMeet` in `src/server/safety.ts` has checked you're 18 or over, verified, and that it's daylight.
+1. **"I'm free."** The phone asks for GPS (`getPosition` in `src/lib/geo.ts`). If that's denied or slow, it falls back to the middle of campus and says so on screen. It then calls `POST /api/availability`, which runs `setFree` in `src/server/matching.ts`. That stores your location for 20 minutes, after `assertCanMeet` in `src/server/safety.ts` has checked your email is verified and that it's daylight (both skipped in demo mode).
 2. **Quests are hand-made.** The AI never writes them: the pair gets the nearest starter quest from `data/quests/quests.json` that suits both people (`pickPairQuest` in `src/server/quests.ts`).
 3. **Finding someone.** The match screen asks `GET /api/match` every 3 seconds (`currentMatch`). That calls `tryPair`, which takes a database lock, so two people searching at the same moment can't both grab the same third person. It then finds the nearest free person within 2 km, adds a penalty when comfort settings clash (chatty versus side by side), skips anyone you've reported or just turned down, and creates a match. **Both people's locations are deleted at that moment.**
 4. **What you see before saying yes:** a rough distance and nothing else. Your partner's name only appears once you've both said yes (`toMatch`).
@@ -170,6 +170,6 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"How does it scale to another city?"** Nothing is tied to Calgary except the starter quests: a new city needs its own hand-made quests in `data/quests/`. The server has no state outside Postgres.
 
-**"Show me where X is in the code."** Each of us should be able to open these without searching: `src/server/matching.ts` (pairing), `src/server/proof.ts` (proof checks), `src/lib/quest-safety.ts` (AI safety), `src/lib/places.ts` (real places), `src/server/games.ts` (Claim and ratings), `src/server/users.ts` (delete my data).
+**"Show me where X is in the code."** Each of us should be able to open these without searching: `src/server/matching.ts` (pairing), `src/server/proof.ts` (proof checks), `data/quests/quests.json` (the hand-made quests), `src/lib/ai-claude.ts` (the AI referee and recaps), `src/server/games.ts` (Claim and ratings), `src/server/users.ts` (delete my data).
 
 **"Did you write this, or did AI?"** Both, and it's disclosed. We used Claude Code to write a lot of the code quickly. We designed the product, the safety rules, the metrics and the quests, and we can explain every part, which this conversation is showing.
