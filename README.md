@@ -52,9 +52,10 @@ Private numbers that matter, never ranked against anyone: active minutes against
 
 ## Inclusive and safe by design
 
-- **Comfort settings:** step-free places only, a short and easy pace, and side-by-side quests for people who'd rather not chat face to face.
+- **Comfort settings:** step-free places first, a short and easy pace, and side-by-side quests for people who'd rather not chat face to face.
 - **Public places only.** You meet at the quest spot, never at someone's location.
 - **Little personal data.** Your location is deleted the moment you're matched. You can download or delete everything from the privacy page, which also says which AI sees your photos.
+- **Built-in meeting rules.** For real accounts, meeting someone new needs a verified email and happens in daylight (8 AM to 5 PM), and proof must be taken near the spot during the quest. The judging site runs in demo mode, which switches these off so anyone can try Amble from a desk at any hour.
 - **Help one tap away.** During a quest, "Help, leave or report" shows 911 and UCalgary Campus Security, lets you leave without blaming anyone, or report. If you report someone, you're never paired with them again.
 - **Honest when it's quiet.** If nobody's free nearby after 45 seconds, Amble says so and offers a link to send to someone you're with.
 

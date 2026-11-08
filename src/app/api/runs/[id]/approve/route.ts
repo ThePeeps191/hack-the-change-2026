@@ -1,9 +1,11 @@
 import { ok } from "@/lib/http";
-import { authed } from "@/lib/route";
+import { isDemoGuest } from "@/lib/auth";
+import { authed, notFound } from "@/lib/route";
 import { approveByHand } from "@/server/proof";
 
-// DEMO_MODE only: approve pending proof by hand if the AI misbehaves on stage.
+// "Try the demo" guests only: count your own proof if the AI gets it wrong.
 export const POST = authed<RouteContext<"/api/runs/[id]/approve">>(async (user, _req, ctx) => {
+  if (!(await isDemoGuest())) throw notFound("route");
   const { id } = await ctx.params;
   return ok({ approved: await approveByHand(user, id) });
 });
