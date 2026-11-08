@@ -121,6 +121,9 @@ export type Recap = {
   completed_at?: string;
   // Added: the same proof as `photos`, with each file's type, so a video plays as a video.
   proof?: { url: string; type: string }[];
+  // Added: your own mood check-ins for this quest (1 to 5), only ever sent to you. Null if skipped.
+  mood_before?: number | null;
+  mood_after?: number | null;
 };
 
 export type CrewMember = {

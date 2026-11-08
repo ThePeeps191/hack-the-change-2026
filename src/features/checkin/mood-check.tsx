@@ -28,7 +28,7 @@ function answered(key: string) {
 // One optional tap before and after a quest. Private, and never ranked. Only
 // render this once the run has loaded, because it reads sessionStorage.
 // After a tap it says thanks for a moment, then folds away smoothly.
-export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "after" }) {
+export function MoodCheck({ runId, phase, onAnswer }: { runId: string; phase: "before" | "after"; onAnswer?: (mood: number) => void }) {
   const key = `amble_mood_${runId}_${phase}`;
   const [done, setDone] = useState(() => answered(key));
   const [picked, setPicked] = useState<number | null>(null);
@@ -37,6 +37,7 @@ export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "
     tick(0.7);
     setPicked(mood);
     api.checkin(runId, { phase, mood }).catch(() => {});
+    onAnswer?.(mood);
     try {
       sessionStorage.setItem(key, "1");
     } catch {}
