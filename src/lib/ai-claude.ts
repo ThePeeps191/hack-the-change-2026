@@ -106,13 +106,15 @@ const ProofVerdict = z.object({
 });
 
 export async function judgeProofLive(input: ProofInput): Promise<Pick<Verdict, "status" | "reason">> {
-  // GPS proof has no media: the route is the proof, and it's checked before this.
-  if (!input.media_path || !input.media_type) return { status: "approved", reason: "your route checks out. nice walk." };
+  // GPS proof has no media: the walk is the proof. Only say what really happened:
+  // demo mode switches the place and time check off.
+  if (!input.media_path || !input.media_type) return { status: "approved", reason: "your walk counts. nice one." };
   // Claude reads images, not video, so for a video it reads three still frames
-  // the phone took from it. Without them, place and time (already checked) decide.
+  // the phone took from it. Without them nobody has looked, so the reason says
+  // so, and it still counts: a blank frame is our camera bug, not the player's.
   const isPhoto = input.media_type.startsWith("image/");
   const image = isPhoto ? input.media_path : input.frames_path;
-  if (!image) return { status: "approved", reason: "the place and time check out, and that counts. nice one." };
+  if (!image) return { status: "approved", reason: "we couldn't check this one automatically, so it counts." };
   const what = isPhoto ? "this photo" : "this video (three still frames from its start, middle and end, left to right)";
 
   const { quest } = input;
