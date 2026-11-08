@@ -116,7 +116,4 @@ We built Amble with Claude Code as our coding assistant. It wrote much of the co
 
 ## Team
 
-- **Danny Wang** ([@ThePeeps191](https://github.com/ThePeeps191))
-- **Siddhant Arora** ([@siddhantarora7](https://github.com/siddhantarora7))
-- **Aaron He** ([@mucube](https://github.com/mucube))
-- **Jonas Huang** ([@wawahwa801](https://github.com/wawahwa801))
+[Danny Wang](https://github.com/ThePeeps191), [Siddhant Arora](https://github.com/siddhantarora7), [Aaron He](https://github.com/mucube) and [Jonas Huang](https://github.com/wawahwa801).
