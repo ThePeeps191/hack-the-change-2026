@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Prefs, User } from "@/lib/contracts";
+import { Split } from "@/components/ui/split";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
@@ -61,7 +62,8 @@ export function WelcomeScreen() {
   const update = (patch: Partial<Comfort>) => setComfort((c) => ({ ...c, ...patch }));
 
   return (
-    <AppShell nav={false}>
+    <AppShell nav={false} wide>
+      <Split fill aside={
       <Hero className="pb-8">
         <HeroBar left={firstRun ? undefined : <HeroIcon href="/me" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center={firstRun ? undefined : "you"} />
         <Hand as="h1" className="px-6 pt-2 text-center text-[40px] leading-none font-bold">{firstRun ? "nice to meet you" : "name and language"}</Hand>
@@ -69,6 +71,7 @@ export function WelcomeScreen() {
           {firstRun ? "A few quick things so your quests and partners suit you." : "Change these any time."}
         </p>
       </Hero>
+      }>
 
       <motion.div
         className="flex-1 space-y-6 px-4 pt-6"
@@ -144,9 +147,10 @@ export function WelcomeScreen() {
         )}
       </motion.div>
 
-      <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))]">
+      <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))] lg:static lg:bg-none">
         <Button size="lg" onClick={save} disabled={busy || !me || !name.trim()}>{busy ? "Saving…" : firstRun ? "Let's go" : "Save"}</Button>
       </div>
+      </Split>
     </AppShell>
   );
 }
