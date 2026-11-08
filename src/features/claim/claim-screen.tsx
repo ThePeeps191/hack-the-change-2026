@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/card";
 import { InkFlag, inkFlagSvg } from "@/components/ui/ink";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { NoGame, ZoneActions } from "./claim-actions";
+import { isAnywhere } from "./anywhere";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
@@ -47,8 +48,11 @@ export function ClaimScreen() {
   const them = game?.teams[1];
 
   const tone = (z: Zone) => (z.held_by_team_id == null ? "free" : z.held_by_team_id === us?.id ? "ours" : "theirs");
+  // A zone whose challenge can be done anywhere ("Anywhere on campus") has no
+  // flag on the map and sits at the bottom of the list.
+  const zones = useMemo(() => [...(game?.zones ?? [])].sort((a, b) => Number(isAnywhere(a)) - Number(isAnywhere(b))), [game]);
   const markers = useMemo<GlobeMarker[]>(
-    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)], icon: inkFlagSvg(tone(z) !== "free"), hue: hues[tone(z)] })),
+    () => zones.filter((z) => !isAnywhere(z)).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)], icon: inkFlagSvg(tone(z) !== "free"), hue: hues[tone(z)] })),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- tone depends only on game
     [game],
   );
@@ -62,7 +66,7 @@ export function ClaimScreen() {
     const z = wanted ? game?.zones.find((x) => x.id === wanted) : null;
     if (!z || picked) return;
     setPicked(z.id); // eslint-disable-line react-hooks/set-state-in-effect -- open the zone named in the link once the game loads
-    setFocus({ lat: z.lat, lng: z.lng });
+    if (!isAnywhere(z)) setFocus({ lat: z.lat, lng: z.lng });
     window.history.replaceState(null, "", "/claim"); // only once, so closing the zone keeps it closed
     setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "center" }), 700);
   }, [game, picked]);
@@ -70,7 +74,7 @@ export function ClaimScreen() {
   function choose(id: string) {
     const z = game?.zones.find((x) => x.id === id);
     setPicked(id);
-    if (z) setFocus({ lat: z.lat, lng: z.lng });
+    if (z && !isAnywhere(z)) setFocus({ lat: z.lat, lng: z.lng });
   }
 
   return (
@@ -149,7 +153,7 @@ export function ClaimScreen() {
                 </motion.div>
               ) : (
                 <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {game.zones.map((z) => (
+                  {zones.map((z) => (
                     <li key={z.id}>
                       <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
                         <InkFlag held={tone(z) !== "free"} color={colors[tone(z)]} size={26} />

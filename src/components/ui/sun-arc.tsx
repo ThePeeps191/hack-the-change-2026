@@ -31,7 +31,11 @@ const RINGS = [0, 1, 2, 3].map((k) => {
       const r = 10.5 + k * 4.6 + Math.cos(i * 4.1 + k) * 1.4;
       // Rounded so the server and the browser print the same numbers.
       const round = (v: number) => Math.round(v * 100) / 100;
-      return { x: round(Math.cos(a) * r), y: round(Math.sin(a) * r), s: round(Math.max(0.55, 1.9 - k * 0.42 + Math.sin(i * 2.3) * 0.25)) };
+      // dx, dy: the way out from the sun, for the twinkle's drift. delay: when it twinkles.
+      return {
+        x: round(Math.cos(a) * r), y: round(Math.sin(a) * r), s: round(Math.max(0.55, 1.9 - k * 0.42 + Math.sin(i * 2.3) * 0.25)),
+        dx: round(Math.cos(a) * (1.5 + k)), dy: round(Math.sin(a) * (1.5 + k)), delay: round(((i * 7 + k * 3) % 11) * 0.23),
+      };
     }),
   };
 });
@@ -119,10 +123,19 @@ export function SunArc({ progress, children, caption, className = "" }: { progre
               <motion.g
                 key={k}
                 animate={moving ? { rotate: k % 2 ? -360 : 360 } : undefined}
-                transition={{ duration: 50 + k * 22, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 16 + k * 7, repeat: Infinity, ease: "linear" }}
               >
                 {dots.map((d, i) => (
-                  <circle key={i} cx={d.x} cy={d.y} r={d.s} fill={k < 2 ? "#ffe2a0" : "#fff1d0"} opacity={[0.95, 0.73, 0.51, 0.29][k]} />
+                  <circle
+                    key={i}
+                    cx={d.x}
+                    cy={d.y}
+                    r={d.s}
+                    fill={k < 2 ? "#ffe2a0" : "#fff1d0"}
+                    opacity={[0.95, 0.73, 0.51, 0.29][k]}
+                    className={moving ? "sun-speck" : undefined}
+                    style={moving ? { ["--dx" as string]: `${d.dx}px`, ["--dy" as string]: `${d.dy}px`, animationDelay: `${d.delay}s` } : undefined}
+                  />
                 ))}
               </motion.g>
             ))}

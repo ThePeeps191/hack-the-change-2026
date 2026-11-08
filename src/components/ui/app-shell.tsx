@@ -16,8 +16,14 @@ const side = [
 ] as const;
 
 // On a phone Claim lives inside the Crew tab; on a computer the rail has room
-// to give it its own row, after Crew.
-const rail = [side[0], side[1], side[3], { href: "/claim", label: "Claim", icon: "M5.5 21V3.5M5.5 4h12l-2.5 4.5 2.5 4.5h-12" }, side[4]];
+// to give it its own row, after Crew. The rail is three groups, split by short
+// lines: your day (Today, Map), your people (Crew, Claim), and you.
+const rail = [
+  [side[0], side[1]],
+  [side[3], { href: "/claim", label: "Claim", icon: "M5.5 21V3.5M5.5 4h12l-2.5 4.5 2.5 4.5h-12" }],
+  [side[4]],
+];
+const railLine = <div aria-hidden className="mx-3 my-3 h-px bg-ink/12" />;
 
 const isActive = (href: string, path: string) =>
   href === "/" ? path === "/" : path.startsWith(href) || (href === "/crew" && path.startsWith("/claim"));
@@ -39,16 +45,20 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
       {nav && (
         <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
           <Hand className="px-3 text-[38px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
-          <ul className="mt-8 flex flex-col gap-1">
-            {rail.map((t) => (
+          <div className="mt-6">{railLine}</div>
+          {rail.map((group, g) => (
+          <div key={g}>
+          {g > 0 && railLine}
+          <ul className="flex flex-col gap-1">
+            {group.map((t) => (
               <li key={t.href}>
                 <Link
                   href={t.href}
                   aria-current={isRailActive(t.href, path) ? "page" : undefined}
                   onClick={() => tick(0.6)}
-                  className={`flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isRailActive(t.href, path) ? "font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
+                  className={`rail-link flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isRailActive(t.href, path) ? "bg-sunken font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
                 >
-                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isRailActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <svg className="rail-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isRailActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d={t.icon} />
                   </svg>
                   {t.label}
@@ -56,8 +66,11 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
               </li>
             ))}
           </ul>
+          </div>
+          ))}
           {/* The main action, with its words spelled out since there's room. */}
-          <div className="mt-auto flex items-center gap-2.5 px-1">
+          <div className="mt-auto">{railLine}</div>
+          <div className="flex items-center gap-2.5 px-1 pt-1">
             <CompassButton onClick={go} disabled={busy} label="I'm free: find someone nearby" size={52} />
             <span className="text-[13px] leading-snug whitespace-nowrap text-ink-muted"><span className="block text-[15px] font-semibold text-ink">I&apos;m free</span>find someone nearby</span>
           </div>

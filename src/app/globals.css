@@ -299,6 +299,75 @@ a {
   .compass-drift, .compass-swing { animation: none }
 }
 
+/* Quest icon nibbles (quest-glyph.tsx): hovering a quest card (any .group) or
+   a map pin plays a short motion on the part of the icon tagged glyph-...,
+   once. Only on devices that hover, and never under reduced motion. Origins
+   are in the icon's own 24x24 grid (view-box) or the part's box (fill-box). */
+.glyph-steam { transform-box: fill-box; }
+.glyph-page { transform-box: fill-box; transform-origin: left center; }
+.glyph-ball { transform-box: view-box; transform-origin: 12px 12px; }
+.glyph-poster { transform-box: view-box; transform-origin: 12px 4.5px; }
+.glyph-canopy { transform-box: view-box; transform-origin: 12px 15.5px; }
+.glyph-flag { transform-box: fill-box; transform-origin: left center; }
+.glyph-hand { transform-box: view-box; transform-origin: 12px 13.5px; }
+.glyph-needle { transform-box: view-box; transform-origin: 12px 12px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .group:hover .glyph-steam, .amble-marker[data-pin]:hover .glyph-steam { animation: glyph-steam 700ms ease-out; }
+  .group:hover .glyph-page, .amble-marker[data-pin]:hover .glyph-page { animation: glyph-page 600ms ease-in-out; }
+  .group:hover .glyph-ball, .amble-marker[data-pin]:hover .glyph-ball { animation: glyph-roll 700ms cubic-bezier(.3, .7, .4, 1); }
+  .group:hover .glyph-poster, .amble-marker[data-pin]:hover .glyph-poster { animation: glyph-swing 650ms ease-out; }
+  .group:hover .glyph-canopy, .amble-marker[data-pin]:hover .glyph-canopy { animation: glyph-sway 650ms ease-in-out; }
+  .group:hover .glyph-trail, .amble-marker[data-pin]:hover .glyph-trail { animation: glyph-march 600ms ease-in-out; }
+  .group:hover .glyph-flag, .amble-marker[data-pin]:hover .glyph-flag { animation: glyph-flutter 600ms ease-in-out; }
+  .group:hover .glyph-hand, .amble-marker[data-pin]:hover .glyph-hand { animation: glyph-tick 600ms steps(6, end); }
+  .group:hover .glyph-needle, .amble-marker[data-pin]:hover .glyph-needle { animation: glyph-wobble 650ms ease-out; }
+}
+/* the cup's steam rises and fades, then wisps back in */
+@keyframes glyph-steam {
+  0% { transform: translateY(0); opacity: 1 }
+  55% { transform: translateY(-2.5px); opacity: 0 }
+  56% { transform: translateY(1.5px); opacity: 0 }
+  100% { transform: translateY(0); opacity: 1 }
+}
+/* the book's right page lifts toward the spine and falls back */
+@keyframes glyph-page {
+  0%, 100% { transform: scaleX(1) }
+  45% { transform: scaleX(.3) skewY(-8deg) }
+}
+/* the ball rolls one full turn */
+@keyframes glyph-roll { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+/* the poster swings on its pin and settles */
+@keyframes glyph-swing {
+  0%, 100% { transform: rotate(0) }
+  25% { transform: rotate(9deg) }
+  55% { transform: rotate(-6deg) }
+  80% { transform: rotate(2deg) }
+}
+/* the tree's canopy sways on its trunk */
+@keyframes glyph-sway {
+  0%, 100% { transform: rotate(0) }
+  30% { transform: rotate(-7deg) }
+  65% { transform: rotate(5deg) }
+}
+/* the trail's dots march two steps toward the flag (one dot + gap is 3.2) */
+@keyframes glyph-march { from { stroke-dashoffset: 0 } to { stroke-dashoffset: -6.4 } }
+/* the flag flaps on its pole */
+@keyframes glyph-flutter {
+  0%, 100% { transform: scaleX(1) }
+  30% { transform: scaleX(.55) skewY(8deg) }
+  65% { transform: scaleX(1.15) skewY(-4deg) }
+}
+/* the stopwatch hand ticks round in six jumps */
+@keyframes glyph-tick { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+/* the compass needle swings past north and settles */
+@keyframes glyph-wobble {
+  0%, 100% { transform: rotate(0) }
+  20% { transform: rotate(35deg) }
+  45% { transform: rotate(-22deg) }
+  70% { transform: rotate(9deg) }
+  88% { transform: rotate(-3deg) }
+}
+
 /* Map pins: a small white badge with the quest's category icon and a tip
    pointing at the spot. Picking one lifts it and turns it the accent colour. */
 .amble-marker[data-pin] { width: 48px; height: 56px; align-items: start; }
@@ -385,16 +454,12 @@ a {
    around the whole number instead. */
 .sky .odo { text-shadow: none; filter: drop-shadow(0 1px 8px rgb(24 64 130 / 0.3)); }
 
-/* Category accents: one detail of each quest icon in its category's hue. On a
-   selected (blue) pin it turns white like the rest of the icon. Claim's flag
-   pins colour the whole flag with --h (data-tint). */
-.cat-accent { color: hsl(var(--h) 68% 40%); }
+/* Quest icons are one colour: the pin's own text colour, and white on a
+   selected (blue) pin. Claim's flag pins colour the whole flag with --h
+   (data-tint). */
 .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 70% 45%); }
-.amble-marker[data-selected] .cat-accent,
 .amble-marker[data-pin][data-selected] .amble-pin-face { color: #fff; }
-.on-dark .cat-accent { color: hsl(var(--h) 75% 72%); }
 @media (prefers-color-scheme: dark) {
-  .cat-accent { color: hsl(var(--h) 75% 70%); }
   .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 80% 72%); }
 }
 
@@ -443,7 +508,6 @@ a {
    mixed with white so the small type stays readable on the dark page, and the
    category icon stays one colour like a real stamp. */
 .stamp { color: var(--ink); border-color: var(--ink); }
-.stamp .cat-accent { color: inherit; }
 @media (prefers-color-scheme: dark) {
   .stamp { color: color-mix(in oklab, var(--ink) 45%, white); border-color: color-mix(in oklab, var(--ink) 45%, white); }
 }
@@ -999,3 +1063,18 @@ a {
 }
 /* The login's glass panes stand taller beside the words on a computer. */
 @media (min-width: 1024px) { .sp-pane { height: clamp(340px, 62vh, 560px); } }
+
+/* The specks round the sun on the arc (sun-arc.tsx): each one drifts a little
+   way out from the sun and back, swelling as it goes, so the sun shimmers.
+   Only added when motion is allowed. */
+.sun-speck { transform-box: fill-box; transform-origin: center; animation: sun-speck 2.6s ease-in-out infinite alternate; }
+@keyframes sun-speck {
+  from { transform: translate(0, 0) scale(.8); }
+  to { transform: translate(var(--dx), var(--dy)) scale(1.25); }
+}
+
+/* The desktop rail's icons (app-shell.tsx) give a small hop and tilt when you
+   point at them, like something waking up. */
+.rail-icon { transition: transform .35s var(--ease-spring, cubic-bezier(.34,1.56,.64,1)); }
+@media (hover: hover) { .rail-link:hover .rail-icon { transform: translateY(-2px) rotate(-8deg) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .rail-icon { transition: none; } .rail-link:hover .rail-icon { transform: none; } }

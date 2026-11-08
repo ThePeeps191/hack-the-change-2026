@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import type { Quest } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { Coin } from "@/components/ui/quest-glyph";
-import { GlyphTile, questMeta } from "./quest-card";
+import { GlyphTile, QuestMetaLine } from "./quest-card";
 
 // The quests past the first few, folded into one card that opens like a
 // dropdown into short rows. Today and Map both use it, so "more quests" looks
@@ -40,11 +40,11 @@ export function MoreQuests({ quests, onPick }: { quests: Quest[]; onPick: (q: Qu
           >
             {quests.map((q) => (
               <li key={q.id} className="border-t border-[var(--hairline)]">
-                <button onClick={() => onPick(q)} className="flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
+                <button onClick={() => onPick(q)} className="group flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
                   <GlyphTile quest={q} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
-                    <span className="block truncate text-[13px] text-ink-muted">{questMeta(q)}</span>
+                    <QuestMetaLine quest={q} />
                   </span>
                   <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold tabular-nums">
                     <Coin size={14} />
