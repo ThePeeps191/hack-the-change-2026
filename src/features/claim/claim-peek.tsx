@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { inkFlagMarkup } from "@/components/ui/ink";
 import type { Game } from "@/lib/contracts";
+import { isAnywhere } from "./anywhere";
 
 // A tiny trail map of the live Claim game for the card on the Crew page.
 // Each zone is a flag placed where it really is on campus (its lat/lng scaled
@@ -36,13 +37,15 @@ export function ClaimPeek({ crewId }: { crewId?: string }) {
   useEffect(() => {
     api.game("current").then(setGame).catch(() => {});
   }, []);
-  if (!game || game.zones.length < 2) return null;
+  // Only zones with a place: "Anywhere on campus" has no spot to draw.
+  const placed = game?.zones.filter((z) => !isAnywhere(z)) ?? [];
+  if (!game || placed.length < 2) return null;
 
   const us = game.teams.find((t) => t.crew_id === crewId) ?? game.teams[0];
-  const lats = game.zones.map((z) => z.lat);
-  const lngs = game.zones.map((z) => z.lng);
+  const lats = placed.map((z) => z.lat);
+  const lngs = placed.map((z) => z.lng);
   const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
-  const pts = game.zones.map((z) => ({
+  const pts = placed.map((z) => ({
     z,
     x: Math.round(PAD + ((z.lng - minLng) / (maxLng - minLng || 1)) * (W - PAD * 2)),
     y: Math.round(PAD + 6 + ((maxLat - z.lat) / (maxLat - minLat || 1)) * (H - PAD * 2 - 6)),
