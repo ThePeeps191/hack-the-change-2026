@@ -80,7 +80,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `availability` | user_id, lat, lng, expires_at, created_at. Deleted the moment you're paired |
 | `matches` | id, user_a, user_b, status, source, invite_code, a_accepted_at, b_accepted_at, distance_m, lat, lng, expires_at, updated_at, created_at |
 | `quests` | the Quest fields, plus starter, created_at |
-| `quest_runs` | id, quest_id, match_id, crew_id, zone_id, team_id, mode, status, started_at, ends_at, completed_at |
+| `quest_runs` | id, quest_id, match_id, crew_id, zone_id, team_id, mode, status, started_at, ends_at, completed_at, sample (a "Try the demo" sample quest; the crew board skips these) |
 | `run_members` | run_id, user_id, distance_m, stay_in_touch_at, joined_at |
 | `submissions` | id, run_id, user_id, media_url, media_path, media_type, lat, lng, taken_at, verdict, reason, created_at |
 | `recaps` | run_id, summary, narration_url, created_at |

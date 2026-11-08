@@ -108,6 +108,7 @@ export async function toRun(run: RunRow, viewerId: string): Promise<QuestRun> {
     started_at: run.started_at.toISOString(),
     ends_at: run.ends_at.toISOString(),
     members: list,
+    zone_id: run.zone_id,
   };
 }
 

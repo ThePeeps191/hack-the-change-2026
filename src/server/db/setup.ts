@@ -132,6 +132,43 @@ const HISTORY: [string, number, string | null, number, number, string][] = [
   ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120, 19, "The long way round asked around campus and came back with a pile of answers."], // The Wisdom of the Crowd
 ];
 
+// A "Try the demo" guest's own copy of HISTORY, so a judge's You page shows
+// what it looks like after a few quests: the weekly ring, Jo as a familiar
+// face, places on the map, the mood card. The runs are marked sample, so the
+// weekly crew board skips them and the You page says they're samples. Only once
+// per person, and only if they've done nothing yet. Needs seedDemoData first.
+export async function seedSampleHistory(query: Query, userId: string) {
+  const [busy] = await query("select 1 as yes from run_members where user_id = $1 limit 1", [userId]);
+  if (busy) return false;
+  let total = 0;
+  for (const [i, [questId, daysAgo, partnerSub, metres, minutes, summary]] of HISTORY.entries()) {
+    const [quest] = await query("select coins from quests where id = $1", [questId]);
+    const [partner] = partnerSub ? await query("select id from users where auth0_sub = $1", [partnerSub]) : [null];
+    if (!quest || (partnerSub && !partner)) continue;
+    const startedAt = new Date(Date.now() - daysAgo * 86_400_000 - 3_600_000);
+    const completedAt = new Date(startedAt.getTime() + minutes * 60_000);
+    const [run] = await query(
+      `insert into quest_runs (quest_id, mode, status, started_at, ends_at, completed_at, sample)
+       values ($1, $2, 'completed', $3::timestamptz, $4::timestamptz, $4::timestamptz, true) returning id`,
+      [questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString()],
+    );
+    for (const member of partner ? [userId, partner.id as string] : [userId]) {
+      await query("insert into run_members (run_id, user_id, distance_m) values ($1, $2, $3)", [run.id, member, metres]);
+      await query("insert into submissions (run_id, user_id, verdict, reason) values ($1, $2, 'approved', 'looks right.')", [run.id, member]);
+    }
+    await query("insert into recaps (run_id, summary) values ($1, $2)", [run.id, summary.replace(/^Sam\b/, "You")]);
+    await query("insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz)", [userId, run.id, quest.coins, completedAt.toISOString()]);
+    total += quest.coins as number;
+    // How they felt before and after the first two, so the mood card has a pattern.
+    if (i < 2) {
+      await query("insert into checkins (run_id, user_id, phase, mood, created_at) values ($1, $2, 'before', 3, $3::timestamptz)", [run.id, userId, startedAt.toISOString()]);
+      await query("insert into checkins (run_id, user_id, phase, mood, created_at) values ($1, $2, 'after', $3, $4::timestamptz)", [run.id, userId, 5 - i, completedAt.toISOString()]);
+    }
+  }
+  await query("update users set coins = coins + $2 where id = $1", [userId, total]);
+  return true;
+}
+
 // [quest, crewmate who shared it with the crew]
 const CREW_SHARED: [string, string][] = [
   ["febb791a-b824-4680-97d1-fca36894e28b", "seed|mina"], // Film a Duck, West Campus Park

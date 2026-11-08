@@ -79,6 +79,11 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     [user.id],
   );
 
+  const sample = await one<{ n: number }>(
+    "select count(*)::int as n from run_members m join quest_runs r on r.id = m.run_id where m.user_id = $1 and r.sample",
+    [user.id],
+  );
+
   // Each place once, at the first visit, for the map.
   const firstVisits = new Map<string, { name: string; lat: number; lng: number; first_visit: string }>();
   for (const r of [...done].reverse()) {
@@ -115,6 +120,7 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     small_hellos: hellos,
     new_places: [...firstVisits.values()],
     mood: { after_better: mood?.after_better ?? 0, checkins: mood?.checkins ?? 0 },
+    sample_quests: sample?.n ?? 0,
   };
 }
 

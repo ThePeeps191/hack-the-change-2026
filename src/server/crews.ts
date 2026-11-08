@@ -122,6 +122,7 @@ export async function crewLeaderboard(): Promise<LeaderboardEntry[]> {
      from crews c
      left join crew_members m on m.crew_id = c.id
      left join coin_events e on e.user_id = m.user_id
+       and not exists (select 1 from quest_runs r where r.id = e.run_id and r.sample)
      group by c.id
      order by coins desc, c.name
      limit 50`,

@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import type { Zone } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
@@ -55,6 +55,17 @@ export function ClaimScreen() {
   const zone = game?.zones.find((z) => z.id === picked) ?? null;
   const held = { ours: 0, theirs: 0, free: 0 };
   for (const z of game?.zones ?? []) held[tone(z)]++;
+
+  // /claim?zone=<id>, from a finished challenge: open that zone, ready for the result.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("zone");
+    const z = wanted ? game?.zones.find((x) => x.id === wanted) : null;
+    if (!z || picked) return;
+    setPicked(z.id); // eslint-disable-line react-hooks/set-state-in-effect -- open the zone named in the link once the game loads
+    setFocus({ lat: z.lat, lng: z.lng });
+    window.history.replaceState(null, "", "/claim"); // only once, so closing the zone keeps it closed
+    setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "center" }), 700);
+  }, [game, picked]);
 
   function choose(id: string) {
     const z = game?.zones.find((x) => x.id === id);
