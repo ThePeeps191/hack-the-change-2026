@@ -13,7 +13,7 @@ const noop = () => () => {};
 // A quiet "Leave crew" at the foot of the crew page. It asks first, in a sheet
 // that says what you keep and how to come back, then calls onLeft so the page
 // can reload into "no crew yet".
-export function LeaveCrew({ crew, onLeft }: { crew: Crew; onLeft: () => void }) {
+export function LeaveCrew({ crew, onLeft }: { crew: Crew; onLeft: (name: string) => void }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export function LeaveCrew({ crew, onLeft }: { crew: Crew; onLeft: () => void }) 
       await api.leaveCrew(crew.id);
       tick(0.5);
       setOpen(false);
-      onLeft();
+      onLeft(crew.name);
     } catch {
       setError("That didn't go through. Try again in a moment.");
     } finally {
@@ -51,11 +51,14 @@ export function LeaveCrew({ crew, onLeft }: { crew: Crew; onLeft: () => void }) 
             <Ink size={44} className="mx-auto text-danger">{LeaveInk}</Ink>
             <p className="mt-3 text-[19px] font-semibold text-balance">Leave {crew.name}?</p>
             <p className="mx-auto mt-1.5 max-w-[32ch] text-[15px] leading-snug text-ink-muted">
-              Your coins stay yours, and the crew keeps playing without you. To come back, use the code{" "}
+              {crew.members.length > 1
+                ? "Your coins stay yours, and the crew keeps playing without you."
+                : "You're the only one in it, so it goes quiet until someone uses the code. Your coins stay yours."}{" "}
+              To come back, use the code{" "}
               <span className="font-mono font-semibold text-ink">{crew.invite_code}</span>.
             </p>
             {error && <p role="alert" className="mt-3 text-[14px] text-danger">{error}</p>}
-            <Button variant="danger" className="mt-5 w-full bg-danger-soft" onClick={leave} disabled={busy}>
+            <Button variant="danger" className="mt-5 w-full bg-danger-soft ring-1 ring-danger/20 hover:brightness-95 active:brightness-90" onClick={leave} disabled={busy}>
               {busy ? "Leaving…" : "Leave crew"}
             </Button>
             <Button variant="quiet" className="mt-1 w-full" onClick={() => setOpen(false)} disabled={busy}>Stay</Button>

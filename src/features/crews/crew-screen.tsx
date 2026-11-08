@@ -28,6 +28,7 @@ export function CrewScreen() {
   const [crew, setCrew] = useState<Crew | null | undefined>(undefined);
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
   const [inviting, setInviting] = useState(false);
+  const [left, setLeft] = useState<string | null>(null);
 
   const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
@@ -60,7 +61,9 @@ export function CrewScreen() {
         ) : crew === null ? (
           <div className="px-6 py-6 text-center">
             <Hand as="h1" className="text-[38px] leading-none font-bold">no crew yet</Hand>
-            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] text-on-sky/95">Start one and send the link to a few friends. Crews do longer games together.</p>
+            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] text-on-sky/95">
+              {left ? <>You left {left}. Start a new one, or join with a code.</> : <>Start one and send the link to a few friends. Crews do longer games together.</>}
+            </p>
           </div>
         ) : (
           <div className="flex flex-col items-center px-6 pt-1 text-center">
@@ -75,7 +78,7 @@ export function CrewScreen() {
       }>
 
       <div className="space-y-7 px-4 pt-6 lg:pt-0">
-        {crew === null && <NoCrewActions onDone={reload} />}
+        {crew === null && <NoCrewActions onDone={() => { setLeft(null); reload(); }} />}
         {crew && (
           <motion.div {...rise(0)}>
             <Link
@@ -165,7 +168,7 @@ export function CrewScreen() {
         )}
 
         {crew && <AnywhereQuests crew={crew} onChange={reload} />}
-        {crew && <LeaveCrew crew={crew} onLeft={() => { setCrew(undefined); reload(); }} />}
+        {crew && <LeaveCrew crew={crew} onLeft={(name) => { setLeft(name); setCrew(undefined); reload(); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
       </div>
       </Split>
       {crew && <InviteSheet open={inviting} onClose={() => setInviting(false)} name={crew.name} code={crew.invite_code} />}
