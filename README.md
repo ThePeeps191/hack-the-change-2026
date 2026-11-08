@@ -19,14 +19,15 @@ Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with
 With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
 
 <p align="center">
-  <img src="docs/images/amble-demo.gif" alt="Amble on a phone: a quest is picked, Amble looks for someone nearby, finds a practice partner, and both get the same quest" width="280">
+  <img src="docs/images/foosball.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" width="280">
+  <img src="docs/images/amble-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" width="280">
 </p>
 
 ## Try it
 
 Open **[amble.health](https://amble.health)** on your phone and tap **Try the demo**. You don't need an account, a partner or GPS: a practice partner, Priya, matches with you and plays along. In Chrome on Android you can also install it like an app (⋮ → Install app).
 
-<p align="center"><sub>Screens from amble.health as a demo guest. The proof images are drawings standing in for real photos, and the AI's verdicts on them are real.</sub></p>
+<p align="center"><sub>Real screens and real AI verdicts from amble.health, as a demo guest with the practice partner. The rejected foosball drawing is one we sent on purpose, and the Claim result is a test entry.</sub></p>
 
 ## Why
 
@@ -54,8 +55,8 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 </p>
 
 <p align="center">
-  <img src="docs/images/app/that-counts.jpg" alt="The AI referee approves a price tag: that counts, with a reason naming what it can see" width="250">
-  <img src="docs/images/app/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table and says what would count" width="250">
+  <img src="docs/images/app/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
+  <img src="docs/images/app/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table we sent on purpose, and says what would count" width="250">
   <img src="docs/images/app/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
