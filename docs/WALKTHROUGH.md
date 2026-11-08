@@ -127,6 +127,8 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 Vercel hosts the app at https://amble.health and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). Every outside service and env var is listed in `docs/DEPLOYMENT.md`.
 
+**Installing it as an app.** Chrome offers "Install app" because of three things: the manifest (`src/app/manifest.ts`, with icons in `public/icons/`), HTTPS, and a service worker (`public/sw.js`, registered by `src/components/register-sw.tsx`). The service worker caches nothing on purpose, so an installed app always runs the latest deploy. `src/app/apple-icon.png` is the home-screen icon on iPhone (Share, then Add to Home Screen).
+
 ## Testing
 
 `scripts/smoke.ts` drives the whole product over HTTP as a dozen made-up people: matching, two people accepting at the same moment, proof, coins, Claim, access checks, data export and deletion. Run `BASE_URL=http://localhost:3001 bun run smoke`. On Nov 7 evening it passed 85 of 86. The one failure is item 8 in the [JUDGING audit](JUDGING.md#audit-what-a-judge-sees-today): the starter pack no longer has any anywhere quests. `bun run check` runs types and lint.
