@@ -10,7 +10,8 @@ import { distanceM, safetyRulesOn } from "./safety";
 
 const GPS_SLACK_M = 50; // phones are rarely more accurate than this indoors
 const WINDOW_SLACK_MS = 2 * 60_000;
-const AI_TIMEOUT_MS = 30_000;
+// Under STUCK_VERDICT_MS (runs.ts), so a slow AI answer isn't beaten by the rescue.
+const AI_TIMEOUT_MS = 18_000;
 
 type SubmissionRow = {
   id: string;
@@ -122,7 +123,8 @@ function checkPlaceAndTime(
   return null;
 }
 
-// Demo safety net: approve someone's pending proof by hand on stage.
+// Demo safety net ("Count it anyway"): counts your own latest proof if the AI
+// got it wrong. Only "Try the demo" guests can call it (see the route).
 export async function approveByHand(user: User, runId: string) {
   if (!DEMO_MODE) throw notFound("route");
   await runForMember(user, runId);
@@ -134,7 +136,7 @@ export async function approveByHand(user: User, runId: string) {
      ) and verdict = 'rejected'`,
     [runId, user.id],
   );
-  const pending = await query<{ id: string }>("select id from submissions where run_id = $1 and verdict = 'pending'", [runId]);
-  for (const s of pending) await applyVerdict(s.id, "approved", "approved by hand.");
+  const pending = await query<{ id: string }>("select id from submissions where run_id = $1 and user_id = $2 and verdict = 'pending'", [runId, user.id]);
+  for (const s of pending) await applyVerdict(s.id, "approved", "counted by hand for the demo.");
   return pending.length;
 }
