@@ -37,9 +37,9 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 
 1. **I'm free.** Tell Amble you have twenty minutes.
 2. **Matched.** Someone nearby is free too. You see only a rough distance until you both say yes, then just a first name.
-3. **The quest.** You both get the same small task at a public spot. You meet there, never at each other's location.
+3. **The quest.** You both get the same small task at a public spot. You meet there, never at each other's location, and each of you can add one line so the other can spot you ("red jacket, by the main doors").
 4. **Proof.** One photo or short video. An AI referee checks it against the quest.
-5. **Recap.** A short story of your walk, the minutes you were active, and the choice to stay in touch. You only connect if you both say yes.
+5. **Recap.** A short story of your walk, the minutes you were active, how you felt before and after (only you see that), and the choice to stay in touch. You only connect if you both say yes.
 
 **With friends**
 
@@ -55,7 +55,8 @@ Private numbers that matter, never ranked against anyone: active minutes against
 - **Comfort settings:** step-free places only, a short and easy pace, and side-by-side quests for people who'd rather not chat face to face.
 - **Public places only.** You meet at the quest spot, never at someone's location.
 - **Little personal data.** Your location is deleted the moment you're matched. You can download or delete everything from the privacy page, which also says which AI sees your photos.
-- **One tap to report.** If you report someone, you're never paired with them again.
+- **Help one tap away.** During a quest, "Help, leave or report" shows 911 and UCalgary Campus Security, lets you leave without blaming anyone, or report. If you report someone, you're never paired with them again.
+- **Honest when it's quiet.** If nobody's free nearby after 45 seconds, Amble says so and offers a link to send to someone you're with.
 
 ## How it works
 
