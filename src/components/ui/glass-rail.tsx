@@ -30,7 +30,7 @@ const paneOptics = { strength: 0.012, depth: 0.1, curvature: 0, bend: 0.7, bendW
 // The lens that slides between rows bends a little more, so you see it move.
 const lensOptics = { strength: 0.06, depth: 0.3, curvature: 0.12, bend: 0.8, bendWidth: 0.16, dispersion: 0.22, frost: 1, sheen: 0.5, glow: 0.08, specular: 0.6 };
 
-const line = <div aria-hidden className="mx-3 my-2.5 h-px bg-white/20" />;
+const line = <div aria-hidden className="-mx-2 my-2.5 h-px bg-gradient-to-r from-white/10 via-white/50 to-white/10" />;
 const row = "rail-link relative flex h-[var(--rail-row)] items-center gap-3 rounded-[16px] px-3 text-[16px] text-on-sky";
 
 // The light on the glass and the band of sky behind it lean toward the pointer.
@@ -65,10 +65,16 @@ function GoFree() {
   return (
     <div className="flex items-center gap-2.5 px-1.5">
       <CompassButton onClick={go} disabled={busy} label="I'm free: find someone nearby" size={52} />
-      <span className="min-w-0 text-[13px] leading-snug text-on-sky/85" role={error ? "status" : undefined}>
-        {!error && <span className="block text-[15px] font-semibold text-on-sky">I&apos;m free</span>}
-        {error ?? "find someone nearby"}
-      </span>
+      {error ? (
+        <span role="status" className="min-w-0 text-[13px] leading-snug text-on-sky/90">{error}</span>
+      ) : (
+        // The words are a bigger target for the mouse. The compass is the real
+        // control for keyboards and screen readers, so this one is hidden from them.
+        <button type="button" tabIndex={-1} aria-hidden onClick={() => go()} disabled={busy} className="min-w-0 cursor-pointer text-left text-[13px] leading-snug text-on-sky/90">
+          <span className="block text-[15px] font-semibold text-on-sky">I&apos;m free</span>
+          find someone nearby
+        </button>
+      )}
     </div>
   );
 }
@@ -148,7 +154,7 @@ export function GlassRail() {
         <Glass className="rail-lens absolute inset-0 rounded-[16px]" optics={lensOptics}><span /></Glass>
       </motion.div>
 
-      <div className="absolute inset-3 flex flex-col px-2 pt-5 pb-2">
+      <div className="absolute inset-3 flex flex-col px-2 pt-5 pb-4">
         <Hand className="px-3 text-[38px] leading-none font-bold text-on-sky">{APP_NAME.toLowerCase()}</Hand>
         <div ref={rows} onPointerOver={aim} onPointerLeave={() => setAimed(null)} onFocus={aim} onBlur={() => setAimed(null)} className="mt-3 flex flex-1 flex-col">
           {line}
@@ -156,7 +162,7 @@ export function GlassRail() {
             {user ? <Avatar name={user.display_name} avatar={user.avatar} size={34} /> : <span className="size-[34px] shrink-0 rounded-full bg-white/15" />}
             <span className="min-w-0 flex-1 leading-tight">
               <span className="block truncate font-semibold">{name}</span>
-              <span className="block text-[13px] text-on-sky/90">your profile</span>
+              <span className="block text-[13px]">your profile</span>
             </span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 opacity-70">
               <path d="M9.5 5.5L16 12l-6.5 6.5" />

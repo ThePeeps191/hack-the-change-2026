@@ -1118,7 +1118,7 @@ a {
 .rail-band {
   position: absolute;
   inset: -12% -60%;
-  background: linear-gradient(118deg, transparent 37%, rgb(255 255 255 / .2) 37%, rgb(255 255 255 / .07) 52%, transparent 52%);
+  background: linear-gradient(118deg, transparent 41%, rgb(255 255 255 / .34) 41%, rgb(255 255 255 / .14) 53%, transparent 53%);
   transform: translateX(calc((var(--lean) - .5) * 60px));
   transition: transform .9s var(--ease-out-soft);
 }
@@ -1149,5 +1149,7 @@ a {
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
+/* The page you're on keeps a faint fill when the lens goes off to another row. */
+.rail-link[aria-current="page"] { background: rgb(255 255 255 / .06); }
 .glass-rail :focus-visible { outline-color: #fff; }
 @media (prefers-reduced-motion: reduce) { .rail-band { transition: none; } }
