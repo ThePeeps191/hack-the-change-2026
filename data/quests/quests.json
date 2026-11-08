@@ -2,7 +2,7 @@
   {
     "id": "faf105ad-114b-44fb-b2b1-e5909f23b8d9",
     "title": "A look into Calgary's past",
-    "description": "Use the microfiche machine in the Calgary Central Library to view a newspaper that is at least 50 years old. Photo: the screen, with the newspaper's date showing.",
+    "description": "Use the microfiche machine in the Calgary Central Library to view a newspaper that is at least 50 years old.",
     "type": "local",
     "lat": 51.045521,
     "lng": -114.055068,
@@ -81,7 +81,7 @@
   {
     "id": "6c33bac2-6651-494c-bed6-5728c7ac172e",
     "title": "Birdwatching",
-    "description": "Identify and photograph 5 different species of birds at Inglewood Bird Sanctuary. Photo: your favourite of the five.",
+    "description": "Identify and photograph 5 different species of birds at Inglewood Bird Sanctuary",
     "type": "local",
     "lat": 51.027774,
     "lng": -114.006672,
@@ -100,7 +100,7 @@
   {
     "id": "4379f1a6-ae68-4d5d-99d6-156602a2435c",
     "title": "The wisdom of the crowd",
-    "description": "Ask people near the Calgary Tower to guess its height until the average of all the guesses is within 5 m of the real value (191 m). Photo: your tally of guesses, with the Tower behind it.",
+    "description": "Ask people near the Calgary Tower to guess its height until the average of all the guesses is within 5 m of the real value (191 m).",
     "type": "local",
     "lat": 51.0443,
     "lng": -114.063135,
@@ -114,7 +114,7 @@
   {
     "id": "48f489dd-3520-4ea9-9baa-bcf68dc6d2ad",
     "title": "Planespotting",
-    "description": "Identify and photograph a Boeing 737, an Airbus A320 and a Boeing 787. Photo: your best plane of the three.",
+    "description": "Identify and photograph a Boeing 737, an Airbus A320 and a Boeing 787.",
     "type": "local",
     "lat": 51.119855,
     "lng": -114.018688,
@@ -128,7 +128,7 @@
   {
     "id": "a9129295-d5c5-4964-8b0f-a4f6956e3dec",
     "title": "Lucky eights",
-    "description": "8 is a lucky number in Chinese culture. In Chinatown, set an eight-minute timer and try to photograph 8 instances of the number 8. Photo: your favourite 8.",
+    "description": "8 is a lucky number in Chinese culture. In Chinatown, set an eight-minute timer and try to photograph 8 instances of the number 8.",
     "type": "local",
     "lat": 51.050332,
     "lng": -114.062741,
@@ -160,7 +160,7 @@
   {
     "id": "332475d3-8499-47d2-9ef3-5928ef76b9f6",
     "title": "Walk the +15",
-    "description": "Get from Centennial Place to CORE Shopping Centre using only the +15 skywalks, never touching the street. Photo: the two of you in the last skywalk before CORE.",
+    "description": "Get from Centennial Place to CORE Shopping Centre using only the +15 skywalks, never touching the street.",
     "type": "local",
     "lat": 51.050807,
     "lng": -114.072154,
@@ -178,7 +178,7 @@
   {
     "id": "48359d56-748a-4a9a-85b9-388c730a447c",
     "title": "Play foosball",
-    "description": "Play a game of foosball, first to 5 goals, on the tables in the Engineering building. Photo: the table, with the final score showing.",
+    "description": "Play a game of foosball, first to 5 goals, on the tables in the Engineering building.",
     "type": "local",
     "lat": 51.080541,
     "lng": -114.132136,
@@ -209,7 +209,7 @@
   {
     "id": "498fa389-ed95-4cdd-ad54-02fc87b8a002",
     "title": "City wildlife",
-    "description": "For 20 minutes, take pictures of as many wildlife animals as you can with 1 point for birds, 3 points for rodents, and 5 points for large mammals. Photo: your best animal shot.",
+    "description": "For 20 minutes, take pictures of as many wildlife animals as you can with 1 point for birds, 3 points for rodents, and 5 points for large mammals.",
     "type": "local",
     "lat": 51.112414,
     "lng": -114.110613,
@@ -227,7 +227,7 @@
   {
     "id": "0659901c-500b-41bd-8438-4f779d771b1b",
     "title": "Animal bingo",
-    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and its mother, an albino animal, a swimming animal, an animal eating. Photo: your favourite of the five.",
+    "description": "See how many of these you can take a picture of in 5 minutes. Animal sleeping, a baby animal and its mother, an albino animal, a swimming animal, an animal eating.",
     "type": "local",
     "lat": 51.045434,
     "lng": -114.023184,
@@ -265,184 +265,5 @@
     "coins": 30,
     "place_name": "Glenmore Dam",
     "sources": []
-  },
-  {
-    "id": "d1569bb7-c671-52aa-befb-8f82cf7ba1e4",
-    "title": "Ask the info desk",
-    "description": "New to campus? Find the Information Centre in MacEwan Student Centre. Each of you picks one thing you'd want to know, like where to print or where the quiet study spots are, and find the answer together. Photo: the two of you pointing at the answer on a map or sign.",
-    "type": "local",
-    "lat": 51.078178,
-    "lng": -114.131857,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "MacEwan Student Centre",
-    "sources": [],
-    "tags": [
-      "newcomer",
-      "step-free"
-    ]
-  },
-  {
-    "id": "2451105c-bb8e-5598-a5c7-287a790ece4f",
-    "title": "Where to get help",
-    "description": "Find Student Wellness Services in MacEwan Student Centre, where students can see a doctor or a counsellor, so you both know where it is before you need it. Then find the nearest water bottle filler. Photo: the Student Wellness sign.",
-    "type": "local",
-    "lat": 51.07815,
-    "lng": -114.131931,
-    "radius_m": 75,
-    "duration_min": 10,
-    "proof": "photo",
-    "coins": 15,
-    "place_name": "MacEwan Student Centre",
-    "sources": [],
-    "tags": [
-      "newcomer",
-      "step-free",
-      "calm"
-    ]
-  },
-  {
-    "id": "e8886bfa-86dd-5b51-b4cf-3cb80799c80c",
-    "title": "Library basics",
-    "description": "In the Taylor Family Digital Library, find where you'd ask a librarian for help and where you can book a study room. Photo: the help desk or the room-booking sign.",
-    "type": "local",
-    "lat": 51.077427,
-    "lng": -114.129971,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "Taylor Family Digital Library",
-    "sources": [],
-    "tags": [
-      "newcomer",
-      "step-free",
-      "side-by-side"
-    ]
-  },
-  {
-    "id": "2485204a-78be-557f-8e58-92a2a3b45fdf",
-    "title": "Through the Arch",
-    "description": "Find the University of Calgary Arch, the big sculpture on the south side of campus, and work out the best spot to frame the campus through it. Photo: campus framed in the Arch.",
-    "type": "local",
-    "lat": 51.075089,
-    "lng": -114.128724,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "University of Calgary Arch",
-    "sources": [],
-    "tags": [
-      "newcomer",
-      "daytime"
-    ]
-  },
-  {
-    "id": "07a9ba7d-6e5f-5e89-a670-f5d1a407f653",
-    "title": "Make the Oval tiny",
-    "description": "Stand well back from the Olympic Oval and take a forced-perspective photo where one of you holds the whole building between two fingers. Swap and see whose looks most convincing. Photo: your best one.",
-    "type": "local",
-    "lat": 51.077011,
-    "lng": -114.135645,
-    "radius_m": 75,
-    "duration_min": 10,
-    "proof": "photo",
-    "coins": 15,
-    "place_name": "Olympic Oval",
-    "sources": [],
-    "tags": [
-      "daytime"
-    ]
-  },
-  {
-    "id": "4df48d81-831f-5898-8440-a40486f3f6e3",
-    "title": "Copy the Speed Skater",
-    "description": "Find the Speed Skater sculpture by the Olympic Oval and both strike its pose as exactly as you can. Photo: the two of you mid-stride beside it.",
-    "type": "local",
-    "lat": 51.076885,
-    "lng": -114.134701,
-    "radius_m": 75,
-    "duration_min": 10,
-    "proof": "photo",
-    "coins": 15,
-    "place_name": "Speed Skater sculpture",
-    "sources": [],
-    "tags": [
-      "daytime"
-    ]
-  },
-  {
-    "id": "d6895567-89d6-566e-bd8e-3c7a4ae0565f",
-    "title": "Meet the Prairie Chicken",
-    "description": "Find the Prairie Chicken sculpture on campus. Each guess what it's made of and how tall it is, then check the plaque or look closely. Photo: both of you doing your best prairie chicken next to it.",
-    "type": "local",
-    "lat": 51.07834,
-    "lng": -114.128139,
-    "radius_m": 75,
-    "duration_min": 10,
-    "proof": "photo",
-    "coins": 15,
-    "place_name": "Prairie Chicken sculpture",
-    "sources": [],
-    "tags": [
-      "daytime"
-    ]
-  },
-  {
-    "id": "15c00e77-ce19-5d6f-8d23-acf02263e705",
-    "title": "Initials hunt",
-    "description": "Starting at MacEwan Hall, find a building or room sign that starts with the first letter of each of your names. Closest walk wins. Photo: one of you pointing at either sign.",
-    "type": "local",
-    "lat": 51.078568,
-    "lng": -114.130451,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "MacEwan Hall",
-    "sources": [],
-    "tags": [
-      "step-free"
-    ]
-  },
-  {
-    "id": "d0cdcd74-a532-57d6-ba6b-5b3a77c40970",
-    "title": "Campus from memory",
-    "description": "Sit somewhere in the Garden of Learning. Each of you sketches a map of campus from memory in two minutes, then walk to the nearest campus map and see whose was closer. Photo: both sketches side by side.",
-    "type": "local",
-    "lat": 51.077874,
-    "lng": -114.12756,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "Garden of Learning",
-    "sources": [],
-    "tags": [
-      "calm",
-      "side-by-side"
-    ]
-  },
-  {
-    "id": "024e3f47-b6de-52e8-bf2d-b2a7598819c7",
-    "title": "Best seat on campus",
-    "description": "Walk from the Taylor Family Digital Library and each pick the one outdoor seat on campus you'd most like to read in, then show each other. Vote on a winner. Photo: the view from the winning seat.",
-    "type": "local",
-    "lat": 51.077427,
-    "lng": -114.129971,
-    "radius_m": 75,
-    "duration_min": 15,
-    "proof": "photo",
-    "coins": 20,
-    "place_name": "Taylor Family Digital Library",
-    "sources": [],
-    "tags": [
-      "calm",
-      "side-by-side",
-      "daytime"
-    ]
   }
 ]
