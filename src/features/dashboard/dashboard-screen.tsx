@@ -13,7 +13,7 @@ import { Odometer } from "@/components/ui/odometer";
 import { Ink, InkFlag, PeopleInk, StepsInk } from "@/components/ui/ink";
 import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
-import { Entry, FaceCard, Weather, WeekStrip } from "./you-bits";
+import { collapseRepeats, Entry, FaceCard, Weather, WeekStrip } from "./you-bits";
 import { type Comfort, toComfort, toPrefs } from "@/features/onboarding/prefs";
 import { ProfileLinks } from "./profile-links";
 
@@ -62,10 +62,11 @@ export function DashboardScreen() {
   // (0 m). Drop that empty copy, but keep a real repeat of the same quest on
   // another day, like doing Ping Pong with Priya again today.
   const near = (a: string, b: string) => Math.abs(new Date(a).getTime() - new Date(b).getTime()) < 10 * 60_000;
-  const journal = (d?.history ?? []).filter(
+  // Then fold same-day repeats into one row with a count.
+  const journal = collapseRepeats((d?.history ?? []).filter(
     (h, _, all) =>
       !(!h.distance_m && all.some((o) => o !== h && o.quest.id === h.quest.id && o.partner?.display_name === h.partner?.display_name && !!o.distance_m && near(o.completed_at, h.completed_at))),
-  );
+  ));
 
   return (
     <AppShell>

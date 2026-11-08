@@ -64,14 +64,16 @@ export async function writeRecap(input: RecapInput): Promise<{ summary: string; 
         (await live()).writeRecapLive(input),
         new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timed out")), 15_000)),
       ]);
-      return { summary, narration_url: null };
+      // The model often puts straight quotes round the quest name, which the
+      // recap draws as two ticks, so swap each pair for curly ones.
+      return { summary: summary.replace(/"([^"]*)"/g, "“$1”"), narration_url: null };
     } catch (e) {
       console.error("recap fell back to the plain summary:", (e as Error).message);
     }
   }
   const who = input.names.length > 1 ? `${input.names.slice(0, -1).join(", ")} and ${input.names.at(-1)}` : (input.names[0] ?? "You");
   return {
-    summary: `${who} made it to ${input.quest.place_name ?? "a spot nearby"} and finished "${input.quest.title}" with time to spare.`,
+    summary: `${who} made it to ${input.quest.place_name ?? "a spot nearby"} and finished “${input.quest.title}” with time to spare.`,
     narration_url: null,
   };
 }
