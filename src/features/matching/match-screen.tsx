@@ -1,6 +1,7 @@
 "use client";
 import { Liquid } from "liquid-gooey";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
@@ -14,6 +15,7 @@ import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastQuiet } from "@/components/ui/toast";
 import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
 import { SunriseGlow } from "./sunrise-glow";
+import { useGoFree } from "./use-go-free";
 import { InviteCard } from "@/features/invites/invite-card";
 import { ShareLink } from "@/features/invites/share-link";
 import { CategoryIcon, categoryOf, Coin } from "@/components/ui/quest-glyph";
@@ -54,8 +56,14 @@ export function MatchScreen() {
     until: (m) => m != null && m.status !== "pending" && (m.status !== "accepted" || m.run_id != null),
   });
 
+  // Not looking at all (your 20 minutes ran out, or you came here without
+  // tapping "I'm free"): say so and offer the button, instead of searching forever.
+  const { data: freeStatus } = usePoll(api.freeStatus, { enabled: match == null, ms: 5000 });
+  const idle = match == null && freeStatus?.free === false;
+  const free = useGoFree();
+
   const state: State =
-    match == null ? "searching" : match.status === "accepted" ? "matched" : match.status === "pending" ? (match.you_accepted ? "waiting" : "found") : "ended";
+    match == null ? (idle ? "ended" : "searching") : match.status === "accepted" ? "matched" : match.status === "pending" ? (match.you_accepted ? "waiting" : "found") : "ended";
 
   // Once matched, fetch the quest so the screen can show what you're about to do.
   const [run, setRun] = useState<QuestRun | null>(null);
@@ -183,7 +191,7 @@ export function MatchScreen() {
               {state === "found" && "someone's nearby"}
               {state === "waiting" && (match?.source === "invite" ? "link sent" : "you said yes")}
               {state === "matched" && `you and ${name ?? "them"}`}
-              {state === "ended" && "that one slipped away"}
+              {state === "ended" && (idle ? "not looking right now" : "that one slipped away")}
             </Hand>
             <p className="mx-auto mt-2 max-w-[30ch] text-[15px] leading-snug text-on-sky/95">
               {state === "searching" && (
@@ -195,7 +203,7 @@ export function MatchScreen() {
               {state === "found" && "They're free right now too."}
               {state === "waiting" && (match?.source === "invite" ? (match.quest_title ? `Waiting for them to open it. You'll both do “${match.quest_title.charAt(0).toUpperCase() + match.quest_title.slice(1)}”.` : "Waiting for them to open it and say yes.") : "Waiting for them to say yes too.")}
               {state === "matched" && (practice ? `${name ?? "They"} is a practice partner, so you can try the whole thing alone.` : "Your quest is ready. Head to the spot and say hi.")}
-              {state === "ended" && "No worries. Try again whenever you're free."}
+              {state === "ended" && (idle ? "Tap I'm free and we'll look for someone nearby." : "No worries. Try again whenever you're free.")}
             </p>
           </motion.div>
         </AnimatePresence>
@@ -294,7 +302,14 @@ export function MatchScreen() {
               </ButtonLink>
             </motion.div>
           )}
-          {state === "ended" && <ButtonLink size="lg" variant="onSky" href="/">Back to today</ButtonLink>}
+          {state === "ended" && idle && (
+            <>
+              {free.error && <p className="px-6 text-center text-[14px] text-on-sky/95" role="alert">{free.error}</p>}
+              <Button size="lg" variant="onSky" onClick={() => free.go()} disabled={free.busy}>{free.busy ? "Looking…" : "I'm free"}</Button>
+            </>
+          )}
+          {state === "ended" && !idle && <ButtonLink size="lg" variant="onSky" href="/">Back to today</ButtonLink>}
+          {state === "ended" && idle && <Link href="/" className="flex min-h-12 items-center justify-center text-[15px] font-medium text-on-sky/95 hover:text-on-sky">Back to today</Link>}
         </div>
       </div>
       </Hero>

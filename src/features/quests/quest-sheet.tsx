@@ -180,7 +180,7 @@ export function QuestSheet({
                 {run.busy ? "Starting…" : "Start on my own"}
               </MagneticButton>
             ) : (
-              <MagneticButton onClick={free.go} disabled={busy}>
+              <MagneticButton onClick={() => free.go(q.id)} disabled={busy}>
                 {free.busy ? "Finding someone…" : "Find someone to do it with"}
               </MagneticButton>
             )}

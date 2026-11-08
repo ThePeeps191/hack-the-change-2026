@@ -74,9 +74,10 @@ export const api = {
     call<User>("/api/me", { method: "PATCH", body: JSON.stringify(patch) }),
   deleteMe: () => call<void>("/api/me", { method: "DELETE" }),
 
-  setFree: (lat: number, lng: number) =>
-    post<{ expires_at: string }>("/api/availability", { lat, lng }),
+  setFree: (lat: number, lng: number, questId?: string) =>
+    post<{ expires_at: string }>("/api/availability", { lat, lng, quest_id: questId }),
   clearFree: () => call<void>("/api/availability", { method: "DELETE" }),
+  freeStatus: () => call<{ free: boolean }>("/api/availability"),
   match: () => call<Match | null>("/api/match"),
   acceptMatch: (id: string) => post<Match>(`/api/matches/${id}/accept`),
   declineMatch: (id: string) => post<Match>(`/api/matches/${id}/decline`),

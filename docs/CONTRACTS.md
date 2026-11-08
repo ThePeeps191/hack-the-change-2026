@@ -80,7 +80,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | Table | Main columns |
 | --- | --- |
 | `users` | id, auth0_sub, display_name, avatar_url, email_verified, age_confirmed_at, prefs, coins, is_bot, created_at |
-| `availability` | user_id, lat, lng, expires_at, created_at. Deleted the moment you're paired |
+| `availability` | user_id, lat, lng, expires_at, created_at, quest_id (the quest you picked, or null). Deleted the moment you're paired |
 | `matches` | id, user_a, user_b, status, source, invite_code, a_accepted_at, b_accepted_at, distance_m, lat, lng, expires_at, updated_at, created_at |
 | `quests` | the Quest fields, plus starter, created_at |
 | `quest_runs` | id, quest_id, match_id, crew_id, zone_id, team_id, mode, status, started_at, ends_at, completed_at, sample (a "Try the demo" sample quest; the crew board skips these) |
@@ -108,7 +108,8 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `PATCH /api/me` | Update profile: `{ display_name?, age_confirmed_at?, prefs? }` | user |
 | `DELETE /api/me` | Delete my data | nothing |
 | `GET /api/me/export` | Everything we hold about me, as a file | JSON |
-| `POST /api/availability` | "I'm free": `{ lat, lng }` | `{ expires_at }` |
+| `POST /api/availability` | "I'm free": `{ lat, lng, quest_id? }`. `quest_id` comes from a quest's "Find someone to do it with", and the match gets that quest | `{ expires_at }` |
+| `GET /api/availability` | Are you still looking? The match screen uses it to say "not looking right now" instead of searching forever | `{ free }` |
 | `DELETE /api/availability` | No longer free | nothing |
 | `GET /api/match` | Current match, polled | `Match` or null. For the person who made an invite link, a pending invite also has `invite_code`, so the waiting screen can keep showing the link |
 | `POST /api/matches/:id/accept` | Accept a match | `Match` |

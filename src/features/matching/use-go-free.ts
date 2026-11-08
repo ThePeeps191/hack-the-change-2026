@@ -12,14 +12,16 @@ export function useGoFree() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function go() {
+  // questId: from a quest's "Find someone to do it with", so the match gets that quest.
+  async function go(questId?: string) {
     if (busy) return;
     tick();
     setBusy(true);
     setError(null);
     try {
       const pos = await getPosition();
-      await api.setFree(pos.lat, pos.lng);
+      // Buttons that pass `go` straight to onClick hand it a click event, not a quest id.
+      await api.setFree(pos.lat, pos.lng, typeof questId === "string" ? questId : undefined);
       router.push(pos.approximate ? "/match?approx=1" : "/match");
     } catch (e) {
       // 403 is a safety rule (verified email, daylight) with its own message.

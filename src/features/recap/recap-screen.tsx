@@ -129,7 +129,11 @@ export function RecapScreen() {
         {recap && name && (
           <section className="rounded-[24px] bg-surface p-5 shadow-card">
             <p className="text-[17px] font-semibold">Stay in touch with {name}?</p>
-            <p className="mt-1 text-[14px] leading-snug text-ink-muted">You&apos;ll only connect if you both say yes. Next time you&apos;re both free, you can do another one together.</p>
+            <p className="mt-1 text-[14px] leading-snug text-ink-muted">
+              {recap.demo_partner
+                ? `${name} is a practice partner, so the answer is always yes. With a real person, you'd only connect if you both do.`
+                : "You'll only connect if you both say yes. Next time you're both free, you can do another one together."}
+            </p>
             <div className="mt-4">
               {kept === "connected" || recap.connected ? (
                 <p className="flex min-h-14 items-center justify-center gap-2 text-[16px] font-semibold text-success">
