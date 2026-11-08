@@ -73,15 +73,7 @@ It's one Next.js (TypeScript) app on Vercel. Auth0 handles sign-in, and judges g
 
 There are no background workers. State moves forward when a phone checks in every few seconds: a match expires, a quest ends. Every rule runs on the server inside database transactions, so two phones can't race each other into a bad state. An end-to-end test (`scripts/smoke.ts`) drives the whole product over HTTP as a dozen simulated people.
 
-### Where the AI fits
-
-We kept the AI in a narrow job it can do reliably:
-
-- **It checks proof.** Claude Haiku looks at the photo, or three still frames from a video, and decides whether it shows the quest, with a one-line reason written to the player.
-- **It writes the recap.** Two warm sentences about your walk, built only from what happened and what the photo shows.
-- **It doesn't write the quests.** We wrote every quest by hand, at real public places around UCalgary and Calgary, so each one is safe and worth doing.
-
-It's told to be generous with honest attempts: indoor shots, one photo for a quest with several parts, and a photo of a screen when the quest is about one all count. If the AI is down, the quest still counts. Nobody should lose a real walk to our outage. And if it gets one wrong during the demo, "Try the demo" guests can tap **Count it anyway**.
+We wrote every quest by hand, at real public places around UCalgary and Calgary. The AI does two jobs: Claude Haiku checks proof (photos, and three still frames from each video) and writes the recaps. It's told to be generous with honest attempts. Every AI call has a timeout and a fallback, so if the AI is slow or down the quest still counts. If it gets one wrong in the demo, demo accounts can tap Count it anyway.
 
 ## Built with
 
