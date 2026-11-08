@@ -36,7 +36,7 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
                   </li>
                 );
               }
-              const active = t.href === "/" ? path === "/" : path.startsWith(t.href) || (t.href === "/crew" && path.startsWith("/claim"));
+              const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
               return (
                 <li key={i}>
                   <Link
