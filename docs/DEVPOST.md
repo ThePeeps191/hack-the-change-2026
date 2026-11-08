@@ -10,7 +10,7 @@ A starting point for the Devpost submission. The friends and demo area owns the 
 - [ ] All four team members added: Danny, Siddhant, Aaron, Jonas
 - [ ] The description below, including the AI disclosure
 - [ ] The live link works on a phone, and the "Try the demo" button works
-- [ ] The MLH prize categories ticked: Auth0, Tiger Data. Not Gemini (the demo runs Claude), not Vultr (we host on Vercel), and not GoDaddy Registry (amble.health isn't one of its domains)
+- [x] The prize categories ticked (done on Devpost): Best Use of Auth0, Best Use of Tiger Data, Best Domain Name from GoDaddy Registry (`.health` is a GoDaddy Registry TLD) and Best Local Impact. Not Gemini (the demo runs Claude) and not Vultr (we host on Vercel)
 
 ## Tagline
 

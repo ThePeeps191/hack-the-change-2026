@@ -7,7 +7,7 @@ The live app is **https://amble.health**. This page lists every outside service 
 | What | Where | Details |
 | --- | --- | --- |
 | Hosting | **Vercel**, project `amble` (team `thepeeps191s-projects`, Pro trial from Nov 7 to Nov 21) | Builds every push to `main` and nothing else (`vercel.json`). Also reachable at `amble-three.vercel.app`, but Auth0 sign-in only works on amble.health |
-| Domain | **amble.health**, bought by a friend, DNS at **Porkbun** | `A @ 216.198.79.1` and `CNAME www` to Vercel. `www` forwards to the bare domain. HTTPS is Vercel's. Not a GoDaddy Registry domain |
+| Domain | **amble.health**, bought by a friend, DNS at **Porkbun** | `A @ 216.198.79.1` and `CNAME www` to Vercel. `www` forwards to the bare domain. HTTPS is Vercel's. `.health` is run by GoDaddy Registry (checked with IANA on Nov 7), so it counts for that prize |
 | Database | **Tiger Data** (Tiger Cloud), service `amble` | Postgres with TimescaleDB, AWS `us-east-1` (next to Vercel), 0.5 CPU, development tier, paid by trial credits (about 30 days from Nov 7). `location_pings` is a hypertable with 30-day retention |
 | Login | **Auth0**, tenant `dev-nvabg6b64ww053zt` (US), Regular Web App `Amble` | Callback `https://amble.health/auth/callback`, logout and web origin `https://amble.health`, plus `localhost:3000` for local tests. Email/password and Google are on |
 | AI | **Claude Haiku 5.5** on Danny's Anthropic key, for the demo too | Decided Nov 7: no Gemini, and no Gemini prize. The Gemini code stays but is unused. Claude judges video proof from three still frames |
