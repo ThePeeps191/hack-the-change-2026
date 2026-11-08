@@ -46,7 +46,8 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
     res = await fetch(path, {
       // A hung request on bad signal fails instead of spinning forever, so the
       // screen can say so. Uploads get longer.
-      signal: AbortSignal.timeout(isForm ? 60_000 : 20_000),
+      // (Older phones lack AbortSignal.timeout; they just wait, as before.)
+      signal: typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(isForm ? 60_000 : 20_000) : undefined,
       ...init,
       headers: {
         ...(isForm || !init?.body
