@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import type { Zone } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { Skeleton } from "@/components/ui/card";
 import { InkFlag, inkFlagSvg } from "@/components/ui/ink";
 import type { GlobeMarker } from "@/components/map/globe-map";
@@ -63,8 +64,9 @@ export function ClaimScreen() {
 
   return (
     <AppShell>
+      <Split aside={
       <motion.div
-        className="relative overflow-hidden rounded-b-[36px] shadow-card"
+        className="split-fill relative overflow-hidden rounded-b-[36px] shadow-card lg:rounded-[32px]"
         initial={false}
         animate={{ height: zone ? "46dvh" : "60dvh" }}
         transition={{ type: "spring", stiffness: 260, damping: 34 }}
@@ -85,8 +87,8 @@ export function ClaimScreen() {
           )}
         </div>
       </motion.div>
-
-      <div className="space-y-4 px-4 pt-5">
+      }>
+      <div className="space-y-4 px-4 pt-5 lg:pt-0">
         {!game && error ? (
           <NoGame onStarted={() => setStarted((n) => n + 1)} />
         ) : !game ? (
@@ -166,6 +168,7 @@ export function ClaimScreen() {
           </>
         )}
       </div>
+      </Split>
     </AppShell>
   );
 }

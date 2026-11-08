@@ -47,7 +47,7 @@ This is the main demo. Each step names the function that does it.
 9. **Finishing.** `settle` in `src/server/runs.ts` marks the run complete once everyone's proof is approved, and works out how far each person walked from their own pings.
 10. **Recap.** `getRecap` in `src/server/recaps.ts` asks the AI for a two-line story once and keeps it. It shows your own route, never your partner's. Then you can choose to stay in touch, which only connects you if both say yes (`stayInTouch` in `src/server/people.ts`).
 
-**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds, you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
+**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds (25 seconds if you signed in with a real account, so two team phones that tap a little apart still find each other; `botWaitMs`), you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
 
 ## No background workers: why, and how things still move
 
@@ -119,6 +119,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - `src/app/` holds the pages, one folder per URL. Each page just renders a screen from `src/features/`.
 - `src/components/ui/` holds the shared pieces: the app shell and bottom nav, buttons, cards, the sheet, the odometer numbers and the hero.
 - `src/app/globals.css` holds the design tokens: colours for light and dark mode, radii and fonts. Screens use token names like `text-ink-muted`, not raw colours, so everything looks like one app.
+- Filled buttons get a tactile look from the `.tb` classes at the end of `globals.css`: one element with two background layers, a soft gradient face inside and a lighter-to-darker 1px shell showing through a transparent border, plus a thin white highlight on top. Pressing swaps in a flat, slightly darker face with a faint inner shadow. `buttonClass` in `button.tsx` adds them, so screens never style a button by hand.
 - Motion uses the `motion` library and respects "reduce motion". The maps are `maplibre-gl`.
 
 ## Deploying

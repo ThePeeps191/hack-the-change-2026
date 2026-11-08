@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { tick } from "@/lib/feedback";
 import { useGoFree } from "@/features/matching/use-go-free";
+import { APP_NAME } from "@/lib/config";
 import { CompassButton } from "./compass-button";
 
 const side = [
@@ -14,18 +15,50 @@ const side = [
   { href: "/me", label: "You", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.8 3.7-6 7.5-6s6.7 2.2 7.5 6" },
 ] as const;
 
-// Phone-first column, centred on wide screens. The bottom is a quiet row of
-// five icons: four places, and the main action in the middle.
+const isActive = (href: string, path: string) =>
+  href === "/" ? path === "/" : path.startsWith(href) || (href === "/crew" && path.startsWith("/claim"));
+
+// Phone-first column. The bottom is a quiet row of five icons: four places,
+// and the main action in the middle. From 1024px up the four tab pages get the
+// width: the bottom row becomes a rail down the left, and each page lays its
+// picture and list side by side (see Split). Pages without the nav, like a
+// quest or the login, stay one centred column: they're a single step.
 export function AppShell({ children, nav = true }: { children: ReactNode; nav?: boolean }) {
   const path = usePathname();
   const { go, busy } = useGoFree();
   return (
-    <div className="grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas">
-      <div className={`flex flex-1 flex-col ${nav ? "pb-24" : ""}`}>{children}</div>
+    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "lg:max-w-none lg:pl-[232px]" : ""}`}>
+      <div className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</div>
+      {nav && (
+        <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
+          <Hand className="px-3 text-[38px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
+          <ul className="mt-8 flex flex-col gap-1">
+            {side.map((t) => t && (
+              <li key={t.href}>
+                <Link
+                  href={t.href}
+                  aria-current={isActive(t.href, path) ? "page" : undefined}
+                  className={`flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isActive(t.href, path) ? "font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
+                >
+                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d={t.icon} />
+                  </svg>
+                  {t.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {/* The main action, with its words spelled out since there's room. */}
+          <div className="mt-auto flex items-center gap-2.5 px-1">
+            <CompassButton onClick={go} disabled={busy} label="I'm free: find someone nearby" size={52} />
+            <span className="text-[13px] leading-snug whitespace-nowrap text-ink-muted"><span className="block text-[15px] font-semibold text-ink">I&apos;m free</span>find someone nearby</span>
+          </div>
+        </nav>
+      )}
       {nav && (
         <nav
           aria-label="main"
-          className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-canvas from-55% to-transparent pt-6 pb-[max(10px,env(safe-area-inset-bottom))]"
+          className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-canvas from-55% to-transparent pt-6 pb-[max(10px,env(safe-area-inset-bottom))] lg:hidden"
         >
           <ul className="flex items-center justify-around px-4">
             {side.map((t, i) => {
@@ -36,7 +69,7 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
                   </li>
                 );
               }
-              const active = t.href === "/" ? path === "/" : path.startsWith(t.href) || (t.href === "/crew" && path.startsWith("/claim"));
+              const active = isActive(t.href, path);
               return (
                 <li key={i}>
                   <Link

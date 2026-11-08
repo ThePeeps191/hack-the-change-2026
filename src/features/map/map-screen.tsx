@@ -8,6 +8,7 @@ import { tick } from "@/lib/feedback";
 import { getPosition } from "@/lib/geo";
 import { CAMPUS_CENTER } from "@/lib/config";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
@@ -129,13 +130,14 @@ export function MapScreen() {
 
   return (
     <AppShell>
-      <motion.header {...behind} className="px-5 pt-[max(18px,env(safe-area-inset-top))] pb-3">
+      <Split aside={<>
+      <motion.header {...behind} className="px-5 lg:px-1 pt-[max(18px,env(safe-area-inset-top))] pb-3">
         <Hand as="h1" className="text-[36px] leading-none font-bold">around you</Hand>
         <p className="mt-1 text-[14px] text-ink-muted">Drag to look around. Tap a pin to see what&apos;s there.</p>
       </motion.header>
 
       {/* The map keeps its slot in the page so nothing jumps when it opens up. */}
-      <div className="relative mx-4 h-[50dvh] min-h-[320px]">
+      <div className="split-fill relative mx-4 h-[50dvh] min-h-[320px] lg:mx-0">
         <AnimatePresence>
           {expanded && (
             <motion.button
@@ -184,7 +186,8 @@ export function MapScreen() {
         </motion.div>
       </div>
 
-      <motion.section {...behind} className="px-4 pt-4" aria-label="Quests on the map">
+      </>}>
+      <motion.section {...behind} className="px-4 pt-4 lg:pt-[92px]" aria-label="Quests on the map">
         <Segmented<Filter>
           label="Show"
           value={filter}
@@ -281,6 +284,7 @@ export function MapScreen() {
                 )}
         </div>
       </motion.section>
+      </Split>
       <QuestSheet quest={open} onClose={() => setOpen(null)} />
     </AppShell>
   );
