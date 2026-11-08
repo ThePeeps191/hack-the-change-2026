@@ -40,8 +40,8 @@ function LookingGlass() {
   );
 }
 
-// `demo` (DEMO_MODE) adds a quiet "Approve by hand" for when the AI gets it
-// wrong on stage.
+// `demo` ("Try the demo" guests only) adds a quiet "Count it anyway" for when
+// the AI gets it wrong.
 export function ProofScreen({ demo = false }: { demo?: boolean }) {
   const { runId } = useParams<{ runId: string }>();
   const forceReject = useSearchParams().get("mock") === "reject";
@@ -69,7 +69,16 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
     const v = r.members[0]?.verdict;
     return !!v && v.status !== "pending";
   };
-  const { data: polled } = usePoll(() => api.run(runId), { enabled: step === "checking", ms: 1200, until: settled });
+  // Each send is a new round, so a rejection left over from the last try never
+  // flashes up while the new proof is being checked.
+  const [round, setRound] = useState(0);
+  const { data: polledRound } = usePoll(() => api.run(runId).then((r) => ({ r, round })), {
+    enabled: step === "checking",
+    ms: 1200,
+    until: (d) => settled(d.r),
+    key: round,
+  });
+  const polled = polledRound?.round === round ? polledRound.r : undefined;
   const polledVerdict = step === "checking" && polled && settled(polled) ? polled.members[0].verdict : null;
   const shown = polledVerdict ?? verdict;
   const view: Step = polledVerdict ? (polledVerdict.status as Step) : step;
@@ -89,6 +98,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
 
   async function submit() {
     if (!run) return;
+    setRound((n) => n + 1);
     setStep("sending");
     setError(null);
     try {
@@ -159,7 +169,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
               <path d="M14.5 5.5L8 12l6.5 6.5" />
             </svg>
           </Link>
-          <h1 className="text-[15px] font-medium text-white/90">our proof</h1>
+          <h1 className="text-[15px] font-medium text-white/90">{run && run.members.length > 1 ? "our proof" : "your proof"}</h1>
           <span className="w-11" />
         </header>
 
@@ -296,7 +306,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
           )}
           {demo && (view === "rejected" || view === "checking") && (
             <button onClick={approveByHand} className="min-h-12 px-4 text-[13px] font-medium text-white/45 hover:text-white">
-              Approve by hand
+              Count it anyway (demo)
             </button>
           )}
         </div>

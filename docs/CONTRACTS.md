@@ -125,7 +125,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/runs/:id/leave` | Leave a quest with someone new without reporting them. Ends it for both | `204` |
 | `POST /api/runs/:id/hint` | `{ hint }`: "how to spot me" on an active quest with someone new, up to 80 characters; empty clears it. Shown to the partner as `RunMember.hint` | `204` |
 | `POST /api/runs/:id/finish` | Crew quest only, once your proof is approved: finish now instead of waiting for the crew. A crew run otherwise stays open until 2+ people are all done or time runs out | `QuestRun` |
-| `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve your proof by hand, pending or rejected (the proof screen shows "Approve by hand"). Coins are still paid once | `{ approved }` |
+| `POST /api/runs/:id/approve` | `DEMO_MODE` "Try the demo" guests only (404 for real accounts): count your own latest proof, pending or rejected (the proof screen shows "Count it anyway (demo)"). Coins are still paid once | `{ approved }` |
 | `GET /api/media/:id` | Proof media, for people on that quest | the file |
 | `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
 | `GET /api/runs/:id/recap` | Recap for a finished run | `Recap` |

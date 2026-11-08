@@ -64,6 +64,14 @@ export function makeDemoCookie(name: string) {
   return `${payload}.${sign(payload)}`;
 }
 
+// "Try the demo" guests (and local mock users when DEMO_MODE is on) get the
+// demo-only extras, like "Count it anyway". Real accounts never do.
+export async function isDemoGuest() {
+  if (!DEMO_MODE) return false;
+  if (AUTH_MODE === "mock") return true;
+  return readDemoCookie((await cookies()).get(DEMO_COOKIE)?.value) !== null;
+}
+
 export const demoSubFrom = (cookie: string) => `demo|${readDemoCookie(cookie)!.id}`;
 
 function readDemoCookie(value: string | undefined): { id: string; name: string } | null {
