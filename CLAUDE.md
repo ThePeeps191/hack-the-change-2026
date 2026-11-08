@@ -59,7 +59,7 @@ If the session started with a random name, rename the branch anyway. The folder 
 
 **3. See what's in flight, then sync.** Run `scripts/wip.sh` and `gh pr list` so you don't duplicate or collide with someone's work, then `git fetch origin && git merge origin/main`, and `bun install` if there's a `package.json`. If you haven't read `docs/RUNBOOK.md` in this session, read it now, even if your session started before it existed.
 
-**4. Commit as you go and push each time.** Small working steps, short messages. Your first commit adds `docs/wip/<branch>.md`, saying who you are, what you're building and which files you'll touch (format in `docs/wip/README.md`). Keep its status line current, and delete the file in your last commit before merging. After your first commit, open a draft PR so everyone can see what you're on:
+**4. Commit as you go and push each time.** Small working steps, short messages. Never add a `Co-authored-by` line for Claude or any AI to a commit, squash message or PR body: GitHub lists it as a contributor. `.claude/settings.json` turns it off; if your session started before that, leave it out by hand. Your first commit adds `docs/wip/<branch>.md`, saying who you are, what you're building and which files you'll touch (format in `docs/wip/README.md`). Keep its status line current, and delete the file in your last commit before merging. After your first commit, open a draft PR so everyone can see what you're on:
 
 ```sh
 git push -u origin HEAD
