@@ -24,31 +24,39 @@
   <sub>Watch the demo video</sub>
 </p>
 
-Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. For example, one quest at the Foothills Athletic Park is "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal." All quests were written by hand, since AI doesn't know what's actually at a place. It wouldn't know there are foosball tables in the UCalgary engineering building, for example.
+Amble gives strangers short challenges to do together.
 
-You can also start a crew with your friends and compete with other crews to claim spots around campus.
+- Tap "I'm free", get paired with someone nearby, and meet at a public spot.
+- One quest at Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
+- We wrote every quest by hand, at real places around UCalgary and Calgary. AI wouldn't know there are foosball tables in the UCalgary engineering building.
+- Start a crew with friends and compete with other crews to claim spots around campus.
 
 ## Try it
 
-Open [amble.health](https://amble.health) on two phones and tap "Try the demo" on each. You don't need an account. Tap "I'm free" on both and you'll get matched. On your own, you might get paired with Priya, our practice partner, or Amble will tell you nobody's free yet and give you a link to send to someone.
-
-Amble works on all devices, including iOS, Android, and PC. In Chrome on Android, you can also install it like an app.
+- Open [amble.health](https://amble.health) on two phones and tap "Try the demo" on each. You don't need an account.
+- Tap "I'm free" on both to get matched.
+- On one phone, you might get paired with Priya, our practice partner. Otherwise, Amble says nobody's free yet and gives you a link to send to someone.
+- Amble works on iOS, Android and PC. In Chrome on Android, you can install it like an app.
 
 ## Why we built it
 
-23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)). In Calgary it's 26% of 18 to 34 year olds ([City of Calgary, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf)). And only 46% of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021-eng.htm)). We wanted one app that goes after all of these problems.
-
-Making a friend usually means planning a coffee and making small talk, which is the hard part for newcomers, people living alone and anyone shy. A shared challenge gives you something to do instead.
-
-We were inspired by AR games like Pokemon Go, and the challenges especially by the game show Jet Lag: The Game, which is full of collaborative challenges tied to real places.
+- 23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)).
+- In Calgary, it's 26% of 18 to 34 year olds ([City of Calgary, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf)).
+- Only 46% of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021-eng.htm)).
+- Making a friend usually means planning a coffee and making small talk, which is hard for newcomers, people living alone and anyone shy. A shared challenge gives you something to do.
+- Our inspiration was AR games like Pokemon Go and the game show Jet Lag: The Game, which is full of collaborative challenges tied to real places.
 
 ## How a quest works
 
-Tap "I'm free" and Amble looks for someone nearby. You both get the same quest at a public place and meet there, never at each other's location, and your location is deleted the moment you're matched. You only see each other's first name once you both say yes, and during the quest, one tap opens 911 and Campus Security or lets you leave. If nobody's around, you can send the quest to someone you're with by link or AirDrop.
-
-Amble picks quests that suit you both. It goes for step-free places first, shorter quests if you want an easier pace, and side-by-side quests if you'd rather not chat.
-
-When you've done it, you send a photo or short video and an AI model checks it against the quest. If it passes, you get coins. Then you see a short recap of what you did, and you can choose to stay in touch.
+- Tap "I'm free" and Amble looks for someone nearby.
+- You both get the same quest and meet at a public place, never at each other's location.
+- Your location is deleted the moment you're matched.
+- You only see each other's first name once you both say yes.
+- During the quest, one tap opens 911 and Campus Security or lets you leave.
+- When you finish, send a photo or short video. An AI model checks it against the quest, and a pass earns coins.
+- You then see a short recap and can choose to stay in touch.
+- If nobody's around, send the quest to someone you're with by link or AirDrop.
+- Amble tries step-free places first, shorter quests if you want an easier pace, and side-by-side quests if you'd rather not chat.
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball and says what it can see" width="250">
@@ -60,9 +68,12 @@ When you've done it, you send a photo or short video and an AI model checks it a
 
 ## Crews and Claim
 
-Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, like "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
-
-The You tab keeps your own numbers and never ranks you against anyone. It shows your active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest. The app is built for screen readers and respects Reduce Motion.
+- Crews share quests and earn coins toward a weekly board.
+- In Claim, two crews compete for spots around campus.
+- Each spot has a challenge, like "Hold a plank for as long as possible and record it. Longer plank wins."
+- Finish the challenge to take an empty spot, or beat the holding crew's score to steal one.
+- The You tab never ranks you against anyone. It shows your active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest.
+- The app is built for screen readers and respects Reduce Motion.
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board, with a podium of the top three crews and then the rest" width="250">
@@ -90,21 +101,17 @@ The You tab keeps your own numbers and never ranks you against anyone. It shows 
 
 ## How we built it
 
-It's one Next.js app on Vercel. Auth0 handles sign-in, and Postgres on Tiger Data stores everything, with location pings in a TimescaleDB hypertable. We wrote every quest by hand, at real places around UCalgary and Calgary. Claude Haiku checks the proof and writes the recaps, and if it's slow or down, your quest still counts. We used Claude Code as a coding assistant.
-
-There are no background workers. The game moves forward whenever a phone checks in. Every rule runs on the server in a database transaction, so two phones can't race each other into a bad state, and an end-to-end test plays the whole product as a dozen simulated people. If GPS is denied, Amble falls back to the middle of campus, and a dropped signal doesn't lose your photo.
-
-It's cheap to run. The AI costs about $1 per 1,000 quests and there are no servers of our own to look after. The quests also use places the city already has.
-
-Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
-
-To run it yourself, see [DEVELOPMENT](docs/DEVELOPMENT.md).
-
-## What's next
-
-We'd start on one campus, where people are new and close together, like UCalgary during orientation week. Once enough people are free at the same time for matches to happen quickly, we'd open it up to the rest of Calgary.
-
-All our challenges so far were written by us, so we also want to support user-generated challenges for Quests and Claim. That would let Amble reach other cities. We also want to add new game modes.
+- One Next.js app on Vercel, with no background workers. The game moves forward whenever a phone checks in.
+- Auth0 handles sign-in.
+- Postgres on Tiger Data stores everything, with location pings in a TimescaleDB hypertable.
+- Claude Haiku checks the proof and writes the recaps. If it's slow or down, your quest still counts.
+- Every rule runs on the server in a database transaction, so two phones can't race each other into a bad state.
+- An end-to-end test plays the whole product as a dozen simulated people.
+- If GPS is denied, Amble falls back to the middle of campus. A dropped signal doesn't lose your photo.
+- The AI costs about $1 per 1,000 quests, and we have no servers of our own to look after.
+- We used Claude Code as a coding assistant.
+- Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
+- To run it yourself, see [DEVELOPMENT](docs/DEVELOPMENT.md).
 
 ## Team
 
