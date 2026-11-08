@@ -73,8 +73,13 @@ export async function syncStarterQuests(query: Query) {
   const quests = files.flatMap((f) => JSON.parse(readFileSync(path.join(QUESTS_DIR, f), "utf8")) as StarterQuest[]);
   for (const q of quests) await upsertQuest(query, q, true);
 
-  const claim = JSON.parse(readFileSync(CLAIM_QUESTS_FILE, "utf8")) as StarterQuest[];
-  for (const q of claim) await upsertQuest(query, q, false);
+  const claim = JSON.parse(readFileSync(CLAIM_QUESTS_FILE, "utf8")) as (StarterQuest & { zone: { name: string; lat: number; lng: number; radius_m: number } })[];
+  for (const q of claim) {
+    await upsertQuest(query, q, false);
+    // A spot moved or renamed in the file moves in games already running too.
+    // Its score unit stays put there, since the best score was measured in it.
+    await query("update zones set name = $2, lat = $3, lng = $4, radius_m = $5 where quest_id = $1", [q.id, q.zone.name, q.zone.lat, q.zone.lng, q.zone.radius_m]);
+  }
 
   // Never unlist everything because a file came back empty.
   if (quests.length > 0) {
