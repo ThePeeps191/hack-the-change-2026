@@ -14,7 +14,7 @@ import type { GlobeMarker } from "@/components/map/globe-map";
 import { NoGame, ZoneActions } from "./claim-actions";
 import { isAnywhere } from "./anywhere";
 import { ApiError } from "@/lib/api";
-import { unitLabel } from "@/lib/claim-bounds";
+import { resultLabel, unitLabel } from "@/lib/claim-bounds";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
@@ -38,7 +38,7 @@ const hues = { ours: 222, theirs: 22, free: undefined } as const;
 function best(z: Zone) {
   if (z.best_result == null) return null;
   if (z.result_unit === "year") return `from ${z.best_result}`;
-  return `${z.best_result} ${unitLabel(z.result_unit)}`.trim();
+  return resultLabel(z.best_result, z.result_unit);
 }
 
 export function ClaimScreen() {

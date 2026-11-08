@@ -15,4 +15,10 @@ export function unitLabel(unit: string | null | undefined) {
   return off ? `dollars off ${off[1]}` : (unit ?? "");
 }
 
+// A zone's best result as a short phrase: "$4 off $20.26", "38 seconds".
+export function resultLabel(n: number, unit: string | null | undefined) {
+  const off = unit?.match(/^\|price - (\$[\d.]+)\|$/);
+  return off ? `$${n} off ${off[1]}` : `${n} ${unit ?? ""}`.trim();
+}
+
 export const claimBounds = (unit: string | null | undefined) => (unit && BOUNDS[unit]) || ANY;
