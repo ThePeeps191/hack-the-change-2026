@@ -107,8 +107,8 @@ export function JoinScreen() {
           : "A crew is a few friends who get outside together, wherever each of you is. Type the code a friend sent you.";
 
   return (
-    <AppShell nav={false}>
-      <Hero fill className="min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
+    <AppShell nav={false} wide>
+      <Hero fill className="sky-stage min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
         <Stars className="opacity-50" />
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
         <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">{heading}</Hand>

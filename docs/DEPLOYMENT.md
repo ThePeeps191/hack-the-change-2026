@@ -10,7 +10,7 @@ The live app is **https://amble.health**. This page lists every outside service 
 | Domain | **amble.health**, bought by a friend, DNS at **Porkbun** | `A @ 216.198.79.1` and `CNAME www` to Vercel. `www` forwards to the bare domain. HTTPS is Vercel's. Not a GoDaddy Registry domain |
 | Database | **Tiger Data** (Tiger Cloud), service `amble` | Postgres with TimescaleDB, AWS `us-east-1` (next to Vercel), 0.5 CPU, development tier, paid by trial credits (about 30 days from Nov 7). `location_pings` is a hypertable with 30-day retention |
 | Login | **Auth0**, tenant `dev-nvabg6b64ww053zt` (US), Regular Web App `Amble` | Callback `https://amble.health/auth/callback`, logout and web origin `https://amble.health`, plus `localhost:3000` for local tests. Email/password and Google are on |
-| AI | **Claude Haiku 5.5** on Danny's Anthropic key now; **Gemini** for the demo | Swap: add `GEMINI_API_KEY` and set `AI_PROVIDER=gemini` in Vercel, then redeploy. Only Gemini watches video proof; on Claude, video is checked by place and time only |
+| AI | **Claude Haiku 5.5** on Danny's Anthropic key, for the demo too | Decided Nov 7: no Gemini, and no Gemini prize. The Gemini code stays but is unused. Claude judges video proof from three still frames |
 
 ## Environment variables in Vercel (Production)
 
@@ -26,8 +26,8 @@ The live app is **https://amble.health**. This page lists every outside service 
 | `AUTH0_CLIENT_SECRET`, `AUTH0_SECRET` | secret | |
 | `APP_BASE_URL` | `https://amble.health` | Must match the Auth0 URLs |
 | `PGLITE_DIR` | `/tmp/pglite/db` | Leftover from before Tiger; ignored while `DATABASE_URL` is set |
-| `AI_PROVIDER` | `claude` | Set to `gemini` for the swap |
-| `GEMINI_API_KEY` | not set yet | For the Gemini swap |
+| `AI_PROVIDER` | `claude` | Keeps the AI on Claude even if a Gemini key is ever added |
+| `GEMINI_API_KEY` | not set | Not used: we dropped Gemini |
 
 Changing a variable does nothing until a redeploy (Vercel → Deployments → Redeploy, which asks for Danny's 2FA), or until the next merge to `main`.
 

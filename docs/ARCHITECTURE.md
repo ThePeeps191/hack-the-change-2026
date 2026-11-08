@@ -58,7 +58,7 @@ If you're changing behaviour, you almost always want `src/server/`. Routes stay 
 | `AUTH_MODE=live` | Real Auth0, via `src/proxy.ts` and `currentUser` in `auth.ts` |
 | `AI_MODE=mock` (default) | Starter quests and a 2-second fake verdict. No credits used. (`GEMINI_MODE` is the old name and still works) |
 | `AI_MODE=live`, `AI_PROVIDER=claude` | Claude Haiku 5.5 (`ai-claude.ts`). Quests at real places: OpenStreetMap when it answers, our curated campus places when it doesn't. Photos are resized to 1568 px. Video proof is checked by place and time only |
-| `AI_MODE=live`, `AI_PROVIDER=gemini` | Gemini with Maps and Search grounding (`gemini-live.ts`), including video. The demo runs on this |
+| `AI_MODE=live`, `AI_PROVIDER=gemini` | Gemini with Maps and Search grounding (`gemini-live.ts`), including video. Not used: the demo runs Claude and we're not entering the Gemini prize |
 | Keys | `ANTHROPIC_API_KEY` and `GEMINI_API_KEY` come from `.env` first, then the shell (`secrets.ts`). `/api/health` reports which, never the key |
 | `DEMO_MODE=1` | A "try the demo" login, the bot partner for everyone, no daylight or location rules, `POST /api/runs/:id/approve` |
 

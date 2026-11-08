@@ -104,8 +104,8 @@ export function MatchScreen() {
   const puff = (w: number, h: number) => ({ width: w, height: h, left: (BOX.w - w) / 2, top: (BOX.h - h) / 2 });
 
   return (
-    <AppShell nav={false}>
-      <Hero fill className="min-h-dvh">
+    <AppShell nav={false} wide>
+      <Hero fill className="sky-stage min-h-dvh">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
           center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : "finding someone"}
@@ -183,7 +183,7 @@ export function MatchScreen() {
           </motion.div>
         </AnimatePresence>
 
-      <div className="flex flex-1 flex-col px-4 pt-6">
+      <div className="flex flex-1 flex-col px-4 pt-6 lg:mx-auto lg:w-full lg:max-w-[480px] lg:flex-none">
         {approx && state === "searching" && <p className="px-6 text-center text-[14px] text-on-sky/95">We couldn&apos;t get your location, so we&apos;re using the middle of campus.</p>}
         {error && <p className="px-6 pt-1 text-center text-[14px] text-on-sky/95">Signal&apos;s patchy. We&apos;ll keep trying.</p>}
 

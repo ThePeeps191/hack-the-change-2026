@@ -121,6 +121,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - `src/components/ui/` holds the shared pieces: the app shell and bottom nav, buttons, cards, the sheet, the odometer numbers and the hero.
 - `src/app/globals.css` holds the design tokens: colours for light and dark mode, radii and fonts. Screens use token names like `text-ink-muted`, not raw colours, so everything looks like one app.
 - Filled buttons get a tactile look from the `.tb` classes at the end of `globals.css`: one element with two background layers, a soft gradient face inside and a lighter-to-darker 1px shell showing through a transparent border, plus a thin white highlight on top. Pressing swaps in a flat, slightly darker face with a faint inner shadow. `buttonClass` in `button.tsx` adds them, so screens never style a button by hand.
+- It's phone-first, but a computer gets the whole screen from 1024px up. The four tab pages put a rail on the left. Most pages use `Split` (`split.tsx`): the sky or map stays put on the left as a rounded card, and the content scrolls on the right. A one-step page passes `wide` to `AppShell` to opt in. The pages that are all sky (finding someone, joining a crew, not found) stretch the sky across the screen with `.sky-stage`, which gathers the content in the middle. The login puts the words beside the glass panes, and the proof screen puts the photo beside the verdict. On a phone, none of this applies.
 - Motion uses the `motion` library and respects "reduce motion". The maps are `maplibre-gl`.
 
 ## Deploying

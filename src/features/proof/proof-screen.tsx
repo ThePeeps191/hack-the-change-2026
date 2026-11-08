@@ -150,9 +150,10 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
     view === "approved" ? "" : view === "rejected" ? "grayscale(1) brightness(.55)" : looking && !scan ? "blur(14px) brightness(.6) saturate(.8)" : "";
 
   return (
-    <AppShell nav={false}>
-      <div className="dark-stage flex min-h-dvh flex-1 flex-col bg-[#0b0c0b] text-white">
-        <header className="flex h-14 items-center justify-between px-3 pt-[env(safe-area-inset-top)]">
+    <AppShell nav={false} wide>
+      {/* On a computer: the photo on the left, the words and buttons beside it. */}
+      <div className="dark-stage flex min-h-dvh flex-1 flex-col bg-[#0b0c0b] text-white lg:grid lg:grid-cols-[1fr_minmax(0,560px)_minmax(0,420px)_1fr] lg:grid-rows-[auto_1fr_auto_auto_auto_auto_auto_1fr] lg:gap-x-14">
+        <header className="flex h-14 items-center justify-between px-3 pt-[env(safe-area-inset-top)] lg:col-span-full lg:px-6">
           <Link href={`/quest/${runId}`} aria-label="Back to the quest" className="grid size-11 place-items-center rounded-full text-white/90 hover:bg-white/10">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M14.5 5.5L8 12l6.5 6.5" />
@@ -162,13 +163,13 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
           <span className="w-11" />
         </header>
 
-        <p className="px-6 pb-4 text-center text-[15px] leading-snug text-white/70">
+        <p className="px-6 pb-4 text-center text-[15px] leading-snug text-white/70 lg:col-start-3 lg:row-start-3 lg:text-[17px]">
           {run ? (kind === "gps" ? "Your walk is the proof. Just send it." : `One ${kind} for “${run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}”.`) : " "}
         </p>
 
         {/* The frame */}
         {/* Once the verdict is in, the frame shortens to square so the verdict and its button fit on a phone screen. */}
-        <div className={`relative mx-3 overflow-hidden rounded-[28px] bg-white/[0.06] transition-[aspect-ratio] duration-500 ${view === "approved" || view === "rejected" ? "aspect-square" : "aspect-[4/5]"}`}>
+        <div className={`relative mx-3 overflow-hidden rounded-[28px] bg-white/[0.06] transition-[aspect-ratio] duration-500 ${view === "approved" || view === "rejected" ? "aspect-square" : "aspect-[4/5]"} lg:col-start-2 lg:row-start-2 lg:row-end-9 lg:mx-0 lg:aspect-[4/5] lg:h-[min(78dvh,680px)] lg:self-center lg:justify-self-end`}>
           <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           {preview ? (
             <div
@@ -226,15 +227,15 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
           </AnimatePresence>
         </div>
 
-        {error && <p className="px-6 pt-4 text-center text-[14px] text-[#ffb4a3]" role="alert">{error}</p>}
-        {!run && !error && <p className="px-6 pt-4 text-center text-[14px] text-white/50">Loading the quest…</p>}
+        {error && <p className="px-6 pt-4 text-center text-[14px] text-[#ffb4a3] lg:col-start-3 lg:row-start-4" role="alert">{error}</p>}
+        {!run && !error && <p className="px-6 pt-4 text-center text-[14px] text-white/50 lg:col-start-3 lg:row-start-5">Loading the quest…</p>}
 
         {/* The verdict, rising from the bottom */}
         <AnimatePresence mode="wait">
           {(view === "approved" || view === "rejected") && shown && (
             <motion.div
               key={view}
-              className="px-6 pt-6 text-center"
+              className="px-6 pt-6 text-center lg:col-start-3 lg:row-start-6"
               initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ ...soft, delay: view === "approved" ? 0.5 : 0.1 }}
@@ -255,7 +256,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
           )}
         </AnimatePresence>
 
-        <div className="mt-auto flex flex-col items-center gap-1 px-4 pt-6 pb-[max(24px,env(safe-area-inset-bottom))]">
+        <div className="mt-auto flex flex-col items-center gap-1 px-4 pt-6 pb-[max(24px,env(safe-area-inset-bottom))] lg:col-start-3 lg:row-start-7 lg:mt-0">
           {run && view === "capture" && (kind === "gps" || file) && (
             <>
               <button onClick={submit} className={buttonClass("onSky", "lg")}>

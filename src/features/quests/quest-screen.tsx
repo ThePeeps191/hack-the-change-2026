@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { RunMember } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
+import { Split } from "@/components/ui/split";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
@@ -47,14 +48,17 @@ export function QuestScreen() {
 
   if (!run) {
     return (
-      <AppShell nav={false}>
+      <AppShell nav={false} wide>
+        <Split fill aside={
         <Hero className="pb-10">
           <HeroBar left={<HeroIcon href="/" label="Back" d={back} />} center="your quest" />
           <div className="grid h-[150px] place-items-center">
             {error ? <p className="px-8 text-center text-[15px] text-on-sky/90">We can&apos;t find this quest. It may have ended.</p> : <Skeleton className="h-16 w-28 rounded-2xl opacity-40" />}
           </div>
         </Hero>
-        {!error && <div className="-mt-8 px-4"><Skeleton className="h-64 rounded-[28px]" /></div>}
+        }>
+        {!error && <div className="-mt-8 px-4 lg:mt-0"><Skeleton className="h-64 rounded-[28px]" /></div>}
+        </Split>
       </AppShell>
     );
   }
@@ -68,8 +72,9 @@ export function QuestScreen() {
   const mapsUrl = q.lat != null && q.lng != null ? `https://www.google.com/maps/dir/?api=1&destination=${q.lat},${q.lng}&travelmode=walking` : null;
 
   return (
-    <AppShell nav={false}>
+    <AppShell nav={false} wide>
       <RunTracker runId={run.id} active={active} />
+      <Split fill aside={
       <Hero className="pb-14">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d={back} />}
@@ -96,9 +101,10 @@ export function QuestScreen() {
           )}
         </div>
       </Hero>
+      }>
 
       <motion.div
-        className="relative z-10 -mt-10 px-4"
+        className="relative z-10 -mt-10 px-4 lg:mt-0"
         initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
@@ -169,7 +175,7 @@ export function QuestScreen() {
       {/* The main action stays in reach at the bottom of the screen, on a band
           of page colour that fades out above it, so whatever scrolls under it
           dissolves instead of being cut off. */}
-      <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-65% to-transparent px-4 pt-14 pb-[max(16px,env(safe-area-inset-bottom))]">
+      <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-65% to-transparent px-4 pt-14 pb-[max(16px,env(safe-area-inset-bottom))] lg:static lg:bg-none lg:pt-6">
         {run.status === "completed" && run.mode === "claim" ? (
           // A Claim challenge isn't done until the result is in, so that comes first.
           <ButtonLink size="lg" href={`/claim?zone=${run.zone_id}`}>Send your result</ButtonLink>
@@ -189,6 +195,7 @@ export function QuestScreen() {
         )}
         {active && run.mode === "pair" && partner && <ReportSheet runId={run.id} reportedId={partner.user_id} />}
       </div>
+      </Split>
     </AppShell>
   );
 }

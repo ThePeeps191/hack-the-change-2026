@@ -22,12 +22,14 @@ const isActive = (href: string, path: string) =>
 // and the main action in the middle. From 1024px up the four tab pages get the
 // width: the bottom row becomes a rail down the left, and each page lays its
 // picture and list side by side (see Split). Pages without the nav, like a
-// quest or the login, stay one centred column: they're a single step.
-export function AppShell({ children, nav = true }: { children: ReactNode; nav?: boolean }) {
+// quest or the login, are a single step: `wide` lets one of them use the whole
+// screen on a computer, and the page lays itself out (with Split, or a sky
+// that fills the screen).
+export function AppShell({ children, nav = true, wide = false }: { children: ReactNode; nav?: boolean; wide?: boolean }) {
   const path = usePathname();
   const { go, busy } = useGoFree();
   return (
-    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "lg:max-w-none lg:pl-[232px]" : ""}`}>
+    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "lg:max-w-none lg:pl-[232px]" : wide ? "lg:max-w-none" : ""}`}>
       <div className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</div>
       {nav && (
         <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
