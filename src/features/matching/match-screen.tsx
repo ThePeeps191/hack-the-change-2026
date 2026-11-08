@@ -33,6 +33,14 @@ const HALF_THEM: Puff[] = [[150, 72, 21, 36], [72, 72, 71, 22]];
 const CROWN_YOU: Puff = [116, 116, -1, -18];
 const CROWN_THEM: Puff = [100, 100, 15, -12];
 const BOX = { w: 360, h: 220 };
+// Glass cloud: a translucent fill, a bright rim and highlight along the top,
+// a cool shade on the underside, and a soft drop shadow, all drawn on the
+// merged shape (so it reads as one body of cloud, not separate circles).
+const GLASS =
+  "inset 0 1.5px 0 rgba(255,255,255,.95), inset 0 14px 24px rgba(255,255,255,.85), inset 0 -20px 30px rgba(70,105,180,.34), inset 0 0 0 1px rgba(255,255,255,.55), 0 18px 40px rgba(13,40,90,.22)";
+// Each bump also gets its own soft light from the upper left, fading out
+// before its edge, so the top of the cloud looks billowed.
+const BILLOW = "radial-gradient(circle at 42% 32%, rgb(255 255 255 / .8), rgb(255 255 255 / .25) 38%, transparent 64%)";
 
 export function MatchScreen() {
   const router = useRouter();
@@ -114,22 +122,30 @@ export function MatchScreen() {
               <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />
             </>
           )}
-          <Liquid fill="#ffffff" blur={7} contrast={24} shadow="0 14px 36px rgba(13,40,90,.2)" className="h-[220px] w-[360px]">
+          <Liquid
+            fill="rgb(255 255 255 / .7)"
+            blur={7}
+            contrast={24}
+            waviness={2.5}
+            wavinessFreq={0.012}
+            shadow={GLASS}
+            className="h-[220px] w-[360px]"
+          >
             {HALF_YOU.map(([w, h, dx, dy], i) => (
               <Liquid.Item key={`y${i}`} x={you + dx} y={dy} transition="bouncy" delay={40 * i} className="absolute" style={puff(w, h)}>
-                <div className="size-full rounded-full" />
+                <div className="size-full rounded-full" style={{ background: BILLOW }} />
               </Liquid.Item>
             ))}
             {HALF_THEM.map(([w, h, dx, dy], i) => (
               <Liquid.Item key={`t${i}`} x={them + dx} y={dy} scale={alone ? 0.001 : 1} transition="bouncy" delay={120 + 40 * i} className="absolute" style={puff(w, h)}>
-                <div className="size-full rounded-full" />
+                <div className="size-full rounded-full" style={{ background: BILLOW }} />
               </Liquid.Item>
             ))}
             <Liquid.Item x={you + CROWN_YOU[2]} y={CROWN_YOU[3]} transition="bouncy" className="absolute" style={puff(CROWN_YOU[0], CROWN_YOU[1])}>
-              <div className="grid size-full place-items-center rounded-full pt-4 text-[18px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]">{state === "matched" ? "" : "you"}</div>
+              <div className="grid size-full place-items-center rounded-full pt-4 text-[18px] font-semibold text-[#173f86] [text-shadow:none]" style={{ background: BILLOW }}>{state === "matched" ? "" : "you"}</div>
             </Liquid.Item>
             <Liquid.Item x={them + CROWN_THEM[2]} y={CROWN_THEM[3]} scale={alone ? 0.001 : 1} transition="bouncy" delay={80} className="absolute" style={puff(CROWN_THEM[0], CROWN_THEM[1])}>
-              <div className="grid size-full place-items-center rounded-full pt-4 text-[20px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]">
+              <div className="grid size-full place-items-center rounded-full pt-4 text-[20px] font-semibold text-[#173f86] [text-shadow:none]" style={{ background: BILLOW }}>
                 {state === "found" || state === "waiting" ? "?" : ""}
               </div>
             </Liquid.Item>
@@ -137,7 +153,7 @@ export function MatchScreen() {
           <AnimatePresence>
             {state === "matched" && (
               <motion.span
-                className="pointer-events-none absolute text-[16px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]"
+                className="pointer-events-none absolute text-[17px] font-semibold text-[#173f86] [text-shadow:none]"
                 initial={{ opacity: 0, filter: "blur(6px)" }}
                 animate={{ opacity: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0 }}
