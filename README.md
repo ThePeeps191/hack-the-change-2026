@@ -19,6 +19,8 @@
 
 Amble gives strangers short, fun challenges to do together outside. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. One of ours, at the Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
 
+You can also start a crew with your friends and compete with other crews to claim spots around campus.
+
 ## Try it
 
 Open **[amble.health](https://amble.health)** on your phone and tap **Try the demo**. You don't need an account, a partner or GPS: a practice partner, Priya, matches with you and plays along. In Chrome on Android you can also install it like an app (⋮ → Install app).
