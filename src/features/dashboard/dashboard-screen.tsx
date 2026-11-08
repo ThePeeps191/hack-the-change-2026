@@ -93,7 +93,7 @@ export function DashboardScreen() {
       </Hero>
       }>
 
-      <div className="space-y-8 px-4 pt-7">
+      <div className="space-y-8 px-4 pt-7 lg:pt-0">
         {!d && <Skeleton className="h-40 rounded-[24px]" />}
 
         {d && (
