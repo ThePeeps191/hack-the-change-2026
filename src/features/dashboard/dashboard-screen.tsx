@@ -70,7 +70,7 @@ export function DashboardScreen() {
           {me ? `hi, ${me.display_name.split(" ")[0].toLowerCase()}` : " "}
         </Hand>
         <SunArc caption={<span className="text-[13px] font-medium text-on-sky/95">of {goal} active min this week</span>} progress={active / goal} className="mt-3 px-5">
-          <Odometer value={active} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
+          <Odometer value={active} delay={150} className="numeral text-[80px] leading-none" />
         </SunArc>
         <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/95">
           Canada&apos;s movement guidelines suggest {goal} a week.
@@ -106,7 +106,7 @@ export function DashboardScreen() {
           <Section id="mood" title="after a quest">
             <div className="rounded-[24px] bg-surface p-4 shadow-card">
               <p className="text-[16px] leading-snug">
-                You felt better after <span className="font-semibold">{mood.after_better} of {mood.checkins}</span> quests you checked in on.
+                You felt better after <span className="font-semibold">{mood.after_better} of {mood.checkins}</span> {mood.checkins === 1 ? "quest" : "quests"} you checked in on.
               </p>
               <div className="mt-3">
                 <Weather better={mood.after_better} total={mood.checkins} />

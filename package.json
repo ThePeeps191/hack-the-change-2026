@@ -20,6 +20,7 @@
     "@vis.gl/react-google-maps": "^1.10.2",
     "border-beam": "^1.4.1",
     "glicko2": "^1.2.4",
+    "img-fx": "0.5.1",
     "liquid-gooey": "^0.2.2",
     "maplibre-gl": "^6.16.0",
     "motion": "^14.10.1",
@@ -31,6 +32,7 @@
     "server-only": "^0.0.1",
     "sharp": "^0.35.5",
     "thinking-orbs": "^0.3.2",
+    "three": "0.170.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {

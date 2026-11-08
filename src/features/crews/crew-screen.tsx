@@ -73,7 +73,7 @@ export function CrewScreen() {
         ) : (
           <div className="flex flex-col items-center px-6 pt-1 text-center">
             <Hand as="h1" className="text-[38px] leading-none font-bold">{crew.name}</Hand>
-            <Odometer value={crew.coins} delay={150} className="mt-3 font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
+            <Odometer value={crew.coins} delay={150} className="numeral mt-3 text-[84px] leading-none" />
             <p className="mt-1 text-[14px] font-medium text-on-sky/95">
               coins all time
             </p>
@@ -141,7 +141,7 @@ export function CrewScreen() {
                       <span className="w-5 text-center text-[15px] font-semibold text-ink-faint tabular-nums">{e.rank}</span>
                       <Avatar name={e.name} size={36} ring={ours} />
                       <span className={`flex-1 truncate text-[16px] ${ours ? "font-semibold" : "font-medium"}`}>{e.name}{ours && <span className="ml-1.5 text-[13px] font-medium text-ink-faint">you</span>}</span>
-                      {e.delta ? <span className="rounded-full bg-[#fbefc9] px-2 py-0.5 text-[12px] font-semibold text-[#8a5d10] tabular-nums dark:bg-[#3a3016] dark:text-[#f4cf72]">+{e.delta}</span> : null}
+                      {e.delta ? <span className="text-[13px] font-semibold text-[#9a6a0e] tabular-nums dark:text-[#f4cf72]">+{e.delta}</span> : null}
                       <Odometer value={e.coins} delay={250 + i * 80} className="w-12 justify-end text-right text-[15px] font-semibold" />
                     </motion.li>
                   );
