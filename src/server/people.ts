@@ -2,7 +2,7 @@ import "server-only";
 import type { Connection, User } from "@/lib/contracts";
 import { one, query, transaction } from "@/lib/db";
 import { HttpError } from "@/lib/route";
-import { runForMember } from "./runs";
+import { endEarly, runForMember } from "./runs";
 
 export async function listConnections(user: User): Promise<Connection[]> {
   return query<Connection>(
@@ -39,9 +39,7 @@ export async function stayInTouch(user: User, runId: string) {
 // again. Crew and solo quests just run out on their own.
 export async function leaveRun(user: User, runId: string) {
   const run = await runForMember(user, runId);
-  if (run.mode === "pair" && run.status === "active") {
-    await query("update quest_runs set status = 'expired' where id = $1", [run.id]);
-  }
+  if (run.mode === "pair" && run.status === "active") await endEarly(run.id);
 }
 
 // A report ends the quest straight away and the two of you are never paired again.
@@ -55,8 +53,6 @@ export async function report(user: User, body: { reported_id?: string; run_id?: 
       "insert into reports (reporter_id, reported_id, run_id, reason) values ($1, $2, $3, $4)",
       [user.id, body.reported_id, body.run_id, body.reason!.trim().slice(0, 500)],
     );
-    if (run.mode === "pair" && run.status === "active") {
-      await query("update quest_runs set status = 'expired' where id = $1", [run.id]);
-    }
+    if (run.mode === "pair" && run.status === "active") await endEarly(run.id);
   });
 }
