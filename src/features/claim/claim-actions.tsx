@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
+import { chime, coins, knock } from "@/lib/feedback";
 import type { Game, Zone } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,9 @@ export function NoGame({ onStarted }: { onStarted: (game: Game) => void }) {
 // What you can do with the zone you tapped: take its challenge (or carry on
 // with it), or send your result once the proof is approved. The result box only
 // appears after the AI approves the photo, and the server checks that too.
-export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
+// onChanged re-reads the game straight away, so the flag on the map flips the
+// moment you take a zone instead of on the next poll.
+export function ZoneActions({ game, zone, onChanged }: { game: Game; zone: Zone; onChanged?: () => void }) {
   const router = useRouter();
   const [result, setResult] = useState("");
   const [busy, setBusy] = useState(false);
@@ -79,9 +82,22 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
     setBusy(true);
     setError(null);
     try {
+      const before = zone.held_by_team_id;
       const next = await api.attemptZone(game.id, zone.id, { run_id: zone.my_run_id!, result: Number(result) });
-      setOutcome(next.held_by_team_id === us?.id ? "It's yours. Nice work." : "Not enough to take it this time. Try again?");
+      const won = next.held_by_team_id === us?.id;
+      const rival = game.teams.find((t) => t.id === before && t.id !== us?.id);
+      setOutcome(
+        !won ? "Not enough to take it this time. Try again?"
+        : rival ? `Stolen from ${rival.name}! ${zone.name} is yours.`
+        : before === us?.id ? `New best. ${zone.name} stays yours.`
+        : `${zone.name} is yours. Nice work.`,
+      );
+      if (won) {
+        chime();
+        setTimeout(coins, 500);
+      } else knock();
       setResult("");
+      onChanged?.();
     } catch (e) {
       setError(message(e, "That didn't send. Try again?"));
     } finally {
