@@ -26,7 +26,7 @@ export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: strin
       <span className="pt-0.5"><GlyphTile quest={quest} /></span>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="name-serif pt-0.5 text-[17px] leading-snug text-pretty">
+          <h3 className="font-semibold pt-0.5 text-[17px] leading-snug text-pretty">
             {quest.title.charAt(0).toUpperCase() + quest.title.slice(1)}
           </h3>
           <span className="flex shrink-0 items-center gap-1 pt-1 text-[14px] font-semibold tabular-nums">
