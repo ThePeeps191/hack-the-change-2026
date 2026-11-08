@@ -109,6 +109,7 @@ export async function toRun(run: RunRow, viewerId: string): Promise<QuestRun> {
     ends_at: run.ends_at.toISOString(),
     members: list,
     zone_id: run.zone_id,
+    crew_id: run.crew_id,
   };
 }
 
@@ -175,9 +176,11 @@ export async function applyVerdict(submissionId: string, status: "approved" | "r
   if (sub) await settle(sub.run_id);
 }
 
-// A pair finishes when both have approved proof. A crew quest finishes when
-// everyone has, or when time runs out and at least one person did it. A Claim
-// challenge is a team effort, so one approval finishes it.
+// A pair finishes when both have approved proof. A crew quest stays open for
+// crewmates to join, so it finishes when at least two people are on it and all
+// of them have approved proof, when time runs out and someone did it, or when
+// someone taps "Finish now" (finishRun). A solo quest finishes on its own
+// approval. A Claim challenge is a team effort, so one approval finishes it.
 async function settle(runId: string): Promise<RunRow> {
   return transaction(async () => {
     const run = (await one<RunRow>("select * from quest_runs where id = $1 for update", [runId]))!;
@@ -188,20 +191,38 @@ async function settle(runId: string): Promise<RunRow> {
     const timeUp = Date.now() > run.ends_at.getTime();
     const closed = Date.now() > run.ends_at.getTime() + GRACE_MS;
 
-    const done =
-      (approved > 0 && approved === rows.length) ||
-      (run.mode === "claim" && approved > 0) ||
-      (run.mode === "crew" && timeUp && approved > 0);
+    const everyone = approved > 0 && approved === rows.length;
+    const crewRun = run.mode === "crew" && run.crew_id != null;
 
-    if (done) {
-      await recordDistances(run.id);
-      return (await one<RunRow>("update quest_runs set status = 'completed', completed_at = now() where id = $1 returning *", [run.id]))!;
-    }
+    const done =
+      (run.mode === "claim" && approved > 0) ||
+      (crewRun ? (everyone && rows.length >= 2) || (timeUp && approved > 0) : everyone);
+
+    if (done) return complete(run.id);
     if (closed && !pending) {
       return (await one<RunRow>("update quest_runs set status = 'expired' where id = $1 returning *", [run.id]))!;
     }
     return run;
   });
+}
+
+async function complete(runId: string) {
+  await recordDistances(runId);
+  return (await one<RunRow>("update quest_runs set status = 'completed', completed_at = now() where id = $1 returning *", [runId]))!;
+}
+
+// "Finish now" on a crew quest: your proof is in and you'd rather not wait for
+// the rest of the crew, so everyone who's done gets the recap now.
+export async function finishRun(user: User, id: string) {
+  const run = await runForMember(user, id);
+  const done = await transaction(async () => {
+    const locked = (await one<RunRow>("select * from quest_runs where id = $1 for update", [run.id]))!;
+    if (locked.status !== "active" || locked.mode !== "crew") return locked;
+    const mine = await one("select 1 as yes from submissions where run_id = $1 and user_id = $2 and verdict = 'approved'", [run.id, user.id]);
+    if (!mine) throw new HttpError(409, "add your proof first");
+    return complete(run.id);
+  });
+  return toRun(done, user.id);
 }
 
 // How far each person walked, from their own pings.
@@ -248,8 +269,12 @@ export async function startRun(user: User, body: { quest_id?: string; crew_id?: 
   }
 
   // Friends tapping the same quest at the same moment must land on one run, so
-  // finding and creating happen under a lock for that crew and quest.
+  // finding and creating happen under a lock for that crew and quest. Starting
+  // one with the crew also puts it on the crew tab, so crewmates can find it.
   const run = await transaction(async () => {
+    if (crewId && !body.zone_id) {
+      await query("insert into crew_quests (crew_id, quest_id, shared_by) values ($1, $2, $3) on conflict do nothing", [crewId, quest.id, user.id]);
+    }
     if (crewId) {
       await query("select pg_advisory_xact_lock(hashtext($1))", [`${crewId}:${quest.id}:${body.zone_id ?? ""}`]);
       const existing = await one<RunRow>(

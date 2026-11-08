@@ -99,6 +99,11 @@ const TEAM_US = "f0000000-0000-4000-8000-000000000001";
 const TEAM_THEM = "f0000000-0000-4000-8000-000000000002";
 
 export const DEMO_CREW_ID = crewId(1);
+export const DEMO_RIVAL_ID = crewId(2);
+export const DEMO_GAME_ID = SEED_GAME;
+// Who holds each campus zone at the start, in CAMPUS_ZONES order:
+// [us or them or nobody, best result]. A "Try the demo" copy starts from this too.
+export const SEED_HOLDERS: ["us" | "them" | null, number | null][] = [["us", 1891], ["them", 4], [null, null], ["them", 3], [null, null]];
 
 const PEOPLE: [string, string, number][] = [
   ["mock|sam", "Sam", 240],
@@ -253,12 +258,12 @@ export async function seedDemoData(query: Query) {
   await query("insert into games (id, name, created_by) values ($1, 'saturday on campus', $2) on conflict do nothing", [SEED_GAME, sam]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'the long way round') on conflict do nothing", [TEAM_US, SEED_GAME, crewId(1)]);
   await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'north campus walkers') on conflict do nothing", [TEAM_THEM, SEED_GAME, crewId(2)]);
-  const holders: [string | null, number | null][] = [[TEAM_US, 1891], [TEAM_THEM, 4], [null, null], [TEAM_THEM, 3], [null, null]];
+  const team = { us: TEAM_US, them: TEAM_THEM };
   for (const [i, z] of CAMPUS_ZONES.entries()) {
     await query(
       `insert into zones (id, game_id, name, lat, lng, radius_m, quest_id, held_by_team_id, best_result, result_unit, lower_is_better)
        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) on conflict do nothing`,
-      [seedId("90000000", i + 1), SEED_GAME, z.name, z.lat, z.lng, z.radius_m, z.quest_id, holders[i][0], holders[i][1], z.result_unit, z.lower_is_better],
+      [seedId("90000000", i + 1), SEED_GAME, z.name, z.lat, z.lng, z.radius_m, z.quest_id, SEED_HOLDERS[i][0] && team[SEED_HOLDERS[i][0]], SEED_HOLDERS[i][1], z.result_unit, z.lower_is_better],
     );
   }
   return !existing;
