@@ -189,7 +189,7 @@ export function MatchScreen() {
                 </>
               )}
               {state === "found" && "They're free right now too."}
-              {state === "waiting" && (match?.source === "invite" ? "Waiting for them to open it and say yes." : "Waiting for them to say yes too.")}
+              {state === "waiting" && (match?.source === "invite" ? (match.quest_title ? `Waiting for them to open it. You'll both do “${match.quest_title.charAt(0).toUpperCase() + match.quest_title.slice(1)}”.` : "Waiting for them to open it and say yes.") : "Waiting for them to say yes too.")}
               {state === "matched" && (practice ? `${name ?? "They"} is a practice partner, so you can try the whole thing alone.` : "Your quest is ready. Head to the spot and say hi.")}
               {state === "ended" && "No worries. Try again whenever you're free."}
             </p>

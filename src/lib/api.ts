@@ -81,7 +81,7 @@ export const api = {
   acceptMatch: (id: string) => post<Match>(`/api/matches/${id}/accept`),
   declineMatch: (id: string) => post<Match>(`/api/matches/${id}/decline`),
   createInvite: (questId?: string) =>
-    post<{ code: string; url: string }>(
+    post<{ code: string; url: string; quest: { id: string; title: string } }>(
       "/api/invites",
       questId ? { quest_id: questId } : {},
     ),
