@@ -4,10 +4,9 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { tick } from "@/lib/feedback";
 import { useGoFree } from "@/features/matching/use-go-free";
-import { APP_NAME } from "@/lib/config";
 import { CompassButton } from "./compass-button";
 
-const side = [
+export const side = [
   { href: "/", label: "Today", icon: "M12 3.5l8 6.2V20a.5.5 0 0 1-.5.5h-5v-6h-5v6h-5A.5.5 0 0 1 4 20V9.7z" },
   { href: "/map", label: "Map", icon: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.5 12h17M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z" },
   null, // centre: the main action
@@ -15,19 +14,8 @@ const side = [
   { href: "/me", label: "You", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.8 3.7-6 7.5-6s6.7 2.2 7.5 6" },
 ] as const;
 
-// On a phone Claim lives inside the Crew tab; on a computer the rail has room
-// to give it its own row, after Crew. The rail is three groups, split by short
-// lines: your day (Today, Map), your people (Crew, Claim), and you.
-const rail = [
-  [side[0], side[1]],
-  [side[3], { href: "/claim", label: "Claim", icon: "M5.5 21V3.5M5.5 4h12l-2.5 4.5 2.5 4.5h-12" }],
-  [side[4]],
-];
-const railLine = <div aria-hidden className="mx-3 my-3 h-px bg-ink/12" />;
-
 const isActive = (href: string, path: string) =>
   href === "/" ? path === "/" : path.startsWith(href) || (href === "/crew" && path.startsWith("/claim"));
-const isRailActive = (href: string, path: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
 // Phone-first column. The bottom is a quiet row of five icons: four places,
 // and the main action in the middle. From 1024px up the four tab pages get the
@@ -40,43 +28,9 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
   const path = usePathname();
   const { go, busy } = useGoFree();
   return (
-    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "lg:max-w-none lg:pl-[232px]" : wide ? "lg:max-w-none" : ""}`}>
+    <div className={`grain isolate mx-auto flex min-h-dvh max-w-[480px] flex-col bg-canvas ${nav ? "with-rail lg:ml-[264px] lg:max-w-none" : wide ? "lg:max-w-none" : ""}`}>
       {/* The page itself, as the main landmark so screen readers can jump straight to it. */}
       <main className={`flex flex-1 flex-col ${nav ? "pb-24 lg:mx-auto lg:w-full lg:max-w-[1120px] lg:pb-0" : ""}`}>{children}</main>
-      {nav && (
-        <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
-          <Hand className="px-3 text-[38px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
-          <div className="mt-6">{railLine}</div>
-          {rail.map((group, g) => (
-          <div key={g}>
-          {g > 0 && railLine}
-          <ul className="flex flex-col gap-1">
-            {group.map((t) => (
-              <li key={t.href}>
-                <Link
-                  href={t.href}
-                  aria-current={isRailActive(t.href, path) ? "page" : undefined}
-                  onClick={() => tick(0.6)}
-                  className={`rail-link flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isRailActive(t.href, path) ? "bg-sunken font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
-                >
-                  <svg className="rail-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isRailActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <path d={t.icon} />
-                  </svg>
-                  {t.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          </div>
-          ))}
-          {/* The main action, with its words spelled out since there's room. */}
-          <div className="mt-auto">{railLine}</div>
-          <div className="flex items-center gap-2.5 px-1 pt-1">
-            <CompassButton onClick={go} disabled={busy} label="I'm free: find someone nearby" size={52} />
-            <span className="text-[13px] leading-snug whitespace-nowrap text-ink-muted"><span className="block text-[15px] font-semibold text-ink">I&apos;m free</span>find someone nearby</span>
-          </div>
-        </nav>
-      )}
       {nav && (
         <nav
           aria-label="main"

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Funnel_Display, Funnel_Sans, Gaegu } from "next/font/google";
 import { APP_NAME, APP_TAGLINE } from "@/lib/config";
 import { RegisterServiceWorker } from "@/components/register-sw";
+import { GlassRail } from "@/components/ui/glass-rail";
 import "./globals.css";
 
 const display = Funnel_Display({ subsets: ["latin"], variable: "--font-funnel-display", display: "swap" });
@@ -43,6 +44,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <feDisplacementMap in="SourceGraphic" in2="n" scale="0.9" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </svg>
+        {/* Before the page, so a sheet or the expanded map opens over it. */}
+        <GlassRail />
         {children}
         <RegisterServiceWorker />
       </body>

@@ -17,6 +17,7 @@
     "@auth0/nextjs-auth0": "^4.33.0",
     "@electric-sql/pglite": "^0.5.15",
     "@google/genai": "^3.0.0",
+    "@samasante/liquid-glass": "0.1.1",
     "@vis.gl/react-google-maps": "^1.10.2",
     "border-beam": "^1.4.1",
     "glicko2": "^1.2.4",
