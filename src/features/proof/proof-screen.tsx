@@ -1,5 +1,6 @@
 "use client";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { ThinkingOrb } from "thinking-orbs";
@@ -12,6 +13,9 @@ import { usePoll } from "@/lib/use-poll";
 import { MAX_UPLOAD_BYTES, shrinkPhoto } from "@/lib/shrink-photo";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Odometer } from "@/components/ui/odometer";
+
+// WebGL, so only in the browser, and only fetched when a photo is on screen.
+const PhotoScan = dynamic(() => import("./photo-scan").then((m) => m.PhotoScan), { ssr: false });
 
 type Step = "capture" | "sending" | "checking" | "approved" | "rejected";
 
@@ -106,8 +110,11 @@ export function ProofScreen() {
   const kind = run?.quest.proof ?? "photo";
   const accept = kind === "video" ? "video/*" : "image/*";
   const looking = view === "sending" || view === "checking";
+  const reduce = useReducedMotion();
+  // Photos get the mosaic scan; videos (and reduced motion) get a plain blur while we look.
+  const scan = kind === "photo" && !reduce;
   const photoFilter =
-    view === "approved" ? "" : view === "rejected" ? "grayscale(1) brightness(.55)" : looking ? "blur(14px) brightness(.6) saturate(.8)" : "";
+    view === "approved" ? "" : view === "rejected" ? "grayscale(1) brightness(.55)" : looking && !scan ? "blur(14px) brightness(.6) saturate(.8)" : "";
 
   return (
     <AppShell nav={false}>
@@ -131,11 +138,13 @@ export function ProofScreen() {
           <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           {preview ? (
             <div
-              className={`size-full transition-[filter] duration-[900ms] ${view === "approved" ? "animate-[develop_1.4s_var(--ease-out-soft)]" : ""}`}
+              className={`size-full transition-[filter] duration-[900ms] ${view === "approved" && !scan ? "animate-[develop_1.4s_var(--ease-out-soft)]" : ""}`}
               style={{ filter: photoFilter || undefined }}
             >
               {kind === "video" ? (
                 <video src={preview} className="size-full object-cover" muted playsInline autoPlay loop />
+              ) : scan ? (
+                <PhotoScan src={preview} looking={looking} />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={preview} alt="Your proof" className="size-full object-cover" />
@@ -167,12 +176,13 @@ export function ProofScreen() {
           <AnimatePresence>
             {(looking || (kind === "gps" && view !== "capture")) && view !== "approved" && view !== "rejected" && (
               <motion.div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+                className="absolute inset-0 isolate flex flex-col items-center justify-center gap-4"
                 initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
                 transition={soft}
               >
+                {scan && preview && <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(closest-side,rgb(11_12_11/.62),rgb(11_12_11/.18))]" />}
                 <ThinkingOrb state="searching" size={64} theme="dark" color="#ffffff" aria-label="Checking your proof" />
                 <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "having a look…"}</Hand>
                 <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">Checking it against the quest, the place and the time.</p>
@@ -198,10 +208,12 @@ export function ProofScreen() {
               <Hand as="h1" className="text-[38px] leading-none font-bold">{view === "approved" ? "that counts" : "not quite yet"}</Hand>
               <p className="mx-auto mt-2 max-w-[32ch] text-[15px] leading-snug text-white/75">{shown.reason.charAt(0).toUpperCase() + shown.reason.slice(1)}</p>
               {view === "approved" && shown.coins != null && (
-                <div className="mt-4 flex items-baseline justify-center">
-                  <span className="numeral text-[52px] leading-none">+</span>
-                  <Odometer value={shown.coins} delay={700} className="numeral text-[52px] leading-none" />
-                  <span className="ml-2 text-[16px] font-medium text-white/80">coins</span>
+                <div className="mt-5 flex flex-col items-center">
+                  <span className="flex items-center">
+                    <span className="numeral text-[52px] leading-none">+</span>
+                    <Odometer value={shown.coins} delay={700} className="numeral text-[52px] leading-none" />
+                  </span>
+                  <span className="mt-1.5 text-[15px] font-medium text-white/80">coins</span>
                 </div>
               )}
             </motion.div>
