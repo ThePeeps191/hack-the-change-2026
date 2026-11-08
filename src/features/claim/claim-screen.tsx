@@ -64,6 +64,7 @@ export function ClaimScreen() {
     setPicked(z.id); // eslint-disable-line react-hooks/set-state-in-effect -- open the zone named in the link once the game loads
     setFocus({ lat: z.lat, lng: z.lng });
     window.history.replaceState(null, "", "/claim"); // only once, so closing the zone keeps it closed
+    setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "center" }), 700);
   }, [game, picked]);
 
   function choose(id: string) {
