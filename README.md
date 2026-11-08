@@ -113,7 +113,7 @@ We made the product decisions: the idea and focus areas, the safety rules, the m
 | `src/lib/` | Shared types, the API client, and the seams for sign-in, AI and the database |
 | `data/quests/` | The hand-written quests |
 | `db/migrations/` | The database schema |
-| `docs/` | How it works ([WALKTHROUGH](docs/WALKTHROUGH.md), [ARCHITECTURE](docs/ARCHITECTURE.md)) and how we work ([DEVELOPMENT](docs/DEVELOPMENT.md)) |
+| `docs/` | How it works ([TECHNICAL](docs/TECHNICAL.md) for a short summary, [WALKTHROUGH](docs/WALKTHROUGH.md), [ARCHITECTURE](docs/ARCHITECTURE.md)) and how we work ([DEVELOPMENT](docs/DEVELOPMENT.md)) |
 
 ## Team
 
