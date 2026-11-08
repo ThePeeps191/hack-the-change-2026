@@ -9,6 +9,7 @@
         "@auth0/nextjs-auth0": "^4.33.0",
         "@electric-sql/pglite": "^0.5.15",
         "@google/genai": "^3.0.0",
+        "@samasante/liquid-glass": "0.1.1",
         "@vis.gl/react-google-maps": "^1.10.2",
         "border-beam": "^1.4.1",
         "glicko2": "^1.2.4",
@@ -254,6 +255,8 @@
     "@protobufjs/utf8": ["@protobufjs/utf8@1.1.2", "", {}, "sha512-b1UQwcEZ4yCnMCD8DAL1VlbvBJE9/IX4FTIp7BG1xYpf29SLazLSrqUkj4w7Y5y7cCVP6E5tcqqcI0xemPkHug=="],
 
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, "sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g=="],
+
+    "@samasante/liquid-glass": ["@samasante/liquid-glass@0.1.1", "", { "peerDependencies": { "react": ">=18", "react-dom": ">=18" } }, "sha512-i4cQzlwmpYnVl9eBDuBFyPsOsuBMMYDp1ijxul5Z/H+ns5aQ1qiVV5pTEBbO4EQo8ct+eVlS9bVZW8YUfX6nXg=="],
 
     "@stablelib/base64": ["@stablelib/base64@1.0.1", "", {}, "sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ=="],
 

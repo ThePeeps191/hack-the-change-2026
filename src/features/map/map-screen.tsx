@@ -157,7 +157,7 @@ export function MapScreen() {
           transition={soft}
           className={
             expanded
-              ? "fixed inset-x-2.5 top-[max(10px,env(safe-area-inset-top))] bottom-[max(10px,env(safe-area-inset-bottom))] z-50 mx-auto max-w-[620px] overflow-hidden lg:right-4 lg:left-[248px] lg:mx-0 lg:max-w-none rounded-[32px] shadow-lift"
+              ? "fixed inset-x-2.5 top-[max(10px,env(safe-area-inset-top))] bottom-[max(10px,env(safe-area-inset-bottom))] z-50 mx-auto max-w-[620px] overflow-hidden lg:right-4 lg:left-[276px] lg:mx-0 lg:max-w-none rounded-[32px] shadow-lift"
               : "absolute inset-0 overflow-hidden rounded-[28px] shadow-card"
           }
           style={{ borderRadius: expanded ? 32 : 28 }}
