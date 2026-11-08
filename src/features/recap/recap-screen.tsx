@@ -13,6 +13,7 @@ import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Ink, StepsInk, SunInk } from "@/components/ui/ink";
 import { Coin } from "@/components/ui/quest-glyph";
 import { MoodCheck } from "@/features/checkin/mood-check";
+import { MoodShift } from "@/features/checkin/mood-shift";
 import { MeetPaths } from "./meet-paths";
 import { RecapExtras } from "./recap-extras";
 
@@ -39,6 +40,7 @@ export function RecapScreen() {
   const [problem, setProblem] = useState<Problem | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [kept, setKept] = useState<null | "asked" | "connected">(null);
+  const [moodAfter, setMoodAfter] = useState<number | null>(null);
   // Finished in the last few hours. Read once, when the page opens.
   const [opened] = useState(() => Date.now());
   const fresh = !!recap && (!recap.completed_at || opened - new Date(recap.completed_at).getTime() < 3 * 3_600_000);
@@ -118,7 +120,11 @@ export function RecapScreen() {
         {recap && <RecapExtras recap={recap} />}
 
         {/* only right after the quest: "compared with before" means nothing days later */}
-        {recap && fresh && <MoodCheck runId={runId} phase="after" />}
+        {recap && fresh && <MoodCheck runId={runId} phase="after" onAnswer={setMoodAfter} />}
+
+        {recap?.mood_before != null && (moodAfter ?? recap.mood_after) != null && (
+          <MoodShift before={recap.mood_before} after={(moodAfter ?? recap.mood_after)!} />
+        )}
 
         {recap && name && (
           <section className="rounded-[24px] bg-surface p-5 shadow-card">
