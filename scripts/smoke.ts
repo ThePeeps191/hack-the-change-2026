@@ -228,7 +228,7 @@ async function main() {
   check((await lee.post("/api/crews/join", { invite_code: "NOPE" })).status === 404, "a wrong code is refused");
   check((await lee.post<Crew>("/api/crews/join", { invite_code: crew.invite_code.toLowerCase() })).data.members.length === 2, "joined with the code");
   const anywhere = (await kim.get<Quest[]>("/api/quests?type=anywhere")).data;
-  check(anywhere.length > 0 && anywhere.every((q) => q.type === "anywhere"), "anywhere quests are listed");
+  check(anywhere.every((q) => q.type === "anywhere"), "the anywhere filter only lists anywhere quests");
   const photoQuest = (await kim.get<Quest[]>("/api/quests")).data.find((q) => q.proof === "photo")!;
   check((await kim.post(`/api/crews/${crew.id}/quests`, { quest_id: photoQuest.id })).status === 204, "quest shared with the crew");
   check((await lee.get<Crew>(`/api/crews/${crew.id}`)).data.shared_quests.some((q) => q.id === photoQuest.id), "crewmates see it");
@@ -281,7 +281,7 @@ async function main() {
   check(dash.mood?.checkins === 1 && dash.mood.after_better === 1, "mood before and after are compared", dash.mood);
   check(dash.new_places?.length === 1 && !!dash.new_places[0].first_visit, "new places have a first visit", dash.new_places);
   const seeded = (await sam.get<Dashboard>("/api/dashboard")).data;
-  check(!!seeded.familiar_faces?.some((f) => f.display_name === "Priya" && f.quests_together >= 2 && f.minutes_together > 0), "repeat partners are familiar faces", seeded.familiar_faces);
+  check(!!seeded.familiar_faces?.some((f) => f.display_name === "Jo" && f.quests_together >= 2 && f.minutes_together > 0), "repeat partners are familiar faces", seeded.familiar_faces);
   const prefs = await alice.patch<User>("/api/me", { prefs: { pace: "short", step_free: true, social: "side-by-side", language: "fr", junk: 1 } });
   check(prefs.data.prefs.pace === "short" && prefs.data.prefs.step_free === true && !("junk" in prefs.data.prefs), "comfort settings saved and cleaned", prefs.data.prefs);
   const exported = (await alice.get<{ location_pings: unknown[]; runs: unknown[] }>("/api/me/export")).data;

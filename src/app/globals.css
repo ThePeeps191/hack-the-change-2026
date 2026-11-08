@@ -266,53 +266,34 @@ a {
   display: none;
 }
 
-/* The orb: the centre "I'm free" button. */
-@property --orb-a {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
+/* The compass: the centre "I'm free" button (compass-button.tsx). Cream
+   paper with a soft shadow; the ink and the red needle come from here. */
+.compass {
+  --compass-paper: #fbf6e9;
+  --compass-ink: #2b2925;
+  --compass-red: #cf4f32;
+  background: radial-gradient(circle at 36% 30%, #fffdf7 0%, var(--compass-paper) 55%, #efe5cf 100%);
+  box-shadow: 0 8px 20px rgb(70 50 20 / .2), 0 1px 2px rgb(70 50 20 / .18), inset 0 0 0 1px rgb(120 90 40 / .16);
 }
-@keyframes orb-turn { to { --orb-a: 360deg } }
-@keyframes orb-breathe { 0%, 100% { opacity: .55; transform: scale(1) } 50% { opacity: .9; transform: scale(1.12) } }
-.orb {
-  --hx: 34%;
-  --hy: 26%;
-  isolation: isolate;
+@media (prefers-color-scheme: dark) {
+  .compass {
+    --compass-paper: #ece3cf;
+    box-shadow: 0 8px 22px rgb(0 0 0 / .45), inset 0 0 0 1px rgb(255 240 210 / .2);
+  }
 }
-.orb-glow {
-  position: absolute;
-  inset: -8px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgb(90 150 255 / .55), transparent 68%);
-  filter: blur(6px);
-  z-index: -1;
-  animation: orb-breathe 3.6s ease-in-out infinite;
-}
-.orb-swirl {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 50% 120%, rgb(20 60 200 / .55), transparent 60%),
-    conic-gradient(from var(--orb-a), #2f66f5, #9cc3ff, #eaf3ff, #5d8dff, #1f4fd1, #8fb8ff, #2f66f5);
-  animation: orb-turn 7s linear infinite;
-  box-shadow: inset 0 -6px 14px rgb(10 30 120 / .45), 0 8px 22px rgb(47 102 245 / .45);
-}
-.orb-gloss {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: radial-gradient(circle at var(--hx) var(--hy), rgb(255 255 255 / .95) 0, rgb(255 255 255 / .35) 16%, transparent 42%);
-  mix-blend-mode: screen;
-}
-.orb-rim {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .55), inset 0 2px 1px rgb(255 255 255 / .6);
+.compass-drift { transform-box: view-box; transform-origin: 30px 30.1px; animation: compass-drift 5.5s ease-in-out infinite alternate; }
+.compass-swing { transform-box: view-box; transform-origin: 30px 30.1px; animation: compass-swing 1.3s cubic-bezier(.3, .7, .4, 1); }
+@keyframes compass-drift { from { transform: rotate(-8deg) } to { transform: rotate(8deg) } }
+@keyframes compass-swing {
+  0% { transform: rotate(0) }
+  18% { transform: rotate(34deg) }
+  38% { transform: rotate(-20deg) }
+  58% { transform: rotate(10deg) }
+  78% { transform: rotate(-4deg) }
+  100% { transform: rotate(0) }
 }
 @media (prefers-reduced-motion: reduce) {
-  .orb-swirl, .orb-glow { animation: none }
+  .compass-drift, .compass-swing { animation: none }
 }
 
 /* Map pins: a small white badge with the quest's category icon and a tip
@@ -518,8 +499,9 @@ a {
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-face,
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-tip { background: hsl(var(--h) 62% 50%); }
 
-/* Place and quest names: Fraunces, fully soft, sized optically so small
-   names stay sturdy. Names read like a field guide; body text stays sans. */
+/* The one big quest or place title on a screen (quest page, quest sheet,
+   invite): Fraunces, fully soft. Titles in lists stay in the body
+   sans, semibold, so a list reads as one family. */
 .name-serif {
   font-family: var(--font-numeral);
   font-optical-sizing: auto;
