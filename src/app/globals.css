@@ -892,7 +892,7 @@ a {
   .split-aside .sky > .relative > :last-child { margin-bottom: auto; }
   .split-aside .split-fill { flex: 1; height: auto !important; min-height: 0; }
   /* A single-step page's sky card fills the column's height. */
-  .split-tall > .relative:has(> .sky) { flex: 1; }
+  .split-tall > .relative:has(> .sky), .split-tall .sky { flex: 1; }
 }
 
 /* The proof photo while it's checked (src/features/proof/photo-scan.tsx).
