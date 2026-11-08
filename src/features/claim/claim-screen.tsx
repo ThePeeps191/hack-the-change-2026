@@ -13,6 +13,8 @@ import { InkFlag, inkFlagSvg } from "@/components/ui/ink";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { NoGame, ZoneActions } from "./claim-actions";
 import { isAnywhere } from "./anywhere";
+import { ApiError } from "@/lib/api";
+import { unitLabel } from "@/lib/claim-bounds";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
   ssr: false,
@@ -36,7 +38,7 @@ const hues = { ours: 222, theirs: 22, free: undefined } as const;
 function best(z: Zone) {
   if (z.best_result == null) return null;
   if (z.result_unit === "year") return `from ${z.best_result}`;
-  return `${z.best_result} ${z.result_unit ?? ""}`.trim();
+  return `${z.best_result} ${unitLabel(z.result_unit)}`.trim();
 }
 
 export function ClaimScreen() {
@@ -104,8 +106,12 @@ export function ClaimScreen() {
       </motion.div>
       }>
       <div className="space-y-4 px-4 pt-5 lg:pt-0">
-        {!game && error ? (
+        {/* Only offer a new game when there really isn't one: a dropped signal
+            shouldn't invite a judge to replace the crew's board. */}
+        {!game && error instanceof ApiError && error.status >= 400 && error.status < 500 ? (
           <NoGame onStarted={() => setStarted((n) => n + 1)} />
+        ) : !game && error ? (
+          <p className="rounded-[24px] bg-surface p-5 text-[15px] text-ink-muted shadow-card" role="status">Can&apos;t reach the game right now. We&apos;ll keep trying.</p>
         ) : !game ? (
           <Skeleton className="h-28 rounded-[24px]" />
         ) : (
@@ -143,7 +149,7 @@ export function ClaimScreen() {
                     {zone.best_result != null ? (
                       <>
                         <span className="font-[family-name:var(--font-display)] text-[30px] leading-none font-semibold tabular-nums">{zone.best_result}</span>
-                        <span className="text-[14px] text-ink-muted">{zone.result_unit ?? ""} to beat</span>
+                        <span className="text-[14px] text-ink-muted">{unitLabel(zone.result_unit)} to beat</span>
                       </>
                     ) : (
                       <span className="text-[15px] text-ink-muted">Finish the challenge to take it.</span>

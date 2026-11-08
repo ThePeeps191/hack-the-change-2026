@@ -8,4 +8,11 @@ const BOUNDS: Record<string, { min: number; max: number }> = {
 };
 const ANY = { min: 0, max: 10_000 };
 
+// A zone's unit in plain words: "|price - $20.26|" (how far a price is from
+// $20.26) reads as "dollars off $20.26". Other units ("year", "seconds") as they are.
+export function unitLabel(unit: string | null | undefined) {
+  const off = unit?.match(/^\|price - (\$[\d.]+)\|$/);
+  return off ? `dollars off ${off[1]}` : (unit ?? "");
+}
+
 export const claimBounds = (unit: string | null | undefined) => (unit && BOUNDS[unit]) || ANY;
