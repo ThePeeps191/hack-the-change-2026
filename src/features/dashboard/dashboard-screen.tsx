@@ -170,7 +170,7 @@ export function DashboardScreen() {
               </div>
             </div>
             <div className="rows mt-2.5 overflow-hidden rounded-[24px] bg-surface shadow-card">
-              <Switch checked={comfort.stepFree} onChange={(stepFree) => update({ stepFree })} label="Step-free places only" hint="No stairs or steep paths on the way." />
+              <Switch checked={comfort.stepFree} onChange={(stepFree) => update({ stepFree })} label="Step-free places first" hint="We pick spots without stairs or steep paths whenever there's one nearby." />
               <Switch
                 checked={sound}
                 onChange={(on) => {

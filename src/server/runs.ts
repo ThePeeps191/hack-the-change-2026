@@ -222,6 +222,14 @@ async function settle(runId: string): Promise<RunRow> {
   });
 }
 
+// "I need to go" or a report ends a pair quest now. If someone's proof already
+// counted, it ends as done, so they still get their coins and recap.
+export async function endEarly(runId: string) {
+  const counted = await one("select 1 as yes from submissions where run_id = $1 and verdict = 'approved'", [runId]);
+  if (counted) await complete(runId);
+  else await query("update quest_runs set status = 'expired' where id = $1", [runId]);
+}
+
 async function complete(runId: string) {
   await recordDistances(runId);
   return (await one<RunRow>("update quest_runs set status = 'completed', completed_at = now() where id = $1 returning *", [runId]))!;
