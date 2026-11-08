@@ -35,6 +35,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <filter id="vblur" x="-10%" y="-50%" width="120%" height="200%">
             <feGaussianBlur stdDeviation="0 2.2" />
           </filter>
+          {/* A pen's wobble for the hand-drawn icons in components/ui/ink.tsx. */}
+          <filter id="ink" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="0.9" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
         </svg>
         {children}
       </body>

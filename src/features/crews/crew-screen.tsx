@@ -141,7 +141,7 @@ export function CrewScreen() {
                       <span className="w-5 text-center text-[15px] font-semibold text-ink-faint tabular-nums">{e.rank}</span>
                       <Avatar name={e.name} size={36} ring={ours} />
                       <span className={`flex-1 truncate text-[16px] ${ours ? "font-semibold" : "font-medium"}`}>{e.name}{ours && <span className="ml-1.5 text-[13px] font-medium text-ink-faint">you</span>}</span>
-                      {e.delta ? <span className="rounded-full bg-[#fbefc9] px-2 py-0.5 text-[12px] font-semibold text-[#8a5d10] tabular-nums dark:bg-[#3a3016] dark:text-[#f4cf72]">+{e.delta}</span> : null}
+                      {e.delta ? <span className="text-[13px] font-semibold text-[#9a6a0e] tabular-nums dark:text-[#f4cf72]">+{e.delta}</span> : null}
                       <Odometer value={e.coins} delay={250 + i * 80} className="w-12 justify-end text-right text-[15px] font-semibold" />
                     </motion.li>
                   );

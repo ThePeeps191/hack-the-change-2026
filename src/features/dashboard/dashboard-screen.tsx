@@ -106,7 +106,7 @@ export function DashboardScreen() {
           <Section id="mood" title="after a quest">
             <div className="rounded-[24px] bg-surface p-4 shadow-card">
               <p className="text-[16px] leading-snug">
-                You felt better after <span className="font-semibold">{mood.after_better} of {mood.checkins}</span> quests you checked in on.
+                You felt better after <span className="font-semibold">{mood.after_better} of {mood.checkins}</span> {mood.checkins === 1 ? "quest" : "quests"} you checked in on.
               </p>
               <div className="mt-3">
                 <Weather better={mood.after_better} total={mood.checkins} />

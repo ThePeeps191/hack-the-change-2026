@@ -1,4 +1,5 @@
 "use client";
+import { CloudInk, Ink, PartInk, SunInk } from "@/components/ui/ink";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { api } from "@/lib/api";
@@ -9,13 +10,10 @@ import { Card } from "@/components/ui/card";
 // scale stored is 1 to 5 (5 sunny, 3 in between, 1 cloudy), so "felt better"
 // is simply 4 or more. Before a quest it's how you are; after, how you are
 // compared with before.
-const SUN = "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4";
-const PART = "M8 3.5v1.5M3.5 8H2M4.6 4.6l1 1M11.4 4.6l-1 1M5.6 10.4A3 3 0 1 1 10.8 7.5M9 20h8.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.2A3 3 0 0 0 9 20z";
-const CLOUD = "M7.5 18.5a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17.6 9.6a4.5 4.5 0 0 1-.6 8.9z";
 const WEATHER = [
-  { mood: 5, d: SUN, tint: "text-[#c98a12] dark:text-[#f2c45a]" },
-  { mood: 3, d: PART, tint: "text-[#5b6b85] dark:text-[#a9b8d0]" },
-  { mood: 1, d: CLOUD, tint: "text-ink-faint" },
+  { mood: 5, d: SunInk, tint: "text-[#c98a12] dark:text-[#f2c45a]" },
+  { mood: 3, d: PartInk, tint: "text-ink" },
+  { mood: 1, d: CloudInk, tint: "text-ink-muted" },
 ];
 const LABELS = { before: ["Good", "Okay", "Low"], after: ["Better", "Same", "Worse"] };
 
@@ -71,9 +69,7 @@ export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "
                         onClick={() => answer(w.mood)}
                         className="flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-[18px] text-[14px] font-semibold text-ink ring-1 ring-black/12 transition-[box-shadow,transform] dark:ring-white/15 hover:ring-ink-faint active:scale-95"
                       >
-                        <span className={`grid size-9 place-items-center rounded-full ${w.tint}`}>
-                          <svg width="28" height="28" viewBox="0 0 24 24" fill={w.mood === 1 ? "currentColor" : "none"} stroke="currentColor" strokeWidth={w.mood === 1 ? 0 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={w.d} /></svg>
-                        </span>
+                        <Ink size={30} className={w.tint}>{w.d}</Ink>
                         {labels[i]}
                       </button>
                     ))}
