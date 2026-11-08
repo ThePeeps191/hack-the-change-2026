@@ -52,7 +52,7 @@ export function LoginScreen({ demo, returnTo }: { demo: boolean; returnTo: strin
             </button>
           )}
           <p className="pt-1 text-center text-[13px] text-ink-muted">
-            For 18 and older. <a className="inline-flex min-h-11 items-center underline underline-offset-2" href="/privacy">What we keep, and why</a>
+            <a className="inline-flex min-h-11 items-center underline underline-offset-2" href="/privacy">What we keep, and why</a>
           </p>
         </motion.div>
       </main>

@@ -43,7 +43,7 @@ If you're changing behaviour, you almost always want `src/server/`. Routes stay 
 
 | Rule | Where |
 | --- | --- |
-| 18+, verified student email, daylight | `assertCanMeet` in `safety.ts`, before matching or an invite |
+| Verified student email, daylight | `assertCanMeet` in `safety.ts`, before matching or an invite |
 | Meet at the quest, never at each other's location | Location is never sent to the other person. `toMatch` returns distance only |
 | Name hidden until both accept | `toMatch` |
 | Reporting ends the quest, and you're never paired again | `report` in `people.ts`, and the `not exists` in `tryPair` |

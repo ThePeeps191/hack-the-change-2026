@@ -432,11 +432,12 @@ a {
   pointer-events: none;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / .16), transparent);
   transform: translateX(-130%) skewX(-20deg);
-  animation: claim-glint 6s ease-in-out 1.2s infinite;
+  animation: claim-glint 2.2s ease-in-out .6s 1 both;
 }
+/* one pass of light when the card appears, like sun catching it */
 @keyframes claim-glint {
   0% { transform: translateX(-130%) skewX(-20deg); }
-  35%, 100% { transform: translateX(330%) skewX(-20deg); }
+  100% { transform: translateX(330%) skewX(-20deg); }
 }
 @media (prefers-reduced-motion: reduce) { .claim-card::before { animation: none; display: none; } }
 
@@ -684,7 +685,6 @@ a {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, transparent 13%, rgb(255 178 100 / .55) 13% 13.25%, transparent 13.25% 41%, rgb(255 140 90 / .45) 41% 41.2%, transparent 41.2% 77%, rgb(255 200 120 / .5) 77% 77.25%, transparent 77.25%),
     repeating-linear-gradient(90deg, rgb(255 255 255 / .16) 0 1px, transparent 1px 3px, rgb(10 20 50 / .1) 3px 4px, transparent 4px 6px);
   -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / .45), #000 75%);
   mask-image: linear-gradient(180deg, rgb(0 0 0 / .45), #000 75%);
@@ -877,7 +877,6 @@ a {
 @media (min-width: 1024px) {
   .split-aside > .relative:has(> .sky) { display: flex; flex-direction: column; }
   .split-aside .sky {
-    min-height: min(600px, calc(100dvh - 48px));
     display: flex;
     flex-direction: column;
     margin-bottom: 0 !important;
@@ -968,3 +967,19 @@ a {
   75% { transform: translate(-7px, -5px) rotate(-4deg); }
 }
 @media (prefers-reduced-motion: reduce) { .looking-glass { animation: none; } }
+
+/* Controls floating on a map (Map and Claim). The map itself stays light in
+   dark mode, so these keep their light glass and light-mode colours too. */
+.on-map { --color-ink: #121412; --color-ink-muted: #5c605b; --color-accent: #1f4fd1; color: var(--color-ink); }
+.on-map .text-rival { color: #b8501b; }
+@media (prefers-color-scheme: dark) {
+  .glass.on-map {
+    background:
+      radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .55), transparent 55%),
+      rgb(255 255 255 / .62);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), inset 0 -1px 1px rgb(255 255 255 / .35), inset 0 0 0 .5px rgb(0 0 0 / .06), 0 8px 22px rgb(15 30 60 / .16);
+  }
+}
+/* The map's attribution "i" is 24px; give it a 44px tap area. */
+.maplibregl-ctrl-attrib-button { position: relative; }
+.maplibregl-ctrl-attrib-button::after { content: ""; position: absolute; inset: -10px; }
