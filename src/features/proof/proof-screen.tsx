@@ -231,7 +231,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
                 {scan && preview && <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(closest-side,rgb(11_12_11/.62),rgb(11_12_11/.18))]" />}
                 <LookingGlass />
                 <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "checking…"}</Hand>
-                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">{view === "sending" ? "Sending your photo over." : "Checking it against the quest, the place and the time."}</p>
+                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">{view === "sending" ? "Sending your photo over." : "Checking it against the quest."}</p>
               </motion.div>
             )}
           </AnimatePresence>
