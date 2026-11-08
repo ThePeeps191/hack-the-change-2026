@@ -114,7 +114,7 @@ export function QuestScreen() {
               <span className="text-ink-faint">· {q.proof} proof</span>
               <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}<span className="sr-only"> coins</span></span>
             </div>
-            <h1 className="mt-3 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
+            <h1 className="name-serif mt-3 text-[28px] leading-[1.1] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
             </h1>
             <p className="mt-2.5 text-[16px] leading-relaxed text-ink-muted">{q.description}</p>

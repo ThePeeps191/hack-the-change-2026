@@ -534,3 +534,13 @@ a {
    selected, so picking a rival's zone never makes it look like yours. */
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-face,
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-tip { background: hsl(var(--h) 62% 50%); }
+
+/* Place and quest names: Fraunces, fully soft, sized optically so small
+   names stay sturdy. Names read like a field guide; body text stays sans. */
+.name-serif {
+  font-family: var(--font-numeral);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 100;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}

@@ -115,7 +115,7 @@ export function ClaimScreen() {
                     <InkFlag held={tone(zone) !== "free"} color={colors[tone(zone)]} size={18} />
                     {tone(zone) === "ours" ? `Held by ${us?.name}` : tone(zone) === "theirs" ? `Held by ${them?.name}` : "Nobody holds this yet"}
                   </div>
-                  <p className="mt-2 text-[22px] leading-tight font-semibold tracking-[-0.01em]">{zone.name}</p>
+                  <p className="name-serif mt-2 text-[24px] leading-tight">{zone.name}</p>
                   {zone.quest && (
                     <>
                       <p className="mt-1 text-[16px] font-medium">{zone.quest.title.charAt(0).toUpperCase() + zone.quest.title.slice(1)}</p>
@@ -141,7 +141,7 @@ export function ClaimScreen() {
                       <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
                         <InkFlag held={tone(z) !== "free"} color={colors[tone(z)]} size={26} />
                         <span className="min-w-0 flex-1">
-                          <span className="block text-[16px] font-semibold">{z.name}</span>
+                          <span className="name-serif block text-[17px]">{z.name}</span>
                           <span className="mt-0.5 block truncate text-[13px] text-ink-muted">
                             {z.quest ? z.quest.title.charAt(0).toUpperCase() + z.quest.title.slice(1) : "Challenge"}
                           </span>

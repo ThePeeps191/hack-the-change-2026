@@ -89,7 +89,7 @@ export function QuestSheet({
             <span>{categoryLabel[categoryOf(q)]}</span>
             <span className="text-ink-faint">· {questTypeLabel[q.type]}</span>
           </div>
-          <h2 className="mt-2.5 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
+          <h2 className="name-serif mt-2.5 text-[27px] leading-[1.12] text-pretty">
             {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
           </h2>
           <p className="mt-2.5 text-[16px] leading-relaxed text-ink-muted">

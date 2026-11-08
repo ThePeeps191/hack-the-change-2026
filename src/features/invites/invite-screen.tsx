@@ -23,7 +23,7 @@ function InviteQuest({ quest }: { quest: Quest }) {
           <span className="sr-only"> coins</span>
         </span>
       </div>
-      <h2 className="mt-2.5 text-[22px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
+      <h2 className="name-serif mt-2.5 text-[23px] leading-[1.12] text-pretty">
         {quest.title.charAt(0).toUpperCase() + quest.title.slice(1)}
       </h2>
       <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
