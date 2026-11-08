@@ -12,14 +12,12 @@
   Built in 24 hours at Hack the Change 2026, Calgary
 </p>
 
-Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place: a game of foosball in the engineering building, say. There's something to do besides small talk, and a natural ending. Snap a photo, an AI checks it, and you get a recap of your walk. If you both want to, you stay in touch.
-
-With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
-
 <p align="center">
   <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" height="480">
   <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone: Aaron picks a quest and gets matched with Siddhant, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
 </p>
+
+Amble gives strangers short, fun challenges to do together outside. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. One of ours, at the Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
 
 ## Try it
 
