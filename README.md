@@ -47,10 +47,9 @@ When you've done it, you send a photo or short video and Claude Haiku checks it 
 
 <p align="center"><sub>The same foosball quest with two real photos. We sent the ping pong one on purpose.</sub></p>
 
-**With friends**
+## Crews and Claim
 
-- **Crews** share quests, earn coins together and race on a weekly board. Pick a character for yourself on the You tab, and one for your crew on the Crew tab.
-- **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
+Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, for example "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
 
 **The You tab**
 
