@@ -119,6 +119,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - `src/app/` holds the pages, one folder per URL. Each page just renders a screen from `src/features/`.
 - `src/components/ui/` holds the shared pieces: the app shell and bottom nav, buttons, cards, the sheet, the odometer numbers and the hero.
 - `src/app/globals.css` holds the design tokens: colours for light and dark mode, radii and fonts. Screens use token names like `text-ink-muted`, not raw colours, so everything looks like one app.
+- Filled buttons get a tactile look from the `.tb` classes at the end of `globals.css`: one element with two background layers, a soft gradient face inside and a lighter-to-darker 1px shell showing through a transparent border, plus a thin white highlight on top. Pressing swaps in a flat, slightly darker face with a faint inner shadow. `buttonClass` in `button.tsx` adds them, so screens never style a button by hand.
 - Motion uses the `motion` library and respects "reduce motion". The maps are `maplibre-gl`.
 
 ## Deploying
