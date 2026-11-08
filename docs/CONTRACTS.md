@@ -110,7 +110,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/me/export` | Everything we hold about me, as a file | JSON |
 | `POST /api/availability` | "I'm free": `{ lat, lng }` | `{ expires_at }` |
 | `DELETE /api/availability` | No longer free | nothing |
-| `GET /api/match` | Current match, polled | `Match` or null |
+| `GET /api/match` | Current match, polled | `Match` or null. For the person who made an invite link, a pending invite also has `invite_code`, so the waiting screen can keep showing the link |
 | `POST /api/matches/:id/accept` | Accept a match | `Match` |
 | `POST /api/matches/:id/decline` | Decline a match | `Match` |
 | `POST /api/invites` | Create a link to send a stranger: `{ quest_id?, lat?, lng? }`. Pins `quest_id` if given, otherwise picks the quest now near `lat`/`lng` (not saved) or campus | `{ code, url, quest: { id, title } }` |

@@ -147,7 +147,7 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs a verified email and happens in daylight only. During the quest, one tap opens "Help, leave or report" (`src/features/quests/report-sheet.tsx`): 911 and UCalgary Campus Security (403-220-5333, 24/7) at the top, "I need to go" to leave without blaming anyone, and a report, which ends the quest and means you're never paired with that person again.
 
-**"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. Crews and invite links work with zero strangers around, and "anywhere" quests work alone. In the demo, Priya is a labelled practice partner.
+**"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. After 45 seconds with nobody around, the match screen says so and offers an invite link for someone you're with (`src/features/matching/match-screen.tsx`), and stops promising "under a minute" after a minute. Crews and invite links work with zero strangers around. In the demo, Priya is a labelled practice partner.
 
 **"Can't people fake the photo?"** The server first checks the photo was taken near the place and during the quest, and the AI then checks it shows the task, rejecting screenshots. Someone could still fake it, but the reward is coins on a friendly board, so it isn't worth it. For Claim, which has a real winner, you need approved proof and a score that beats the best.
 
