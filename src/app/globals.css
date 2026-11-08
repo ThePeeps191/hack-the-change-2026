@@ -151,6 +151,17 @@ textarea {
   border-radius: 10px;
 }
 
+/* The accent ring disappears on the blue sky and the dark camera screen, so it's white there. */
+.sky :focus-visible,
+.dark-stage :focus-visible {
+  outline-color: #fff;
+}
+
+/* A sheet takes focus itself when it opens (sheet.tsx), so screen readers read its name; no ring around the whole sheet. */
+[role="dialog"]:focus-visible {
+  outline: none;
+}
+
 a {
   text-underline-offset: 3px;
 }
