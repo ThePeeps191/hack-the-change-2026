@@ -70,7 +70,7 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
 
 export function HeroBar({ left, center, right }: { left?: ReactNode; center?: ReactNode; right?: ReactNode }) {
   return (
-    <div className="flex h-14 items-center justify-between px-3 pt-[env(safe-area-inset-top)]">
+    <div className="hero-bar flex h-14 items-center justify-between px-3 pt-[env(safe-area-inset-top)]">
       <div className="flex w-24">{left}</div>
       <div className="text-[15px] font-medium text-on-sky/95">{center}</div>
       <div className="flex w-24 justify-end">{right}</div>
