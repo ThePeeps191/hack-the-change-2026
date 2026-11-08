@@ -62,6 +62,8 @@ export type Match = {
   times_together?: number;
   // Added: true when the partner is Priya, the demo bot, so the UI can say so. Never pretend she's a person.
   demo_partner?: boolean;
+  // Added: the quest an invite pinned, so the waiting screen can name it.
+  quest_title?: string | null;
 };
 
 export type RunMember = {
