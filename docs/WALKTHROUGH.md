@@ -95,7 +95,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 | First name only, and only after both say yes | `toMatch`, and `firstName` in `auth.ts` |
 | Proof photos only go to people on that quest | `GET /api/media/:id` checks `run_members`, and serves files with a no-script sandbox |
 | Your route is shown only to you, and deleted after 30 days | `getRecap`, and the Tiger Data retention policy |
-| Download or delete everything | `exportMyData` and `deleteMyData` in `src/server/users.ts`, from `/privacy` |
+| Download or delete everything | `exportMyData` and `deleteMyData` in `src/server/users.ts`, from `/privacy`. On the shared demo account (Sam, `AUTH_MODE=mock`) it deletes location and photos but keeps the made-up history, so the next judge still sees a full demo |
 | Report someone and you're never paired again | `report` in `people.ts`, and the `not exists` check in `tryPair` |
 | Keys never reach the browser | All AI and database calls are server-only (`import "server-only"`), and `/api/health` reports where a key came from, never the key itself |
 
