@@ -6,7 +6,9 @@ Hack the Change 2026, Prompt 1 (health, social connection and well-being). The n
 
 ## Summary
 
-A web app with two ways to get people outside together: short 20-minute quests you do with someone new nearby, and longer games you play with your friends. Gemini writes the quests for your area, checks the proof, and makes a short recap of each one.
+A web app with two ways to get people outside together: short 20-minute quests you do with someone new nearby, and longer games you play with your friends. We write the quests by hand, at real places; an AI (Claude Haiku) checks the proof and makes a short recap of each one.
+
+> Written before the build, when the plan was Gemini writing quests and Vultr hosting. What we built: hand-made quests, Claude Haiku for proof and recaps, Vercel hosting. Sections below that mention Gemini describe the original plan.
 
 ## System 1: 20-minute quests with someone new
 
@@ -14,7 +16,7 @@ You open the app when you have about 20 minutes free. Send requests to strangers
 
 - **Matching:** pairs two people who are close by and free right now; both have to accept before anything is shared.
 - **The quest gives you a reason to talk:** a shared task instead of small talk, such as finding the oldest book on one floor of the library, or trying a snack neither of you has had at the campus market.
-- **It ends cleanly:** after about 20 minutes you both submit proof, Gemini confirms it, and the quest is done. You can choose to stay in touch or add each other as friends; otherwise no contact details are shared.
+- **It ends cleanly:** after about 20 minutes you both submit proof, the AI confirms it, and the quest is done. You can choose to stay in touch or add each other as friends; otherwise no contact details are shared.
 - **Safety:** public places and daylight only, a verified account for the first version (for example a student email), and a way to report someone.
 
 ## System 2: playing with friends
@@ -59,7 +61,7 @@ The two systems feed each other: someone you meet on a 20-minute quest can join 
 - Matching service that pairs nearby people who are free now.
 - Gemini API for quest generation (Maps and Search grounding), photo and video checks, and recaps.
 - Tiger Data for location history, quest history and leaderboards.
-- Auth0 for login and account verification, Vultr for hosting, and a GoDaddy Registry domain.
+- Auth0 for login and account verification, Vercel for hosting (the plan said Vultr), and a GoDaddy Registry domain (amble.health).
 
 ## Open questions
 
