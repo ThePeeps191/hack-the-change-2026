@@ -1,6 +1,6 @@
 # Hack the Change 2026
 
-Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. An AI writes the quests, checks the proof and makes recaps: Claude Haiku 5.5, in development and in the demo (`AI_PROVIDER=claude`). A Gemini path exists (`AI_PROVIDER=gemini`) but we chose not to use it.
+Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. Quests are hand-made (`data/quests/`); an AI checks the proof and makes recaps: Claude Haiku 5.5, in development and in the demo (`AI_PROVIDER=claude`). A Gemini path exists (`AI_PROVIDER=gemini`), but we chose not to use it.
 
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
@@ -24,7 +24,7 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 
 The humans set this rule, and it binds every session as firmly as the organizers' rules above.
 
-**If a judge won't see it or touch it in the 3-minute pitch or the video, don't build it.** The demo path is welcome → I'm free → match → quest → proof → recap → crew → You. Making that path work, look great and hold up on a phone beats any new feature.
+**If a judge won't see it or touch it in the 3-minute pitch or the video, don't build it.** The demo path is welcome → I'm free → match → quest → proof → recap → crew and Claim → You. Making that path work, look great and hold up on a phone beats any new feature.
 
 - **Don't build:**
   - community or "impact" numbers, analytics, metrics pages or admin dashboards

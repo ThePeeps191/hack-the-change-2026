@@ -66,10 +66,11 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 
 *5 = "stands out as highly original or a transformative rethinking; technology applied in a creative and well-justified way."*
 
-- **No-setup game master.** Claude writes quests for real places near you right now (OpenStreetMap), and a button writes them for wherever you're standing. City-game apps need a human to design every map. Show a quest being generated for the room the judges are standing in.
+- **Hand-made quests at real Calgary places, with an AI referee.** We wrote every quest ourselves, so each one is safe and fun on purpose. Claude checks the proof against the quest, the place and the time.
 - **AI referee with context.** Proof is checked against the quest, the place and the time window, not just "is there a book in this photo".
 - **We measure friendship, not followers.** The metrics below come from research on how friendships actually form. No other fitness or social app counts this.
 - **Strangers become regulars.** The second time you're matched with someone, the app notices, and that's where the loneliness numbers actually move.
+- **Claim mode** turns a campus into a board game that crews play over days.
 
 ### Impact & Relevance to the prompt (health, social connection, well-being)
 
@@ -97,7 +98,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 *5 = "strong technical depth and reliability; stack chosen and implemented with precision."*
 
 - Shared contracts (`src/lib/contracts.ts`) with mock and live modes for auth and the AI, so the demo never depends on luck.
-- Quests are only written at real places: the model picks from a list of public spots near you (OpenStreetMap plus our own), and the coordinates always come from that list, never from the model. Gemini mode also uses Maps and Search grounding and shows its sources. Either way, `toSafeQuest` checks everything that comes back.
+- Quests are hand-made in `data/quests/`, so none can send anyone somewhere unsafe.
 - Proof verification uses media plus GPS plus timestamp. (The GPS and time checks are switched off in `DEMO_MODE`, so judges can try it from the room. Say so if asked.)
 - Ratings use Glicko-2 from a library, not hand-rolled maths.
 - It degrades gracefully: GPS denied, no signal and the AI down each have a designed state (tested, not just claimed).
@@ -130,7 +131,7 @@ There are three layers, so the competitive parts never leak into stranger meetup
 
 1. **Wellbeing stats** (above). They come from every quest, private, never ranked.
 2. **Coins.** Every completed quest earns coins for effort, and coins feed the weekly crew leaderboard. Anyone can earn them at any fitness level.
-(Ratings were only used by the Claim game, which was cut, so don't mention them.)
+3. **Ratings (Glicko-2, using the `glicko2` package).** Only where there's a real winner. In the build that's one thing: a crew stealing a Claim zone from another crew (`rateSteal` in `src/server/games.ts`). Each crew has one rating. Stranger quests are cooperative and never touch a rating. (Races, 1v1 challenges and ratings per category were ideas that weren't built, so don't mention them.)
 
 ## The 3-minute demo (round 1) and 5-minute final
 
@@ -139,7 +140,7 @@ The team owns the story. This is the skeleton it has to fit.
 1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers, and say the two focus areas by name.
 2. **System 1 live (90 s):** on a phone: free for 20 min, matched (with Priya, the demo partner, and say she's a demo partner), a UCalgary quest, a photo, the AI referee confirms it, the recap.
 3. **Why it works (30 s):** the human metrics on the dashboard, and safety in one sentence.
-4. **System 2 (30 s):** the crew and the weekly leaderboard.
+4. **System 2 (30 s):** crew leaderboard, the Claim map, a zone stolen.
 5. **Close (10 s):** what a pilot on campus looks like.
 
 The final adds 2 minutes: scalability (cost, any city), the tech architecture, and what we'd measure in a pilot.
@@ -152,8 +153,8 @@ The final adds 2 minutes: scalability (cost, any city), the tech architecture, a
 | --- | --- |
 | UI/UX and metrics | Design system, every screen, the human metrics dashboard, ratings, the screenshots in the video |
 | Backend | Login and the demo login, matching, the live deploy, no secrets in the repo |
-| AI | Grounded quests with sources, the proof referee, recaps, the cost-per-quest number |
-| Friends and demo | Quests and story, testers, the video, the Devpost write-up, the title format, submitting early |
+| AI | The proof referee, recaps, the cost-per-check number |
+| Friends and demo | Quests and story, Claim rules, testers, the video, the Devpost write-up, the title format, submitting early |
 
 ## Side pots and sponsor prizes
 
@@ -164,7 +165,7 @@ Every team is entered for every side pot automatically, and each one is scored o
 | **Clio, Best in Accessibility** ($100) | Inclusive, intuitive design, plus strong privacy, security and transparency | Comfort settings, ten quest languages, step-free quests, AA contrast. Location is deleted the moment you're matched, a partner only ever sees a rough distance, a first name only after both say yes, media served only to people on that quest, and download or delete all your data from `/privacy`, which also says which AI sees your photos. Priya is labelled as a practice partner | **Yes.** Show `/privacy` for 5 seconds in the pitch |
 | **Benevity, Best Local Impact** ($100 + $100 to donate) | A significant **Calgary** challenge, with a feasible solution that lasts | Quests at real Calgary places (the +15, Chinatown, Central Library, Prince's Island), newcomer quests that work as a city orientation, and a pilot on the UCalgary campus | **Yes**, but it needs one sourced Calgary number about loneliness or newcomers. Don't make one up |
 | **Voltex, Real-World Energy Data** ($500) | Real published or measured energy data, such as AESO, central to the product, live preferred. Sample or AI-made data scores 1 | Nothing. See below | **No** |
-| **MLH Gemini API** | Gemini actually used | The code has `src/lib/gemini-live.ts`, but we chose Claude for the demo | **No.** Don't tick it |
+| **MLH Gemini API** | Gemini actually used | `src/lib/gemini-live.ts` exists, but we chose Claude for the demo | **No.** Don't tick it |
 | **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | **Yes**, live on amble.health |
 | **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | **Yes**, live on amble.health |
 | **MLH Vultr** | Hosted on Vultr | Nothing: we host on Vercel | **No** (Danny's call) |
@@ -192,7 +193,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 **Still open, ranked by points per hour of work.** Take one, and strike it out here when it's merged.
 
 1. ~~Deploy it~~ Done: live at https://amble.health with Auth0, Tiger Data and live AI (`docs/DEPLOYMENT.md`). **Still to do:** test on a real iPhone and Android over HTTPS: GPS, the camera upload, Auth0 sign-in and "Try the demo".
-2. ~~**Make sure the deployed server really runs Gemini.**~~ Decided Nov 7: the demo runs Claude. Set `AI_PROVIDER=claude` in Vercel so a stray Gemini key can't switch it. Video proof is judged from three still frames, and quests use a saved OpenStreetMap snapshot when Overpass is down.
+2. ~~**Make sure the deployed server really runs Gemini.**~~ Decided Nov 7: the demo runs Claude. Set `AI_PROVIDER=claude` in Vercel so a stray Gemini key can't switch it. Video proof is judged from three still frames.
 3. **Submit to Devpost by 10:30 Sunday** (friends and demo, about 2 h, mostly the video). Video between 2:00 and 5:00, title `TEAM ID - TEAM NAME - Amble`, all four members, and the description and AI disclosure from [DEVPOST.md](DEVPOST.md).
 4. **Write give-back and skill-swap starter quests on campus** (friends and demo, 30 min). Focus area 1 names "volunteering, skill-sharing", and the pack has no quests for either. Two of each, tagged, plus a couple more `newcomer` ones. These are the ones to show the judges.
 5. **Rehearse to 2:45 with a timer, twice, all four of us** (1 h). Then each person answers three random questions from [WALKTHROUGH.md](WALKTHROUGH.md) without notes. This is the disqualification risk.
@@ -200,7 +201,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 7. **Most of the starter pack is out of reach** (friends and demo, 30 min). Since commit 0763c7f the pack is 17 Calgary quests, and only 3 are within a kilometre of campus (ping pong at Schulich, the Art Parkade roof and running backwards at Foothills). The rest are 4 to 10 km away but still say "20 min", and the search screen even shows "Quests waiting at Glenmore Dam, Calgary Zoo". Add 4 to 6 more campus quests, and give the downtown ones honest durations or make them crew quests.
 8. **There are no "anywhere" quests any more** (friends and demo, 10 min). The JUDGING story promises anywhere quests for people who can't get to campus. Add two or three back, or drop the promise from the pitch. (`bun run smoke` no longer depends on them, and passes 86 of 86 on real Postgres too.)
 9. **One sourced Calgary number for Benevity** (20 min of research). Use something published, for example from the City of Calgary or United Way of Calgary on isolation or newcomers. Quote it exactly, with the source.
-10. **Measure the cost per quest** (AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one batch into a dollar figure for Feasibility.
+10. **Measure the cost per proof check** (AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one check into a dollar figure for Feasibility.
 11. ~~**The recap with a bad id.**~~ Done: an unknown run says "no recap here", an unfinished one says "not done yet" and links back to the quest, and no signal offers Try again. None of them show the zero stats.
 12. ~~**The recap with no GPS.**~~ Done: the distance is hidden when there's no route, and "1 minute" is singular.
 13. **Don't promise what isn't built.** This file used to mention a mascot, a monthly UCLA loneliness check, ratings per category, races, 1v1 challenges and appeals. None of those are in the code. Leave them out of the pitch unless someone builds them.

@@ -14,11 +14,16 @@ function newCode() {
   return `${WORDS[a % WORDS.length]}-${String(b % 100).padStart(2, "0")}${"ABCDEFGHJKMNPQRSTUVWXYZ"[(a >> 8) % 23]}`;
 }
 
-async function toCrew(row: CrewRow): Promise<Crew> {
+// Every "Try the demo" login joins the seeded crew, so judges would see a
+// growing list of Guests. Other demo logins are left out of the member list;
+// you always see yourself.
+async function toCrew(row: CrewRow, viewerId?: string): Promise<Crew> {
   const members = await query<Omit<CrewMember, "joined_at"> & { joined_at: Date }>(
     `select u.id as user_id, u.display_name, u.avatar_url, u.coins, m.joined_at
-     from crew_members m join users u on u.id = m.user_id where m.crew_id = $1 order by m.joined_at, u.id`,
-    [row.id],
+     from crew_members m join users u on u.id = m.user_id
+     where m.crew_id = $1 and (u.auth0_sub not like 'demo|%' or u.id = $2)
+     order by m.joined_at, u.id`,
+    [row.id, viewerId ?? null],
   );
   const shared = await query<QuestRow>(
     `select q.* from crew_quests c join quests q on q.id = c.quest_id where c.crew_id = $1 order by c.created_at desc`,
@@ -43,7 +48,7 @@ export async function myCrews(user: User) {
      where m.user_id = $1 order by m.joined_at, c.id`,
     [user.id],
   );
-  return Promise.all(rows.map(toCrew));
+  return Promise.all(rows.map((r) => toCrew(r, user.id)));
 }
 
 export async function createCrew(user: User, name: string | undefined) {
@@ -57,7 +62,7 @@ export async function createCrew(user: User, name: string | undefined) {
     await query("insert into crew_members (crew_id, user_id) values ($1, $2)", [crew!.id, user.id]);
     return crew!;
   });
-  return toCrew(row);
+  return toCrew(row, user.id);
 }
 
 async function crewFor(user: User, id: string) {
@@ -69,7 +74,7 @@ async function crewFor(user: User, id: string) {
   return row;
 }
 
-export const getCrew = async (user: User, id: string) => toCrew(await crewFor(user, id));
+export const getCrew = async (user: User, id: string) => toCrew(await crewFor(user, id), user.id);
 
 // Just the crew's name, so the join page can name it or say the code is wrong
 // before anyone taps Join.
@@ -83,11 +88,11 @@ export async function joinCrew(user: User, code: string | undefined) {
   const row = await one<CrewRow>("select * from crews where invite_code = $1", [code?.trim().toUpperCase() ?? ""]);
   if (!row) throw new HttpError(404, "That code doesn't match a crew. Check it with your friend.");
   await query("insert into crew_members (crew_id, user_id) values ($1, $2) on conflict do nothing", [row.id, user.id]);
-  return toCrew(row);
+  return toCrew(row, user.id);
 }
 
 // Puts a demo login in the seeded crew, so a judge lands on a populated crew
-// tab. Does nothing if the seed data isn't there.
+// tab and Claim map. Does nothing if the seed data isn't there.
 export async function joinDemoCrew(userId: string) {
   await query(
     `insert into crew_members (crew_id, user_id)
@@ -125,7 +130,7 @@ export async function crewLeaderboard(): Promise<LeaderboardEntry[]> {
 }
 
 export async function memberLeaderboard(user: User, crewId: string): Promise<LeaderboardEntry[]> {
-  const crew = await toCrew(await crewFor(user, crewId));
+  const crew = await toCrew(await crewFor(user, crewId), user.id);
   return [...crew.members]
     .sort((a, b) => b.coins - a.coins)
     .map((m, i) => ({ rank: i + 1, id: m.user_id, name: m.display_name, coins: m.coins }));

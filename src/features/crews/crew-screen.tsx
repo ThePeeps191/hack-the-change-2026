@@ -1,17 +1,20 @@
 "use client";
 import { motion } from "motion/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar } from "@/components/ui/hero";
+import { Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { Avatar, Crown } from "@/components/ui/avatar";
 import { Coin } from "@/components/ui/quest-glyph";
 import { Podium } from "./podium";
 import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
+import { ClaimPeek } from "@/features/claim/claim-peek";
+import { InviteSheet } from "./invite-sheet";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -22,7 +25,7 @@ const rise = (i: number) => ({
 export function CrewScreen() {
   const [crew, setCrew] = useState<Crew | null | undefined>(undefined);
   const [board, setBoard] = useState<LeaderboardEntry[] | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [inviting, setInviting] = useState(false);
 
   const reload = () => {
     api.crews().then((c) => setCrew(c[0] ?? null)).catch(() => setCrew(null));
@@ -30,18 +33,6 @@ export function CrewScreen() {
   };
 
   useEffect(reload, []);
-
-  async function copy() {
-    if (!crew) return;
-    tick(0.8);
-    const link = `${location.origin}/join/${crew.invite_code}`;
-    try {
-      if (navigator.share) await navigator.share({ title: `Join ${crew.name}`, url: link });
-      else await navigator.clipboard.writeText(link);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
-  }
 
   const members = crew ? [...crew.members].sort((a, b) => b.coins - a.coins) : [];
 
@@ -52,11 +43,11 @@ export function CrewScreen() {
           center="crew"
           right={
             crew && (
-              <button onClick={copy} className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-on-sky/95 hover:bg-white/15">
+              <button onClick={() => { tick(0.6); setInviting(true); }} className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-on-sky/95 hover:bg-white/15">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M12 4v11M7.5 8.5L12 4l4.5 4.5M5 14v5h14v-5" />
                 </svg>
-                {copied ? "Copied" : "Invite"}
+                Invite
               </button>
             )
           }
@@ -81,6 +72,28 @@ export function CrewScreen() {
 
       <div className="space-y-7 px-4 pt-6">
         {crew === null && <NoCrewActions onDone={reload} />}
+        {crew && (
+          <motion.div {...rise(0)}>
+            <Link
+              href="/claim"
+              onClick={() => tick(0.6)}
+              className="claim-card group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
+            >
+              <Stars className="hidden dark:block" />
+              <div className="relative flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium tracking-[0.02em] text-white">Claim · live this week</p>
+                  <p className="mt-2 text-[19px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
+                  <p className="mt-3 flex items-center gap-1 text-[15px] font-semibold">
+                    Open the map
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="transition-transform group-hover:translate-x-0.5"><path d="M9 5l7 7-7 7" /></svg>
+                  </p>
+                </div>
+                <ClaimPeek crewId={crew.id} />
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {crew && (
           <section aria-labelledby="who">
@@ -149,6 +162,7 @@ export function CrewScreen() {
 
         {crew && <AnywhereQuests crew={crew} onChange={reload} />}
       </div>
+      {crew && <InviteSheet open={inviting} onClose={() => setInviting(false)} name={crew.name} code={crew.invite_code} />}
     </AppShell>
   );
 }

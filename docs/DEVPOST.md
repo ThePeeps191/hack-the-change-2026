@@ -28,7 +28,7 @@ Amble answers Prompt 1 through two focus areas: **Community Connection & Inclusi
 
 Tap "I'm free" and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place, such as a game of ping-pong to 13 in the engineering building, or finding eight number eights in Chinatown in eight minutes. There's something to do besides small talk. Take a photo, and an AI referee (Gemini) checks it against the quest, the place and the time. Then you see a recap of your walk, and choose whether to stay in touch. You only connect if you both say yes.
 
-With friends, crews earn coins together and climb a weekly board.
+With friends, crews earn coins together and play **Claim**, a game where you take spots on the campus map by beating that spot's challenge.
 
 The "You" tab shows numbers that matter, privately and never ranked: active minutes against Canada's 150-minute guideline, "familiar faces" (people you've done several quests with, measured against research on how many hours friendship takes), new places, and how you felt before and after.
 
@@ -41,7 +41,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 ### How we built it
 
-One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. **Claude** (Anthropic's Claude Haiku) writes quests at real public places taken from OpenStreetMap, checks proof photos and videos (three still frames from each video), and writes recaps. Every quest the AI writes passes a safety check in code (blocked topics, distance, duration), and every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
+One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. We wrote every quest by hand, at real public places in Calgary. **Claude** (Anthropic's Claude Haiku) checks proof photos and videos (three still frames from each video) and writes recaps. Every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
 
 ### Challenges we ran into
 
@@ -68,4 +68,4 @@ A pilot on the UCalgary campus with <only name partners we actually spoke to>. G
 We used AI in two ways, and we're disclosing both.
 
 1. **Building the project.** We used Claude Code (Anthropic) as a coding assistant throughout, with many sessions working in parallel on separate branches that we reviewed and merged through pull requests. It wrote a large share of the code. We made the product decisions: the idea and focus areas, the safety rules, the metrics and the research behind them, the quests, the design direction and what to cut. Every team member can explain the code. <Add any other tools used, such as image generation or ChatGPT.>
-2. **Inside the product.** Claude Haiku (Anthropic) writes quests near the user, checks proof photos and videos, and writes recap summaries. The code also has a Google Gemini version behind the same interface, which the deployed app doesn't use. Users are told on the privacy page which AI sees their photos.
+2. **Inside the product.** Claude Haiku (Anthropic) checks proof photos and videos and writes recap summaries. It doesn't write the quests: we did, by hand. The code also has a Google Gemini version behind the same interface, which the deployed app doesn't use. Users are told on the privacy page which AI sees their photos.

@@ -388,8 +388,8 @@ a {
 }
 
 /* Category accents: one detail of each quest icon in its category's hue. On a
-   selected (blue) pin it turns white like the rest of the icon. Tinted pins
-   colour the whole icon with --h (data-tint). */
+   selected (blue) pin it turns white like the rest of the icon. Claim's flag
+   pins colour the whole flag with --h (data-tint). */
 .cat-accent { color: hsl(var(--h) 68% 40%); }
 .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 70% 45%); }
 .amble-marker[data-selected] .cat-accent,
@@ -400,10 +400,45 @@ a {
   .amble-marker[data-tint] .amble-pin-face { color: hsl(var(--h) 80% 72%); }
 }
 
-/* A held flag (the ink flag icon) sways gently from its pole. */
+/* A held Claim flag sways gently from its pole. */
 .flag-fly { transform-box: view-box; transform-origin: 6px 8px; animation: flag-fly 2.8s ease-in-out infinite; }
 @keyframes flag-fly { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-7deg) scaleX(.93); } }
 @media (prefers-reduced-motion: reduce) { .flag-fly { animation: none; } }
+
+/* The Claim card on Crew: by day a deeper patch of the same sky with a little
+   late sun in the corner; at night the dusk sky with stars. A soft light
+   glint crosses it now and then, like sun catching glass. No purple, so it
+   sits in the page's blues instead of fighting them. */
+.claim-card {
+  background:
+    radial-gradient(90% 70% at 105% 115%, rgb(255 205 150 / .3), transparent 60%),
+    linear-gradient(165deg, #2558ad 0%, #2c63b9 60%, #3169be 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .claim-card {
+    background:
+        radial-gradient(90% 70% at 105% 115%, rgb(255 190 140 / .16), transparent 60%),
+      linear-gradient(170deg, #1a3466 0%, #22407a 60%, #2a4c88 100%);
+  }
+}
+
+/* The glint: a pale diagonal band that sweeps across the card in about two
+   seconds, then rests for four. ::before paints under the card's text. */
+.claim-card::before {
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / .16), transparent);
+  transform: translateX(-130%) skewX(-20deg);
+  animation: claim-glint 6s ease-in-out 1.2s infinite;
+}
+@keyframes claim-glint {
+  0% { transform: translateX(-130%) skewX(-20deg); }
+  35%, 100% { transform: translateX(330%) skewX(-20deg); }
+}
+@media (prefers-reduced-motion: reduce) { .claim-card::before { animation: none; display: none; } }
 
 /* Passport stamps: each has its own ink (--ink). In dark mode the ink is
    mixed with white so the small type stays readable on the dark page, and the
@@ -495,12 +530,13 @@ a {
   font-feature-settings: "lnum", "tnum";
 }
 
-/* A tinted pin keeps its colour when selected. */
+/* A tinted pin (Claim: yours blue, theirs orange) keeps its team colour when
+   selected, so picking a rival's zone never makes it look like yours. */
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-face,
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-tip { background: hsl(var(--h) 62% 50%); }
 
 /* The one big quest or place title on a screen (quest page, quest sheet,
-   invite): Fraunces, fully soft. Titles in lists stay in the body
+   invite, Claim zone): Fraunces, fully soft. Titles in lists stay in the body
    sans, semibold, so a list reads as one family. */
 .name-serif {
   font-family: var(--font-numeral);

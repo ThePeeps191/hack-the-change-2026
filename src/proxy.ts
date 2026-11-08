@@ -25,5 +25,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
+  // The install files (manifest, service worker, icons) are skipped too: phones
+  // fetch them without a session, and a login redirect would block installing.
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.webmanifest|sw.js|icons/|apple-icon.png).*)"],
 };

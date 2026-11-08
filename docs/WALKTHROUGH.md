@@ -6,7 +6,7 @@ If you change how something works, update the section here that describes it.
 
 ## The one-minute version
 
-Amble is one website, built with Next.js. On a phone you say "I'm free for 20 minutes". The server finds the nearest other person who's free, gives you both the same short quest at a public place, and an AI checks your photo when you've done it. Then you see a recap. Crews of friends earn coins together and climb a weekly board.
+Amble is one website, built with Next.js. On a phone you say "I'm free for 20 minutes". The server finds the nearest other person who's free, gives you both the same short quest at a public place, and an AI checks your photo when you've done it. Then you see a recap. Crews of friends earn coins together and compete for spots on a campus map, which is the Claim game.
 
 There's one server and one database, and there are no background jobs. The phone asks the server for updates every few seconds, and every rule lives on the server, so the phone can't cheat.
 
@@ -18,7 +18,7 @@ Think of a request travelling down through five layers:
 1. Screen         src/features/<feature>/*.tsx      what you see and tap
 2. API client     src/lib/api.ts                    one function per endpoint, so screens never call fetch
 3. Route          src/app/api/**/route.ts           about 10 lines: who are you, read the input, call the server
-4. Server rules   src/server/*.ts                   every decision: matching, runs, proof, coins
+4. Server rules   src/server/*.ts                   every decision: matching, runs, proof, coins, Claim
 5. Database       src/lib/db.ts                     one query() function, which talks to Postgres
 ```
 
@@ -37,7 +37,7 @@ On the side are the AI (`src/lib/ai.ts`), login (`src/lib/auth.ts`) and real pla
 This is the main demo. Each step names the function that does it.
 
 1. **"I'm free."** The phone asks for GPS (`getPosition` in `src/lib/geo.ts`). If that's denied or slow, it falls back to the middle of campus and says so on screen. It then calls `POST /api/availability`, which runs `setFree` in `src/server/matching.ts`. That stores your location for 20 minutes, after `assertCanMeet` in `src/server/safety.ts` has checked you're 18 or over, verified, and that it's daylight.
-2. **The AI starts writing quests now, while you wait** (`warmQuests` in `src/server/quests.ts`). By the time you're matched, a quest is usually ready.
+2. **Quests are hand-made.** The AI never writes them: the pair gets the nearest starter quest from `data/quests/quests.json` that suits both people (`pickPairQuest` in `src/server/quests.ts`).
 3. **Finding someone.** The match screen asks `GET /api/match` every 3 seconds (`currentMatch`). That calls `tryPair`, which takes a database lock, so two people searching at the same moment can't both grab the same third person. It then finds the nearest free person within 2 km, adds a penalty when comfort settings clash (chatty versus side by side), skips anyone you've reported or just turned down, and creates a match. **Both people's locations are deleted at that moment.**
 4. **What you see before saying yes:** a rough distance and nothing else. Your partner's name only appears once you've both said yes (`toMatch`).
 5. **Both say yes.** The second "yes" calls `finalize`. In one database transaction it picks a quest that fits both people's settings (`pickPairQuest`, then `chooseForPair`) and creates the run, so two taps at the same moment can't create two runs.
@@ -55,18 +55,16 @@ There's no timer or queue running on the server. State moves forward when someon
 
 ## The AI: what it does and what stops it going wrong
 
-All AI calls go through three functions in `src/lib/ai.ts`: `generateQuests`, `judgeProof` and `writeRecap`. Behind them:
+All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `writeRecap` (`generateQuests` is still there but nothing calls it: quests are hand-made). Behind them:
 
 - **Mock mode** (`AI_MODE=mock`, the default while building) returns starter quests and a fake verdict after 2 seconds. Dozens of sessions can run without spending anyone's credits.
 - **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Claude.** Claude can't watch video, so for video proof the phone also sends one JPEG of three still frames (start, middle, end; `src/lib/video-frames.ts`) and Claude judges that. If a frame comes out blank, as iPhone Safari sometimes does, no frames are sent and place and time decide.
 
-**Quests are always at real places.** `placesNear` in `src/lib/places.ts` fetches real, public places near you from OpenStreetMap (libraries, parks, cafés, viewpoints, but no bars and nothing private), plus our own hand-picked campus places. Overpass, the free OpenStreetMap server, is often overloaded, so we ask its mirrors at once for 3.5 s and otherwise use a saved snapshot of 371 real places around campus and central Calgary (`data/places/calgary.json`, made by `scripts/snapshot-places.ts` from Photon, another free OpenStreetMap search). The model picks from that numbered list, and **the coordinates always come from the list, never from the model**, so it can't invent a place. In Gemini mode, Maps and Search grounding add real context and source links, which the quest screen shows.
+**Quests are hand-made.** Every quest is in `data/quests/quests.json`, written and checked by us, so the safety rules (public, daylight, walking pace) are ours, not a prompt's. The older AI quest-writing code (`generateQuests`, `src/lib/places.ts`, `toSafeQuest`) is still in the repo, but nothing calls it.
 
-**A light check on every AI quest.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace and nothing dangerous. Then `toSafeQuest` checks every quest that comes back: a short list of clearly wrong words (alcohol, drugs, weapons, nudity), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped. We kept this deliberately small: a longer word list threw away good quests.
+**The AI never blocks a person.** Every call has a timeout. If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
 
-**The AI never blocks a person.** Every call has a timeout. If quest writing is slow or fails, you get the starter pack (`data/quests/quests.json`). If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
-
-**Cost.** One call writes several quests for an area, and they're cached for 6 hours within 1 km (`recentlyWritten`), so everyone nearby shares them. Token counts are logged on every call (`logUsage`), without any content, so we can quote a real cost per quest.
+**Cost.** The AI only runs on proof checks and recaps. Token counts are logged on every call (`logUsage`), without any content, so we can quote a real cost per quest.
 
 **The prompt-injection defence on proof:** the proof prompt tells the model to ignore any writing in the photo that tries to tell it what to answer, and to reject screenshots and photos of screens.
 
@@ -84,7 +82,7 @@ All AI calls go through three functions in `src/lib/ai.ts`: `generateQuests`, `j
 - **Production:** real Postgres on **Tiger Data**, when `DATABASE_URL` is set. There, `location_pings` is a TimescaleDB **hypertable** with a **30-day retention policy**, so routes delete themselves (`db/migrations/20261107T1501_tiger_hypertable.sql`).
 - **Local:** embedded Postgres (PGlite) in `.data/`, one per worktree, which migrates and seeds itself. The same SQL runs on both, and nobody needs an account to run the app.
 
-The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables are `users`, `availability` (who's free, deleted on match), `matches`, `quests`, `quest_runs` and `run_members`, `submissions` (proof), `location_pings`, `crews`, `games` and `zones` (unused since Claim was cut), `coin_events`, `connections`, `reports` and `checkins` (mood).
+The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables are `users`, `availability` (who's free, deleted on match), `matches`, `quests`, `quest_runs` and `run_members`, `submissions` (proof), `location_pings`, `crews`, `games` and `zones` (Claim), `coin_events`, `connections`, `reports` and `checkins` (mood).
 
 ## Privacy, in the code
 
@@ -99,10 +97,12 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 | Report someone and you're never paired again | `report` in `people.ts`, and the `not exists` check in `tryPair` |
 | Keys never reach the browser | All AI and database calls are server-only (`import "server-only"`), and `/api/health` reports where a key came from, never the key itself |
 
-## System 2: crews and coins
+## System 2: crews, coins and Claim
 
 - **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. Start a quest together and you land on the same run.
 - **Coins** come from every finished quest and are paid once (see above). The weekly board (`crewLeaderboard`) only counts the last 7 days, so a quiet week starts everyone level again.
+- **Claim** (`src/server/games.ts`): campus spots are zones, each with a challenge and a best score. Finish the challenge with approved proof and you take an empty zone. To steal a held zone you have to beat its best score. `attemptZone` locks the zone row so two teams can't take it at once.
+- **Ratings:** stealing a zone is the one real win and loss in the app, so it's the only place ratings change: Glicko-2 from the `glicko2` package (`rateSteal`). Each crew has one rating. Stranger quests are cooperative and never touch a rating.
 
 ## The wellbeing numbers (the You tab)
 
@@ -125,9 +125,11 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 Vercel hosts the app at https://amble.health and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). Every outside service and env var is listed in `docs/DEPLOYMENT.md`.
 
+**Installing it as an app.** Chrome offers "Install app" because of three things: the manifest (`src/app/manifest.ts`, with icons in `public/icons/`), HTTPS, and a service worker (`public/sw.js`, registered by `src/components/register-sw.tsx`). The service worker caches nothing on purpose, so an installed app always runs the latest deploy. `src/app/apple-icon.png` is the home-screen icon on iPhone (Share, then Add to Home Screen).
+
 ## Testing
 
-`scripts/smoke.ts` drives the whole product over HTTP as a dozen made-up people: matching, two people accepting at the same moment, proof, coins, access checks, data export and deletion. Run `BASE_URL=http://localhost:3001 bun run smoke`. On Nov 7 evening it passed 85 of 86. The one failure is item 8 in the [JUDGING audit](JUDGING.md#audit-what-a-judge-sees-today): the starter pack no longer has any anywhere quests. `bun run check` runs types and lint.
+`scripts/smoke.ts` drives the whole product over HTTP as a dozen made-up people: matching, two people accepting at the same moment, proof, coins, Claim, access checks, data export and deletion. Run `BASE_URL=http://localhost:3001 bun run smoke`. On Nov 7 evening it passed 85 of 86. The one failure is item 8 in the [JUDGING audit](JUDGING.md#audit-what-a-judge-sees-today): the starter pack no longer has any anywhere quests. `bun run check` runs types and lint.
 
 ## How we used AI to build it
 
@@ -141,13 +143,13 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. Crews and invite links work with zero strangers around, and "anywhere" quests work alone. In the demo, Priya is a labelled practice partner.
 
-**"Can't people fake the photo?"** The server first checks the photo was taken near the place and during the quest, and the AI then checks it shows the task, rejecting screenshots. Someone could still fake it, but the reward is coins on a friendly board, so it isn't worth it.
+**"Can't people fake the photo?"** The server first checks the photo was taken near the place and during the quest, and the AI then checks it shows the task, rejecting screenshots. Someone could still fake it, but the reward is coins on a friendly board, so it isn't worth it. For Claim, which has a real winner, you need approved proof and a score that beats the best.
 
 **"What does the AI cost per user?"** One call writes several quests for an area, and they're shared with everyone within 1 km for 6 hours. Proof is one small image call. *(Quote the measured figure from Devpost here, once someone has measured it.)*
 
-**"What happens when the AI is down or wrong?"** Quests fall back to our hand-written starter pack, proof counts anyway and says so, and the recap falls back to a plain summary. Every call has a timeout, so nothing hangs.
+**"What happens when the AI is down or wrong?"** Quests are hand-written, so they don't depend on it. Proof counts anyway and says so, and the recap falls back to a plain summary. Every call has a timeout, so nothing hangs.
 
-**"Why would anyone open it twice?"** Familiar faces: the second time you're matched with someone, the app notices, and friendship is time spent together.
+**"Why would anyone open it twice?"** Familiar faces: the second time you're matched with someone, the app notices, and friendship is time spent together. And your crew's Claim map changes daily.
 
 **"How is this different from Meetup or Bumble BFF?"** Those ask you to plan a meeting and make conversation. We give two people a 20-minute task right now, so there's something to do besides small talk, and no planning.
 
@@ -159,10 +161,10 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"Why Next.js, Postgres, Auth0?"** One deployable app with typed contracts on both sides, real SQL with transactions and locks for the race conditions in matching, and login we don't have to build or secure ourselves. Tiger Data gives us automatic expiry for location data.
 
-**"Walk me through what happens when I tap 'I'm free'."** Use the System 1 steps above: `setFree` stores your location for 20 minutes, `warmQuests` starts the AI writing, `tryPair` takes a lock and pairs you with the nearest person, and the locations are deleted.
+**"Walk me through what happens when I tap 'I'm free'."** Use the System 1 steps above: `setFree` stores your location for 20 minutes, `tryPair` takes a lock and pairs you with the nearest person, and the locations are deleted.
 
-**"How does it scale to another city?"** Nothing is tied to Calgary except the starter pack. Quests come from OpenStreetMap places near any point, cached per area, and the server has no state outside Postgres.
+**"How does it scale to another city?"** Nothing is tied to Calgary except the starter quests: a new city needs its own hand-made quests in `data/quests/`. The server has no state outside Postgres.
 
-**"Show me where X is in the code."** Each of us should be able to open these without searching: `src/server/matching.ts` (pairing), `src/server/proof.ts` (proof checks), `src/lib/quest-safety.ts` (AI safety), `src/lib/places.ts` (real places), `src/server/users.ts` (delete my data).
+**"Show me where X is in the code."** Each of us should be able to open these without searching: `src/server/matching.ts` (pairing), `src/server/proof.ts` (proof checks), `src/lib/quest-safety.ts` (AI safety), `src/lib/places.ts` (real places), `src/server/games.ts` (Claim and ratings), `src/server/users.ts` (delete my data).
 
 **"Did you write this, or did AI?"** Both, and it's disclosed. We used Claude Code to write a lot of the code quickly. We designed the product, the safety rules, the metrics and the quests, and we can explain every part, which this conversation is showing.

@@ -5,6 +5,7 @@ import type {
   Connection,
   Crew,
   Dashboard,
+  Game,
   LeaderboardEntry,
   Match,
   Quest,
@@ -12,6 +13,7 @@ import type {
   Recap,
   User,
   Verdict,
+  Zone,
 } from "./contracts";
 
 export class ApiError extends Error {
@@ -95,14 +97,12 @@ export const api = {
   acceptInvite: (code: string, pos?: { lat: number; lng: number }) =>
     post<Match>(`/api/invites/${code}/accept`, pos),
 
-  generateQuests: (lat: number, lng: number, count?: number) =>
-    post<Quest[]>("/api/quests/generate", { lat, lng, count }),
   quests: (type?: Quest["type"]) =>
     call<Quest[]>(`/api/quests${type ? `?type=${type}` : ""}`),
   quest: (id: string) => call<Quest>(`/api/quests/${id}`),
 
-  // Crew and solo runs only; pair runs arrive on Match.run_id.
-  startRun: (body: { quest_id: string; crew_id?: string }) =>
+  // Crew and Claim runs only; pair runs arrive on Match.run_id.
+  startRun: (body: { quest_id: string; crew_id?: string; zone_id?: string }) =>
     post<QuestRun>("/api/runs", body),
   run: (id: string) => call<QuestRun>(`/api/runs/${id}`),
   currentRun: () => call<QuestRun | null>("/api/runs/current"),
@@ -136,4 +136,16 @@ export const api = {
     ),
 
   dashboard: () => call<Dashboard>("/api/dashboard"),
+
+  createGame: (body?: {
+    crew_id?: string;
+    name?: string;
+    rival_code?: string;
+  }) => post<Game>("/api/games", body),
+  game: (id: string) => call<Game>(`/api/games/${id}`),
+  attemptZone: (
+    gameId: string,
+    zoneId: string,
+    body: { run_id: string; result: number },
+  ) => post<Zone>(`/api/games/${gameId}/zones/${zoneId}/attempts`, body),
 };

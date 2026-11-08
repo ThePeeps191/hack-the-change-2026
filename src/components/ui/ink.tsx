@@ -54,13 +54,12 @@ export const CloudInk = (
   </>
 );
 
-// Two footprints, left then right, for distance walked.
+// Two footprints, left then right, for distance walked: each a whole sole,
+// wide at the toes and narrow at the arch, so it reads at 16 px.
 export const StepsInk = (
   <>
-    <path d="M6.8 3.6c1.5-.1 2.4 1.4 2.3 3.3-.1 1.9-.9 3.4-2.2 3.4-1.4 0-2.1-1.5-2-3.3.1-1.9.6-3.3 1.9-3.4z" />
-    <path d="M6.1 12.6c.9 0 1.5.6 1.5 1.5 0 .8-.6 1.5-1.4 1.5-.8 0-1.4-.7-1.4-1.5 0-.8.5-1.4 1.3-1.5z" />
-    <path d="M16.9 8.4c1.4.1 2 1.6 1.9 3.4-.1 1.9-.8 3.3-2.1 3.3-1.4 0-2.2-1.5-2.1-3.4.1-1.9 1-3.4 2.3-3.3z" />
-    <path d="M17.4 17.4c.8 0 1.3.7 1.3 1.5 0 .8-.6 1.5-1.4 1.5-.8 0-1.4-.7-1.4-1.5 0-.9.6-1.5 1.5-1.5z" />
+    <path d="M7.4 2.8c1.8 0 2.8 1.7 2.6 3.8-.2 1.7-1 2.6-1.1 4-.1 1.5.5 2.6-.3 3.6-.7.9-2.2.9-2.9-.1-.7-1-.1-2.3-.3-3.8-.2-1.6-1.1-2.7-1-4.3.2-1.9 1.3-3.2 3-3.2z" />
+    <path d="M16.6 8.3c1.8 0 2.8 1.7 2.6 3.8-.2 1.7-1 2.6-1.1 4-.1 1.5.5 2.6-.3 3.6-.7.9-2.2.9-2.9-.1-.7-1-.1-2.3-.3-3.8-.2-1.6-1.1-2.7-1-4.3.2-1.9 1.3-3.2 3-3.2z" />
   </>
 );
 
@@ -94,7 +93,7 @@ export const PinInk = (
 // A flag, drawn in ink: a pole leaning a touch, a wavy cloth, and a tuft of
 // ground at its foot. Held flags get hatching and a faint wash on the cloth,
 // and the cloth (with its hatching) sways from the pole (.flag-fly). Open
-// flags are an empty outline.
+// flags are an empty outline. As a string too, for map pins built as HTML.
 const FLAG_POLE = "M6.3 21.1c-.2-5.6-.1-11.3.1-17";
 const FLAG_GROUND = "M3.7 21.3c1.7-.5 3.5-.5 5.3 0";
 const FLAG_CLOTH = "M6.4 4.3c2.1-.9 4 .6 6.1.1 1.6-.4 3.1-.9 4.7-.4-.8 1.6-1.4 3.1-.6 4.8-1.7-.4-3.2.2-4.8.6-2 .4-3.6-.8-5.5.1";
@@ -104,6 +103,9 @@ export function inkFlagMarkup(held: boolean, fill = "currentColor") {
   return `<g filter="url(#ink)"><path d="${FLAG_GROUND}"/><path d="${FLAG_POLE}"/><g class="${held ? "flag-fly" : ""}" style="transform-box:fill-box;transform-origin:0% 50%"><path d="${FLAG_CLOTH}" fill="${held ? fill : "none"}" fill-opacity="${held ? 0.2 : 0}"/>${held ? `<path d="${FLAG_HATCH}" stroke-width="1.1"/>` : ""}</g></g>`;
 }
 
+export function inkFlagSvg(held: boolean, size = 20) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inkFlagMarkup(held)}</svg>`;
+}
 
 export function InkFlag({ held, color, size = 22, className = "" }: { held: boolean; color: string; size?: number; className?: string }) {
   return (

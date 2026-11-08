@@ -19,7 +19,6 @@ import { Coin } from "@/components/ui/quest-glyph";
 import { InviteCard } from "@/features/invites/invite-card";
 import { ResumeBanner } from "./resume-banner";
 import { QuestSheet } from "@/features/quests/quest-sheet";
-import { WriteHere } from "@/features/quests/write-here";
 
 function today() {
   return new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toLowerCase();
@@ -94,7 +93,7 @@ export function HomeScreen() {
           {quests === null
             ? [0, 1, 2].map((i) => <Skeleton key={i} className="h-[104px] rounded-[20px]" />)
             : shown.length === 0
-              ? <p className="px-1 text-[15px] text-ink-muted">Nothing mapped near you yet. Tap below and the AI will write a quest for where you are.</p>
+              ? <p className="px-1 text-[15px] text-ink-muted">Nothing mapped near you yet.</p>
               : (
                 <AnimatePresence initial={false}>
                   {shown.map((q, i) => (
@@ -119,13 +118,6 @@ export function HomeScreen() {
             </svg>
           </button>
         )}
-        <WriteHere
-          known={new Set((quests ?? []).map((q) => q.id))}
-          onQuests={(fresh, at) => {
-            setQuests((old) => [...fresh, ...(old ?? []).filter((q) => !fresh.some((f) => f.id === q.id))]);
-            setHere(at); // sort from where they were written, so they come first
-          }}
-        />
       </section>
 
       {anywhere.length > 0 && (
