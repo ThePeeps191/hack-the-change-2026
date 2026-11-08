@@ -19,8 +19,8 @@ Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with
 With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
 
 <p align="center">
-  <img src="docs/images/foosball.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" width="280">
-  <img src="docs/images/amble-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" width="280">
+  <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" width="280">
+  <img src="docs/images/app-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" width="280">
 </p>
 
 ## Try it
@@ -49,15 +49,15 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 5. **Recap.** A short story of your walk, the minutes you were active, how you felt before and after (only you see that), and the choice to stay in touch. You only connect if you both say yes.
 
 <p align="center">
-  <img src="docs/images/app/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
-  <img src="docs/images/app/matched.jpg" alt="Matched with Priya, labelled as a practice partner, with the quest you both get" width="250">
-  <img src="docs/images/app/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Priya" width="250">
+  <img src="docs/images/screens/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/screens/matched.jpg" alt="Matched with Priya, labelled as a practice partner, with the quest you both get" width="250">
+  <img src="docs/images/screens/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Priya" width="250">
 </p>
 
 <p align="center">
-  <img src="docs/images/app/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
-  <img src="docs/images/app/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table we sent on purpose, and says what would count" width="250">
-  <img src="docs/images/app/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
+  <img src="docs/images/screens/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
+  <img src="docs/images/screens/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table we sent on purpose, and says what would count" width="250">
+  <img src="docs/images/screens/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
 **With friends**
@@ -66,9 +66,9 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 - **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
 
 <p align="center">
-  <img src="docs/images/app/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
-  <img src="docs/images/app/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
-  <img src="docs/images/app/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/screens/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/screens/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+  <img src="docs/images/screens/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
 </p>
 
 **The You tab**
