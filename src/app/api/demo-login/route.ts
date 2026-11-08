@@ -14,9 +14,10 @@ export const POST = safe(async (req) => {
   const { name } = await body<{ name: string }>(req);
   const clean = name?.trim().slice(0, 40) || "Guest";
   const value = makeDemoCookie(clean);
-  (await cookies()).set(DEMO_COOKIE, value, { httpOnly: true, sameSite: "lax", secure: publicOrigin(req).startsWith("https"), maxAge: 86_400, path: "/" });
   const user = await findOrCreateUser({ sub: demoSubFrom(value), name: clean, verified: true, ageConfirmed: true });
   await giveDemoCrew(user.id);
   await seedSampleHistory((text, params) => query(text, params), user.id);
+  // Signed in only once the account is ready, so a failed setup never leaves a half-made guest.
+  (await cookies()).set(DEMO_COOKIE, value, { httpOnly: true, sameSite: "lax", secure: publicOrigin(req).startsWith("https"), maxAge: 86_400, path: "/" });
   return noContent();
 });

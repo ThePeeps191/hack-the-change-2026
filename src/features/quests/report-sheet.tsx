@@ -37,21 +37,25 @@ export function ReportSheet({ runId, reportedId }: { runId: string; reportedId: 
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState<"left" | "reported" | null>(null);
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
   const mounted = useSyncExternalStore(noop, () => true, () => false);
 
-  async function send(reason: string) {
+  // Only says it's done once the server has it: a report that never arrived
+  // must not look sent.
+  async function act(what: "left" | "reported", call: () => Promise<unknown>) {
     setBusy(true);
-    await api.report({ reported_id: reportedId, run_id: runId, reason }).catch(() => {});
-    setSent("reported");
-    setBusy(false);
+    setFailed(false);
+    try {
+      await call();
+      setSent(what);
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
   }
-
-  async function leave() {
-    setBusy(true);
-    await api.leaveRun(runId).catch(() => {});
-    setSent("left");
-    setBusy(false);
-  }
+  const send = (reason: string) => act("reported", () => api.report({ reported_id: reportedId, run_id: runId, reason }));
+  const leave = () => act("left", () => api.leaveRun(runId));
 
   // The sheet goes to <body> through a portal, so the sticky button bar it's
   // opened from can't sit on top of it.
@@ -80,6 +84,11 @@ export function ReportSheet({ runId, reportedId }: { runId: string; reportedId: 
               ) : (
                 <>
                   <EmergencyHelp />
+                  {failed && (
+                    <p className="mt-4 rounded-[14px] bg-danger-soft px-3 py-2 text-[14px] text-danger" role="alert">
+                      That didn&apos;t go through. Check your signal and try again, or call the numbers above.
+                    </p>
+                  )}
                   <Button variant="secondary" disabled={busy} onClick={leave} className="mt-5 w-full">I need to go</Button>
                   <p className="mt-1.5 text-center text-[13px] text-ink-muted">Ends the quest. Nobody gets reported.</p>
                   <p className="mt-5 text-[19px] font-semibold">Something wrong?</p>

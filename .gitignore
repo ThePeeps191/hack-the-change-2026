@@ -29,3 +29,6 @@ uploads/
 
 # Private notes for the team, e.g. the UI walkthrough for judging prep
 notes/
+
+# stray server logs
+*.log

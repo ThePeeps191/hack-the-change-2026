@@ -2,7 +2,7 @@ import "server-only";
 import { one, query, transaction } from "@/lib/db";
 import { CAMPUS_ZONES } from "./db/claim-zones";
 import { DEMO_CREW_ID, DEMO_GAME_ID, DEMO_RIVAL_ID, SEED_HOLDERS } from "./db/setup";
-import { newCode } from "./crews";
+import { freshCode } from "./crews";
 
 // Copies a seeded crew for one "Try the demo" visitor: same name, rating and
 // made-up members, a fresh invite code. The visitor "created" it, which is how
@@ -11,7 +11,7 @@ async function copyCrew(seedId: string, userId: string) {
   const crew = await one<{ id: string; name: string }>(
     `insert into crews (name, invite_code, created_by, rating)
      select name, $2, $3, rating from crews where id = $1 returning id, name`,
-    [seedId, newCode(), userId],
+    [seedId, await freshCode(), userId],
   );
   await query(
     `insert into crew_members (crew_id, user_id)
