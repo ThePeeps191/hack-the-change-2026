@@ -1,6 +1,6 @@
 // Change the product name here only.
 export const APP_NAME = "Amble";
-export const APP_TAGLINE = "twenty minutes, someone new, somewhere outside";
+export const APP_TAGLINE = "twenty minutes, someone new, something to do";
 
 // System 1 quests are short by design.
 export const QUEST_MINUTES = 20;

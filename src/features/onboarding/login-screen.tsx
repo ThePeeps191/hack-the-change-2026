@@ -36,7 +36,7 @@ export function LoginScreen({ demo, returnTo }: { demo: boolean; returnTo: strin
       <div className="flex min-h-dvh flex-1 flex-col lg:mx-auto lg:grid lg:w-full lg:max-w-[1120px] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[1fr_auto_1fr] lg:gap-x-14 lg:px-10 px-5 pt-[max(44px,env(safe-area-inset-top))] pb-[max(20px,env(safe-area-inset-bottom))]">
         <motion.div className="text-center lg:col-start-1 lg:row-start-2 lg:text-left" initial={{ opacity: 0, y: 14, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, ease }}>
           <Hand as="h1" className="text-[64px] lg:text-[88px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
-          <p className="mx-auto mt-2 max-w-[26ch] text-[17px] lg:mx-0 lg:text-[20px] leading-snug text-balance text-ink-muted">Twenty minutes, someone new, somewhere outside.</p>
+          <p className="mx-auto mt-2 max-w-[26ch] text-[17px] lg:mx-0 lg:text-[20px] leading-snug text-balance text-ink-muted">Twenty minutes, someone new, something to do.</p>
         </motion.div>
 
         <div className="mt-4 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:mt-0 lg:self-center">
