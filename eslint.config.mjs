@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/**",
+    // Vendored third-party code, kept unchanged.
+    "src/lib/bots/**",
   ]),
 ]);
 
