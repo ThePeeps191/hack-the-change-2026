@@ -37,6 +37,8 @@ We built it for Prompt 1 of Hack the Change, under community connection and incl
 
 Tap "I'm free" and Amble looks for someone nearby. All you see at first is a rough distance, then a first name once you both say yes. You both get the same quest at a public place and meet there, never at each other's location. Each of you can add one line so the other can spot you, like "red jacket, by the main doors". If nobody's around, Amble tells you, and you can send the quest to someone you're with by link or AirDrop.
 
+When you've done it, you send a photo or short video and Claude Haiku checks it against the quest. If it passes, you get coins. Then you see a short recap of the quest, how long you were active and how you felt before and after, which only you can see. You can choose to stay in touch, and you only connect if you both say yes.
+
 **With friends**
 
 - **Crews** share quests, earn coins together and race on a weekly board. Pick a character for yourself on the You tab, and one for your crew on the Crew tab.
