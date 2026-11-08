@@ -140,6 +140,21 @@ export default function GlobeMap({
     pick.current = onSelect;
   }, [onSelect]);
 
+  // Zoomed out, pins pile on top of each other. Walk through them (the
+  // selected one first) and hide any pin that would sit within 40 px of one
+  // already shown. Zoom in and they spread out and come back.
+  const chosen = useRef(selected);
+  function declutter(m: MLMap) {
+    const shown: { x: number; y: number }[] = [];
+    const order = [...pins.current].sort(([a], [b]) => Number(b === chosen.current) - Number(a === chosen.current));
+    for (const [, mk] of order) {
+      const p = m.project(mk.getLngLat());
+      const hide = shown.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < 40);
+      mk.getElement().style.visibility = hide ? "hidden" : "";
+      if (!hide) shown.push(p);
+    }
+  }
+
   // Create the map once.
   useEffect(() => {
     if (!box.current) return;
@@ -153,6 +168,7 @@ export default function GlobeMap({
     });
     map.current = m;
     m.on("style.load", () => dress(m));
+    m.on("move", () => declutter(m));
     m.once("load", () => {
       box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
       loaded.current = true;
@@ -256,10 +272,13 @@ export default function GlobeMap({
       const mk = new maplibregl.Marker({ element: markerEl(k, (id) => pick.current?.(id)), anchor: "center" }).setLngLat([k.lng, k.lat]).addTo(m);
       pins.current.set(k.id, mk);
     }
+    declutter(m);
   }, [markers]);
 
   useEffect(() => {
+    chosen.current = selected;
     for (const [id, mk] of pins.current) mk.getElement().toggleAttribute("data-selected", id === selected);
+    if (map.current) declutter(map.current);
   }, [selected, markers]);
 
   useEffect(() => {

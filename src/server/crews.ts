@@ -71,6 +71,14 @@ async function crewFor(user: User, id: string) {
 
 export const getCrew = async (user: User, id: string) => toCrew(await crewFor(user, id));
 
+// Just the crew's name, so the join page can name it or say the code is wrong
+// before anyone taps Join.
+export async function crewNameForCode(code: string | null) {
+  const row = await one<{ name: string }>("select name from crews where invite_code = $1", [code?.trim().toUpperCase() ?? ""]);
+  if (!row) throw new HttpError(404, "That code doesn't match a crew. Check it with your friend.");
+  return row;
+}
+
 export async function joinCrew(user: User, code: string | undefined) {
   const row = await one<CrewRow>("select * from crews where invite_code = $1", [code?.trim().toUpperCase() ?? ""]);
   if (!row) throw new HttpError(404, "That code doesn't match a crew. Check it with your friend.");

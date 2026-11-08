@@ -78,7 +78,7 @@ export function QuestScreen() {
           left={<HeroIcon href="/" label="Back" d={back} />}
           center={run.mode === "pair" && partner ? `with ${partner.display_name}` : others.length > 1 ? "with your crew" : others.length === 1 ? `with ${partner?.display_name}` : run.mode === "claim" ? "claim attempt" : "on your own"}
         />
-        <div className="flex flex-col items-center pt-2" role="timer" aria-label={left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
+        <div className="flex flex-col items-center pt-2" role={active ? "timer" : undefined} aria-label={active && left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
           {active ? (
             <>
               <div className="font-[family-name:var(--font-display)] text-[84px] leading-none font-semibold tracking-[-0.04em] tabular-nums">
@@ -93,7 +93,7 @@ export function QuestScreen() {
               <Hand className="mt-1 text-[24px] leading-none font-bold">{left === 0 ? "time's up, no rush" : late ? "nearly there" : "minutes, no rush"}</Hand>
             </>
           ) : (
-            <Hand as="h1" className="py-6 text-[38px] leading-none font-bold">
+            <Hand className="py-6 text-[38px] leading-none font-bold">
               {run.status === "completed" ? "you did it" : "time ran out"}
             </Hand>
           )}
@@ -110,8 +110,7 @@ export function QuestScreen() {
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-ink-muted">
               <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
-              <span>{categoryLabel[categoryOf(q)]}</span>
-              <span className="text-ink-faint">· {q.proof} proof</span>
+              <span>{categoryLabel[categoryOf(q)]}<span className="text-ink-faint"> · {q.proof} proof</span></span>
               <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}<span className="sr-only"> coins</span></span>
             </div>
             <h1 className="name-serif mt-3 text-[28px] leading-[1.1] text-pretty">

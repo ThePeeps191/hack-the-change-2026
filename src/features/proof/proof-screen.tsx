@@ -126,7 +126,7 @@ export function ProofScreen() {
               <path d="M14.5 5.5L8 12l6.5 6.5" />
             </svg>
           </Link>
-          <span className="text-[15px] font-medium text-white/90">our proof</span>
+          <h1 className="text-[15px] font-medium text-white/90">our proof</h1>
           <span className="w-11" />
         </header>
 
@@ -153,7 +153,8 @@ export function ProofScreen() {
             </div>
           ) : (
             kind !== "gps" && (
-              <button onClick={() => input.current?.click()} className="grid size-full place-items-center text-white/60 hover:text-white/85" disabled={looking}>
+              // The shutter button below is the one screen readers get; this is a bigger tap target for the same thing.
+              <button onClick={() => input.current?.click()} tabIndex={-1} aria-hidden className="grid size-full place-items-center text-white/60 hover:text-white/85" disabled={looking}>
                 <span className="flex flex-col items-center gap-3">
                   <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
@@ -206,7 +207,7 @@ export function ProofScreen() {
               transition={{ ...soft, delay: view === "approved" ? 0.5 : 0.1 }}
               role="status"
             >
-              <Hand as="h1" className="text-[38px] leading-none font-bold">{view === "approved" ? "that counts" : "not quite yet"}</Hand>
+              <Hand as="h2" className="text-[38px] leading-none font-bold">{view === "approved" ? "that counts" : "not quite yet"}</Hand>
               <p className="mx-auto mt-2 max-w-[32ch] text-[15px] leading-snug text-white/75">{shown.reason.charAt(0).toUpperCase() + shown.reason.slice(1)}</p>
               {view === "approved" && shown.coins != null && (
                 <div className="mt-5 flex flex-col items-center">

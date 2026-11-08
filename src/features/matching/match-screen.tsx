@@ -177,7 +177,7 @@ export function MatchScreen() {
             <Hand as="h1" className="text-[36px] leading-none font-bold">
               {state === "searching" && "looking around…"}
               {state === "found" && "someone's nearby"}
-              {state === "waiting" && "you said yes"}
+              {state === "waiting" && (match?.source === "invite" ? "link sent" : "you said yes")}
               {state === "matched" && `you and ${name ?? "them"}`}
               {state === "ended" && "that one slipped away"}
             </Hand>
@@ -189,7 +189,7 @@ export function MatchScreen() {
                 </>
               )}
               {state === "found" && "They're free right now too."}
-              {state === "waiting" && "Waiting for them to say yes too."}
+              {state === "waiting" && (match?.source === "invite" ? "Waiting for them to open it and say yes." : "Waiting for them to say yes too.")}
               {state === "matched" && (practice ? `${name ?? "They"} is a practice partner, so you can try the whole thing alone.` : "Your quest is ready. Head to the spot and say hi.")}
               {state === "ended" && "No worries. Try again whenever you're free."}
             </p>
