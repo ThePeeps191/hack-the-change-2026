@@ -112,8 +112,9 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 - **Active minutes this week**, against **150**, the Canadian 24-Hour Movement Guidelines.
 - **Familiar faces:** people you've done 2 or more quests with, and your time together, measured against Hall (2019)'s estimate of about 50 hours to become casual friends.
-- **New places:** places you visited for the first time.
+- **New places:** places you visited for the first time, shown as a count on Home.
 - **Mood before and after,** from the optional check-in (`checkins`), so you can see whether you usually feel better afterwards.
+- **Recently:** your finished quests. Tap one to open its recap, which shows the proof photos you took (`Entry` in `src/features/dashboard/you-bits.tsx`). Photos are kept on disk and only served to people on that quest (`src/app/api/media/[id]/route.ts`).
 
 ## The UI, briefly
 
@@ -124,7 +125,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## Deploying
 
-One Vultr server runs the app behind Caddy, which handles HTTPS. Every minute a timer checks `main` on GitHub. It builds any new commit in its own folder, runs migrations, switches over, and rolls back if `/api/health` doesn't answer within a minute (`deploy/deploy.sh`). A broken merge leaves the last good version live. Secrets live in `/opt/amble/shared/.env`, never in the repo.
+Vercel hosts the app at https://amble-three.vercel.app and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). The old Vultr kit in `deploy/` is unused.
 
 ## Testing
 

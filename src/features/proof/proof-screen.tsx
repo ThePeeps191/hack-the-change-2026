@@ -9,6 +9,7 @@ import type { QuestRun, Verdict } from "@/lib/contracts";
 import { chime, coins, knock, tick } from "@/lib/feedback";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
+import { MAX_UPLOAD_BYTES, shrinkPhoto } from "@/lib/shrink-photo";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Odometer } from "@/components/ui/odometer";
 
@@ -67,9 +68,15 @@ export function ProofScreen() {
     setStep("sending");
     setError(null);
     try {
+      const media = file ? await shrinkPhoto(file) : null;
+      if (media && media.size > MAX_UPLOAD_BYTES) {
+        setError("That one's too big to send. Try a shorter clip, under about 10 seconds.");
+        setStep("capture");
+        return;
+      }
       const pos = await getPosition(4000);
       const form = new FormData();
-      if (file) form.set("media", file);
+      if (media) form.set("media", media);
       if (!pos.approximate) {
         form.set("lat", String(pos.lat));
         form.set("lng", String(pos.lng));
