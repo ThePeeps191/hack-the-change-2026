@@ -9,7 +9,7 @@ type CrewRow = { id: string; name: string; invite_code: string; created_by: stri
 
 const WORDS = ["MAPLE", "CEDAR", "BIRCH", "ASPEN", "WILLOW", "SPRUCE", "LARCH", "ALDER", "POPLAR", "ROWAN"];
 
-function newCode() {
+export function newCode() {
   const [a, b] = crypto.getRandomValues(new Uint16Array(2));
   return `${WORDS[a % WORDS.length]}-${String(b % 100).padStart(2, "0")}${"ABCDEFGHJKMNPQRSTUVWXYZ"[(a >> 8) % 23]}`;
 }
@@ -91,16 +91,6 @@ export async function joinCrew(user: User, code: string | undefined) {
   return toCrew(row, user.id);
 }
 
-// Puts a demo login in the seeded crew, so a judge lands on a populated crew
-// tab and Claim map. Does nothing if the seed data isn't there.
-export async function joinDemoCrew(userId: string) {
-  await query(
-    `insert into crew_members (crew_id, user_id)
-     select id, $2 from crews where id = $1 on conflict do nothing`,
-    [DEMO_CREW_ID, userId],
-  );
-}
-
 export async function shareQuest(user: User, crewId: string, questId: string | undefined) {
   await crewFor(user, crewId);
   if (!questId) throw new HttpError(400, "quest_id is required");
@@ -114,7 +104,9 @@ export async function shareQuest(user: User, crewId: string, questId: string | u
 // The weekly board: coins the crew's members earned in the last 7 days, on any
 // quest, so a quiet week starts everyone level again. `delta` is the last 24
 // hours, for the coins-landing animation. A crew's own page shows all-time coins.
-export async function crewLeaderboard(): Promise<LeaderboardEntry[]> {
+// Crews copied for a "Try the demo" visitor show only to that visitor, in place
+// of the seeded crew they copy, so a judge sees one "the long way round": theirs.
+export async function crewLeaderboard(user: User): Promise<LeaderboardEntry[]> {
   const rows = await query<{ id: string; name: string; coins: number; rating: number; delta: number }>(
     `select c.id, c.name, c.rating,
        coalesce(sum(e.amount) filter (where e.created_at > now() - interval '7 days'), 0)::int as coins,
@@ -123,9 +115,15 @@ export async function crewLeaderboard(): Promise<LeaderboardEntry[]> {
      left join crew_members m on m.crew_id = c.id
      left join coin_events e on e.user_id = m.user_id
        and not exists (select 1 from quest_runs r where r.id = e.run_id and r.sample)
+     join users creator on creator.id = c.created_by
+     where (creator.auth0_sub not like 'demo|%' or exists (select 1 from crew_members x where x.crew_id = c.id and x.user_id = $1))
+       and not (c.id = $2 and exists (
+         select 1 from crew_members x join crews y on y.id = x.crew_id join users z on z.id = y.created_by
+         where x.user_id = $1 and z.auth0_sub like 'demo|%'))
      group by c.id
      order by coins desc, c.name
      limit 50`,
+    [user.id, DEMO_CREW_ID],
   );
   return rows.map((r, i) => ({ rank: i + 1, id: r.id, name: r.name, coins: r.coins, rating: Math.round(r.rating), delta: r.delta }));
 }
