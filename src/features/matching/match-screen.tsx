@@ -19,7 +19,20 @@ type State = "searching" | "found" | "waiting" | "matched" | "ended";
 
 // How far apart the two of you are drawn, per state. At "matched" the shapes
 // overlap and the goo merges them into one.
-const gap: Record<State, number> = { searching: 150, found: 96, waiting: 58, matched: 48, ended: 150 };
+const gap: Record<State, number> = { searching: 150, found: 120, waiting: 74, matched: 58, ended: 150 };
+
+// The cloud. Your half (a small bump, a big crowned puff that says "you",
+// half a flat base) and their half (a puff, a small bump, the other half of
+// the base) each make a little cloud on their own. As the match comes
+// together they slide in and the gooey filter fuses them into one big cloud:
+// flat underneath, scalloped on top. Offsets are from each half's centre.
+// [width, height, x, y]
+type Puff = [number, number, number, number];
+const HALF_YOU: Puff[] = [[150, 72, -21, 36], [84, 84, -59, 14]];
+const HALF_THEM: Puff[] = [[150, 72, 21, 36], [72, 72, 71, 22]];
+const CROWN_YOU: Puff = [116, 116, -1, -18];
+const CROWN_THEM: Puff = [100, 100, 15, -12];
+const BOX = { w: 360, h: 220 };
 
 export function MatchScreen() {
   const router = useRouter();
@@ -75,6 +88,11 @@ export function MatchScreen() {
   // so plainly instead of letting a practice partner pass for a real person.
   const practice = (match as (typeof match & { demo_partner?: boolean }) | null)?.demo_partner === true;
   const d = gap[state];
+  const alone = state === "searching" || state === "ended";
+  const you = alone ? 0 : -d / 2;
+  const them = d / 2;
+  // a puff's box, centred in the cloud's frame; x and y then move it
+  const puff = (w: number, h: number) => ({ width: w, height: h, left: (BOX.w - w) / 2, top: (BOX.h - h) / 2 });
 
   return (
     <AppShell nav={false}>
@@ -84,7 +102,7 @@ export function MatchScreen() {
           center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : "finding someone"}
         />
         <motion.div
-          className="relative mx-auto mt-4 grid h-[220px] w-full place-items-center"
+          className="relative mx-auto mt-4 grid h-[250px] w-full place-items-center"
           animate={state === "matched" ? { y: 0 } : { y: [0, -7, 0] }}
           transition={state === "matched" ? { duration: 0.4 } : { duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -96,12 +114,22 @@ export function MatchScreen() {
               <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />
             </>
           )}
-          <Liquid fill="#ffffff" blur={9} contrast={22} shadow="0 10px 30px rgba(13,40,90,.18)" className="h-[140px] w-[340px]">
-            <Liquid.Item x={state === "searching" || state === "ended" ? 0 : -d / 2} y={0} transition="bouncy" className="absolute top-[28px] left-[128px]">
-              <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">{state === "matched" ? "" : "you"}</div>
+          <Liquid fill="#ffffff" blur={7} contrast={24} shadow="0 14px 36px rgba(13,40,90,.2)" className="h-[220px] w-[360px]">
+            {HALF_YOU.map(([w, h, dx, dy], i) => (
+              <Liquid.Item key={`y${i}`} x={you + dx} y={dy} transition="bouncy" delay={40 * i} className="absolute" style={puff(w, h)}>
+                <div className="size-full rounded-full" />
+              </Liquid.Item>
+            ))}
+            {HALF_THEM.map(([w, h, dx, dy], i) => (
+              <Liquid.Item key={`t${i}`} x={them + dx} y={dy} scale={alone ? 0.001 : 1} transition="bouncy" delay={120 + 40 * i} className="absolute" style={puff(w, h)}>
+                <div className="size-full rounded-full" />
+              </Liquid.Item>
+            ))}
+            <Liquid.Item x={you + CROWN_YOU[2]} y={CROWN_YOU[3]} transition="bouncy" className="absolute" style={puff(CROWN_YOU[0], CROWN_YOU[1])}>
+              <div className="grid size-full place-items-center rounded-full pt-4 text-[18px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]">{state === "matched" ? "" : "you"}</div>
             </Liquid.Item>
-            <Liquid.Item x={d / 2} y={0} scale={state === "searching" || state === "ended" ? 0.001 : 1} transition="bouncy" delay={80} className="absolute top-[28px] left-[128px]">
-              <div className="grid size-[84px] place-items-center rounded-full text-[15px] font-semibold text-[var(--color-sky-top)]">
+            <Liquid.Item x={them + CROWN_THEM[2]} y={CROWN_THEM[3]} scale={alone ? 0.001 : 1} transition="bouncy" delay={80} className="absolute" style={puff(CROWN_THEM[0], CROWN_THEM[1])}>
+              <div className="grid size-full place-items-center rounded-full pt-4 text-[20px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]">
                 {state === "found" || state === "waiting" ? "?" : ""}
               </div>
             </Liquid.Item>
