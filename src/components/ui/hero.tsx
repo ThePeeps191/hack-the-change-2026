@@ -43,7 +43,9 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
       <section
         className={`sky relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "pb-6"} ${className}`}
         style={{
-          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 66%, var(--color-sky-bottom) 100%)",
+          // The pale blue only starts in the last fifth, so white text low in the
+          // sky (the week strip, subtitles) stays readable: 4.5:1 or better.
+          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 78%, var(--color-sky-bottom) 100%)",
           textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
           ...(fill ? {} : { marginBottom: -36, maskImage: FADE, WebkitMaskImage: FADE }),
         }}
