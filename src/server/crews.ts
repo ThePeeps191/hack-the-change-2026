@@ -14,6 +14,16 @@ export function newCode() {
   return `${WORDS[a % WORDS.length]}-${String(b % 100).padStart(2, "0")}${"ABCDEFGHJKMNPQRSTUVWXYZ"[(a >> 8) % 23]}`;
 }
 
+// There are about 23,000 codes and every demo login makes two crews, so on a
+// busy judging day two would clash. Pick one nobody has yet.
+export async function freshCode() {
+  for (let i = 0; i < 20; i++) {
+    const code = newCode();
+    if (!(await one("select 1 as yes from crews where invite_code = $1", [code]))) return code;
+  }
+  throw new HttpError(503, "couldn't find a free crew code. try again?");
+}
+
 // Every "Try the demo" login joins the seeded crew, so judges would see a
 // growing list of Guests. Other demo logins are left out of the member list;
 // you always see yourself.
@@ -57,7 +67,7 @@ export async function createCrew(user: User, name: string | undefined) {
   const row = await transaction(async () => {
     const crew = await one<CrewRow>(
       "insert into crews (name, invite_code, created_by) values ($1, $2, $3) returning *",
-      [clean, newCode(), user.id],
+      [clean, await freshCode(), user.id],
     );
     await query("insert into crew_members (crew_id, user_id) values ($1, $2)", [crew!.id, user.id]);
     return crew!;
