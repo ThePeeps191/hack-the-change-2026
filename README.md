@@ -4,15 +4,13 @@
 
 <h1 align="center">Amble</h1>
 
-<p align="center"><strong>Twenty minutes, someone new, somewhere outside.</strong></p>
+<p align="center">Twenty minutes, someone new, somewhere outside.</p>
 
 <p align="center">
-  <a href="https://amble.health">Try it at amble.health</a> ·
+  <a href="https://amble.health">amble.health</a> ·
   <a href="https://devpost.com/software/9dszkw-small-usage-limits-big-dreams-amble">Devpost</a> ·
   Built in 24 hours at Hack the Change 2026, Calgary
 </p>
-
----
 
 Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place: a game of foosball in the engineering building, say. There's something to do besides small talk, and a natural ending. Snap a photo, an AI checks it, and you get a recap of your walk. If you both want to, you stay in touch.
 
