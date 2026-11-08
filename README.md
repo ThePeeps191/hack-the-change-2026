@@ -67,15 +67,7 @@ For real accounts, meeting someone new needs a verified email and happens in day
 
 There are comfort settings too: step-free places first, an easier pace, and side-by-side quests if you'd rather not chat face to face.
 
-## How it works
-
-```mermaid
-flowchart LR
-  phone["Phone (installable web app)"] --> app["Next.js on Vercel<br/>amble.health"]
-  app --> auth["Auth0<br/>sign-in"]
-  app --> db[("Postgres on Tiger Data<br/>TimescaleDB")]
-  app --> ai["Claude Haiku<br/>proof and recaps"]
-```
+## How we built it
 
 - **One Next.js app** serves the screens and a small API. Every rule (matching, quest runs, coins, Claim) runs on the server, inside database transactions, so two phones can't race each other into a bad state.
 - **No background workers.** Phones check in every few seconds, and each check-in moves the state forward: a match expires, a quest ends, a bot partner answers. Nothing has to run on a timer.
