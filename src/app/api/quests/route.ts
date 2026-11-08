@@ -6,5 +6,5 @@ import { isQuestType, listQuests } from "@/server/quests";
 export const GET = authed(async (user, req) => {
   const type = new URL(req.url).searchParams.get("type");
   if (type && !isQuestType(type)) return fail("unknown quest type");
-  return ok(await listQuests(type, user.prefs.language));
+  return ok(await listQuests(type));
 });

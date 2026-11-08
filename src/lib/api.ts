@@ -97,8 +97,6 @@ export const api = {
   acceptInvite: (code: string, pos?: { lat: number; lng: number }) =>
     post<Match>(`/api/invites/${code}/accept`, pos),
 
-  generateQuests: (lat: number, lng: number, count?: number) =>
-    post<Quest[]>("/api/quests/generate", { lat, lng, count }),
   quests: (type?: Quest["type"]) =>
     call<Quest[]>(`/api/quests${type ? `?type=${type}` : ""}`),
   quest: (id: string) => call<Quest>(`/api/quests/${id}`),

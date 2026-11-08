@@ -25,7 +25,7 @@ Prompt: Hack the Change 2026, health, social connection and well-being. The cont
 
 ## Positioning
 
-Gemini is the game master, referee and producer. It writes quests for wherever you are from live Maps and Search data, checks photo and video proof against the quest, place and time, and writes the recap. City-game apps like Zone Tag and We Clue need a human to design maps or approve photos. Amble needs neither, so it works in any neighbourhood, any time.
+Quests are hand-made by us, so every one is safe and worth doing. Gemini is the referee and producer: it checks photo and video proof against the quest, place and time, and writes the recap. City-game apps like Zone Tag and We Clue need a human to approve photos. Amble doesn't.
 
 ## Operating Context
 
