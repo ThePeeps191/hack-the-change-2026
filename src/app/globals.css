@@ -529,3 +529,8 @@ a {
   letter-spacing: -0.02em;
   font-feature-settings: "lnum", "tnum";
 }
+
+/* A tinted pin (Claim: yours blue, theirs orange) keeps its team colour when
+   selected, so picking a rival's zone never makes it look like yours. */
+.amble-marker[data-pin][data-tint][data-selected] .amble-pin-face,
+.amble-marker[data-pin][data-tint][data-selected] .amble-pin-tip { background: hsl(var(--h) 62% 50%); }

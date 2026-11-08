@@ -105,6 +105,12 @@ export type Recap = {
   partner?: Partner | null;
   // Added: quests finished with this partner, including this one.
   times_together?: number;
+  // Added: the partner is the practice bot (demo only).
+  demo_partner?: boolean;
+  // Added: you and this partner already said yes to staying in touch.
+  connected?: boolean;
+  // Added: when the quest finished (ISO).
+  completed_at?: string;
 };
 
 export type CrewMember = {

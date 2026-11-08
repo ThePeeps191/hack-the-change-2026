@@ -4,6 +4,7 @@ import { one, query } from "@/lib/db";
 import { writeRecap } from "@/lib/ai";
 import { HttpError } from "@/lib/route";
 import { uploadPath } from "@/lib/uploads";
+import { botId } from "./bot";
 import { timesTogether } from "./matching";
 import { advance, questForRun, runForMember } from "./runs";
 
@@ -63,5 +64,13 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
     coins: earned?.amount ?? 0,
     partner,
     times_together: other ? await timesTogether(user.id, other.user_id) : undefined,
+    // Added: the partner is the practice bot, so the app doesn't treat her as an old friend.
+    demo_partner: other ? other.user_id === (await botId()) : undefined,
+    // Added: you two are already connected, so the recap says so instead of asking again.
+    connected: other
+      ? !!(await one("select 1 as yes from connections where (user_a = $1 and user_b = $2) or (user_a = $2 and user_b = $1)", [user.id, other.user_id]))
+      : undefined,
+    // Added: when it finished, so the "how do you feel now" question only shows on a fresh recap.
+    completed_at: (run.completed_at ?? run.ends_at).toISOString(),
   };
 }

@@ -44,7 +44,13 @@ function dress(map: MLMap) {
     "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 6, 1, 9, 0],
   });
   if (map.getSource("openmaptiles") && !map.getLayer("amble-3d")) {
-    const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+    // Draw the 3D blocks above every road and flat building layer (some
+    // styles put a label layer before the roads, so "first symbol" isn't
+    // enough), but still under the labels that come after them.
+    const layers = map.getStyle().layers;
+    const ground = (l: (typeof layers)[number]) => ["transportation", "building", "aeroway"].includes((l as { "source-layer"?: string })["source-layer"] ?? "") && l.type !== "symbol";
+    const lastGround = layers.reduce((at, l, i) => (ground(l) ? i : at), -1);
+    const firstSymbol = layers.slice(lastGround + 1).find((l) => l.type === "symbol")?.id;
     map.addLayer(
       {
         id: "amble-3d",

@@ -46,6 +46,9 @@ export function RecapScreen() {
   const [problem, setProblem] = useState<Problem | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [kept, setKept] = useState<null | "asked" | "connected">(null);
+  // Finished in the last few hours. Read once, when the page opens.
+  const [opened] = useState(() => Date.now());
+  const fresh = !!recap && (!recap.completed_at || opened - new Date(recap.completed_at).getTime() < 3 * 3_600_000);
   // Only after mount, and never with reduced motion, so hydration matches.
   const reduce = useReducedMotion();
   const moving = useSyncExternalStore(() => () => {}, () => true, () => false) && !reduce;
@@ -142,14 +145,15 @@ export function RecapScreen() {
 
         {recap && <RecapExtras recap={recap} />}
 
-        {recap && <MoodCheck runId={runId} phase="after" />}
+        {/* only right after the quest: "compared with before" means nothing days later */}
+        {recap && fresh && <MoodCheck runId={runId} phase="after" />}
 
         {recap && name && (
           <section className="rounded-[24px] bg-surface p-5 shadow-card">
             <p className="text-[17px] font-semibold">Stay in touch with {name}?</p>
             <p className="mt-1 text-[14px] leading-snug text-ink-muted">You&apos;ll only connect if you both say yes. Next time you&apos;re both free, you can do another one together.</p>
             <div className="mt-4">
-              {kept === "connected" ? (
+              {kept === "connected" || recap.connected ? (
                 <p className="flex min-h-14 items-center justify-center gap-2 text-[16px] font-semibold text-success">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
                   You&apos;re connected with {name}
