@@ -35,7 +35,12 @@ type MemberRow = {
   verdict: Verdict["status"] | null;
   reason: string | null;
   approved_at: Date | null;
+  hint: string | null;
 };
+
+// What Priya says when someone asks how to spot her.
+const BOT_HINT = "Blue jacket, waiting by the main doors.";
+export const HINT_MAX = 80;
 
 export async function createRun(input: {
   quest: Quest;
@@ -60,7 +65,7 @@ export async function createRun(input: {
 
 const members = (runId: string) =>
   query<MemberRow>(
-    `select m.user_id, u.display_name, u.is_bot, latest.verdict, latest.reason, approved.created_at as approved_at
+    `select m.user_id, u.display_name, u.is_bot, m.hint, latest.verdict, latest.reason, approved.created_at as approved_at
      from run_members m
      join users u on u.id = m.user_id
      left join lateral (
@@ -78,6 +83,14 @@ const members = (runId: string) =>
 
 export const loadRun = (id: string) => one<RunRow>("select * from quest_runs where id = $1", [id]);
 
+// "How to spot me", only on an active quest with someone new.
+export async function setHint(user: User, runId: string, hint: string) {
+  const run = await runForMember(user, runId);
+  if (run.mode !== "pair" || run.status !== "active") throw new HttpError(409, "this quest isn't on any more.");
+  const clean = hint.replace(/\s+/g, " ").trim().slice(0, HINT_MAX);
+  await query("update run_members set hint = $3 where run_id = $1 and user_id = $2", [runId, user.id, clean || null]);
+}
+
 export async function runForMember(user: User, id: string) {
   const run = await loadRun(id);
   if (!run) throw notFound("run");
@@ -94,6 +107,7 @@ export async function toRun(run: RunRow, viewerId: string): Promise<QuestRun> {
   const list: RunMember[] = rows.map((m) => ({
     user_id: m.user_id,
     display_name: m.display_name,
+    hint: run.mode === "pair" ? (m.hint ?? (m.is_bot ? BOT_HINT : null)) : null,
     submitted: !!m.approved_at,
     verdict: m.verdict
       ? { status: m.verdict, reason: m.reason ?? "", ...(m.verdict === "approved" ? { coins: quest.coins } : {}) }
