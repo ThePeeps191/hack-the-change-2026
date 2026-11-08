@@ -171,7 +171,10 @@ export function QuestScreen() {
 
       {/* The main action stays in reach at the bottom of the screen. */}
       <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
-        {run.status === "completed" ? (
+        {run.status === "completed" && run.mode === "claim" ? (
+          // A Claim challenge isn't done until the result is in, so that comes first.
+          <ButtonLink size="lg" href={`/claim?zone=${run.zone_id}`}>Send your result</ButtonLink>
+        ) : run.status === "completed" ? (
           <ButtonLink size="lg" href={`/recap/${run.id}`}>See how it went</ButtonLink>
         ) : run.status === "expired" ? (
           <>

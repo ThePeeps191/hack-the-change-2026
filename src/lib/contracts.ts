@@ -80,6 +80,7 @@ export type QuestRun = {
   started_at: string;
   ends_at: string;
   members: RunMember[];
+  zone_id?: string | null; // Claim runs: the zone this challenge is for
 };
 
 export type Verdict = {

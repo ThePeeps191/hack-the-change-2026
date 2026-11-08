@@ -262,8 +262,11 @@ export function ProofScreen() {
             </button>
           )}
           {view === "approved" && (
-            <Link href={run?.status === "completed" ? `/recap/${runId}` : `/quest/${runId}`} className={buttonClass("onSky", "lg")}>
-              {run?.status === "completed" ? "See how it went" : "Back to the quest"}
+            <Link
+              href={run?.status !== "completed" ? `/quest/${runId}` : run.mode === "claim" ? `/claim?zone=${run.zone_id}` : `/recap/${runId}`}
+              className={buttonClass("onSky", "lg")}
+            >
+              {run?.status !== "completed" ? "Back to the quest" : run.mode === "claim" ? "Send your result" : "See how it went"}
             </Link>
           )}
           {view === "rejected" && (
