@@ -116,7 +116,7 @@ export function ProofScreen() {
   const accept = kind === "video" ? "video/*" : "image/*";
   const looking = view === "sending" || view === "checking";
   const reduce = useReducedMotion();
-  // Photos get the mosaic scan; videos (and reduced motion) get a plain blur while we look.
+  // Photos get the glow-and-sweep scan (photo-scan.tsx); videos (and reduced motion) get a plain blur while we look.
   const scan = kind === "photo" && !reduce;
   const photoFilter =
     view === "approved" ? "" : view === "rejected" ? "grayscale(1) brightness(.55)" : looking && !scan ? "blur(14px) brightness(.6) saturate(.8)" : "";
