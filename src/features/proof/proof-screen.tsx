@@ -103,16 +103,23 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
     setError(null);
     try {
       const media = file ? await shrinkPhoto(file) : null;
-      if (media && media.size > MAX_UPLOAD_BYTES) {
-        setError("That one's too big to send. Try a shorter clip, under about 10 seconds.");
+      const frames = media ? await videoFrames(media) : null;
+      // Uploads are capped, and even a few seconds of phone video is over the
+      // cap. The AI only looks at the three stills anyway, so a long clip sends
+      // just those, and the only thing lost is playing the clip back later.
+      const tooBig = !!media && media.size + (frames?.size ?? 0) > MAX_UPLOAD_BYTES;
+      if (tooBig && !frames) {
+        setError(kind === "video" ? "That clip's too long to send. Try a shorter one." : "That photo's too big to send. Try taking it again.");
         setStep("capture");
         return;
       }
       const pos = await getPosition(4000);
       const form = new FormData();
-      if (media) form.set("media", media);
-      const frames = media ? await videoFrames(media) : null;
-      if (frames) form.set("frames", frames);
+      if (tooBig) form.set("media", frames!);
+      else {
+        if (media) form.set("media", media);
+        if (frames) form.set("frames", frames);
+      }
       if (!pos.approximate) {
         form.set("lat", String(pos.lat));
         form.set("lng", String(pos.lng));
@@ -231,7 +238,7 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
                 {scan && preview && <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(closest-side,rgb(11_12_11/.62),rgb(11_12_11/.18))]" />}
                 <LookingGlass />
                 <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "checking…"}</Hand>
-                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">{view === "sending" ? "Sending your photo over." : "Checking it against the quest."}</p>
+                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">{view === "sending" ? `Sending your ${kind} over.` : "Checking it against the quest."}</p>
               </motion.div>
             )}
           </AnimatePresence>
