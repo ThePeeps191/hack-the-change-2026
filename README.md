@@ -31,51 +31,31 @@ Open [amble.health](https://amble.health) on your phone and tap Try the demo. Yo
 
 We were inspired by AR games like Pokemon Go, and the challenges especially by the game show Jet Lag: The Game, which is full of collaborative challenges tied to real places.
 
-We built it for Prompt 1 of Hack the Change, under community connection and inclusion, and proactive health and wellness.
-
 ## How a quest works
 
-Tap "I'm free" and Amble looks for someone nearby. All you see at first is a rough distance, then a first name once you both say yes. You both get the same quest at a public place and meet there, never at each other's location. Each of you can add one line so the other can spot you, like "red jacket, by the main doors". If nobody's around, Amble tells you, and you can send the quest to someone you're with by link or AirDrop.
+Tap "I'm free" and Amble looks for someone nearby. You both get the same quest at a public place and meet there, and you only see each other's first name once you both say yes. If nobody's around, you can send the quest to someone you're with by link or AirDrop.
 
-When you've done it, you send a photo or short video and Claude Haiku checks it against the quest. If it passes, you get coins. Then you see a short recap of the quest, how long you were active and how you felt before and after, which only you can see. You can choose to stay in touch, and you only connect if you both say yes.
+When you've done it, you send a photo or short video and an AI model checks it against the quest. If it passes, you get coins. Then you see a short recap of what you did, and you can choose to stay in touch.
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
   <img src="docs/images/aaron-and-siddhant/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
-  <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
-<p align="center"><sub>The same foosball quest with two real photos. We sent the ping pong one on purpose.</sub></p>
+<p align="center"><sub>Same foosball quest, two real photos. Ping pong doesn't count.</sub></p>
 
 ## Crews and Claim
 
 Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, for example "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
 
-## Your numbers
+The You tab keeps your own numbers, never ranked against anyone: active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest.
 
-The You tab is private and never ranked against anyone. It shows your active minutes against Canada's 150-minute guideline, your familiar faces (people you've done several quests with), new places you've been, and how you felt before and after each quest.
-
-## Safety and privacy
-
-An app designed to get strangers to meet has to take safety seriously. You only ever meet at a public quest spot. Your partner sees a rough distance, then a first name once you both say yes.
-
-During a quest, one tap opens 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report. If you report someone, you're never paired with them again.
-
-Your location is deleted the moment you're matched, and routes are deleted after 30 days. You can download or delete everything from the privacy page, which also says which AI sees your photos.
-
-For real accounts, meeting someone new needs a verified email and happens in daylight (8 AM to 5 PM), and proof has to be taken near the spot during the quest. The judging site runs in demo mode, which turns those off so you can try it from a desk at any hour.
-
-There are comfort settings too: step-free places first, an easier pace, and side-by-side quests if you'd rather not chat face to face.
-
-## How we built it
-
-It's one Next.js (TypeScript) app on Vercel. Auth0 handles sign-in, and judges get a signed demo login so they don't need an account. Postgres on Tiger Data stores everything, including proof photos. Location pings go in a TimescaleDB hypertable with a 30-day retention policy, so routes delete themselves, and the You tab's week uses TimescaleDB's `time_bucket`.
-
-There are no background workers. State moves forward when a phone checks in every few seconds: a match expires, a quest ends. Every rule runs on the server inside database transactions, so two phones can't race each other into a bad state. An end-to-end test (`scripts/smoke.ts`) drives the whole product over HTTP as a dozen simulated people.
-
-We wrote every quest by hand, at real public places around UCalgary and Calgary. The AI does two jobs: Claude Haiku checks proof (photos, and three still frames from each video) and writes the recaps. It's told to be generous with honest attempts. Every AI call has a timeout and a fallback, so if the AI is slow or down the quest still counts. If it gets one wrong in the demo, demo accounts can tap Count it anyway.
-
-Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
+  <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+</p>
 
 <details>
 <summary>More screenshots</summary>
@@ -83,37 +63,35 @@ Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tige
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/aaron-and-siddhant/matched.jpg" alt="Matched: you and Siddhant, with the quest you both get" width="250">
   <img src="docs/images/aaron-and-siddhant/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Siddhant" width="250">
-  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/crew-page.jpg" alt="The crew page: the crew's own character, its name and its coins" width="250">
-  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
   <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+  <img src="docs/images/aaron-and-siddhant/map.jpg" alt="The map of quests around Calgary, each a pin you can tap" width="250">
 </p>
-
-<p align="center">
-  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
-  <img src="docs/images/aaron-and-siddhant/help.jpg" alt="Help, leave or report: 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report" width="250">
-  <img src="docs/images/aaron-and-siddhant/privacy.jpg" alt="The privacy page: what Amble keeps and why" width="250">
-</p>
-
-<p align="center"><sub>From amble.health on two demo accounts, Aaron and Siddhant. The Claim result is a test entry, and the history on the You tab is the demo's sample data.</sub></p>
 
 </details>
 
-## AI disclosure
+## How we built it
 
-We built Amble with Claude Code as our coding assistant. It wrote much of the code, while we made the product decisions, wrote the quests and other content by hand, and reviewed the changes. Dozens of sessions ran in parallel, each in its own git worktree with small pull requests, using the rules in [CLAUDE.md](CLAUDE.md). At one point our merges used up the hosting platform's daily deploy limit.
+It's one Next.js app on Vercel. Auth0 handles sign-in, and Postgres on Tiger Data stores everything, with location pings in a TimescaleDB hypertable. We wrote every quest by hand, at real places around UCalgary and Calgary. Claude Haiku checks the proof and writes the recaps, and if it's slow or down, your quest still counts. We used Claude Code as a coding assistant.
 
-## Where things are
+There are no background workers: the game moves forward whenever a phone checks in, and the server enforces every rule.
 
-- `src/app/` has the screens and API routes, and `src/features/` has one folder per feature
-- `src/server/` has the rules: matching, runs, proof, crews, Claim and coins
-- `data/quests/` has the hand-written quests, and `db/migrations/` has the schema
-- `docs/` explains the rest. Start with [TECHNICAL](docs/TECHNICAL.md), and see [DEVELOPMENT](docs/DEVELOPMENT.md) to run it locally
+Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
+
+To run it yourself, see [DEVELOPMENT](docs/DEVELOPMENT.md).
+
+## What's next
+
+All our challenges so far were written by us, so we want to support user-generated challenges for Quests and Claim. We also want to expand beyond Calgary and add new game modes.
 
 ## Team
 
-[Danny Wang](https://github.com/ThePeeps191), [Siddhant Arora](https://github.com/siddhantarora7), [Aaron He](https://github.com/mucube) and [Jonas Huang](https://github.com/wawahwa801).
+- **Danny Wang** ([@ThePeeps191](https://github.com/ThePeeps191))
+- **Siddhant Arora** ([@siddhantarora7](https://github.com/siddhantarora7))
+- **Aaron He** ([@mucube](https://github.com/mucube))
+- **Jonas Huang** ([@wawahwa801](https://github.com/wawahwa801))
