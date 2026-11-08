@@ -104,7 +104,7 @@ To run it yourself, see [DEVELOPMENT](docs/DEVELOPMENT.md).
 
 We'd start on one campus, where people are new and close together, like UCalgary during orientation week. Once enough people are free at the same time for matches to happen quickly, we'd open it up to the rest of Calgary.
 
-All our challenges so far were written by us, so we also want to support user-generated challenges for Quests and Claim. That's what would let Amble reach other cities, along with new game modes.
+All our challenges so far were written by us, so we also want to support user-generated challenges for Quests and Claim. That would let Amble reach other cities. We also want to add new game modes.
 
 ## Team
 
