@@ -58,7 +58,7 @@ Each terminal is one Claude session on one thing. Name the session after yoursel
 claude -w danny-quest-card
 ```
 
-Add `--dangerously-skip-permissions` to skip permission prompts. Then tell it what to build, for example "build the quest card screen" or "pick the next thing in the Gemini area".
+Add `--dangerously-skip-permissions` to skip permission prompts. Then tell it what to build, for example "build the quest card screen" or "pick the next thing in the AI area".
 
 The session follows [CLAUDE.md](CLAUDE.md): it renames its branch to `danny-quest-card`, commits as it goes, opens a PR, merges it and deletes the branch. Open as many terminals as you can keep track of.
 
