@@ -182,10 +182,11 @@ export function MapScreen() {
             const first = (quests ?? []).filter((q) => (v === "all" || q.type === v) && q.lat != null && q.lng != null).sort((a, b) => away(a) - away(b))[0];
             if (first) setFocus({ lat: first.lat!, lng: first.lng! });
           }}
+          // Events only shows up as a choice when there's an event to show.
           options={[
             { value: "all", label: "Everything" },
             { value: "local", label: "Nearby" },
-            { value: "event", label: "Events" },
+            ...((quests ?? []).some((q) => q.type === "event") ? [{ value: "event" as const, label: "Events" }] : []),
           ]}
         />
         <div className="mt-3 flex flex-col gap-2.5">

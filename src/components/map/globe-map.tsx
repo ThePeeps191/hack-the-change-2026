@@ -45,8 +45,35 @@ function dress(map: MLMap, dark: boolean) {
     "fog-ground-blend": 0.7,
     "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 6, 1, 9, 0],
   });
+  if (dark) brightenDark(map);
   if (map.getSource("openmaptiles") && !map.getLayer("amble-3d")) {
-    const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+    // Draw the 3D blocks above every road and flat building layer (some
+    // styles put a label layer before the roads, so "first symbol" isn't
+    // enough), but still under the labels that come after them.
+    const layers = map.getStyle().layers;
+    const ground = (l: (typeof layers)[number]) => ["transportation", "building", "aeroway"].includes((l as { "source-layer"?: string })["source-layer"] ?? "") && l.type !== "symbol";
+    const lastGround = layers.reduce((at, l, i) => (ground(l) ? i : at), -1);
+    const firstSymbol = layers.slice(lastGround + 1).find((l) => l.type === "symbol")?.id;
+    // In dark mode, a soft glow round each building's footprint, under the
+    // blocks themselves (a wide blurred line reads as light spilling out).
+    if (dark) {
+      map.addLayer(
+        {
+          id: "amble-glow",
+          type: "line",
+          source: "openmaptiles",
+          "source-layer": "building",
+          minzoom: 13,
+          paint: {
+            "line-color": "#8fb4ff",
+            "line-width": ["interpolate", ["linear"], ["zoom"], 13, 1.5, 17, 6],
+            "line-blur": ["interpolate", ["linear"], ["zoom"], 13, 1.5, 17, 6],
+            "line-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.15, 15, 0.45],
+          },
+        },
+        firstSymbol,
+      );
+    }
     map.addLayer(
       {
         id: "amble-3d",
@@ -55,7 +82,11 @@ function dress(map: MLMap, dark: boolean) {
         "source-layer": "building",
         minzoom: 14,
         paint: {
-          "fill-extrusion-color": dark ? "#2a2f33" : "#f3f1ea",
+          // dark: pale moonlit blocks, brighter the taller they are, so campus
+          // reads at night; light: warm paper white
+          "fill-extrusion-color": dark
+            ? ["interpolate", ["linear"], ["coalesce", ["get", "render_height"], 8], 0, "#5b6f99", 12, "#a9bde6", 40, "#e6eeff"]
+            : "#f3f1ea",
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 8],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
           "fill-extrusion-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.82],
@@ -63,6 +94,18 @@ function dress(map: MLMap, dark: boolean) {
       },
       firstSymbol,
     );
+  }
+}
+
+// The stock dark style is very dim on a phone in daylight. Lift roads and
+// water a little so the street pattern reads, without turning it into day.
+function brightenDark(map: MLMap) {
+  for (const l of map.getStyle().layers) {
+    const src = (l as { "source-layer"?: string })["source-layer"];
+    try {
+      if (l.type === "line" && src === "transportation") map.setPaintProperty(l.id, "line-color", "#46557a");
+      if (l.type === "fill" && src === "water") map.setPaintProperty(l.id, "fill-color", "#13233f");
+    } catch {}
   }
 }
 
