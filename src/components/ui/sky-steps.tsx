@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 const ease = [0.16, 1, 0.3, 1] as const;
 
 // A footpath drawn down the sky with a stop for each step, like a trail map.
-// Each stop is a white disc with a small drawing; the dotted path between two
+// Each stop is an inked drawing straight on the sky; the dotted path between two
 // stops wiggles a little and is revealed top to bottom (a clip-path), so it
 // looks like it's being walked. With reduced motion every step is instant
 // (duration 0), so the first render still matches the server.
@@ -38,7 +38,7 @@ export function SkySteps({ items, delay = 0.3 }: { items: { badge: ReactNode; ti
             </motion.div>
           )}
           <motion.span
-            className="relative grid size-11 shrink-0 place-items-center rounded-full bg-white text-[var(--color-sky-top)] shadow-[0_6px_16px_rgb(20_50_110/0.18)]"
+            className="relative grid size-11 shrink-0 place-items-center text-on-sky drop-shadow-[0_2px_6px_rgb(20_50_110/0.25)]"
             initial={{ scale: 0.4, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 22, delay: at(i) }}

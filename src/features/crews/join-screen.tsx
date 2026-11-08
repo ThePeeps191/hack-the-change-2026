@@ -9,13 +9,12 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import Link from "next/link";
 import { buttonClass, MagneticButton } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon, Stars } from "@/components/ui/hero";
-import { Ink, PeopleInk } from "@/components/ui/ink";
+import { Ink, InkFlag, PeopleInk } from "@/components/ui/ink";
+import { Coin } from "@/components/ui/quest-glyph";
+import { Avatar } from "@/components/ui/avatar";
 import { SkySteps, skyQuiet } from "@/components/ui/sky-steps";
 import { CodeBoxes, type CodeState, formatCode, splitCode } from "./code-boxes";
 
-const GROUP = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><circle cx="8.5" cy="12" r="3.2" /><circle cx="15.5" cy="12" r="3.2" /></svg>;
-const COIN = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4.5" /></svg>;
-const FLAG = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M6 21V4M6 4h11l-2.5 4L17 12H6" /></svg>;
 
 // How long the "you're in" moment plays before we open the crew.
 const JOIN_MS = 1100;
@@ -61,7 +60,8 @@ export function JoinScreen() {
 
   const answer = checkable && check?.code === code ? check : null;
   const name = answer?.name ?? null;
-  const mine = crews.find((c) => c.invite_code === code)?.name ?? null;
+  const mineCrew = crews.find((c) => c.invite_code === code) ?? null;
+  const mine = mineCrew?.name ?? null;
   // Only call it wrong once the code is whole (three after the dash) or came
   // from a link, so a half-typed MAPLE-4 doesn't shake at you.
   const wrong = !!answer?.bad && (tail.length === 3 || code === fromLink);
@@ -137,13 +137,30 @@ export function JoinScreen() {
         {!mine && <div className="mt-9 px-4">
           <SkySteps
             items={[
-              { badge: GROUP, title: "do quests together", detail: "Or race each other from anywhere." },
-              { badge: COIN, title: "earn coins as a crew", detail: "And climb the weekly board." },
-              { badge: FLAG, title: "play Claim", detail: "Hold spots on the map." },
+              { badge: <Ink size={32}>{PeopleInk}</Ink>, title: "do quests together", detail: "Or race each other from anywhere." },
+              { badge: <Coin size={28} />, title: "earn coins as a crew", detail: "And climb the weekly board." },
+              { badge: <InkFlag held color="currentColor" size={32} />, title: "play claim", detail: "Hold spots on the map." },
             ]}
           />
         </div>}
-        <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 px-4 pt-8">
+        {/* Already in: who else is in it and what you've earned together, with
+            the button right under it rather than at the foot of an empty sky. */}
+        {mineCrew && (
+          <div className="relative mt-9 px-4 text-center">
+            <ul className="flex flex-wrap justify-center gap-2" aria-label="Who's in">
+              {mineCrew.members.map((m) => (
+                <li key={m.user_id} className="flex w-14 flex-col items-center gap-1">
+                  <span aria-hidden><Avatar name={m.display_name} size={44} /></span>
+                  <span className="w-full truncate text-[13px] font-medium text-on-sky/90">{m.display_name}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 flex items-center justify-center gap-1.5 text-[15px] font-semibold">
+              <Coin size={16} />{mineCrew.coins.toLocaleString()} coins together
+            </p>
+          </div>
+        )}
+        <div className={`relative mx-auto w-full max-w-[400px] space-y-1 px-4 ${mine ? "mt-8" : "mt-auto pt-8"}`}>
           {error && <p role="alert" className="pb-3 text-center text-[15px] leading-snug font-medium text-balance">{error}</p>}
           {mine || joined ? (
             <>

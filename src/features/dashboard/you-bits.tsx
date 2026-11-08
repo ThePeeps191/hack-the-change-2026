@@ -129,8 +129,28 @@ export function Weather({ better, total }: { better: number; total: number }) {
   );
 }
 
+// Try the demo shares one guest, so the same quest with the same partner can
+// pile up on one day. Fold those into one row with a count and their coins
+// added up. History comes newest first, so each row keeps the newest run's link.
+export type JournalRow = HistoryItem & { times: number };
+export function collapseRepeats(history: HistoryItem[]): JournalRow[] {
+  const rows: JournalRow[] = [];
+  for (const h of history) {
+    const same = rows.find(
+      (r) => r.quest.id === h.quest.id && r.partner?.display_name === h.partner?.display_name && sameDay(new Date(r.completed_at), new Date(h.completed_at)),
+    );
+    if (same) {
+      same.times += 1;
+      same.coins += h.coins;
+    } else {
+      rows.push({ ...h, times: 1 });
+    }
+  }
+  return rows;
+}
+
 // One journal entry: a date block, what you did, with whom, and the coins.
-export function Entry({ h, i }: { h: HistoryItem; i: number }) {
+export function Entry({ h, i }: { h: JournalRow; i: number }) {
   const d = new Date(h.completed_at);
   // Opens the quest's recap, which shows the proof photos you took.
   return (
@@ -146,7 +166,10 @@ export function Entry({ h, i }: { h: HistoryItem; i: number }) {
         <span className="mt-0.5 text-[19px] font-semibold tabular-nums">{d.getDate()}</span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold truncate text-[17px]">{h.quest.title.charAt(0).toUpperCase() + h.quest.title.slice(1)}</p>
+        <p className="flex items-baseline gap-1.5 text-[17px] font-semibold">
+          <span className="truncate">{h.quest.title.charAt(0).toUpperCase() + h.quest.title.slice(1)}</span>
+          {h.times > 1 && <span className="shrink-0 text-[15px] text-ink-muted tabular-nums"><span aria-hidden>×{h.times}</span><span className="sr-only">, {h.times} times</span></span>}
+        </p>
         <p className="mt-0.5 flex items-center gap-1.5 truncate text-[13px] text-ink-muted">
           <CategoryIcon category={categoryOf(h.quest)} size={14} className="text-ink-faint" />
           {h.partner ? `with ${h.partner.display_name}` : "on your own"}{h.distance_m >= 50 && <> · {distance(h.distance_m)}</>}

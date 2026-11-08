@@ -36,7 +36,7 @@ export function MeetPaths({ partner, still }: { partner?: string | null; still: 
           <path d={t.d} mask={`url(#${id}-m${i})`} fill="none" stroke="#fff" strokeOpacity=".9" strokeWidth="4" strokeLinecap="round" strokeDasharray="0 9" />
           {/* where each of you set off from */}
           <circle cx={t.x} cy="108" r="4" fill="none" stroke="#fff" strokeOpacity=".7" strokeWidth="1.6" />
-          <text x={t.x} y="132" textAnchor="middle" className="rm-name">{t.who.toLowerCase()}</text>
+          <text x={t.x} y="132" textAnchor="middle" className="rm-name">{t.who}</text>
           {/* you, walking: a dot on the tip of the trail */}
           {!still && (
             <circle r="5.5" fill="#fff" className="rm-walker">
