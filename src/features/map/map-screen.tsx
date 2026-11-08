@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
@@ -14,6 +14,7 @@ import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { categoryOf, glyphSvg } from "@/components/ui/quest-glyph";
 import { QuestCard } from "@/features/quests/quest-card";
+import { useFitCount } from "@/features/quests/use-fit-count";
 import { MoreQuests } from "@/features/quests/more-quests";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
@@ -47,7 +48,6 @@ function metres(a: LatLng, b: LatLng) {
 // The list shows the closest few as full cards; the rest fold into one card
 // of short rows that opens like a dropdown. A short row opens its quest
 // straight away, since selecting it would lift it above the fold, out of view.
-const TOP = 3;
 
 const frosted = "glass on-map grid size-11 place-items-center rounded-full text-ink transition-transform active:scale-95";
 
@@ -103,6 +103,8 @@ export function MapScreen() {
     return markers.find((m) => metres(m, { lat: q.lat!, lng: q.lng! }) < 60)?.id ?? id;
   };
   const ordered = picked ? [picked, ...shown.filter((q) => q.id !== picked.id)] : shown;
+  const list = useRef<HTMLDivElement>(null);
+  const top = useFitCount(list, ordered.length);
 
   function choose(id: string) {
     const q = (quests ?? []).find((x) => x.id === id);
@@ -204,7 +206,7 @@ export function MapScreen() {
             ...((quests ?? []).some((q) => q.type === "event") ? [{ value: "event" as const, label: "Events" }] : []),
           ]}
         />
-        <div className="mt-3 flex flex-col gap-2.5">
+        <div ref={list} className="mt-3 flex flex-col gap-2.5">
           {quests === null
             ? [0, 1].map((i) => <Skeleton key={i} className="h-[104px] rounded-[20px]" />)
             : ordered.length === 0
@@ -220,7 +222,7 @@ export function MapScreen() {
                 )
               : (
                   <>
-                    {ordered.slice(0, TOP).map((q) => (
+                    {ordered.slice(0, top).map((q) => (
                       <motion.button
                         layout
                         transition={soft}
@@ -233,7 +235,7 @@ export function MapScreen() {
                       </motion.button>
                     ))}
                     {/* A new key per filter, so switching filters closes it again. */}
-                    <MoreQuests key={filter} quests={ordered.slice(TOP)} onPick={setOpen} />
+                    <MoreQuests key={filter} quests={ordered.slice(top)} onPick={setOpen} />
                   </>
                 )}
         </div>

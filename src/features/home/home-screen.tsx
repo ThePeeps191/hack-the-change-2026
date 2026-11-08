@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { CAMPUS_CENTER, QUEST_MINUTES } from "@/lib/config";
 import { getPosition } from "@/lib/geo";
@@ -21,6 +21,7 @@ import { InviteCard } from "@/features/invites/invite-card";
 import { ResumeBanner } from "./resume-banner";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 import { MoreQuests } from "@/features/quests/more-quests";
+import { useFitCount } from "@/features/quests/use-fit-count";
 
 function today() {
   return new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toLowerCase();
@@ -51,7 +52,9 @@ export function HomeScreen() {
 
   const away = (q: Quest) => (q.lat == null || q.lng == null ? Infinity : (q.lat - here.lat) ** 2 + ((q.lng - here.lng) * Math.cos((here.lat * Math.PI) / 180)) ** 2);
   const nearby = (quests ?? []).filter((q) => q.type !== "anywhere").sort((a, b) => away(a) - away(b));
-  const shown = nearby.slice(0, 3);
+  const list = useRef<HTMLDivElement>(null);
+  const top = useFitCount(list, nearby.length);
+  const shown = nearby.slice(0, top);
   const anywhere = (quests ?? []).filter((q) => q.type === "anywhere");
   const active = d?.active_minutes_week ?? 0;
   const goal = d?.active_goal_minutes ?? 150;
@@ -92,7 +95,7 @@ export function HomeScreen() {
         <Hand as="h2" className="mb-3 px-1 text-[28px] leading-none font-bold text-ink">
           <span id="nearby">nearby</span>
         </Hand>
-        <div className="flex flex-col gap-2.5">
+        <div ref={list} className="flex flex-col gap-2.5">
           {quests === null
             ? [0, 1, 2].map((i) => <Skeleton key={i} className="h-[104px] rounded-[20px]" />)
             : shown.length === 0
@@ -113,7 +116,7 @@ export function HomeScreen() {
                 </AnimatePresence>
               )}
         </div>
-        <div className="mt-2.5"><MoreQuests quests={nearby.slice(3)} onPick={setOpen} /></div>
+        <div className="mt-2.5"><MoreQuests quests={nearby.slice(top)} onPick={setOpen} /></div>
       </section>
 
       {anywhere.length > 0 && (
