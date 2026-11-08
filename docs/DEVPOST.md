@@ -10,7 +10,7 @@ A starting point for the Devpost submission. The friends and demo area owns the 
 - [ ] All four team members added: Danny, Siddhant, Aaron, Jonas
 - [ ] The description below, including the AI disclosure
 - [ ] The live link works on a phone, and the "Try the demo" button works
-- [ ] The MLH prize categories ticked: Gemini API, Auth0, Tiger Data. Not Vultr (we host on Vercel), and not GoDaddy Registry (amble.health isn't one of its domains)
+- [ ] The MLH prize categories ticked: Auth0, Tiger Data. Not Gemini (the demo runs Claude), not Vultr (we host on Vercel), and not GoDaddy Registry (amble.health isn't one of its domains)
 
 ## Tagline
 
@@ -41,7 +41,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 ### How we built it
 
-One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. **Gemini** writes quests at real public places taken from OpenStreetMap, with Maps and Search grounding, checks proof photos and videos, and writes recaps. Every quest the AI writes passes a safety check in code (blocked topics, distance, duration), and every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
+One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. **Claude** (Anthropic's Claude Haiku) writes quests at real public places taken from OpenStreetMap, checks proof photos and videos (three still frames from each video), and writes recaps. Every quest the AI writes passes a safety check in code (blocked topics, distance, duration), and every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
 
 ### Challenges we ran into
 
@@ -68,4 +68,4 @@ A pilot on the UCalgary campus with <only name partners we actually spoke to>. G
 We used AI in two ways, and we're disclosing both.
 
 1. **Building the project.** We used Claude Code (Anthropic) as a coding assistant throughout, with many sessions working in parallel on separate branches that we reviewed and merged through pull requests. It wrote a large share of the code. We made the product decisions: the idea and focus areas, the safety rules, the metrics and the research behind them, the quests, the design direction and what to cut. Every team member can explain the code. <Add any other tools used, such as image generation or ChatGPT.>
-2. **Inside the product.** Google Gemini writes quests near the user, checks proof photos and videos, and writes recap summaries. During development we also ran Claude Haiku (Anthropic) behind the same interface to save Gemini quota. The deployed app uses Gemini. Users are told on the privacy page which AI sees their photos.
+2. **Inside the product.** Claude Haiku (Anthropic) writes quests near the user, checks proof photos and videos, and writes recap summaries. The code also has a Google Gemini version behind the same interface, which the deployed app doesn't use. Users are told on the privacy page which AI sees their photos.

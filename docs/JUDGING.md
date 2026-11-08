@@ -66,7 +66,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 
 *5 = "stands out as highly original or a transformative rethinking; technology applied in a creative and well-justified way."*
 
-- **No-setup game master.** Gemini writes quests for whatever is open and happening near you right now (Maps and Search grounding). City-game apps need a human to design every map. Show a quest being generated for the room the judges are standing in.
+- **No-setup game master.** Claude writes quests for real places near you right now (OpenStreetMap), and a button writes them for wherever you're standing. City-game apps need a human to design every map. Show a quest being generated for the room the judges are standing in.
 - **AI referee with context.** Proof is checked against the quest, the place and the time window, not just "is there a book in this photo".
 - **We measure friendship, not followers.** The metrics below come from research on how friendships actually form. No other fitness or social app counts this.
 - **Strangers become regulars.** The second time you're matched with someone, the app notices, and that's where the loneliness numbers actually move.
@@ -90,7 +90,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 - **Cost:** one AI call writes a batch of quests, which are cached per area and reused. The starter pack is the free fallback. Put a per-quest cost estimate in the Devpost from actual token counts (measure it, don't guess).
 - **Infrastructure:** one Next.js app, Postgres on Tiger Data (location pings as a hypertable), Auth0. It scales to another city by changing the location and nothing else.
 - **Adoption partners to name:** the campus wellness centre, the students' union, residence life and city parks and recreation. Only name a partner as confirmed if we really spoke to them.
-- **Risks we've thought about:** safety (above), GPS spoofing (proof checks location and time), Gemini being wrong (manual approval in demo mode, appeals), and battery (location pings only during a quest).
+- **Risks we've thought about:** safety (above), GPS spoofing (proof checks location and time), the AI being wrong (manual approval in demo mode, appeals), and battery (location pings only during a quest).
 
 ### Technical Execution
 
@@ -100,7 +100,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 - Quests are only written at real places: the model picks from a list of public spots near you (OpenStreetMap plus our own), and the coordinates always come from that list, never from the model. Gemini mode also uses Maps and Search grounding and shows its sources. Either way, `toSafeQuest` checks everything that comes back.
 - Proof verification uses media plus GPS plus timestamp. (The GPS and time checks are switched off in `DEMO_MODE`, so judges can try it from the room. Say so if asked.)
 - Ratings use Glicko-2 from a library, not hand-rolled maths.
-- It degrades gracefully: GPS denied, no signal and Gemini down each have a designed state (tested, not just claimed).
+- It degrades gracefully: GPS denied, no signal and the AI down each have a designed state (tested, not just claimed).
 
 ### User Experience & Design
 
@@ -152,7 +152,7 @@ The final adds 2 minutes: scalability (cost, any city), the tech architecture, a
 | --- | --- |
 | UI/UX and metrics | Design system, every screen, the human metrics dashboard, ratings, the screenshots in the video |
 | Backend | Login and the demo login, matching, the live deploy, no secrets in the repo |
-| Gemini | Grounded quests with sources, the proof referee, recaps, the cost-per-quest number |
+| AI | Grounded quests with sources, the proof referee, recaps, the cost-per-quest number |
 | Friends and demo | Quests and story, testers, the video, the Devpost write-up, the title format, submitting early |
 
 ## Side pots and sponsor prizes
@@ -164,7 +164,7 @@ Every team is entered for every side pot automatically, and each one is scored o
 | **Clio, Best in Accessibility** ($100) | Inclusive, intuitive design, plus strong privacy, security and transparency | Comfort settings, ten quest languages, step-free quests, AA contrast. Location is deleted the moment you're matched, a partner only ever sees a rough distance, a first name only after both say yes, media served only to people on that quest, and download or delete all your data from `/privacy`, which also says which AI sees your photos. Priya is labelled as a practice partner | **Yes.** Show `/privacy` for 5 seconds in the pitch |
 | **Benevity, Best Local Impact** ($100 + $100 to donate) | A significant **Calgary** challenge, with a feasible solution that lasts | Quests at real Calgary places (the +15, Chinatown, Central Library, Prince's Island), newcomer quests that work as a city orientation, and a pilot on the UCalgary campus | **Yes**, but it needs one sourced Calgary number about loneliness or newcomers. Don't make one up |
 | **Voltex, Real-World Energy Data** ($500) | Real published or measured energy data, such as AESO, central to the product, live preferred. Sample or AI-made data scores 1 | Nothing. See below | **No** |
-| **MLH Gemini API** | Gemini actually used | `src/lib/gemini-live.ts`, used when `AI_PROVIDER=gemini`. The plan is Gemini for the demo, but the code picks Claude whenever `ANTHROPIC_API_KEY` is set | **Yes**, if the server sets `AI_PROVIDER=gemini` (audit item 2) |
+| **MLH Gemini API** | Gemini actually used | The code has `src/lib/gemini-live.ts`, but we chose Claude for the demo | **No.** Don't tick it |
 | **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | **Yes**, live on amble.health |
 | **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | **Yes**, live on amble.health |
 | **MLH Vultr** | Hosted on Vultr | Nothing: we host on Vercel | **No** (Danny's call) |
@@ -192,7 +192,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 **Still open, ranked by points per hour of work.** Take one, and strike it out here when it's merged.
 
 1. ~~Deploy it~~ Done: live at https://amble.health with Auth0, Tiger Data and live AI (`docs/DEPLOYMENT.md`). **Still to do:** test on a real iPhone and Android over HTTPS: GPS, the camera upload, Auth0 sign-in and "Try the demo".
-2. **Make sure the deployed server really runs Gemini** (backend, 5 min). The plan is Claude while we build and Gemini for the demo. But since #20, the code picks Claude whenever `ANTHROPIC_API_KEY` is set. So set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` in Vercel and redeploy, and check `/api/health` before judging. Without it we lose the MLH Gemini prize, the pitch is wrong, and video proof is approved without anyone looking at it (the Claude path can't watch video).
+2. ~~**Make sure the deployed server really runs Gemini.**~~ Decided Nov 7: the demo runs Claude. Set `AI_PROVIDER=claude` in Vercel so a stray Gemini key can't switch it. Video proof is judged from three still frames, and quests use a saved OpenStreetMap snapshot when Overpass is down.
 3. **Submit to Devpost by 10:30 Sunday** (friends and demo, about 2 h, mostly the video). Video between 2:00 and 5:00, title `TEAM ID - TEAM NAME - Amble`, all four members, and the description and AI disclosure from [DEVPOST.md](DEVPOST.md).
 4. **Write give-back and skill-swap starter quests on campus** (friends and demo, 30 min). Focus area 1 names "volunteering, skill-sharing", and the pack has no quests for either. Two of each, tagged, plus a couple more `newcomer` ones. These are the ones to show the judges.
 5. **Rehearse to 2:45 with a timer, twice, all four of us** (1 h). Then each person answers three random questions from [WALKTHROUGH.md](WALKTHROUGH.md) without notes. This is the disqualification risk.
@@ -200,7 +200,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 7. **Most of the starter pack is out of reach** (friends and demo, 30 min). Since commit 0763c7f the pack is 17 Calgary quests, and only 3 are within a kilometre of campus (ping pong at Schulich, the Art Parkade roof and running backwards at Foothills). The rest are 4 to 10 km away but still say "20 min", and the search screen even shows "Quests waiting at Glenmore Dam, Calgary Zoo". Add 4 to 6 more campus quests, and give the downtown ones honest durations or make them crew quests.
 8. **There are no "anywhere" quests any more** (friends and demo, 10 min). The JUDGING story promises anywhere quests for people who can't get to campus. Add two or three back, or drop the promise from the pitch. (`bun run smoke` no longer depends on them, and passes 86 of 86 on real Postgres too.)
 9. **One sourced Calgary number for Benevity** (20 min of research). Use something published, for example from the City of Calgary or United Way of Calgary on isolation or newcomers. Quote it exactly, with the source.
-10. **Measure the cost per quest** (Gemini or AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one batch into a dollar figure for Feasibility.
+10. **Measure the cost per quest** (AI owner, 20 min, needs live mode). Token counts are already logged (`logUsage`). Turn one batch into a dollar figure for Feasibility.
 11. ~~**The recap with a bad id.**~~ Done: an unknown run says "no recap here", an unfinished one says "not done yet" and links back to the quest, and no signal offers Try again. None of them show the zero stats.
 12. ~~**The recap with no GPS.**~~ Done: the distance is hidden when there's no route, and "1 minute" is singular.
 13. **Don't promise what isn't built.** This file used to mention a mascot, a monthly UCLA loneliness check, ratings per category, races, 1v1 challenges and appeals. None of those are in the code. Leave them out of the pitch unless someone builds them.

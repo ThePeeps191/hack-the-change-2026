@@ -94,7 +94,7 @@ export function HomeScreen() {
           {quests === null
             ? [0, 1, 2].map((i) => <Skeleton key={i} className="h-[104px] rounded-[20px]" />)
             : shown.length === 0
-              ? <p className="px-1 text-[15px] text-ink-muted">Nothing mapped near you yet. Say you&apos;re free and Gemini will write a quest for where you are.</p>
+              ? <p className="px-1 text-[15px] text-ink-muted">Nothing mapped near you yet. Tap below and the AI will write a quest for where you are.</p>
               : (
                 <AnimatePresence initial={false}>
                   {shown.map((q, i) => (

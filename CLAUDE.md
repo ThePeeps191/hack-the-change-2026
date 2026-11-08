@@ -1,6 +1,6 @@
 # Hack the Change 2026
 
-Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. An AI writes the quests, checks the proof and makes recaps: Claude Haiku 5.5 while we build, Gemini for the demo (`AI_PROVIDER`).
+Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made in 24 hours that gets people outside together: 20-minute quests with someone new nearby, and longer games with friends. An AI writes the quests, checks the proof and makes recaps: Claude Haiku 5.5, in development and in the demo (`AI_PROVIDER=claude`). A Gemini path exists (`AI_PROVIDER=gemini`) but we chose not to use it.
 
 - `docs/IDEA.md`: what we're building and why
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
@@ -18,7 +18,7 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 - **Every one of us must be able to explain any code.** If one of us can't, we can be disqualified. Keep code plain enough to explain in one sentence, and update `docs/WALKTHROUGH.md` when you change how something works.
 - **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
 - **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
-- **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data and GoDaddy Registry. (We host on Vercel, so Vultr is out.) Don't remove one without telling a human.
+- **Sponsor prizes need the product to really be used:** Auth0, Tiger Data and GoDaddy Registry. (We host on Vercel, so Vultr is out, and the demo runs Claude, so Gemini is out.) Don't remove one without telling a human.
 
 ## Build only what the demo shows
 
