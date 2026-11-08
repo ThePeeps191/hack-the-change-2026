@@ -8,14 +8,22 @@ import { AUTH_MODE, DEMO_MODE } from "@/lib/env";
 //
 // She shows up for everyone in DEMO_MODE, and for the default mock user Sam.
 // Named mock users (/?as=alice) never get her, so two tabs can really match.
+//
+// How long someone searches before she appears: a few seconds for "Try the
+// demo" guests, who are almost always a judge on their own. People signed in
+// with a real account wait longer for a real person first, so two phones that
+// tap "I'm free" a little apart still find each other. null means never.
+const GUEST_WAIT_MS = 4000;
+const SIGNED_IN_WAIT_MS = 25_000;
 
 const BOT_SUB = "bot|priya";
 
-export async function botPartnerFor(userId: string) {
-  if (DEMO_MODE) return true;
-  if (AUTH_MODE !== "mock") return false;
+export async function botWaitMs(userId: string): Promise<number | null> {
   const row = await one<{ auth0_sub: string }>("select auth0_sub from users where id = $1", [userId]);
-  return row?.auth0_sub === "mock|sam";
+  const sub = row?.auth0_sub ?? "";
+  if (DEMO_MODE) return sub.startsWith("demo|") || sub.startsWith("mock|") ? GUEST_WAIT_MS : SIGNED_IN_WAIT_MS;
+  if (AUTH_MODE === "mock" && sub === "mock|sam") return GUEST_WAIT_MS;
+  return null;
 }
 
 let cached: string | null = null;

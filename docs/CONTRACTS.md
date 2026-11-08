@@ -118,6 +118,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/runs/current` | The quest you're on, for resuming | `QuestRun` or null |
 | `GET /api/runs/:id` | Run status, polled. `members[0]` is always you | `QuestRun` |
 | `POST /api/runs/:id/checkins` | One-tap mood: `{ phase, mood }`. Before is how you are, 1 to 5. After is relative: 5 better, 3 the same, 1 worse | nothing |
+| `POST /api/runs/:id/leave` | Leave a quest with someone new without reporting them. Ends it for both | `204` |
 | `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve pending proof by hand | `{ approved }` |
 | `GET /api/media/:id` | Proof media, for people on that quest | the file |
 | `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
