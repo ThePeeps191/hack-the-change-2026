@@ -3,7 +3,7 @@ import type { Match, Prefs, User } from "@/lib/contracts";
 import { CAMPUS_CENTER } from "@/lib/config";
 import { one, query, transaction } from "@/lib/db";
 import { HttpError, notFound } from "@/lib/route";
-import { botId, botPartnerFor } from "./bot";
+import { botId, botWaitMs } from "./bot";
 import { getQuest, pickPairQuest } from "./quests";
 import { createRun } from "./runs";
 import { assertCanMeet, distanceM } from "./safety";
@@ -14,7 +14,6 @@ const MATCH_EXPIRY_MS = 2 * 60_000;
 const INVITE_EXPIRY_MS = 30 * 60_000;
 const REMATCH_COOLDOWN_MIN = 10; // two people who just passed on each other aren't re-paired right away
 const ENDED_VISIBLE_MS = 2 * 60_000; // how long a declined match stays visible to the person polling for it
-const BOT_SEARCH_MS = 4000;
 const BOT_ACCEPT_MS = 2000;
 
 type Availability = {
@@ -233,11 +232,8 @@ export async function currentMatch(user: User): Promise<Match | null> {
     if (free) {
       await tryPair(user.id);
       row = await openMatch(user.id);
-      if (
-        !row &&
-        Date.now() - free.created_at.getTime() > BOT_SEARCH_MS &&
-        (await botPartnerFor(user.id))
-      ) {
+      const wait = row ? null : await botWaitMs(user.id);
+      if (!row && wait != null && Date.now() - free.created_at.getTime() > wait) {
         await pairWithBot(free);
         row = await openMatch(user.id);
       }

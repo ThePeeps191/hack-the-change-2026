@@ -119,6 +119,7 @@ export const api = {
   connections: () => call<Connection[]>("/api/connections"),
   connect: (run_id: string) =>
     post<{ connected: boolean }>("/api/connections", { run_id }),
+  leaveRun: (runId: string) => post<void>(`/api/runs/${runId}/leave`, {}),
   report: (body: { reported_id: string; run_id: string; reason: string }) =>
     post<void>("/api/reports", body),
 

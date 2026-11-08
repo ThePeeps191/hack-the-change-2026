@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
@@ -38,6 +39,7 @@ export function CrewScreen() {
 
   return (
     <AppShell>
+      <Split aside={
       <Hero className="pb-8">
         <HeroBar
           center="crew"
@@ -69,6 +71,7 @@ export function CrewScreen() {
           </div>
         )}
       </Hero>
+      }>
 
       <div className="space-y-7 px-4 pt-6">
         {crew === null && <NoCrewActions onDone={reload} />}
@@ -162,6 +165,7 @@ export function CrewScreen() {
 
         {crew && <AnywhereQuests crew={crew} onChange={reload} />}
       </div>
+      </Split>
       {crew && <InviteSheet open={inviting} onClose={() => setInviting(false)} name={crew.name} code={crew.invite_code} />}
     </AppShell>
   );
