@@ -145,7 +145,7 @@ We used Claude Code, an AI coding assistant, heavily, with many sessions in para
 
 Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
-**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs a verified email and happens in daylight only. Report is one tap away, ends the quest, and you're never paired with that person again.
+**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs a verified email and happens in daylight only. During the quest, one tap opens "Help, leave or report" (`src/features/quests/report-sheet.tsx`): 911 and UCalgary Campus Security (403-220-5333, 24/7) at the top, "I need to go" to leave without blaming anyone, and a report, which ends the quest and means you're never paired with that person again.
 
 **"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. Crews and invite links work with zero strangers around, and "anywhere" quests work alone. In the demo, Priya is a labelled practice partner.
 
