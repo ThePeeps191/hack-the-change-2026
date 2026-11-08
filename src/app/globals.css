@@ -891,8 +891,12 @@ a {
   .split-aside .hero-bar + * { margin-top: auto; }
   .split-aside .sky > .relative > :last-child { margin-bottom: auto; }
   .split-aside .split-fill { flex: 1; height: auto !important; min-height: 0; }
-  /* A single-step page's sky card fills the column's height. */
-  .split-tall > .relative:has(> .sky), .split-tall .sky { flex: 1; }
+  /* The sky card fills the column, which is as tall as the content beside it. */
+  .split-aside > .relative:has(> .sky), .split-aside .sky { flex: 1; }
+  /* A map needs some room even beside a short list. */
+  .split-aside:has(.split-fill) { min-height: min(100dvh, 640px); }
+  /* The content's top lines up with the card's: drop the phone's top gap. */
+  .split-main > :first-child { padding-top: 0; margin-top: 0; }
 }
 
 /* The proof photo while it's checked (src/features/proof/photo-scan.tsx).
