@@ -8,8 +8,8 @@ import Link from "next/link";
 // the sky, a short dotted path that trails off, and the way back.
 export default function NotFound() {
   return (
-    <AppShell nav={false}>
-      <Hero fill className="min-h-dvh px-6 pt-[max(72px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))]">
+    <AppShell nav={false} wide>
+      <Hero fill className="sky-stage min-h-dvh px-6 pt-[max(72px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))]">
         <Stars className="opacity-60" />
         <div className="relative text-center">
           <Hand as="h1" className="text-[56px] leading-none font-bold">wrong turn</Hand>

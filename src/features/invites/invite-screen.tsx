@@ -6,6 +6,7 @@ import { QUEST_MINUTES } from "@/lib/config";
 import type { Quest } from "@/lib/contracts";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
+import { Split } from "@/components/ui/split";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
@@ -163,7 +164,8 @@ export function InviteScreen() {
   // If we got an error loading invite details, show it
   if (detailsError) {
     return (
-      <AppShell nav={false}>
+      <AppShell nav={false} wide>
+        <Split fill aside={
         <Hero className="pb-10">
           <HeroBar
             left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
@@ -179,18 +181,21 @@ export function InviteScreen() {
             {detailsError}
           </p>
         </Hero>
+        }>
         <div className="flex flex-1 flex-col" />
         <div className="space-y-2 px-4 pt-6 pb-6">
           <ButtonLink size="lg" href="/">
             Back to today
           </ButtonLink>
         </div>
+        </Split>
       </AppShell>
     );
   }
 
   return (
-    <AppShell nav={false}>
+    <AppShell nav={false} wide>
+      <Split fill aside={
       <Hero className="pb-10">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
@@ -206,6 +211,7 @@ export function InviteScreen() {
           {inviterLine}
         </p>
       </Hero>
+      }>
       <div className="flex flex-1 flex-col gap-3 px-4 pt-6">
         {quest && <InviteQuest quest={quest} />}
         <p className="rounded-[24px] bg-surface p-5 text-[15px] leading-snug text-ink-muted shadow-card">
@@ -242,6 +248,7 @@ export function InviteScreen() {
           </>
         )}
       </div>
+      </Split>
     </AppShell>
   );
 }

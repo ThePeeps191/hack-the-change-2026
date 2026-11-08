@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { Split } from "@/components/ui/split";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { Button, buttonClass } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
@@ -57,12 +58,14 @@ export function PrivacyScreen({ shared = false }: { shared?: boolean }) {
   }
 
   return (
-    <AppShell nav={false}>
+    <AppShell nav={false} wide>
+      <Split fill aside={
       <Hero className="pb-8">
         <HeroBar left={<HeroIcon href="/me" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="you" />
         <Hand as="h1" className="pt-2 text-center text-[40px] leading-none font-bold">your data</Hand>
         <p className="mx-auto mt-2 max-w-[30ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/90">Everything we keep, and why, in plain words.</p>
       </Hero>
+      }>
 
       <div className="flex-1 space-y-4 px-4 pt-6 pb-6">
         <ul className="rows overflow-hidden rounded-[24px] bg-surface shadow-card">
@@ -110,6 +113,7 @@ export function PrivacyScreen({ shared = false }: { shared?: boolean }) {
           )}
         </AnimatePresence>
       </div>
+      </Split>
     </AppShell>
   );
 }

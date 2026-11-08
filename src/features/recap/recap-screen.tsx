@@ -5,6 +5,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { ApiError, api } from "@/lib/api";
 import type { Recap } from "@/lib/contracts";
 import { chime } from "@/lib/feedback";
+import { Split } from "@/components/ui/split";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Button, ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
@@ -63,7 +64,8 @@ export function RecapScreen() {
   const km = recap?.distance_m != null ? recap.distance_m / 1000 : null;
 
   return (
-    <AppShell nav={false}>
+    <AppShell nav={false} wide>
+      <Split fill aside={
       <Hero className="pb-8">
         <HeroBar left={<HeroIcon href={back} label={fromMe ? "Back" : "Done"} d={fromMe ? "M15 6l-6 6 6 6" : "M6 6l12 12M18 6L6 18"} />} center="recap" />
         <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">
@@ -84,6 +86,7 @@ export function RecapScreen() {
           </Hand>
         )}
       </Hero>
+      }>
 
       <div className="flex-1 space-y-6 px-4 pt-6">
         {problem && (
@@ -136,6 +139,7 @@ export function RecapScreen() {
       <div className="px-4 pt-6 pb-6">
         <ButtonLink size="lg" variant="quiet" href={back}>{fromMe ? "Back to you" : "Back to today"}</ButtonLink>
       </div>
+      </Split>
     </AppShell>
   );
 }
