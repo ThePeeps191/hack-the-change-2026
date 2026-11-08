@@ -2,7 +2,7 @@
 import { CloudInk, Ink, SunInk } from "@/components/ui/ink";
 import { motion } from "motion/react";
 import Link from "next/link";
-import type { FamiliarFace, HistoryItem } from "@/lib/contracts";
+import type { FamiliarFace, HistoryItem, WeekDay } from "@/lib/contracts";
 import { distance } from "@/lib/format";
 import { Avatar } from "@/components/ui/avatar";
 import { categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
@@ -14,8 +14,9 @@ function sameDay(a: Date, b: Date) {
 }
 
 // This week, Monday to Sunday, as seven little suns: filled on days you got
-// out, an outline for today, faint for days still to come.
-export function WeekStrip({ history }: { history: HistoryItem[] }) {
+// out, an outline for today, faint for days still to come. The server sends the
+// days (src/server/week.ts, time_bucket on Tiger Data); history is the fallback.
+export function WeekStrip({ history, week }: { history: HistoryItem[]; week?: WeekDay[] }) {
   const today = new Date();
   const monday = new Date(today);
   monday.setHours(0, 0, 0, 0);
@@ -26,10 +27,12 @@ export function WeekStrip({ history }: { history: HistoryItem[] }) {
     return d;
   });
   const done = history.map((h) => new Date(h.completed_at));
+  const key = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const fromServer = new Map((week ?? []).map((w) => [w.day, w.quest_minutes + w.moving_minutes > 0]));
   return (
     <ol className="mx-auto mt-5 flex max-w-[320px] justify-between px-2" aria-label="Days you got out this week">
       {days.map((d, i) => {
-        const out = done.some((x) => sameDay(x, d));
+        const out = fromServer.get(key(d)) ?? done.some((x) => sameDay(x, d));
         const isToday = sameDay(d, today);
         const future = d > today && !isToday;
         const name = d.toLocaleDateString(undefined, { weekday: "narrow" });

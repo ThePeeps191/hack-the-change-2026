@@ -2,6 +2,7 @@ import "server-only";
 import type { Dashboard, HistoryItem, User } from "@/lib/contracts";
 import { one, query } from "@/lib/db";
 import { getQuest } from "./quests";
+import { weekDays } from "./week";
 
 // The 150 minutes a week from the Canadian 24-Hour Movement Guidelines.
 const WEEKLY_GOAL_MIN = 150;
@@ -124,6 +125,7 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     new_places: [...firstVisits.values()],
     mood: { after_better: mood?.after_better ?? 0, checkins: mood?.checkins ?? 0 },
     sample_quests: sample?.n ?? 0,
+    week: await weekDays(user.id),
   };
 }
 
