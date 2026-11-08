@@ -15,7 +15,7 @@ A starting point for the Devpost submission. The friends and demo area owns the 
 
 ## Tagline
 
-Twenty minutes, someone new, somewhere outside.
+Twenty minutes, someone new, something to do.
 
 ## Description
 

@@ -4,7 +4,7 @@
 
 <h1 align="center">Amble</h1>
 
-<p align="center">Twenty minutes, someone new, somewhere outside.</p>
+<p align="center">Twenty minutes, someone new, something to do.</p>
 
 <p align="center">
   <a href="https://amble.health">amble.health</a> ·
@@ -17,7 +17,7 @@
   <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone: Aaron picks a quest and gets matched with Siddhant, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
 </p>
 
-Amble gives strangers short, fun challenges to do together outside. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. We wrote all of them by hand for places Calgarians know, like the +15, Chinatown, Nose Hill and the Calgary Tower. One of ours, at the Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
+Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. We wrote all of them by hand for places Calgarians know, like the +15, Chinatown, Nose Hill and the Calgary Tower. One of ours, at the Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
 
 You can also start a crew with your friends and compete with other crews to claim spots around campus.
 
