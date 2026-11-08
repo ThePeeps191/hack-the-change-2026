@@ -13,6 +13,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastQuiet } from "@/components/ui/toast";
 import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
+import { SunriseGlow } from "./sunrise-glow";
 import { InviteCard } from "@/features/invites/invite-card";
 import { ShareLink } from "@/features/invites/share-link";
 import { CategoryIcon, categoryOf, Coin } from "@/components/ui/quest-glyph";
@@ -120,7 +121,8 @@ export function MatchScreen() {
 
   return (
     <AppShell nav={false} wide>
-      <Hero fill className="sky-stage min-h-dvh">
+      <Hero fill className="sky-stage isolate min-h-dvh">
+        <SunriseGlow phase={state} />
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
           center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : "finding someone"}
