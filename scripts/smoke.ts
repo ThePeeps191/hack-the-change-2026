@@ -92,7 +92,11 @@ async function main() {
   await sam.del("/api/availability");
   const before = (await sam.get<User>("/api/me")).data;
   check(before.display_name === "Sam", "default user is Sam");
-  await sam.post("/api/availability", AT);
+  check((await sam.get<{ free: boolean }>("/api/availability")).data.free === false, "not looking until you say you're free");
+  // "Find someone to do it with" on one quest: the match gets that quest.
+  const picked = (await sam.get<Quest[]>("/api/quests")).data.filter((q) => q.type !== "anywhere").at(-1)!;
+  await sam.post("/api/availability", { ...AT, quest_id: picked.id });
+  check((await sam.get<{ free: boolean }>("/api/availability")).data.free === true, "looking after I'm free");
   check((await sam.get<Match | null>("/api/match")).data === null, "searching at first");
   const found = await poll(async () => (await sam.get<Match | null>("/api/match")).data, (m) => !!m);
   check(found?.status === "pending" && found.partner === null, "bot match appears, partner hidden until both accept", found);
@@ -104,6 +108,7 @@ async function main() {
   const runId = ready.run_id!;
   const run = await mine(sam, runId);
   check(run.members[0].display_name === "Sam", "caller is members[0]");
+  check(run.quest.id === picked.id, "the match uses the quest you picked", run.quest.title);
   check(run.mode === "pair" && run.status === "active", "pair run is active");
   check((await sam.get<QuestRun>("/api/runs/current")).data?.id === runId, "current run finds it");
 
