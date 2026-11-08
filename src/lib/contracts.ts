@@ -64,6 +64,8 @@ export type Match = {
   demo_partner?: boolean;
   // Added: the quest an invite pinned, so the waiting screen can name it.
   quest_title?: string | null;
+  // Added: the invite's code, only for the person who made the link and only while it's pending.
+  invite_code?: string | null;
 };
 
 export type RunMember = {
