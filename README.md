@@ -43,7 +43,7 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 
 **With friends**
 
-- **Crews** share quests, earn coins together and race on a weekly board.
+- **Crews** share quests, earn coins together and race on a weekly board. Pick a character for yourself on the You tab, and one for your crew on the Crew tab.
 - **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
 
 **The You tab**

@@ -1,41 +1,47 @@
 "use client";
-// Pick your own character on the You page: a shape and a colour. Each tap saves
-// straight away (users.avatar, as "shape:colour"), and your crew, quest partners
-// and familiar faces see the same one. "Use my original" goes back to the
-// character your name gives you.
-import { useState } from "react";
-import { api } from "@/lib/api";
-import type { User } from "@/lib/contracts";
+// Pick a character: a shape and a colour, for yourself on the You page or for
+// your crew on the Crew page. Each tap saves straight away, as "shape:colour"
+// (onSave says where), and the reset button goes back to the character the name
+// gives. Everyone else sees the same one.
+import { useId, useState } from "react";
 import { Avatar, avatarColors, avatarShapes, characterFor } from "@/components/ui/avatar";
 import GrokBot from "@/lib/bots/grokbot";
 
 const label = (shape: string) => (GrokBot.SHAPES as Record<string, { label: string }>)[shape]?.label ?? shape;
 
-export function AvatarPicker({ me, onSaved }: { me: User; onSaved: (u: User) => void }) {
-  const [avatar, setAvatar] = useState(me.avatar ?? null);
+export function AvatarPicker({ name, avatar: saved, note, resetLabel, onSave, className = "rounded-[24px] bg-surface p-4 shadow-card" }: {
+  name: string;
+  avatar?: string | null;
+  note: string;
+  resetLabel: string;
+  onSave: (avatar: string | null) => Promise<unknown>;
+  className?: string;
+}) {
+  const [avatar, setAvatar] = useState(saved ?? null);
   const [error, setError] = useState(false);
-  const { shape, color } = characterFor(me.display_name, avatar);
+  const { shape, color } = characterFor(name, avatar);
   const colour = avatarColors.indexOf(color);
+  const id = useId();
 
   function save(next: string | null) {
     const before = avatar;
     setAvatar(next); // show it at once; put it back if the save fails
     setError(false);
-    api.updateMe({ avatar: next }).then(onSaved).catch(() => { setAvatar(before); setError(true); });
+    onSave(next).catch(() => { setAvatar(before); setError(true); });
   }
 
   return (
-    <div className="rounded-[24px] bg-surface p-4 shadow-card">
+    <div className={className}>
       <div className="flex items-center gap-4">
-        <Avatar name={me.display_name} avatar={avatar} size={72} />
+        <Avatar name={name} avatar={avatar} size={72} />
         <div className="min-w-0">
-          <p className="truncate text-[17px] font-semibold">{me.display_name}</p>
-          <p className="text-[13px] leading-snug text-ink-muted">Your crew and quest partners see this character.</p>
+          <p className="truncate text-[17px] font-semibold">{name}</p>
+          <p className="text-[13px] leading-snug text-ink-muted">{note}</p>
         </div>
       </div>
 
-      <p id="shape-label" className="mt-4 mb-2 px-1 text-[14px] font-medium text-ink-muted">Shape</p>
-      <div role="radiogroup" aria-labelledby="shape-label" className="grid grid-cols-6 gap-1.5">
+      <p id={`${id}-shape`} className="mt-4 mb-2 px-1 text-[14px] font-medium text-ink-muted">Shape</p>
+      <div role="radiogroup" aria-labelledby={`${id}-shape`} className="grid grid-cols-6 gap-1.5">
         {avatarShapes.map((s) => (
           <button
             key={s}
@@ -52,8 +58,8 @@ export function AvatarPicker({ me, onSaved }: { me: User; onSaved: (u: User) => 
         ))}
       </div>
 
-      <p id="colour-label" className="mt-4 mb-2 px-1 text-[14px] font-medium text-ink-muted">Colour</p>
-      <div role="radiogroup" aria-labelledby="colour-label" className="flex flex-wrap gap-2">
+      <p id={`${id}-colour`} className="mt-4 mb-2 px-1 text-[14px] font-medium text-ink-muted">Colour</p>
+      <div role="radiogroup" aria-labelledby={`${id}-colour`} className="flex flex-wrap gap-2">
         {avatarColors.map((c, i) => (
           <button
             key={c.fill}
@@ -70,7 +76,7 @@ export function AvatarPicker({ me, onSaved }: { me: User; onSaved: (u: User) => 
       {error && <p className="mt-3 px-1 text-[14px] text-danger">That didn&apos;t save. Check your signal and try again.</p>}
       {avatar && (
         <button onClick={() => save(null)} className="mt-3 flex min-h-11 items-center px-1 text-[14px] font-medium text-ink-muted hover:text-ink">
-          Use my original
+          {resetLabel}
         </button>
       )}
     </div>

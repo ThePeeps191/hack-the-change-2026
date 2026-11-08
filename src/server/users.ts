@@ -53,12 +53,17 @@ export async function findOrCreateUser(input: {
   return toUser((await one<UserRow>("select * from users where auth0_sub = $1", [input.sub]))!);
 }
 
+// A picked character, as "shape:colour" (e.g. "cloud:3"), or null for the one
+// from the name. The screens check the shape and colour exist and fall back to
+// the one from the name if not.
+export function checkAvatar(avatar: string | null | undefined) {
+  if (avatar != null && !/^[a-z]{2,16}:\d{1,2}$/.test(avatar)) throw new HttpError(400, "that character doesn't exist");
+}
+
 export async function updateProfile(user: User, patch: { display_name?: string; age_confirmed_at?: string | null; prefs?: Prefs; avatar?: string | null }) {
   const name = patch.display_name?.trim().slice(0, 40);
   if (patch.display_name !== undefined && !name) throw new HttpError(400, "pick a name to show people");
-  // Your character, as "shape:colour" (e.g. "cloud:3"). The screens check the shape
-  // and colour exist and fall back to the one from your name if not.
-  if (patch.avatar != null && !/^[a-z]{2,16}:\d{1,2}$/.test(patch.avatar)) throw new HttpError(400, "that character doesn't exist");
+  checkAvatar(patch.avatar);
   const row = await one<UserRow>(
     `update users set
        display_name = coalesce($2, display_name),

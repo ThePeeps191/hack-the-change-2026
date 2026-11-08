@@ -17,6 +17,7 @@ import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
 import { ClaimPeek } from "@/features/claim/claim-peek";
 import { InviteSheet } from "./invite-sheet";
 import { LeaveCrew } from "./leave-crew";
+import { CrewCharacter } from "./crew-character";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -67,6 +68,7 @@ export function CrewScreen() {
           </div>
         ) : (
           <div className="flex flex-col items-center px-6 pt-1 text-center">
+            <CrewCharacter crew={crew} onChanged={(next) => { setCrew(next); api.leaderboard().then(setBoard).catch(() => {}); }} />
             <Hand as="h1" className="text-[38px] leading-none font-bold">{crew.name}</Hand>
             <Odometer value={crew.coins} delay={150} className="numeral mt-3 text-[84px] leading-none" />
             <p className="mt-1 flex items-center gap-1.5 text-[14px] font-medium text-on-sky/95">
@@ -136,7 +138,7 @@ export function CrewScreen() {
                   return (
                     <motion.li key={e.id} {...rise(i + 3)} className={`flex items-center gap-3 px-4 py-3 ${ours ? "bg-accent-soft/60" : ""}`}>
                       <span className="w-5 text-center text-[15px] font-semibold text-ink-faint tabular-nums">{e.rank}</span>
-                      <Avatar name={e.name} size={36} ring={ours} />
+                      <Avatar name={e.name} avatar={e.avatar} size={36} ring={ours} />
                       <span className={`flex-1 truncate text-[16px] ${ours ? "font-semibold" : "font-medium"}`}>{e.name}{ours && <span className="ml-1.5 text-[13px] font-medium text-ink-faint">you</span>}</span>
                       {e.delta ? <span className="text-[13px] font-semibold text-[#9a6a0e] tabular-nums dark:text-[#f4cf72]">+{e.delta}</span> : null}
                       <span className="flex items-center gap-1"><Coin size={14} /><Odometer value={e.coins} delay={250 + i * 80} className="text-[15px] font-semibold" /></span>
