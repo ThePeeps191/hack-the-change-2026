@@ -23,7 +23,7 @@ You can also start a crew with your friends and compete with other crews to clai
 
 ## Try it
 
-Open **[amble.health](https://amble.health)** on your phone and tap **Try the demo**. You don't need an account, a partner or GPS: a practice partner, Priya, matches with you and plays along. In Chrome on Android you can also install it like an app (⋮ → Install app).
+Open [amble.health](https://amble.health) on your phone and tap Try the demo. You don't need an account. If nobody else is free, a practice partner called Priya plays along, so you can go through the whole thing by yourself. In Chrome on Android you can also install it like an app.
 
 ## Why
 
