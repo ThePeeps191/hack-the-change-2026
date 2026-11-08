@@ -1,11 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Game, Zone } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
 import { claimBounds } from "@/lib/claim-bounds";
+import { timeKey } from "@/features/quests/problem-set";
 
 const field = "min-h-12 w-full rounded-control bg-sunken px-4 text-[16px] text-ink placeholder:text-ink-faint";
 
@@ -51,6 +52,15 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
   const [error, setError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<string | null>(null);
   const us = game.teams[0];
+
+  // The arithmetic challenge saves its time in this browser: put it in the box.
+  useEffect(() => {
+    if (!zone.my_run_id || !zone.my_run_ready) return;
+    try {
+      const saved = localStorage.getItem(timeKey(zone.my_run_id));
+      if (saved) setResult(saved); // eslint-disable-line react-hooks/set-state-in-effect -- read client-only storage after mount
+    } catch {}
+  }, [zone.my_run_id, zone.my_run_ready]);
 
   async function start() {
     setBusy(true);
