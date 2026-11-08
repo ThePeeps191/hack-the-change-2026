@@ -6,6 +6,8 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/PLAN.md`: timeline, stack, scope and the rough split of work
 - `docs/CONTRACTS.md`: the quest format, tables and API that everyone builds against
 - `docs/ARCHITECTURE.md`: how the code fits together and why
+- `docs/DEVELOPMENT.md`: setup, running the app locally, and how sessions work
+- `README.md` and `docs/DEVPOST.md`: the public story of Amble for judges. When you change what the product does, update both in the same PR
 - `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
 - `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
 - `docs/DEPLOYMENT.md`: what's live at https://amble.health: Vercel, the domain, Tiger Data, Auth0, the AI and every env var. Read it before touching any outside service

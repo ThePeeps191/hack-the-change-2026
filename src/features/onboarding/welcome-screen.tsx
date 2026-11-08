@@ -147,7 +147,7 @@ export function WelcomeScreen() {
         )}
       </motion.div>
 
-      <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))] lg:static lg:bg-none">
+      <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))] lg:static lg:bg-none lg:pb-0">
         <Button size="lg" onClick={save} disabled={busy || !me || !name.trim()}>{busy ? "Saving…" : firstRun ? "Let's go" : "Save"}</Button>
       </div>
       </Split>
