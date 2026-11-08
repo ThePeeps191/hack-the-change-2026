@@ -5,6 +5,7 @@ import { api, ApiError } from "@/lib/api";
 import type { Game, Zone } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
 import { Button } from "@/components/ui/button";
+import { claimBounds } from "@/lib/claim-bounds";
 
 const field = "min-h-12 w-full rounded-control bg-sunken px-4 text-[16px] text-ink placeholder:text-ink-faint";
 
@@ -84,7 +85,7 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
       {zone.my_run_id && zone.my_run_ready ? (
         <>
           <label className="block text-[14px] font-medium text-ink-muted" htmlFor="result">Your result{zone.result_unit ? ` (${zone.result_unit})` : ""}</label>
-          <input id="result" className={field} type="number" inputMode="decimal" value={result} onChange={(e) => setResult(e.target.value)} />
+          <input id="result" className={field} type="number" inputMode="decimal" min={claimBounds(zone.result_unit).min} max={claimBounds(zone.result_unit).max} value={result} onChange={(e) => setResult(e.target.value)} />
           <Button className="w-full" disabled={busy || result === ""} onClick={send}>Send it</Button>
         </>
       ) : zone.my_run_id ? (

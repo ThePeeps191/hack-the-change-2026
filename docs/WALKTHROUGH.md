@@ -47,7 +47,7 @@ This is the main demo. Each step names the function that does it.
 9. **Finishing.** `settle` in `src/server/runs.ts` marks the run complete once everyone's proof is approved, and works out how far each person walked from their own pings.
 10. **Recap.** `getRecap` in `src/server/recaps.ts` asks the AI for a two-line story once and keeps it. It shows your own route, never your partner's. Then you can choose to stay in touch, which only connects you if both say yes (`stayInTouch` in `src/server/people.ts`).
 
-**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds, you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
+**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds (25 seconds if you signed in with a real account, so two team phones that tap a little apart still find each other; `botWaitMs`), you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
 
 ## No background workers: why, and how things still move
 

@@ -12,14 +12,21 @@ const reasons = ["Made me uncomfortable", "Didn't show up", "Asked to meet somew
 // quest for you, and the two of you are never matched again.
 export function ReportSheet({ runId, reportedId }: { runId: string; reportedId: string }) {
   const [open, setOpen] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState<"left" | "reported" | null>(null);
   const [busy, setBusy] = useState(false);
   const mounted = useSyncExternalStore(noop, () => true, () => false);
 
   async function send(reason: string) {
     setBusy(true);
     await api.report({ reported_id: reportedId, run_id: runId, reason }).catch(() => {});
-    setSent(true);
+    setSent("reported");
+    setBusy(false);
+  }
+
+  async function leave() {
+    setBusy(true);
+    await api.leaveRun(runId).catch(() => {});
+    setSent("left");
     setBusy(false);
   }
 
@@ -34,7 +41,13 @@ export function ReportSheet({ runId, reportedId }: { runId: string; reportedId: 
         createPortal(
           <Sheet open={open} onClose={() => setOpen(false)} label="Report or leave">
             <div className="px-5 pt-1 pb-2">
-              {sent ? (
+              {sent === "left" ? (
+                <>
+                  <p className="text-[19px] font-semibold">You&apos;ve left this quest.</p>
+                  <p className="mt-1 text-[15px] leading-snug text-ink-muted">Nobody was reported. We&apos;ll let them know it&apos;s over, and you can say you&apos;re free again any time.</p>
+                  <ButtonLink className="mt-4 w-full" variant="secondary" href="/">Back to today</ButtonLink>
+                </>
+              ) : sent ? (
                 <>
                   <p className="text-[19px] font-semibold">Thanks for telling us.</p>
                   <p className="mt-1 text-[15px] leading-snug text-ink-muted">We&apos;ve ended this quest for you, and you won&apos;t be matched again. If you feel unsafe, call 911 or campus security.</p>
@@ -42,9 +55,11 @@ export function ReportSheet({ runId, reportedId }: { runId: string; reportedId: 
                 </>
               ) : (
                 <>
-                  <p className="text-[19px] font-semibold">What happened?</p>
-                  <p className="mt-1 text-[14px] leading-snug text-ink-muted">Any of these ends the quest for you, and you won&apos;t be matched with them again.</p>
-                  <div className="mt-4 grid gap-2">
+                  <Button variant="secondary" disabled={busy} onClick={leave} className="w-full">I need to go</Button>
+                  <p className="mt-1.5 text-center text-[13px] text-ink-muted">Ends the quest. Nobody gets reported.</p>
+                  <p className="mt-5 text-[19px] font-semibold">Something wrong?</p>
+                  <p className="mt-1 text-[14px] leading-snug text-ink-muted">Reporting ends the quest too, and you won&apos;t be matched with them again.</p>
+                  <div className="mt-3 grid gap-2">
                     {reasons.map((r) => (
                       <Button key={r} variant="secondary" disabled={busy} onClick={() => send(r)} className="justify-start">{r}</Button>
                     ))}
