@@ -9,6 +9,8 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Button, ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
+import { Ink, StepsInk, SunInk } from "@/components/ui/ink";
+import { Coin } from "@/components/ui/quest-glyph";
 import { MoodCheck } from "@/features/checkin/mood-check";
 import { RecapExtras } from "./recap-extras";
 
@@ -112,10 +114,10 @@ export function RecapScreen() {
 
         {/* the numbers, said once in a handwritten line under the route */}
         {!problem && recap && (
-          <Hand as="p" className="mt-4 px-4 text-center text-[26px] leading-none font-bold">
-            {recap.duration_min} min
-            {recap.distance_m != null && recap.distance_m >= 50 && <> · {km! >= 1 ? `${km!.toFixed(1)} km` : `${Math.round(recap.distance_m / 10) * 10} m`}</>}
-            {" · "}+{recap.coins} coins
+          <Hand as="p" className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-3 text-[23px] leading-none font-bold">
+            <span className="flex items-center gap-1.5"><Ink size={21}>{SunInk}</Ink>{recap.duration_min} min</span>
+            {recap.distance_m != null && recap.distance_m >= 50 && <span className="flex items-center gap-1.5"><Ink size={21}>{StepsInk}</Ink>{km! >= 1 ? `${km!.toFixed(1)} km` : `${Math.round(recap.distance_m / 10) * 10} m`}</span>}
+            <span className="flex items-center gap-1.5"><Coin size={18} />+{recap.coins} coins</span>
           </Hand>
         )}
       </Hero>
