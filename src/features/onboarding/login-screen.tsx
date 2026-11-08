@@ -46,12 +46,13 @@ export function LoginScreen({ demo, returnTo }: { demo: boolean; returnTo: strin
         <motion.div className="mx-auto mt-auto w-full max-w-[400px] space-y-2 pt-4 lg:col-start-1 lg:row-start-3 lg:mx-0 lg:mt-0 lg:self-start lg:pt-8" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease, delay: 0.7 }}>
           {error && <Notice tone="warning">Couldn&apos;t start the demo. Try again?</Notice>}
           {/* A plain link on purpose: signing in has to be a full page load. */}
-          <a className={buttonClass("primary", "lg", "w-full")} href={`/auth/login?returnTo=${encodeURIComponent(returnTo)}`}>Sign in</a>
+          {/* With the demo on, "Try the demo" leads: most people here are judges without a student email. */}
           {demo && (
-            <button onClick={tryDemo} disabled={busy} className={buttonClass("secondary", "lg", "w-full disabled:opacity-60")}>
+            <button onClick={tryDemo} disabled={busy} className={buttonClass("primary", "lg", "w-full disabled:opacity-60")}>
               {busy ? "Starting…" : "Try the demo"}
             </button>
           )}
+          <a className={buttonClass(demo ? "secondary" : "primary", "lg", "w-full")} href={`/auth/login?returnTo=${encodeURIComponent(returnTo)}`}>Sign in</a>
           <p className="pt-1 text-center text-[13px] text-ink-muted lg:text-left">
             <a className="inline-flex min-h-11 items-center underline underline-offset-2" href="/privacy">What we keep, and why</a>
           </p>

@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 import { ProofScreen } from "@/features/proof/proof-screen";
-import { DEMO_MODE } from "@/lib/env";
+import { isDemoGuest } from "@/lib/auth";
 
 export const metadata = { title: "Proof" };
 
-export default function Page() {
+export default async function Page() {
   return (
     <Suspense>
-      <ProofScreen demo={DEMO_MODE} />
+      <ProofScreen demo={await isDemoGuest()} />
     </Suspense>
   );
 }
