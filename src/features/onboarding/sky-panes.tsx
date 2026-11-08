@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CompassInk, Ink, PinInk, SunInk } from "@/components/ui/ink";
 
 // The first screen's picture: three glass panes standing side by side, with
@@ -10,33 +10,66 @@ import { CompassInk, Ink, PinInk, SunInk } from "@/components/ui/ink";
 // each pane tilts toward the finger, the light slides along the flutes and the
 // clouds drift a little more than the skyline (parallax). React only re-renders
 // when the pane under the finger changes, to show that step's sentence.
+//
+// Phones have no hover, so on arrival the light sweeps once from the first
+// pane to the last, stepping through the three sentences, then settles. It
+// stops the moment you touch it, and never runs with reduced motion.
 
 const STEPS = [
   { icon: CompassInk, title: "tap I'm free", detail: "When you've got 20 minutes, tap I'm free." },
   { icon: PinInk, title: "meet nearby", detail: "Someone nearby gets the same quest. You meet at a public spot." },
-  { icon: SunInk, title: "one small thing", detail: "Do one small thing together, then go on with your day." },
+  { icon: SunInk, title: "do a quest", detail: "Do one small thing together, then go on with your day." },
 ];
 
 export function SkyPanes() {
   const stage = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
+  const touched = useRef(false);
+
+  // Point the panes at (px, py), both 0 to 1 across the stage.
+  function point(px: number, py: number) {
+    stage.current?.style.setProperty("--px", px.toFixed(3));
+    stage.current?.style.setProperty("--py", py.toFixed(3));
+    setActive(Math.min(2, Math.floor(px * 3)));
+  }
+
   function follow(e: React.PointerEvent) {
-    const el = stage.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
-    const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-    el.style.setProperty("--px", px.toFixed(3));
-    el.style.setProperty("--py", py.toFixed(3));
-    const pane = Math.min(2, Math.floor(px * 3));
-    if (pane !== active) setActive(pane);
+    touched.current = true;
+    const r = stage.current?.getBoundingClientRect();
+    if (!r) return;
+    point(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)));
   }
 
   function rest() {
     stage.current?.style.setProperty("--px", "0.5");
     stage.current?.style.setProperty("--py", "0.5");
   }
+
+  // The one-time sweep: left to right over 2.6 s, then back to rest.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    let start = 0;
+    const tick = (t: number) => {
+      if (touched.current) return;
+      start ||= t;
+      const k = Math.min(1, (t - start) / 2600);
+      const eased = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+      if (k < 1) {
+        point(0.08 + eased * 0.84, 0.45);
+        frame = requestAnimationFrame(tick);
+      } else {
+        rest();
+        setActive(0);
+      }
+    };
+    const wait = setTimeout(() => (frame = requestAnimationFrame(tick)), 1100);
+    return () => {
+      clearTimeout(wait);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <div className="sp-wrap">
@@ -63,8 +96,15 @@ export function SkyPanes() {
               <div className="sp-label">
                 <Ink size={26}>{step.icon}</Ink>
                 <span className="sp-title">{step.title}</span>
-                <span className="sr-only">{step.detail}</span>
               </div>
+              {/* Keyboard and screen reader way in: focusing a pane points the panes at it. */}
+              <button
+                type="button"
+                className="sp-hit"
+                aria-label={`${step.title}. ${step.detail}`}
+                onFocus={() => { touched.current = true; point((i * 2 + 1) / 6, 0.5); }}
+                onBlur={rest}
+              />
             </li>
           ))}
         </ol>
