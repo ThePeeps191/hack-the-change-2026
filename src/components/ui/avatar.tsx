@@ -28,19 +28,32 @@ export function Avatar({ name, size = 40, ring = false }: { name: string; size?:
   useEffect(() => {
     const n = hash(name);
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // A mouse: the eyes follow it. A phone has no mouse, so the eyes look
+    // somewhere random every 1 to 3 seconds instead.
+    const mouse = matchMedia("(hover: hover) and (pointer: fine)").matches;
     // mischief off: no spitting or winking, just blinks and glances.
-    // followPointer: the eyes look at the mouse (or your finger) as it moves.
     const bot = new GrokBot(host.current!, {
       size,
       shape: shapes[n % shapes.length],
       color: colors[(n >>> 8) % colors.length],
       mischief: false,
-      followPointer: !still,
+      followPointer: mouse && !still,
       still,
     });
     bot.svg.removeAttribute("role");
     bot.svg.setAttribute("aria-hidden", "true");
-    return () => bot.destroy();
+
+    let timer = 0;
+    const glance = () => {
+      bot.look(Math.random() * 2 - 1, Math.random() * 2 - 1, 0);
+      timer = window.setTimeout(glance, 1000 + Math.random() * 2000);
+    };
+    if (!mouse && !still) timer = window.setTimeout(glance, Math.random() * 2000);
+
+    return () => {
+      clearTimeout(timer);
+      bot.destroy();
+    };
   }, [name, size]);
 
   return (
