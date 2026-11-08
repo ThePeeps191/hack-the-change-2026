@@ -24,28 +24,25 @@ function tint(el: HTMLElement, hue?: number) {
   el.style.setProperty("--h", String(hue));
 }
 
-const STYLE = {
-  light: "https://tiles.openfreemap.org/styles/positron",
-  dark: "https://tiles.openfreemap.org/styles/dark",
-};
+// Always the light map, even when the phone is in dark mode: streets and
+// buildings read better, and the white-ringed pins are made for it.
+const STYLE = "https://tiles.openfreemap.org/styles/positron";
 
-const isDark = () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
 const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Globe projection, a soft daylight atmosphere and 3D buildings. Re-applied
-// whenever the style (re)loads, e.g. when the system theme flips.
-function dress(map: MLMap, dark: boolean) {
+// whenever the style (re)loads.
+function dress(map: MLMap) {
   map.setProjection({ type: "globe" });
   map.setSky({
-    "sky-color": dark ? "#10264a" : "#4f8fdc",
-    "horizon-color": dark ? "#29508a" : "#b9d6f3",
-    "fog-color": dark ? "#0c0d0c" : "#f6f6f2",
+    "sky-color": "#4f8fdc",
+    "horizon-color": "#b9d6f3",
+    "fog-color": "#f6f6f2",
     "sky-horizon-blend": 0.6,
     "horizon-fog-blend": 0.6,
     "fog-ground-blend": 0.7,
     "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 6, 1, 9, 0],
   });
-  if (dark) brightenDark(map);
   if (map.getSource("openmaptiles") && !map.getLayer("amble-3d")) {
     // Draw the 3D blocks above every road and flat building layer (some
     // styles put a label layer before the roads, so "first symbol" isn't
@@ -54,26 +51,6 @@ function dress(map: MLMap, dark: boolean) {
     const ground = (l: (typeof layers)[number]) => ["transportation", "building", "aeroway"].includes((l as { "source-layer"?: string })["source-layer"] ?? "") && l.type !== "symbol";
     const lastGround = layers.reduce((at, l, i) => (ground(l) ? i : at), -1);
     const firstSymbol = layers.slice(lastGround + 1).find((l) => l.type === "symbol")?.id;
-    // In dark mode, a soft glow round each building's footprint, under the
-    // blocks themselves (a wide blurred line reads as light spilling out).
-    if (dark) {
-      map.addLayer(
-        {
-          id: "amble-glow",
-          type: "line",
-          source: "openmaptiles",
-          "source-layer": "building",
-          minzoom: 13,
-          paint: {
-            "line-color": "#8fb4ff",
-            "line-width": ["interpolate", ["linear"], ["zoom"], 13, 1.5, 17, 6],
-            "line-blur": ["interpolate", ["linear"], ["zoom"], 13, 1.5, 17, 6],
-            "line-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.15, 15, 0.45],
-          },
-        },
-        firstSymbol,
-      );
-    }
     map.addLayer(
       {
         id: "amble-3d",
@@ -82,11 +59,7 @@ function dress(map: MLMap, dark: boolean) {
         "source-layer": "building",
         minzoom: 14,
         paint: {
-          // dark: pale moonlit blocks, brighter the taller they are, so campus
-          // reads at night; light: warm paper white
-          "fill-extrusion-color": dark
-            ? ["interpolate", ["linear"], ["coalesce", ["get", "render_height"], 8], 0, "#5b6f99", 12, "#a9bde6", 40, "#e6eeff"]
-            : "#f3f1ea",
+          "fill-extrusion-color": "#f3f1ea",
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 8],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
           "fill-extrusion-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.82],
@@ -94,18 +67,6 @@ function dress(map: MLMap, dark: boolean) {
       },
       firstSymbol,
     );
-  }
-}
-
-// The stock dark style is very dim on a phone in daylight. Lift roads and
-// water a little so the street pattern reads, without turning it into day.
-function brightenDark(map: MLMap) {
-  for (const l of map.getStyle().layers) {
-    const src = (l as { "source-layer"?: string })["source-layer"];
-    try {
-      if (l.type === "line" && src === "transportation") map.setPaintProperty(l.id, "line-color", "#46557a");
-      if (l.type === "fill" && src === "water") map.setPaintProperty(l.id, "fill-color", "#13233f");
-    } catch {}
   }
 }
 
@@ -182,17 +143,16 @@ export default function GlobeMap({
   // Create the map once.
   useEffect(() => {
     if (!box.current) return;
-    const dark = isDark();
     const m = new maplibregl.Map({
       container: box.current,
-      style: STYLE[dark ? "dark" : "light"],
+      style: STYLE,
       center: [CAMPUS_CENTER.lng + 40, CAMPUS_CENTER.lat - 20],
       zoom: 0.35,
       attributionControl: { compact: true },
       maxPitch: 70,
     });
     map.current = m;
-    m.on("style.load", () => dress(m, isDark()));
+    m.on("style.load", () => dress(m));
     m.once("load", () => {
       box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
       loaded.current = true;
@@ -237,13 +197,8 @@ export default function GlobeMap({
     const ro = new ResizeObserver(() => m.resize());
     ro.observe(box.current);
 
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onTheme = () => m.setStyle(STYLE[mq.matches ? "dark" : "light"]);
-    mq.addEventListener("change", onTheme);
-
     const placed = pins.current;
     return () => {
-      mq.removeEventListener("change", onTheme);
       ro.disconnect();
       placed.clear();
       m.remove();
