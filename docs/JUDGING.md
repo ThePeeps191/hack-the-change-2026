@@ -169,7 +169,7 @@ Every team is entered for every side pot automatically, and each one is scored o
 | **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | **Yes**, live on amble.health |
 | **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | **Yes**, live on amble.health |
 | **MLH Vultr** | Hosted on Vultr | Nothing: we host on Vercel | **No** (Danny's call) |
-| **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | amble.health isn't a GoDaddy Registry domain | Only if someone registers one before submitting |
+| **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | amble.health: `.health` is run by GoDaddy Registry (IANA, checked Nov 7) | **Yes**, opted in on Devpost |
 
 **Why we're skipping Voltex.** Amble asks people to walk to a public place together. No decision anyone makes in the app depends on electricity prices or grid load, and the honest-sounding hooks don't hold up. "CO₂ saved by walking" would be invented, because a quest doesn't replace a car trip. "Go outside when the grid peaks" isn't something anyone needs Amble to tell them. AESO data would be a basic display at best, which the Voltex rubric scores 2, and it would cost us credibility in the main rounds. Don't add it.
 
