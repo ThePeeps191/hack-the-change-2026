@@ -17,7 +17,7 @@
   <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone: Aaron picks a quest and gets matched with Siddhant, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
 </p>
 
-Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. We wrote all of them by hand for places Calgarians know, like the +15, Chinatown, Nose Hill and the Calgary Tower. One of ours, at the Foothills Athletic Park: "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal."
+Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. For example, one quest at the Foothills Athletic Park is "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal." All quests were written by hand since a limitation of having AI procedurally create quests is that AI does not know about the environments it is creating quests for (eg. AI does not know that there are foosball tables in the UCalgary engineering building.
 
 You can also start a crew with your friends and compete with other crews to claim spots around campus.
 
