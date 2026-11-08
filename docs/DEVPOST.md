@@ -40,6 +40,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 - During a quest, one tap opens 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report; a report means you're never paired again.
 - Each of you can add one line so the other can spot you at a busy building, like "red jacket, by the main doors". Nothing more is shared.
 - The recap shows how you felt before and after, only to you.
+- Built for screen readers and Reduce Motion: every page has its own title, matches and AI verdicts are announced out loud, sheets keep keyboard focus, and animations hold still when your phone asks for less motion.
 - Location is deleted the moment you're matched, routes are deleted after 30 days, and you can download or delete all your data. The privacy page says which AI sees your photos.
 
 ### How we built it
@@ -64,7 +65,7 @@ A pilot on the UCalgary campus with <only name partners we actually spoke to>. G
 
 ### Cost
 
-<Measured cost per quest from the logged token counts. Leave this out rather than guess.>
+Measured on the Anthropic Console: the app's first 12 live Claude Haiku calls cost $0.0049 in total, about $0.0004 a call. A quest uses two calls (the proof check and the recap), so about a tenth of a cent per quest, or roughly $1 for 1,000 quests.
 
 ## AI disclosure
 
