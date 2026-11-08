@@ -376,17 +376,20 @@ function inviteCode() {
 // A link for someone you've actually met. Making the link counts as your yes.
 // Pass quest_id to pin a specific quest to this invite (for AirDrop sharing).
 // Without one, we pick the quest now, so the link, the invite page and your
-// waiting screen can all name it.
+// waiting screen can all name it. It's picked near `near` (where the sender
+// is, if their phone shares it) or else near campus. The point is only used
+// to pick; it isn't saved.
 export async function createInvite(
   user: User,
   origin: string,
   questId?: string,
+  near?: { lat: number; lng: number },
 ) {
   assertCanMeet(user);
   await cancelPending(user.id);
   await query("delete from availability where user_id = $1", [user.id]);
   const code = inviteCode();
-  const quest = questId ? await getQuest(questId) : await pickPairQuest(CAMPUS_CENTER.lat, CAMPUS_CENTER.lng, [user.prefs ?? {}]);
+  const quest = questId ? await getQuest(questId) : await pickPairQuest(near?.lat ?? CAMPUS_CENTER.lat, near?.lng ?? CAMPUS_CENTER.lng, [user.prefs ?? {}]);
   await query(
     `insert into matches (user_a, source, invite_code, quest_id, a_accepted_at, expires_at)
      values ($1, 'invite', $2, $3, now(), $4::timestamptz)`,

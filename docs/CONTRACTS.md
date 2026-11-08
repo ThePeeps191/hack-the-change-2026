@@ -110,7 +110,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/match` | Current match, polled | `Match` or null |
 | `POST /api/matches/:id/accept` | Accept a match | `Match` |
 | `POST /api/matches/:id/decline` | Decline a match | `Match` |
-| `POST /api/invites` | Create a link to send a stranger. Pins `quest_id` if given, otherwise picks the quest now | `{ code, url, quest: { id, title } }` |
+| `POST /api/invites` | Create a link to send a stranger: `{ quest_id?, lat?, lng? }`. Pins `quest_id` if given, otherwise picks the quest now near `lat`/`lng` (not saved) or campus | `{ code, url, quest: { id, title } }` |
 | `GET /api/invites/:code` | Show an invite before you accept it | `{ code, status, expired, quest, host_id, host_name }` |
 | `POST /api/invites/:code/accept` | Open a stranger's invite: `{ lat?, lng? }` | `Match` |
 | `GET /api/quests` | List quests, `?type=anywhere` for quests that work in any city | `Quest[]` |
