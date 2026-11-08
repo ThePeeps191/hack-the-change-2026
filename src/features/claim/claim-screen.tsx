@@ -155,7 +155,7 @@ export function ClaimScreen() {
                       <span className="text-[15px] text-ink-muted">Finish the challenge to take it.</span>
                     )}
                   </div>
-                  <ZoneActions game={game} zone={zone} />
+                  <ZoneActions game={game} zone={zone} onChanged={() => setStarted((n) => n + 1)} />
                 </motion.div>
               ) : (
                 <motion.ul key="list" className="rows overflow-hidden rounded-[24px] bg-surface shadow-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

@@ -237,6 +237,12 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
           </AnimatePresence>
         </div>
 
+        {/* Always mounted, so screen readers hear the verdict when it lands (the
+            visible verdict below remounts, which some readers skip). */}
+        <p className="sr-only" role="status" aria-live="polite">
+          {view === "checking" && "Checking your proof."}
+          {(view === "approved" || view === "rejected") && shown && `${view === "approved" ? "That counts." : "Not quite yet."} ${shown.reason}`}
+        </p>
         {error && <p className="px-6 pt-4 text-center text-[14px] text-[#ffb4a3] lg:col-start-3 lg:row-start-4" role="alert">{error}</p>}
         {!run && !error && <p className="px-6 pt-4 text-center text-[14px] text-white/50 lg:col-start-3 lg:row-start-5">Loading the quest…</p>}
 
@@ -249,7 +255,6 @@ export function ProofScreen({ demo = false }: { demo?: boolean }) {
               initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ ...soft, delay: view === "approved" ? 0.5 : 0.1 }}
-              role="status"
             >
               <Hand as="h2" className="text-[38px] leading-none font-bold">{view === "approved" ? "that counts" : "not quite yet"}</Hand>
               <p className="mx-auto mt-2 max-w-[32ch] text-[15px] leading-snug text-white/75">{shown.reason.charAt(0).toUpperCase() + shown.reason.slice(1)}</p>
