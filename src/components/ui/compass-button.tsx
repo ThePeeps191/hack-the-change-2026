@@ -1,12 +1,12 @@
 "use client";
 import { useRef } from "react";
-import { askForHeading, useHeading } from "./use-heading";
+import { useHeading } from "./use-heading";
 
 // The centre "I'm free" button: a little hand-inked compass on cream paper.
 // The needle drifts a few degrees back and forth, like a real compass that is
 // never quite still. Tapping it gives the needle a swing that settles. The
 // drift is the only idle motion and it doesn't change while loading.
-// On a phone with a compass, the needle points at real north instead: it turns
+// On an Android phone with a compass, the needle points at real north instead: it turns
 // against the way the phone faces, and the drift stops (see use-heading.ts).
 // Nested groups so north, the drift and the swing never fight over one transform.
 export function CompassButton({ onClick, disabled, label, size = 60 }: { onClick: () => void; disabled?: boolean; label: string; size?: number }) {
@@ -35,7 +35,7 @@ export function CompassButton({ onClick, disabled, label, size = 60 }: { onClick
   return (
     <button
       ref={button}
-      onClick={() => { askForHeading(); onClick(); }}
+      onClick={onClick}
       onPointerDown={nudge}
       disabled={disabled}
       aria-label={label}
