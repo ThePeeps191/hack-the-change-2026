@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { categoryOf, glyphSvg } from "@/components/ui/quest-glyph";
-import { QuestCard } from "@/features/quests/quest-card";
+import { GlyphTile, QuestCard, questMeta } from "@/features/quests/quest-card";
+import { Coin } from "@/components/ui/quest-glyph";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
@@ -42,6 +43,10 @@ function metres(a: LatLng, b: LatLng) {
   return Math.sqrt(x * x + y * y) * 6371000;
 }
 
+// The list shows the closest few as full cards; the rest fold into one card
+// of short rows that opens like a dropdown.
+const TOP = 3;
+
 const frosted = "glass grid size-11 place-items-center rounded-full text-ink transition-transform active:scale-95";
 
 export function MapScreen() {
@@ -53,6 +58,7 @@ export function MapScreen() {
   const [open, setOpen] = useState<Quest | null>(null);
   const [here, setHere] = useState<LatLng>(CAMPUS_CENTER);
   const [located, setLocated] = useState(false);
+  const [more, setMore] = useState(false);
 
   useEffect(() => {
     api.quests().then(setQuests).catch(() => setQuests([]));
@@ -101,6 +107,12 @@ export function MapScreen() {
     const q = (quests ?? []).find((x) => x.id === id);
     setSelected(id);
     if (q?.lat != null && q.lng != null) setFocus({ lat: q.lat, lng: q.lng });
+  }
+
+  // First tap on a quest with a place shows it on the map; the next opens it.
+  function tap(q: Quest) {
+    if (q.id === selected || q.lat == null) setOpen(q);
+    else choose(q.id);
   }
 
   function toggle() {
@@ -178,6 +190,7 @@ export function MapScreen() {
           onChange={(v) => {
             setFilter(v);
             setSelected(null);
+            setMore(false);
             // Fly to the nearest quest of this kind so the pins are in view.
             const first = (quests ?? []).filter((q) => (v === "all" || q.type === v) && q.lat != null && q.lng != null).sort((a, b) => away(a) - away(b))[0];
             if (first) setFocus({ lat: first.lat!, lng: first.lng! });
@@ -203,18 +216,68 @@ export function MapScreen() {
                     )}
                   </div>
                 )
-              : ordered.map((q) => (
-                  <motion.button
-                    layout
-                    transition={soft}
-                    key={q.id}
-                    onClick={() => (q.id === selected || q.lat == null ? setOpen(q) : choose(q.id))}
-                    className={`block w-full rounded-[20px] text-left outline-offset-2 ${q.id === selected ? "outline-2 outline-accent" : ""}`}
-                    aria-pressed={q.id === selected}
-                  >
-                    <QuestCard quest={q} />
-                  </motion.button>
-                ))}
+              : (
+                  <>
+                    {ordered.slice(0, TOP).map((q) => (
+                      <motion.button
+                        layout
+                        transition={soft}
+                        key={q.id}
+                        onClick={() => tap(q)}
+                        className={`block w-full rounded-[20px] text-left outline-offset-2 ${q.id === selected ? "outline-2 outline-accent" : ""}`}
+                        aria-pressed={q.id === selected}
+                      >
+                        <QuestCard quest={q} />
+                      </motion.button>
+                    ))}
+                    {ordered.length > TOP && (
+                      <motion.div layout transition={soft} className="overflow-hidden rounded-[22px] bg-surface shadow-card ring-1 ring-[var(--hairline)]">
+                        <button
+                          onClick={() => { tick(0.6); setMore((m) => !m); }}
+                          aria-expanded={more}
+                          aria-controls="more-quests"
+                          className="flex min-h-14 w-full items-center justify-between gap-3 px-4 text-left"
+                        >
+                          <span className="text-[16px] font-semibold">
+                            {more ? "Fewer quests" : `${ordered.length - TOP} more quests`}
+                            {!more && <span className="font-normal text-ink-muted"> · farther away</span>}
+                          </span>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className={`shrink-0 text-ink-muted transition-transform duration-300 ${more ? "rotate-180" : ""}`}>
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {more && (
+                            <motion.ul
+                              id="more-quests"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            >
+                              {ordered.slice(TOP).map((q) => (
+                                <li key={q.id} className="border-t border-[var(--hairline)]">
+                                  <button onClick={() => tap(q)} className="flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
+                                    <GlyphTile quest={q} size={36} />
+                                    <span className="min-w-0 flex-1">
+                                      <span className="block truncate text-[15px] font-semibold">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
+                                      <span className="block truncate text-[13px] text-ink-muted">{questMeta(q)}</span>
+                                    </span>
+                                    <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold tabular-nums">
+                                      <Coin size={14} />
+                                      {q.coins}
+                                      <span className="sr-only"> coins</span>
+                                    </span>
+                                  </button>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </>
+                )}
         </div>
       </motion.section>
       <QuestSheet quest={open} onClose={() => setOpen(null)} />
