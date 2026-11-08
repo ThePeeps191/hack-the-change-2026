@@ -58,7 +58,7 @@ There's no timer or queue running on the server. State moves forward when someon
 All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `writeRecap` (`generateQuests` is still there but nothing calls it: quests are hand-made). Behind them:
 
 - **Mock mode** (`AI_MODE=mock`, the default while building) returns starter quests and a fake verdict after 2 seconds. Dozens of sessions can run without spending anyone's credits.
-- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Claude.** Claude can't watch video, so for video proof the phone also sends one JPEG of three still frames (start, middle, end; `src/lib/video-frames.ts`) and Claude judges that. If a frame comes out blank, as iPhone Safari sometimes does, no frames are sent and place and time decide.
+- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Claude.** Claude can't watch video, so for video proof the phone also sends one JPEG of three still frames (start, middle, end; `src/lib/video-frames.ts`) and Claude judges that. If a frame comes out blank, as iPhone Safari sometimes does, no frames are sent and the video counts unchecked, and the reason says "we couldn't check this one automatically".
 
 **Quests are hand-made.** Every quest is in `data/quests/quests.json`, written and checked by us, so the safety rules (public, daylight, walking pace) are ours, not a prompt's. The older AI quest-writing code (`generateQuests`, `src/lib/places.ts`, `toSafeQuest`) is still in the repo, but nothing calls it.
 

@@ -1,7 +1,7 @@
 // Claude reads images, not video. So for video proof the phone also sends one
 // small JPEG: three still frames from the start, middle and end, side by side,
 // and the AI judges that. Returns null if this browser can't decode the video
-// in a few seconds; the server then falls back to checking place and time only.
+// in a few seconds; the video then counts without the AI looking at it.
 
 const HEIGHT = 480;
 const GIVE_UP_MS = 6000;
@@ -15,7 +15,7 @@ function once(video: HTMLVideoElement, event: string) {
 
 // iPhone Safari can draw a black frame from a video that hasn't played. A frame
 // that's nearly one flat colour would get a real attempt rejected, so we send
-// no frames at all instead, and place and time decide as before.
+// no frames at all instead, and the video counts unchecked.
 function looksBlank(ctx: CanvasRenderingContext2D, x: number, width: number) {
   const { data } = ctx.getImageData(x, 0, width, HEIGHT);
   let sum = 0;
