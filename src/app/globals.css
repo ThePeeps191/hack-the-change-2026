@@ -755,6 +755,31 @@ a {
   .sp-caption span { animation: none; }
 }
 
+/* The crew code boxes on the join page. See src/features/crews/code-boxes.tsx.
+   Empty boxes are sky glass; once the code matches a crew they turn into
+   white tiles one after another (each box gets a later transition-delay). */
+.jc-box {
+  color: var(--color-on-sky);
+  transition: background-color var(--duration-base) var(--ease-out-soft), color var(--duration-base) var(--ease-out-soft), box-shadow var(--duration-base) var(--ease-out-soft);
+}
+.jc-box-locked {
+  background: #fff;
+  color: var(--color-ink);
+  text-shadow: none;
+  box-shadow: 0 6px 16px rgb(20 50 110 / 0.18);
+}
+@media (prefers-color-scheme: dark) {
+  .jc-box-locked { color: #121412; }
+}
+.jc-box.jc-box-active {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .6), 0 0 0 2px #fff, 0 6px 18px rgb(10 30 70 / .14);
+}
+@keyframes jc-blink { 0%, 45% { opacity: 1 } 55%, 100% { opacity: 0 } }
+.jc-caret { animation: jc-blink 1s step-end infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .jc-caret { animation: none; }
+}
+
 /* Textured buttons (after cult-ui's Texture Button). One element, two
    background layers: the face (a soft vertical gradient) fills the padding
    box, and the shell (a lighter-to-darker gradient) shows only through the
