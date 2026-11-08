@@ -5,6 +5,7 @@ import { api, ApiError } from "@/lib/api";
 import { QUEST_MINUTES } from "@/lib/config";
 import type { Quest } from "@/lib/contracts";
 import { getPosition } from "@/lib/geo";
+import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
@@ -105,6 +106,20 @@ export function InviteScreen() {
       mounted = false;
     };
   }, [code, router]);
+
+  // The host made this link, so their yes is already in. Once the other person
+  // opens it and accepts, take the host to the quest too instead of leaving
+  // them stuck on the share screen.
+  const { data: liveMatch } = usePoll(api.match, {
+    enabled: own && !expired,
+    ms: 2000,
+    until: (m) => m?.status === "accepted" && m.run_id != null,
+  });
+  useEffect(() => {
+    if (own && liveMatch?.status === "accepted" && liveMatch.run_id) {
+      router.push(`/quest/${liveMatch.run_id}`);
+    }
+  }, [own, liveMatch, router]);
 
   const [copied, setCopied] = useState(false);
   async function share() {

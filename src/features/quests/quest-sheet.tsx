@@ -1,7 +1,9 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
+import { usePoll } from "@/lib/use-poll";
 import { Notice } from "@/components/ui/app-shell";
 import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { questTypeLabel } from "@/components/ui/quest-icon";
@@ -32,6 +34,7 @@ export function QuestSheet({
   crewId?: string;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const free = useGoFree();
   const run = useStartRun();
   const [airdropUrl, setAirdropUrl] = useState<string | null>(null);
@@ -45,6 +48,19 @@ export function QuestSheet({
     setAirdropUrl(null); // eslint-disable-line react-hooks/set-state-in-effect -- reset when a different quest opens
     setAirdropError(null);
   }, [q?.id]);
+
+  // While the shared link is live, the host already said yes by making it, so
+  // watch for the other person to accept and take the host to the quest too.
+  const { data: liveMatch } = usePoll(api.match, {
+    enabled: !!airdropUrl,
+    ms: 2000,
+    until: (m) => m?.status === "accepted" && m.run_id != null,
+  });
+  useEffect(() => {
+    if (airdropUrl && liveMatch?.status === "accepted" && liveMatch.run_id) {
+      router.push(`/quest/${liveMatch.run_id}`);
+    }
+  }, [airdropUrl, liveMatch, router]);
 
   async function airdropQuest(questId: string) {
     setAirdropBusy(true);
