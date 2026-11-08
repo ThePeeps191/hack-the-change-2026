@@ -74,9 +74,7 @@ export function PrivacyScreen() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.05 }}
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-[13px] bg-sunken text-ink">
-                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>{k.icon}</svg>
-              </span>
+              <svg width="26" height="26" viewBox="0 0 24 24" className="mt-0.5 shrink-0 text-ink" aria-hidden><g filter="url(#ink)">{k.icon}</g></svg>
               <div>
                 <p className="text-[16px] font-semibold">{k.what}</p>
                 <p className="mt-0.5 text-[14px] leading-snug text-ink-muted">{k.why}</p>

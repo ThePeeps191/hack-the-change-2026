@@ -1,0 +1,55 @@
+import type { ReactNode } from "react";
+
+// Icons that look drawn with a pen, not stamped from an icon font: uneven
+// hand-drawn paths, hatching for shade, round ends, and a slight wobble from
+// the #ink filter (a little turbulence that nudges the lines, defined once in
+// the root layout). They sit bare on the page, never on a tinted tile. Colour
+// comes from currentColor, so a sun can be amber ink and the rest plain ink.
+
+export function Ink({ size = 24, className = "", label, children }: { size?: number; className?: string; label?: string; children: ReactNode }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`shrink-0 ${className}`}
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+    >
+      <g filter="url(#ink)">{children}</g>
+    </svg>
+  );
+}
+
+// A sun: a slightly lopsided disc with hatching inside, and rays of uneven length.
+export const SunInk = (
+  <>
+    <path d="M12 8.1c2.3-.1 4 1.6 3.9 3.9-.1 2.3-1.8 3.9-4 3.8-2.2-.1-3.8-1.8-3.7-4 .1-2 1.7-3.6 3.8-3.7z" />
+    <path d="M10.1 11.2l2.9 2.9M10.6 9.6l3.6 3.6M12.6 9.4l1.6 1.6" strokeWidth={1.1} />
+    <path d="M12 2.4v2.8M12.1 18.9v2.5M2.6 12.1h2.7M18.8 11.9h2.5M5.2 5.3l1.9 1.8M16.9 16.9l1.8 1.8M5.4 18.7l1.8-1.9M17 7.2l1.6-1.7" />
+  </>
+);
+
+// Sun peeking out from behind a cloud.
+export const PartInk = (
+  <>
+    <path d="M6.6 10.6a3.3 3.3 0 0 1 5.9-3" />
+    <path d="M9.6 2.9v1.5M4.1 5.1l1.1 1M2.5 9.7H4" />
+    <path d="M8.4 19.7h9.2c2 0 3.6-1.5 3.5-3.5-.1-1.8-1.6-3.2-3.4-3.1-.6-2.4-3-3.9-5.5-3.4-1.9.4-3.3 1.9-3.6 3.8-1.6.1-2.9 1.5-2.8 3.1 0 1.7 1.2 3.1 2.6 3.1z" />
+  </>
+);
+
+// A cloud with a little rain under it.
+export const CloudInk = (
+  <>
+    <path d="M7.3 15.9h9.6c2.1 0 3.7-1.6 3.6-3.6-.1-1.9-1.7-3.3-3.6-3.2-.7-2.6-3.3-4.2-5.9-3.5-2 .5-3.5 2.1-3.8 4.1-1.7.1-3 1.5-3 3.2 0 1.7 1.4 3 3.1 3z" />
+    <path d="M7.4 11.9l2.2 2.2M9.8 12.4l1.6 1.6" strokeWidth={1.1} />
+    <path d="M9.1 18.6l-.9 2M13.1 18.6l-.9 2M17.1 18.6l-.9 2" />
+  </>
+);

@@ -1,4 +1,5 @@
 "use client";
+import { CloudInk, Ink, SunInk } from "@/components/ui/ink";
 import { motion } from "motion/react";
 import Link from "next/link";
 import type { FamiliarFace, HistoryItem } from "@/lib/contracts";
@@ -34,17 +35,20 @@ export function WeekStrip({ history }: { history: HistoryItem[] }) {
         const name = d.toLocaleDateString(undefined, { weekday: "narrow" });
         return (
           <li key={i} className="flex flex-col items-center gap-1.5" aria-label={`${d.toLocaleDateString(undefined, { weekday: "long" })}${out ? ", out" : ""}`}>
+            {/* drawn in ink, no discs: a sun on days you got out, a hand-drawn
+                ring round today, a short pen stroke for the rest */}
             <motion.span
-              className={`grid size-8 place-items-center rounded-full ${out ? "bg-white text-[var(--color-sky-top)] shadow-[0_0_14px_rgb(255_255_255/0.55)]" : isToday ? "ring-[1.5px] ring-white/80 ring-inset" : future ? "bg-white/8" : "bg-white/15"}`}
+              className={`grid size-8 place-items-center text-on-sky ${out ? "" : future ? "opacity-35" : "opacity-60"}`}
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 380, damping: 20, delay: 0.3 + i * 0.05 }}
             >
-              {out && (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
-                  <circle cx="12" cy="12" r="3.6" fill="currentColor" stroke="none" />
-                  <path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6" />
-                </svg>
+              {out ? (
+                <Ink size={30} className="drop-shadow-[0_0_8px_rgb(255_255_255/0.45)]">{SunInk}</Ink>
+              ) : isToday ? (
+                <Ink size={28}><path d="M12.4 4.6c4-.2 7.2 3 7 7-.2 4-3.5 7-7.5 6.9-3.8-.1-6.7-3.3-6.5-7.1.2-3.4 2.9-6.4 6.4-6.9" /></Ink>
+              ) : (
+                <Ink size={22}><path d="M8.6 12.6c2.2-.9 4.6-.9 6.8-.2" /></Ink>
               )}
             </motion.span>
             <span className={`text-[12px] font-semibold ${isToday ? "text-on-sky" : "text-on-sky/90"}`}>{name}</span>
@@ -111,22 +115,13 @@ export function Weather({ better, total }: { better: number; total: number }) {
         return (
           <motion.span
             key={i}
-            className={`grid aspect-square max-w-9 place-items-center rounded-full ${sun ? "bg-[#fff1c9] text-[#e0a21f] dark:bg-[#3a3016]" : "bg-sunken text-ink-faint"}`}
+            className={`grid aspect-square max-w-9 place-items-center ${sun ? "text-[#c98a12] dark:text-[#f2c45a]" : "text-ink-faint"}`}
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.35, ease, delay: 0.1 + i * 0.05 }}
           >
-            {sun ? (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-                <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
-                <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" />
-              </svg>
-            ) : (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M7.5 18.5a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17.6 9.6a4.5 4.5 0 0 1-.6 8.9z" />
-              </svg>
-            )}
+            <Ink size={28}>{sun ? SunInk : CloudInk}</Ink>
           </motion.span>
         );
       })}
