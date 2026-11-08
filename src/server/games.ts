@@ -96,6 +96,13 @@ export async function createGame(user: User, body: { crew_id?: string; name?: st
   if (rival?.id === crew.id) throw new HttpError(400, "that's your own crew. ask a rival crew for their code.");
 
   const row = await transaction(async () => {
+    // One game per crew at a time: starting a new one ends the crew's old one, so
+    // a forgotten game never keeps running in the background.
+    await query(
+      `update games set status = 'finished'
+       where status = 'active' and id in (select game_id from game_teams where crew_id = $1)`,
+      [crew.id],
+    );
     const game = await one<GameRow>("insert into games (name, created_by) values ($1, $2) returning *", [body.name?.trim().slice(0, 60) || "campus claim", user.id]);
     await query("insert into game_teams (game_id, crew_id, name) values ($1, $2, $3)", [game!.id, crew.id, crew.name]);
     if (rival) await query("insert into game_teams (game_id, crew_id, name) values ($1, $2, $3)", [game!.id, rival.id, rival.name]);
