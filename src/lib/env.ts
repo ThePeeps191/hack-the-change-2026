@@ -15,3 +15,6 @@ export const AI_PROVIDER: "claude" | "gemini" =
       ? "gemini"
       : "claude";
 export const DEMO_MODE = process.env.DEMO_MODE === "1" || process.env.DEMO_MODE === "true";
+// PRACTICE_PARTNER=off: no Priya, so people only match with real people. Anyone
+// alone keeps searching, so turn it back on before judges try the demo alone.
+export const PRACTICE_PARTNER_ON = process.env.PRACTICE_PARTNER !== "off";

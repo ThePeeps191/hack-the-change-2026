@@ -72,6 +72,7 @@ All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `wr
 
 - `AUTH_MODE=live` uses Auth0. `src/proxy.ts` (Next 16's name for middleware) sends signed-out visitors to `/login`, and `currentUser` in `src/lib/auth.ts` reads the session. We only keep a first name.
 - `AUTH_MODE=mock` (local) has no login: you're Sam, or `?as=name` makes that tab someone else.
+- `PRACTICE_PARTNER=off` turns Priya off: `botWaitMs` returns null, so nobody gets paired with her and people only match with real people. Someone alone keeps searching, so it stays off only for a demo with two phones.
 - `DEMO_MODE=1` adds "Try the demo" on the login page for judges without a student email. It's a signed cookie (HMAC, so it can't be forged), with Priya for everyone, and it switches off the daylight and location rules so judges can try it indoors at 2 PM.
 - `ALLOWED_EMAIL_DOMAINS=ucalgary.ca` would restrict meeting strangers to verified student emails, for the campus pilot.
 

@@ -19,6 +19,7 @@ The live app is **https://amble.health**. This page lists every outside service 
 | `AUTH_MODE` | `live` | Auth0 login |
 | `AI_MODE` | `live` | Real AI calls |
 | `DEMO_MODE` | `1` | "Try the demo" login and the Priya bot, so judges get in alone |
+| `PRACTICE_PARTNER` | unset, or `off` | `off` removes Priya, so people only match with real people. Anyone alone keeps searching, so remove it before judges try the demo alone. Changing it needs a redeploy |
 | `DATABASE_URL` | Tiger connection string (secret) | |
 | `ANTHROPIC_API_KEY` | secret | |
 | `AUTH0_DOMAIN` | `dev-nvabg6b64ww053zt.us.auth0.com` | |
