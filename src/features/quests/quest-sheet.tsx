@@ -12,6 +12,7 @@ import {
   categoryOf,
   CategoryIcon,
 } from "@/components/ui/quest-glyph";
+import { Ink, PeopleInk } from "@/components/ui/ink";
 import { Sheet } from "@/components/ui/sheet";
 import { ShareLink } from "@/features/invites/share-link";
 import { useGoFree } from "@/features/matching/use-go-free";
@@ -94,8 +95,10 @@ export function QuestSheet({
         <div className="px-5 pb-2">
           <div className="flex items-center gap-2 text-[13px] font-medium text-ink-muted">
             <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
-            <span>{categoryLabel[categoryOf(q)]}</span>
-            <span className="text-ink-faint">· {questTypeLabel[q.type]}</span>
+            <span>
+              {categoryLabel[categoryOf(q)]}
+              <span className="text-ink-faint"> · {questTypeLabel[q.type]}</span>
+            </span>
           </div>
           <h2 className="name-serif mt-2.5 text-[27px] leading-[1.12] text-pretty">
             {q.title.charAt(0).toUpperCase() + q.title.slice(1)}
@@ -207,8 +210,9 @@ export function QuestSheet({
               <button
                 onClick={() => run.start({ quest_id: q.id, crew_id: crewId })}
                 disabled={busy}
-                className="flex min-h-13 w-full items-center justify-center rounded-full text-[16px] font-semibold text-ink hover:bg-sunken disabled:opacity-50"
+                className="flex min-h-13 w-full items-center justify-center gap-2 rounded-full text-[16px] font-semibold text-ink hover:bg-sunken disabled:opacity-50"
               >
+                <Ink size={18}>{PeopleInk}</Ink>
                 Do it with my crew
               </button>
             )}

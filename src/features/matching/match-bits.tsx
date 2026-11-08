@@ -43,20 +43,34 @@ export function Specks({ gather }: { gather: boolean }) {
   );
 }
 
-// Real quest spots nearby, one at a time, so the wait has something true to
-// read. With none to show, it falls back to a plain line.
-export function PlaceTicker() {
+// Rough metres from the middle of campus, good enough over a couple of km.
+function metresFromCampus(lat: number, lng: number) {
+  const dy = (lat - CAMPUS_CENTER.lat) * 111_000;
+  const dx = (lng - CAMPUS_CENTER.lng) * 111_000 * Math.cos((CAMPUS_CENTER.lat * Math.PI) / 180);
+  return Math.hypot(dx, dy);
+}
+
+// Real quest spots nearby, nearest first, one at a time, so the wait has
+// something true to read. When we're guessing your location (approx), only
+// spots on campus itself, so it matches the "middle of campus" line below.
+// With none to show, it falls back to a plain line.
+export function PlaceTicker({ approx = false }: { approx?: boolean }) {
   const [places, setPlaces] = useState<string[]>([]);
   const [i, setI] = useState(0);
   useEffect(() => {
+    const radius = approx ? 600 : 1500;
     api
       .quests()
       .then((qs) => {
-        const near = qs.filter((q) => q.lat != null && q.lng != null && Math.abs(q.lat - CAMPUS_CENTER.lat) < 0.0135 && Math.abs(q.lng - CAMPUS_CENTER.lng) < 0.021);
-        setPlaces([...new Set(near.map((q) => q.place_name).filter((n): n is string => !!n))]);
+        const near = qs
+          .filter((q) => q.lat != null && q.lng != null && q.place_name)
+          .map((q) => ({ name: q.place_name as string, m: metresFromCampus(q.lat!, q.lng!) }))
+          .filter((p) => p.m < radius)
+          .sort((a, b) => a.m - b.m);
+        setPlaces([...new Set(near.map((p) => p.name))]);
       })
       .catch(() => {});
-  }, []);
+  }, [approx]);
   useEffect(() => {
     if (places.length < 2) return;
     const t = setInterval(() => setI((n) => (n + 1) % places.length), 2400);
@@ -66,7 +80,7 @@ export function PlaceTicker() {
   const name = places[i % places.length];
   return (
     <>
-      Quests waiting at{" "}
+      {approx ? "Quests waiting on campus at" : "Quests waiting at"}{" "}
       <span className="relative inline-grid h-[1.3em] overflow-hidden align-bottom">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
@@ -85,17 +99,22 @@ export function PlaceTicker() {
   );
 }
 
-// A quiet stopwatch, so a minute of waiting feels like a minute.
+// A quiet stopwatch, so a minute of waiting feels like a minute. It stays
+// hidden for the first few seconds, so it never sits at 0:00.
 export function Elapsed() {
   const [s, setS] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setS((n) => n + 1), 1000);
     return () => clearInterval(t);
   }, []);
+  if (s < 5) return null;
   return (
-    <span className="tabular-nums">
-      {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
-    </span>
+    <>
+      {" · "}
+      <span className="tabular-nums">
+        {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
+      </span>
+    </>
   );
 }
 
