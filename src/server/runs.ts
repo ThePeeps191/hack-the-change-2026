@@ -176,7 +176,7 @@ export async function applyVerdict(submissionId: string, status: "approved" | "r
   if (sub) await settle(sub.run_id);
 }
 
-// A pair finishes when both have approved proof. A crew quest stays open for
+// A pair finishes when both have approved proof, or at time-up if one did. A crew quest stays open for
 // crewmates to join, so it finishes when at least two people are on it and all
 // of them have approved proof, when time runs out and someone did it, or when
 // someone taps "Finish now" (finishRun). A solo quest finishes on its own
@@ -196,7 +196,9 @@ async function settle(runId: string): Promise<RunRow> {
 
     const done =
       (run.mode === "claim" && approved > 0) ||
-      (crewRun ? (everyone && rows.length >= 2) || (timeUp && approved > 0) : everyone);
+      (crewRun ? (everyone && rows.length >= 2) || (timeUp && approved > 0) : everyone) ||
+      // If your partner never sends proof, you still get your recap at time-up.
+      (run.mode === "pair" && timeUp && approved > 0);
 
     if (done) return complete(run.id);
     if (closed && !pending) {

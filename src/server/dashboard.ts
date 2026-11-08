@@ -29,6 +29,8 @@ export async function getDashboard(user: User): Promise<Dashboard> {
      join quests q on q.id = r.quest_id
      left join coin_events e on e.run_id = r.id and e.user_id = m.user_id
      where m.user_id = $1 and r.status = 'completed'
+       -- Only quests you did yourself: not one your partner finished without you.
+       and exists (select 1 from submissions s where s.run_id = r.id and s.user_id = m.user_id and s.verdict = 'approved')
      order by r.completed_at desc`,
     [user.id],
   );
@@ -41,6 +43,7 @@ export async function getDashboard(user: User): Promise<Dashboard> {
      join quest_runs r on r.id = m.run_id
      join quests q on q.id = r.quest_id
      where m.user_id = $1 and r.status = 'completed' and r.mode = 'pair'
+       and exists (select 1 from submissions s where s.run_id = r.id and s.user_id = m.user_id and s.verdict = 'approved')
      order by r.completed_at`,
     [user.id],
   );

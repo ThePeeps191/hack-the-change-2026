@@ -120,6 +120,7 @@ export const api = {
   connect: (run_id: string) =>
     post<{ connected: boolean }>("/api/connections", { run_id }),
   leaveRun: (runId: string) => post<void>(`/api/runs/${runId}/leave`, {}),
+  approveRun: (runId: string) => post<{ approved: number }>(`/api/runs/${runId}/approve`, {}),
   finishRun: (runId: string) => post<QuestRun>(`/api/runs/${runId}/finish`, {}),
   report: (body: { reported_id: string; run_id: string; reason: string }) =>
     post<void>("/api/reports", body),
