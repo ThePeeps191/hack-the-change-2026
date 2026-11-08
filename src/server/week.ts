@@ -11,7 +11,7 @@ import { one, query } from "@/lib/db";
 const TZ = "America/Edmonton";
 
 let timescale: Promise<boolean> | null = null;
-const hasTimescale = () =>
+export const hasTimescale = () =>
   (timescale ??= one<{ yes: number }>("select 1 as yes from pg_extension where extname = 'timescaledb'")
     .then((r) => !!r)
     .catch(() => false));

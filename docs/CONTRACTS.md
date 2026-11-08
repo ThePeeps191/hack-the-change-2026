@@ -145,5 +145,5 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
 | `GET /api/games/:id` | Game state for the map, polled | game with zones |
 | `POST /api/games/:id/zones/:zone_id/attempts` | Claim or steal: `{ run_id, result }` | zone |
-| `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, ai_mode, ai_provider, ai_keys: { anthropic, gemini }, demo_mode, database }`, where each key is `"env-file"`, `"shell"` or null |
+| `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, ai_mode, ai_provider, ai_keys: { anthropic, gemini }, demo_mode, database, timescaledb }`, where each key is `"env-file"`, `"shell"` or null |
 | `POST /api/demo-login` | `DEMO_MODE` only: sign in without Auth0 | nothing |
