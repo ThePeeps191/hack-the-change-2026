@@ -73,7 +73,7 @@ export function CrewScreen() {
         ) : (
           <div className="flex flex-col items-center px-6 pt-1 text-center">
             <Hand as="h1" className="text-[38px] leading-none font-bold">{crew.name}</Hand>
-            <Odometer value={crew.coins} delay={150} className="mt-3 font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
+            <Odometer value={crew.coins} delay={150} className="numeral mt-3 text-[84px] leading-none" />
             <p className="mt-1 text-[14px] font-medium text-on-sky/95">
               coins all time
             </p>

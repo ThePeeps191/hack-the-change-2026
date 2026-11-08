@@ -70,7 +70,7 @@ export function DashboardScreen() {
           {me ? `hi, ${me.display_name.split(" ")[0].toLowerCase()}` : " "}
         </Hand>
         <SunArc caption={<span className="text-[13px] font-medium text-on-sky/95">of {goal} active min this week</span>} progress={active / goal} className="mt-3 px-5">
-          <Odometer value={active} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
+          <Odometer value={active} delay={150} className="numeral text-[80px] leading-none" />
         </SunArc>
         <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/95">
           Canada&apos;s movement guidelines suggest {goal} a week.

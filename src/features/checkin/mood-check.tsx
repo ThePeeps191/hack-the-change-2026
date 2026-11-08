@@ -69,7 +69,7 @@ export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "
                       <button
                         key={w.mood}
                         onClick={() => answer(w.mood)}
-                        className="flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-[18px] bg-sunken text-[14px] font-semibold text-ink ring-1 ring-[var(--hairline)] transition-[background-color,transform] hover:bg-accent-soft active:scale-95"
+                        className="flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-[18px] text-[14px] font-semibold text-ink ring-1 ring-black/12 transition-[box-shadow,transform] dark:ring-white/15 hover:ring-ink-faint active:scale-95"
                       >
                         <span className={`grid size-9 place-items-center rounded-full ${w.tint}`}>
                           <svg width="28" height="28" viewBox="0 0 24 24" fill={w.mood === 1 ? "currentColor" : "none"} stroke="currentColor" strokeWidth={w.mood === 1 ? 0 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={w.d} /></svg>

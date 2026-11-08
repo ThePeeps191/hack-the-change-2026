@@ -198,10 +198,10 @@ export function ProofScreen() {
               <Hand as="h1" className="text-[38px] leading-none font-bold">{view === "approved" ? "that counts" : "not quite yet"}</Hand>
               <p className="mx-auto mt-2 max-w-[32ch] text-[15px] leading-snug text-white/75">{shown.reason.charAt(0).toUpperCase() + shown.reason.slice(1)}</p>
               {view === "approved" && shown.coins != null && (
-                <div className="mt-4 flex items-baseline justify-center font-[family-name:var(--font-display)]">
-                  <span className="text-[34px] font-semibold">+</span>
-                  <Odometer value={shown.coins} delay={700} className="text-[34px] font-semibold tracking-[-0.02em]" />
-                  <span className="ml-1.5 text-[15px] text-white/70">coins</span>
+                <div className="mt-4 flex items-baseline justify-center">
+                  <span className="numeral text-[52px] leading-none">+</span>
+                  <Odometer value={shown.coins} delay={700} className="numeral text-[52px] leading-none" />
+                  <span className="ml-2 text-[16px] font-medium text-white/80">coins</span>
                 </div>
               )}
             </motion.div>

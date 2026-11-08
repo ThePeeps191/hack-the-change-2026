@@ -62,7 +62,7 @@ export function HomeScreen() {
       <Hero>
         <HeroBar center={date} />
         <SunArc caption={<span className="text-[13px] font-medium text-on-sky/90">of {goal} active min this week</span>} progress={active / goal} className="mt-1 px-6">
-          <Odometer value={d ? active : 0} className="font-[family-name:var(--font-display)] text-[40px] leading-none font-semibold tracking-[-0.03em]" />
+          <Odometer value={d ? active : 0} className="numeral text-[80px] leading-none" />
         </SunArc>
         <p className="mt-2.5 flex items-center justify-center gap-2 text-[14px] font-medium text-on-sky/90">
           <span><span className="font-semibold tabular-nums text-on-sky">{faces}</span> {faces === 1 ? "familiar face" : "familiar faces"}</span>

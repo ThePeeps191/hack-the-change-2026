@@ -40,6 +40,7 @@
   --font-display: var(--font-funnel-display), system-ui, sans-serif;
   --font-body: var(--font-funnel-sans), system-ui, sans-serif;
   --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
+  --font-numeral: var(--font-fraunces), Georgia, serif;
 
   /* The sky hero panel and the dark notification toasts */
   --color-sky-top: #2c5cb0;
@@ -518,4 +519,13 @@ a {
       inset 0 0 0 .5px rgb(255 255 255 / .08),
       0 18px 44px rgb(0 0 0 / .4);
   }
+}
+
+/* The big numbers: Fraunces, fully soft (rounded terminals), at display optical size. */
+.numeral {
+  font-family: var(--font-numeral);
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  font-feature-settings: "lnum", "tnum";
 }
