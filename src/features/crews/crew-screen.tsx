@@ -1,17 +1,19 @@
 "use client";
 import { motion } from "motion/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Crew, LeaderboardEntry } from "@/lib/contracts";
 import { tick } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar } from "@/components/ui/hero";
+import { Hero, HeroBar, Stars } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { Avatar, Crown } from "@/components/ui/avatar";
 import { Coin } from "@/components/ui/quest-glyph";
 import { Podium } from "./podium";
 import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
+import { ClaimPeek } from "@/features/claim/claim-peek";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -81,6 +83,28 @@ export function CrewScreen() {
 
       <div className="space-y-7 px-4 pt-6">
         {crew === null && <NoCrewActions onDone={reload} />}
+        {crew && (
+          <motion.div {...rise(0)}>
+            <Link
+              href="/claim"
+              onClick={() => tick(0.6)}
+              className="claim-card group relative block overflow-hidden rounded-[24px] p-5 text-white shadow-lift transition-transform active:scale-[0.985]"
+            >
+              <Stars className="hidden dark:block" />
+              <div className="relative flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium tracking-[0.02em] text-white">Claim · live this week</p>
+                  <p className="mt-2 text-[19px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
+                  <p className="mt-3 flex items-center gap-1 text-[15px] font-semibold">
+                    Open the map
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="transition-transform group-hover:translate-x-0.5"><path d="M9 5l7 7-7 7" /></svg>
+                  </p>
+                </div>
+                <ClaimPeek crewId={crew.id} />
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {crew && (
           <section aria-labelledby="who">

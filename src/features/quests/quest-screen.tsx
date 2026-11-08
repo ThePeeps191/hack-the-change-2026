@@ -76,7 +76,7 @@ export function QuestScreen() {
       <Hero className="pb-14">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d={back} />}
-          center={run.mode === "pair" && partner ? `with ${partner.display_name}` : others.length > 1 ? "with your crew" : others.length === 1 ? `with ${partner?.display_name}` : "on your own"}
+          center={run.mode === "pair" && partner ? `with ${partner.display_name}` : others.length > 1 ? "with your crew" : others.length === 1 ? `with ${partner?.display_name}` : run.mode === "claim" ? "claim attempt" : "on your own"}
         />
         <div className="flex flex-col items-center pt-2" role={active ? "timer" : undefined} aria-label={active && left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
           {active ? (

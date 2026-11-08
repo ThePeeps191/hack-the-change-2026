@@ -17,7 +17,7 @@ Hackathon judges are a secondary audience for the demo, which runs on the UCalga
 Amble gets people outside together, in two ways:
 
 - **System 1, 20-minute quests with someone new:** say you're free, get matched with someone nearby who is also free (both accept first), do one short shared task, submit proof, and Gemini checks it. It ends cleanly, and you can add each other as friends if you both want.
-- **System 2, crews:** friend groups play longer games: shared quests, races, "anywhere" fitness quests for friends in different cities, coins and a crew leaderboard.
+- **System 2, crews:** friend groups play longer games: shared quests, races, "anywhere" fitness quests for friends in different cities, coins, a crew leaderboard, and Claim mode, where teams take map zones by completing that zone's challenge and rivals steal them by beating the result.
 
 Success means more minutes outside, more steps and more new people met, without the app feeling like a chore or a scoreboard.
 

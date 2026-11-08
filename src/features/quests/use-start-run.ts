@@ -4,13 +4,13 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { tick } from "@/lib/feedback";
 
-// Start a crew or solo run and go to it. Pair runs come from matching.
+// Start a crew, solo or Claim run and go to it. Pair runs come from matching.
 export function useStartRun() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function start(body: { quest_id: string; crew_id?: string }) {
+  async function start(body: { quest_id: string; crew_id?: string; zone_id?: string }) {
     if (busy) return;
     tick();
     setBusy(true);

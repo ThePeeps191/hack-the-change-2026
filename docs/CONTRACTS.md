@@ -48,7 +48,7 @@ type Match = {
 type QuestRun = {
   id: string;
   quest: Quest;
-  mode: 'pair' | 'crew';
+  mode: 'pair' | 'crew' | 'claim';
   status: 'active' | 'completed' | 'expired';
   started_at: string;
   ends_at: string;
@@ -90,10 +90,10 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `crew_members` | crew_id, user_id, joined_at |
 | `crew_quests` | crew_id, quest_id, shared_by, created_at |
 | `coin_events` | id, user_id, crew_id, run_id, amount, created_at |
-| `games` | id, name, status, created_by, created_at (unused: the Claim game was cut) |
-| `game_teams` | id, game_id, crew_id, name (unused) |
-| `zones` | id, game_id, name, lat, lng, radius_m, quest_id, held_by_team_id, best_result, result_unit, lower_is_better (unused) |
-| `zone_attempts` | id, zone_id, team_id, run_id, result, won, created_at (unused) |
+| `games` | id, name, status, created_by, created_at |
+| `game_teams` | id, game_id, crew_id, name |
+| `zones` | id, game_id, name, lat, lng, radius_m, quest_id, held_by_team_id, best_result, result_unit, lower_is_better |
+| `zone_attempts` | id, zone_id, team_id, run_id, result, won, created_at |
 | `checkins` | run_id, user_id, phase, mood, created_at |
 
 ## API
@@ -115,7 +115,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/quests/generate` | `{ lat, lng, count? }` | `Quest[]` |
 | `GET /api/quests` | List quests, `?type=anywhere` for quests that work in any city | `Quest[]` |
 | `GET /api/quests/:id` | One quest | `Quest` |
-| `POST /api/runs` | Start a crew or solo quest: `{ quest_id, crew_id? }`. Pair runs come from `Match.run_id` | `QuestRun` |
+| `POST /api/runs` | Start a crew or Claim quest: `{ quest_id, crew_id?, zone_id? }`. Pair runs come from `Match.run_id` | `QuestRun` |
 | `GET /api/runs/current` | The quest you're on, for resuming | `QuestRun` or null |
 | `GET /api/runs/:id` | Run status, polled. `members[0]` is always you | `QuestRun` |
 | `POST /api/runs/:id/checkins` | One-tap mood: `{ phase, mood }`. Before is how you are, 1 to 5. After is relative: 5 better, 3 the same, 1 worse | nothing |
@@ -135,5 +135,9 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/crews/:id/quests` | Share a quest with the crew: `{ quest_id }` | nothing |
 | `GET /api/leaderboard` | `?crew_id=` ranks that crew's members by all-time coins. Otherwise all crews by coins this week, with `delta` for the last day | ranked list |
 | `GET /api/dashboard` | Quests done, km moved, people met, coins, history, and the human metrics: active minutes against 150, familiar faces, small hellos, new places, how often you felt better after | dashboard |
+| `POST /api/games` | Start a Claim game: `{ crew_id?, name?, rival_code? }` | game with zones |
+| `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
+| `GET /api/games/:id` | Game state for the map, polled | game with zones |
+| `POST /api/games/:id/zones/:zone_id/attempts` | Claim or steal: `{ run_id, result }` | zone |
 | `GET /api/health` | Modes and database, no login needed | `{ ok, auth_mode, ai_mode, ai_provider, ai_keys: { anthropic, gemini }, demo_mode, database }`, where each key is `"env-file"`, `"shell"` or null |
 | `POST /api/demo-login` | `DEMO_MODE` only: sign in without Auth0 | nothing |

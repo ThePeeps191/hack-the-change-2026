@@ -2,6 +2,7 @@
 // scripts in scripts/ import this outside of Next.js too.
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { CAMPUS_ZONES } from "./claim-zones";
 
 export type Query = (text: string, params?: unknown[]) => Promise<Record<string, unknown>[]>;
 export type Exec = (text: string) => Promise<unknown>;
@@ -40,10 +41,11 @@ type StarterQuest = {
   tags?: string[];
 };
 
-// Quests that must exist (old runs point at them) but never show up in a
+// Quests that must exist (runs and zones point at them) but never show up in a
 // quest list: not starter, and dated long before the "recently written" window
 // that listQuests and the area cache look at. No schema change needed.
 const UNLISTED_AT = "2000-01-01T00:00:00Z";
+const CLAIM_QUESTS_FILE = path.join(process.cwd(), "data", "claim-quests.json");
 
 async function upsertQuest(query: Query, q: StarterQuest, listed: boolean) {
   await query(
@@ -62,13 +64,17 @@ async function upsertQuest(query: Query, q: StarterQuest, listed: boolean) {
   );
 }
 
-// Copies data/quests/*.json into the quests table as the starter pack. A
-// starter quest removed from data/quests/ is unlisted, not deleted, because old
-// runs still point at it. data/quests/ stays the source of truth for the starter pack.
+// Copies data/quests/*.json into the quests table as the starter pack, and
+// data/claim-quests.json as the Claim board's own (unlisted) quests. A starter
+// quest removed from data/quests/ is unlisted, not deleted, because old runs
+// still point at it. data/quests/ stays the source of truth for the starter pack.
 export async function syncStarterQuests(query: Query) {
   const files = readdirSync(QUESTS_DIR).filter((f) => f.endsWith(".json")).sort();
   const quests = files.flatMap((f) => JSON.parse(readFileSync(path.join(QUESTS_DIR, f), "utf8")) as StarterQuest[]);
   for (const q of quests) await upsertQuest(query, q, true);
+
+  const claim = JSON.parse(readFileSync(CLAIM_QUESTS_FILE, "utf8")) as StarterQuest[];
+  for (const q of claim) await upsertQuest(query, q, false);
 
   // Never unlist everything because a file came back empty.
   if (quests.length > 0) {
@@ -88,6 +94,9 @@ export async function syncStarterQuests(query: Query) {
 const crewId = (n: number) => `c0000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const runId = (n: number) => `d0000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const seedId = (prefix: string, n: number) => `${prefix}-0000-4000-8000-${String(n).padStart(12, "0")}`;
+const SEED_GAME = "e0000000-0000-4000-8000-000000000001";
+const TEAM_US = "f0000000-0000-4000-8000-000000000001";
+const TEAM_THEM = "f0000000-0000-4000-8000-000000000002";
 
 export const DEMO_CREW_ID = crewId(1);
 
@@ -124,7 +133,7 @@ const HISTORY: [string, number, string | null, number, number, string][] = [
 ];
 
 export async function seedDemoData(query: Query) {
-  const [existing] = await query("select 1 as yes from crews where id = $1", [crewId(1)]);
+  const [existing] = await query("select 1 as yes from zones where game_id = $1 limit 1", [SEED_GAME]);
 
   const ids = new Map<string, string>();
   for (const [sub, name, coins] of PEOPLE) {
@@ -191,5 +200,16 @@ export async function seedDemoData(query: Query) {
     );
   }
 
+  await query("insert into games (id, name, created_by) values ($1, 'saturday on campus', $2) on conflict do nothing", [SEED_GAME, sam]);
+  await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'the long way round') on conflict do nothing", [TEAM_US, SEED_GAME, crewId(1)]);
+  await query("insert into game_teams (id, game_id, crew_id, name) values ($1, $2, $3, 'north campus walkers') on conflict do nothing", [TEAM_THEM, SEED_GAME, crewId(2)]);
+  const holders: [string | null, number | null][] = [[TEAM_US, 1891], [TEAM_THEM, 4], [null, null], [TEAM_THEM, 3], [null, null]];
+  for (const [i, z] of CAMPUS_ZONES.entries()) {
+    await query(
+      `insert into zones (id, game_id, name, lat, lng, radius_m, quest_id, held_by_team_id, best_result, result_unit, lower_is_better)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) on conflict do nothing`,
+      [seedId("90000000", i + 1), SEED_GAME, z.name, z.lat, z.lng, z.radius_m, z.quest_id, holders[i][0], holders[i][1], z.result_unit, z.lower_is_better],
+    );
+  }
   return !existing;
 }
