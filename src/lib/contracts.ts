@@ -186,6 +186,7 @@ export type Dashboard = {
 
 export type WeekDay = {
   day: string; // YYYY-MM-DD
+  quests: number; // quests you finished that day
   quest_minutes: number; // minutes on quests you finished that day
   moving_minutes: number; // minutes with GPS pings while on a quest that day
 };

@@ -22,7 +22,7 @@ function sql(ts: boolean) {
   const minute = (col: string) => (ts ? `time_bucket('1 minute', ${col})` : `date_trunc('minute', ${col})`);
   const weekStart = `(date_trunc('week', now() at time zone '${TZ}') at time zone '${TZ}')`;
   return {
-    quests: `select ${day("r.completed_at")}::text as day,
+    quests: `select ${day("r.completed_at")}::text as day, count(*)::int as quests,
                     round(sum(extract(epoch from r.completed_at - r.started_at)) / 60)::int as minutes
              from run_members m
              join quest_runs r on r.id = m.run_id
@@ -41,13 +41,14 @@ async function run(ts: boolean, userId: string): Promise<WeekDay[]> {
   const q = sql(ts);
   const [days, quests, moving] = await Promise.all([
     query<{ day: string }>(q.days),
-    query<{ day: string; minutes: number }>(q.quests, [userId]),
+    query<{ day: string; minutes: number; quests: number }>(q.quests, [userId]),
     query<{ day: string; minutes: number }>(q.moving, [userId]),
   ]);
   const byDay = (rows: { day: string; minutes: number }[]) => new Map(rows.map((r) => [r.day, r.minutes]));
   const questMin = byDay(quests);
   const movingMin = byDay(moving);
-  return days.map(({ day }) => ({ day, quest_minutes: questMin.get(day) ?? 0, moving_minutes: movingMin.get(day) ?? 0 }));
+  const questCount = new Map(quests.map((r) => [r.day, r.quests]));
+  return days.map(({ day }) => ({ day, quests: questCount.get(day) ?? 0, quest_minutes: questMin.get(day) ?? 0, moving_minutes: movingMin.get(day) ?? 0 }));
 }
 
 export async function weekDays(userId: string): Promise<WeekDay[]> {

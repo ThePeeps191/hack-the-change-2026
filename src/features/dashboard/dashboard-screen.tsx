@@ -85,9 +85,9 @@ export function DashboardScreen() {
         {/* Up here, not under the week strip: the sky is darker, so the small white text stays readable. */}
         {d && (
           <p className="mt-3 flex items-center justify-center gap-3.5 text-[14px] font-medium text-on-sky">
-            <span className="flex items-center gap-1"><InkFlag held={false} color="currentColor" size={18} />{d.quests_done} quests</span>
+            <span className="flex items-center gap-1"><InkFlag held={false} color="currentColor" size={18} />{d.quests_done} {d.quests_done === 1 ? "quest" : "quests"}</span>
             <span className="flex items-center gap-1"><Ink size={18}>{StepsInk}</Ink>{d.km_moved} km</span>
-            <span className="flex items-center gap-1"><Ink size={18}>{PeopleInk}</Ink>{d.people_met} people met</span>
+            <span className="flex items-center gap-1"><Ink size={18}>{PeopleInk}</Ink>{d.people_met} {d.people_met === 1 ? "person" : "people"} met</span>
           </p>
         )}
         {d && <WeekStrip history={d.history} week={d.week} />}

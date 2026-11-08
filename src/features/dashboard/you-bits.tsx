@@ -28,7 +28,7 @@ export function WeekStrip({ history, week }: { history: HistoryItem[]; week?: We
   });
   const done = history.map((h) => new Date(h.completed_at));
   const key = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  const fromServer = new Map((week ?? []).map((w) => [w.day, w.quest_minutes + w.moving_minutes > 0]));
+  const fromServer = new Map((week ?? []).map((w) => [w.day, w.quests > 0 || w.moving_minutes > 0]));
   return (
     <ol className="mx-auto mt-5 flex max-w-[320px] justify-between px-2" aria-label="Days you got out this week">
       {days.map((d, i) => {
@@ -54,7 +54,7 @@ export function WeekStrip({ history, week }: { history: HistoryItem[]; week?: We
                 <Ink size={22}><path d="M8.6 12.6c2.2-.9 4.6-.9 6.8-.2" /></Ink>
               )}
             </motion.span>
-            <span className={`text-[12px] font-semibold ${isToday ? "text-on-sky" : "text-on-sky/90"}`}>{name}</span>
+            <span className="text-[12px] font-semibold text-on-sky">{name}</span>
           </li>
         );
       })}
