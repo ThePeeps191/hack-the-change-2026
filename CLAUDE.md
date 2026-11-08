@@ -18,7 +18,7 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 - **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
 - **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
 - **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
-- **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data, Vultr and GoDaddy Registry. Don't remove one without telling a human.
+- **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data and GoDaddy Registry. (We host on Vercel, so Vultr is out.) Don't remove one without telling a human.
 
 ## Build only what the demo shows
 
