@@ -74,5 +74,6 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
       : undefined,
     // Added: when it finished, so the "how do you feel now" question only shows on a fresh recap.
     completed_at: (run.completed_at ?? run.ends_at).toISOString(),
+    proof: photos.map((p) => ({ url: p.media_url, type: p.media_type })),
   };
 }

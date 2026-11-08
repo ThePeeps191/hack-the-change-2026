@@ -73,6 +73,10 @@ export function RecapScreen() {
         </Hand>
         <p className="mx-auto mt-2 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-on-sky/95">
           {recap?.title ? recap.title.charAt(0).toUpperCase() + recap.title.slice(1) : " "}
+          {/* Opened from your history, so say when it was. */}
+          {fromMe && recap?.completed_at && (
+            <> · {new Date(recap.completed_at).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}</>
+          )}
         </p>
 
         {recap && !problem && <MeetPaths partner={name} still={!moving} />}
