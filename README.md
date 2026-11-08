@@ -51,9 +51,9 @@ When you've done it, you send a photo or short video and Claude Haiku checks it 
 
 Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, for example "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
 
-**The You tab**
+## Your numbers
 
-Private numbers that matter, never ranked against anyone: active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places you've been, and how you felt before and after each quest.
+The You tab is private and never ranked against anyone. It shows your active minutes against Canada's 150-minute guideline, your familiar faces (people you've done several quests with), new places you've been, and how you felt before and after each quest.
 
 ## Inclusive and safe by design
 
