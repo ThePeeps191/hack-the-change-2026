@@ -73,6 +73,8 @@ export type RunMember = {
   display_name: string;
   submitted: boolean;
   verdict: Verdict | null;
+  // Added: "how to spot me" on a quest with someone new, e.g. "red jacket, by the doors". Pair runs only.
+  hint?: string | null;
 };
 
 // One group doing one quest
