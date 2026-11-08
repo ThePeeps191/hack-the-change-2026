@@ -32,7 +32,7 @@ To use the real AI, run with `AI_MODE=live`. It uses Claude Haiku 5.5 with `ANTH
 - **To see a rejection:** add `?mock=reject` to a proof URL.
 - **To reset:** stop the dev server and delete `.data/`.
 
-Read [how Amble works](docs/ARCHITECTURE.md) to find your way around, and [deploy/README.md](deploy/README.md) for the server.
+Read [how Amble works](docs/ARCHITECTURE.md) to find your way around, and [DEPLOYMENT.md](docs/DEPLOYMENT.md) for what's live at amble.health.
 
 | Where | What |
 | --- | --- |

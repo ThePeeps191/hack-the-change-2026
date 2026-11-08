@@ -17,7 +17,7 @@ Hackathon judges are a secondary audience for the demo, which runs on the UCalga
 Amble gets people outside together, in two ways:
 
 - **System 1, 20-minute quests with someone new:** say you're free, get matched with someone nearby who is also free (both accept first), do one short shared task, submit proof, and Gemini checks it. It ends cleanly, and you can add each other as friends if you both want.
-- **System 2, crews:** friend groups play longer games: shared quests, races, "anywhere" fitness quests for friends in different cities, coins, a crew leaderboard, and Claim mode, where teams take map zones by completing that zone's challenge and rivals steal them by beating the result.
+- **System 2, crews:** friend groups play longer games: shared quests, races, "anywhere" fitness quests for friends in different cities, coins and a crew leaderboard.
 
 Success means more minutes outside, more steps and more new people met, without the app feeling like a chore or a scoreboard.
 
@@ -39,7 +39,7 @@ Gemini is the game master, referee and producer. It writes quests for wherever y
 - Quest types: `local` (a place nearby), `anywhere` (fitness, works in any city), `event` (something on today).
 - Proof types: photo, video, GPS route.
 - Shared quest shape and API: `docs/CONTRACTS.md` and `src/lib/contracts.ts`.
-- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Gemini, Vultr.
+- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Gemini, hosted on Vercel at amble.health.
 - Safety: 18+, quests stay public, daylight and walking pace, report button, meet at the quest spot.
 - The UI is built against mocks (`AUTH_MODE=mock`, `GEMINI_MODE=mock`) behind `src/lib/api.ts`.
 - **Undecided:** the ratings model (proposed separately), personas, and hide and seek (a stretch goal).

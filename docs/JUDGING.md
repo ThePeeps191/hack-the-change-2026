@@ -165,10 +165,10 @@ Every team is entered for every side pot automatically, and each one is scored o
 | **Benevity, Best Local Impact** ($100 + $100 to donate) | A significant **Calgary** challenge, with a feasible solution that lasts | Quests at real Calgary places (the +15, Chinatown, Central Library, Prince's Island), newcomer quests that work as a city orientation, and a pilot on the UCalgary campus | **Yes**, but it needs one sourced Calgary number about loneliness or newcomers. Don't make one up |
 | **Voltex, Real-World Energy Data** ($500) | Real published or measured energy data, such as AESO, central to the product, live preferred. Sample or AI-made data scores 1 | Nothing. See below | **No** |
 | **MLH Gemini API** | Gemini actually used | `src/lib/gemini-live.ts`, used when `AI_PROVIDER=gemini`. The plan is Gemini for the demo, but the code picks Claude whenever `ANTHROPIC_API_KEY` is set | **Yes**, if the server sets `AI_PROVIDER=gemini` (audit item 2) |
-| **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | Yes, once deployed |
-| **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | Yes, once `DATABASE_URL` points there |
-| **MLH Vultr** | Hosted on Vultr | `deploy/` | Yes, once deployed |
-| **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | Not registered yet | Only if someone registers one before submitting |
+| **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | **Yes**, live on amble.health |
+| **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | **Yes**, live on amble.health |
+| **MLH Vultr** | Hosted on Vultr | Nothing: we host on Vercel | **No** (Danny's call) |
+| **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | amble.health isn't a GoDaddy Registry domain | Only if someone registers one before submitting |
 
 **Why we're skipping Voltex.** Amble asks people to walk to a public place together. No decision anyone makes in the app depends on electricity prices or grid load, and the honest-sounding hooks don't hold up. "CO₂ saved by walking" would be invented, because a quest doesn't replace a car trip. "Go outside when the grid peaks" isn't something anyone needs Amble to tell them. AESO data would be a basic display at best, which the Voltex rubric scores 2, and it would cost us credibility in the main rounds. Don't add it.
 
@@ -191,8 +191,8 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 
 **Still open, ranked by points per hour of work.** Take one, and strike it out here when it's merged.
 
-1. **Deploy it, and test on a real phone over HTTPS** (backend, about 1 to 2 h). Without it, functionality is a hard prescreen fail, and four MLH prizes (Auth0, Tiger Data, Vultr, GoDaddy) are worth nothing. Check GPS, the camera upload, Auth0 sign-in and "Try the demo" on an iPhone and an Android.
-2. **Make sure the deployed server really runs Gemini** (backend, 5 min). The plan is Claude while we build and Gemini for the demo. But since #20, the code picks Claude whenever `ANTHROPIC_API_KEY` is set. So set `AI_PROVIDER=gemini` in `/opt/amble/shared/.env`, and check `/api/health` before judging. Without it we lose the MLH Gemini prize, the pitch is wrong, and video proof is approved without anyone looking at it (the Claude path can't watch video).
+1. ~~Deploy it~~ Done: live at https://amble.health with Auth0, Tiger Data and live AI (`docs/DEPLOYMENT.md`). **Still to do:** test on a real iPhone and Android over HTTPS: GPS, the camera upload, Auth0 sign-in and "Try the demo".
+2. **Make sure the deployed server really runs Gemini** (backend, 5 min). The plan is Claude while we build and Gemini for the demo. But since #20, the code picks Claude whenever `ANTHROPIC_API_KEY` is set. So set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` in Vercel and redeploy, and check `/api/health` before judging. Without it we lose the MLH Gemini prize, the pitch is wrong, and video proof is approved without anyone looking at it (the Claude path can't watch video).
 3. **Submit to Devpost by 10:30 Sunday** (friends and demo, about 2 h, mostly the video). Video between 2:00 and 5:00, title `TEAM ID - TEAM NAME - Amble`, all four members, and the description and AI disclosure from [DEVPOST.md](DEVPOST.md).
 4. **Write give-back and skill-swap starter quests on campus** (friends and demo, 30 min). Focus area 1 names "volunteering, skill-sharing", and the pack has no quests for either. Two of each, tagged, plus a couple more `newcomer` ones. These are the ones to show the judges.
 5. **Rehearse to 2:45 with a timer, twice, all four of us** (1 h). Then each person answers three random questions from [WALKTHROUGH.md](WALKTHROUGH.md) without notes. This is the disqualification risk.

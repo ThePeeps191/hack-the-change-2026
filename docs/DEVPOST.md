@@ -10,7 +10,7 @@ A starting point for the Devpost submission. The friends and demo area owns the 
 - [ ] All four team members added: Danny, Siddhant, Aaron, Jonas
 - [ ] The description below, including the AI disclosure
 - [ ] The live link works on a phone, and the "Try the demo" button works
-- [ ] The MLH prize categories ticked: Gemini API, Auth0, Tiger Data, Vultr (plus GoDaddy Registry if we registered a domain through it)
+- [ ] The MLH prize categories ticked: Gemini API, Auth0, Tiger Data. Not Vultr (we host on Vercel), and not GoDaddy Registry (amble.health isn't one of its domains)
 
 ## Tagline
 
@@ -41,7 +41,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 ### How we built it
 
-One Next.js (TypeScript) app on a **Vultr** server behind Caddy. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. **Gemini** writes quests at real public places taken from OpenStreetMap, with Maps and Search grounding, checks proof photos and videos, and writes recaps. Every quest the AI writes passes a safety check in code (blocked topics, distance, duration), and every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
+One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. **Gemini** writes quests at real public places taken from OpenStreetMap, with Maps and Search grounding, checks proof photos and videos, and writes recaps. Every quest the AI writes passes a safety check in code (blocked topics, distance, duration), and every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
 
 ### Challenges we ran into
 

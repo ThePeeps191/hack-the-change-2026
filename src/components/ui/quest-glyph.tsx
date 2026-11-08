@@ -122,14 +122,16 @@ export function CategoryIcon({ category, size = 22, className = "" }: { category
   );
 }
 
-// A tiny coin: a disc with a rim, in warm gold. Coins are the one thing that
+// A tiny coin: a disc with a rim, in warm gold, with the same ink wobble as the icons. Coins are the one thing that
 // gets colour on a card, because they're a reward rather than a status.
 export function Coin({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden className="shrink-0">
-      <circle cx="8" cy="8" r="7" fill="#f0c04a" />
-      <circle cx="8" cy="8" r="4.6" fill="none" stroke="#c9922a" strokeWidth="1.2" />
-      <path d="M4.6 4.2a5 5 0 0 1 4.2-1.6" stroke="#fff6d8" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".9" />
+      <g filter="url(#ink)">
+        <circle cx="8" cy="8" r="7" fill="#f0c04a" stroke="#c9922a" strokeWidth=".9" />
+        <circle cx="8" cy="8" r="4.6" fill="none" stroke="#c9922a" strokeWidth="1.2" />
+        <path d="M4.6 4.2a5 5 0 0 1 4.2-1.6" stroke="#fff6d8" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity=".9" />
+      </g>
     </svg>
   );
 }

@@ -8,6 +8,7 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/ARCHITECTURE.md`: how the code fits together and why
 - `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
 - `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
+- `docs/DEPLOYMENT.md`: what's live at https://amble.health: Vercel, the domain, Tiger Data, Auth0, the AI and every env var. Read it before touching any outside service
 
 ## The organizers' rules bind every change
 
@@ -110,7 +111,7 @@ Many sessions share each laptop and the same accounts:
 - **Mocks by default:** `AUTH_MODE=mock` and `AI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing (`AI_MODE=live`).
 - **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
 - **Database:** each worktree gets its own embedded Postgres in `.data/`, with made-up seed data, so you can't hurt anyone. Tiger Data is the live database: only point `DATABASE_URL` at it to test the real thing, and never drop, truncate or reset it.
-- **Deploys:** only `main` deploys.
+- **Deploys:** only `main` deploys, to Vercel at https://amble.health, and the build migrates Tiger Data first. Details in `docs/DEPLOYMENT.md`.
 - **Secrets:** this repo is **public**. Keys go in `.env`, which is gitignored and normally copied into new worktrees. If yours is missing, copy it from the main checkout. Never put a key in code, logs, fixtures or PR text. If one leaks, tell the humans right away so it can be rotated.
 
 ## Building

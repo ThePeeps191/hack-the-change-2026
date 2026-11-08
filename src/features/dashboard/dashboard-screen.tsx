@@ -79,14 +79,15 @@ export function DashboardScreen() {
         <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/95">
           Canada&apos;s movement guidelines suggest {goal} a week.
         </p>
-        {d && <WeekStrip history={d.history} />}
+        {/* Up here, not under the week strip: the sky is darker, so the small white text stays readable. */}
         {d && (
-          <p className="mt-3 flex items-center justify-center gap-3.5 text-[13px] font-medium text-on-sky/90">
-            <span className="flex items-center gap-1"><InkFlag held={false} color="currentColor" size={16} />{d.quests_done} quests</span>
-            <span className="flex items-center gap-1"><Ink size={16}>{StepsInk}</Ink>{d.km_moved} km</span>
-            <span className="flex items-center gap-1"><Ink size={16}>{PeopleInk}</Ink>{d.people_met} people met</span>
+          <p className="mt-3 flex items-center justify-center gap-3.5 text-[14px] font-medium text-on-sky">
+            <span className="flex items-center gap-1"><InkFlag held={false} color="currentColor" size={18} />{d.quests_done} quests</span>
+            <span className="flex items-center gap-1"><Ink size={18}>{StepsInk}</Ink>{d.km_moved} km</span>
+            <span className="flex items-center gap-1"><Ink size={18}>{PeopleInk}</Ink>{d.people_met} people met</span>
           </p>
         )}
+        {d && <WeekStrip history={d.history} />}
       </Hero>
 
       <div className="space-y-8 px-4 pt-7">

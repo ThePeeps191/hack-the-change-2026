@@ -1,7 +1,0 @@
-[Unit]
-Description=Deploy Amble if main has moved
-
-[Service]
-Type=oneshot
-User=amble
-ExecStart=/bin/bash /opt/amble/repo/deploy/deploy.sh

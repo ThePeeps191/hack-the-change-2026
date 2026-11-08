@@ -41,7 +41,10 @@ export function Podium({ top, ours }: { top: LeaderboardEntry[]; ours?: string }
               )}
               <Avatar name={e.name} size={s.at === 0 ? 56 : 46} ring={mine} />
             </div>
-            <p className={`mt-2 line-clamp-2 min-h-[2.5em] px-1 text-center text-[13px] leading-tight ${mine ? "font-semibold text-ink" : "font-medium text-ink-muted"}`}>{e.name}</p>
+            {/* A one-line name sits at the bottom of its two-line space, so it stays right above its coins. */}
+            <div className="mt-2 flex min-h-[2.5em] items-end px-1 text-[13px] leading-tight">
+              <p className={`line-clamp-2 text-center ${mine ? "font-semibold text-ink" : "font-medium text-ink-muted"}`}>{e.name}</p>
+            </div>
             <span className="mt-1 flex items-center gap-1 text-[14px] font-semibold">
               <Coin size={13} />
               <Odometer value={e.coins} delay={300 + i * 100} />
