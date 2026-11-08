@@ -11,7 +11,7 @@ import { SunArc } from "@/components/ui/sun-arc";
 import { Odometer } from "@/components/ui/odometer";
 import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
-import { EmptyStamp, Entry, FaceCard, Stamp, Weather, WeekStrip } from "./you-bits";
+import { Entry, FaceCard, Weather, WeekStrip } from "./you-bits";
 import { type Comfort, toComfort, toPrefs } from "@/features/onboarding/prefs";
 import { ProfileLinks } from "./profile-links";
 
@@ -54,7 +54,6 @@ export function DashboardScreen() {
   const active = d?.active_minutes_week ?? 0;
   const goal = d?.active_goal_minutes ?? 150;
   const faces = d?.familiar_faces ?? [];
-  const places = d?.new_places ?? [];
   const mood = d?.mood;
 
   // The server can log one quest twice within minutes, once with no route
@@ -103,15 +102,6 @@ export function DashboardScreen() {
                 {faces.map((f, i) => <FaceCard key={f.display_name} face={f} i={i} wide={faces.length === 1} />)}
               </ul>
             )}
-          </Section>
-        )}
-
-        {d && (
-          <Section id="places" title="new places" note={places.length > 0 ? `${places.length} stamp${places.length === 1 ? "" : "s"} this month. Quests take you somewhere new on purpose.` : undefined}>
-            <ul className="grid grid-cols-3 gap-3 rounded-[24px] bg-surface p-4 shadow-card">
-              {places.map((p, i) => <Stamp key={p.name} name={p.name} date={p.first_visit} i={i} />)}
-              <EmptyStamp />
-            </ul>
           </Section>
         )}
 
