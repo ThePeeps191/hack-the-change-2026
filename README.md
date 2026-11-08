@@ -62,7 +62,7 @@ When you've done it, you send a photo or short video and an AI model checks it a
 
 Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, like "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
 
-The You tab keeps your own numbers, never ranked against anyone: active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest. The whole app is built for screen readers and respects Reduce Motion.
+The You tab keeps your own numbers and never ranks you against anyone. It shows your active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest. The app is built for screen readers and respects Reduce Motion.
 
 <p align="center">
   <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
