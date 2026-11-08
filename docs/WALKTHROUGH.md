@@ -58,11 +58,9 @@ There's no timer or queue running on the server. State moves forward when someon
 All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `writeRecap` (`generateQuests` is still there but nothing calls it: quests are hand-made). Behind them:
 
 - **Mock mode** (`AI_MODE=mock`, the default while building) returns starter quests and a fake verdict after 2 seconds. Dozens of sessions can run without spending anyone's credits.
-- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Gemini.**
+- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Claude.** Claude can't watch video, so for video proof the phone also sends one JPEG of three still frames (start, middle, end; `src/lib/video-frames.ts`) and Claude judges that. If a frame comes out blank, as iPhone Safari sometimes does, no frames are sent and place and time decide.
 
-**Quests are always at real places.** `placesNear` in `src/lib/places.ts` fetches real, public places near you from OpenStreetMap (libraries, parks, cafés, viewpoints, but no bars and nothing private), plus our own hand-picked campus places. The model picks from that numbered list, and **the coordinates always come from the list, never from the model**, so it can't invent a place. In Gemini mode, Maps and Search grounding add real context and source links, which the quest screen shows.
-
-**A light check on every AI quest.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace and nothing dangerous. Then `toSafeQuest` checks every quest that comes back: a short list of clearly wrong words (alcohol, drugs, weapons, nudity), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped. We kept this deliberately small: a longer word list threw away good quests.
+**Quests are hand-made.** Every quest is in `data/quests/quests.json`, written and checked by us, so the safety rules (public, daylight, walking pace) are ours, not a prompt's. The older AI quest-writing code (`generateQuests`, `src/lib/places.ts`, `toSafeQuest`) is still in the repo, but nothing calls it.
 
 **The AI never blocks a person.** Every call has a timeout. If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
 

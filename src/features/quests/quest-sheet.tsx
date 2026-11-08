@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { Quest } from "@/lib/contracts";
 import { Notice } from "@/components/ui/app-shell";
-import { MagneticButton } from "@/components/ui/button";
+import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { questTypeLabel } from "@/components/ui/quest-icon";
 import {
   categoryLabel,
@@ -50,21 +50,13 @@ export function QuestSheet({
     setAirdropBusy(true);
     setAirdropError(null);
     try {
+      // Only makes the link. Safari opens the share sheet (and AirDrop) only
+      // straight from a tap, and the wait for the server uses that tap up, so
+      // the Share button in the panel below opens it.
       const { url } = await api.createInvite(questId);
       setAirdropUrl(url);
-      // Immediately open the native share sheet (AirDrop on iOS).
-      try {
-        if (navigator.share) {
-          await navigator.share({
-            url,
-            title: `Do "${quest?.title}" with me on Amble`,
-          });
-        }
-      } catch {
-        /* user closed the sheet or share not supported */
-      } finally {
-        setAirdropBusy(false);
-      }
+      setAirdropBusy(false);
+      requestAnimationFrame(() => document.getElementById("quest-share")?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
     } catch (e) {
       setAirdropError(
         e instanceof ApiError && e.status === 403
@@ -207,15 +199,18 @@ export function QuestSheet({
           </div>
 
           {airdropUrl && (
-            <div className="mt-4 rounded-[20px] border border-[var(--hairline)] p-4">
-              <p className="mb-3 text-[14px] font-medium">Share this quest</p>
+            <div id="quest-share" className="mt-4 rounded-[20px] border border-[var(--hairline)] p-4">
+              <p className="text-[16px] font-semibold">Send this to them</p>
+              <p className="mt-1 mb-3 text-[14px] leading-snug text-ink-muted">
+                Share opens AirDrop and your messages. When they say yes, you&apos;ll both get this quest. The link lasts 30 minutes.
+              </p>
               <ShareLink
                 url={airdropUrl}
                 title={`Do "${q.title}" with me on Amble`}
               />
-              <p className="mt-3 text-center text-[12px] text-ink-faint">
-                Link expires in 30 minutes
-              </p>
+              <ButtonLink className="mt-2 w-full" variant="secondary" href="/match">
+                Wait for them
+              </ButtonLink>
             </div>
           )}
 
