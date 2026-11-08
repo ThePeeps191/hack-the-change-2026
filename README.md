@@ -19,15 +19,13 @@ Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with
 With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
 
 <p align="center">
-  <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" width="280">
-  <img src="docs/images/app-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" width="280">
+  <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" height="480">
+  <img src="docs/images/app-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
 </p>
 
 ## Try it
 
 Open **[amble.health](https://amble.health)** on your phone and tap **Try the demo**. You don't need an account, a partner or GPS: a practice partner, Priya, matches with you and plays along. In Chrome on Android you can also install it like an app (⋮ → Install app).
-
-<p align="center"><sub>Real screens and real AI verdicts from amble.health, as a demo guest with the practice partner. The rejected foosball drawing is one we sent on purpose, and the Claim result is a test entry.</sub></p>
 
 ## Why
 
@@ -70,6 +68,8 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
   <img src="docs/images/screens/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
   <img src="docs/images/screens/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
 </p>
+
+<p align="center"><sub>Real screens and real AI verdicts from amble.health, as a demo guest with the practice partner. The rejected foosball drawing is one we sent on purpose, and the Claim result is a test entry.</sub></p>
 
 **The You tab**
 
