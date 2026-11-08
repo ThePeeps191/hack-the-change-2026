@@ -165,8 +165,10 @@ export function QuestScreen() {
 
       {error && <div className="pt-2"><Notice tone="warning">Signal&apos;s patchy. We&apos;ll keep trying.</Notice></div>}
 
-      {/* The main action stays in reach at the bottom of the screen. */}
-      <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
+      {/* The main action stays in reach at the bottom of the screen, on a band
+          of page colour that fades out above it, so whatever scrolls under it
+          dissolves instead of being cut off. */}
+      <div className="sticky bottom-0 z-20 mt-auto space-y-1 bg-gradient-to-t from-canvas from-65% to-transparent px-4 pt-14 pb-[max(16px,env(safe-area-inset-bottom))]">
         {run.status === "completed" && run.mode === "claim" ? (
           // A Claim challenge isn't done until the result is in, so that comes first.
           <ButtonLink size="lg" href={`/claim?zone=${run.zone_id}`}>Send your result</ButtonLink>
