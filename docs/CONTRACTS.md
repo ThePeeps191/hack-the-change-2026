@@ -79,7 +79,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 
 | Table | Main columns |
 | --- | --- |
-| `users` | id, auth0_sub, display_name, avatar_url, email_verified, age_confirmed_at, prefs, coins, is_bot, created_at |
+| `users` | id, auth0_sub, display_name, avatar_url, avatar (picked character, "shape:colour"), email_verified, age_confirmed_at, prefs, coins, is_bot, created_at |
 | `availability` | user_id, lat, lng, expires_at, created_at, quest_id (the quest you picked, or null). Deleted the moment you're paired |
 | `matches` | id, user_a, user_b, status, source, invite_code, a_accepted_at, b_accepted_at, distance_m, lat, lng, expires_at, updated_at, created_at |
 | `quests` | the Quest fields, plus starter, created_at |

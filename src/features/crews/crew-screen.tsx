@@ -108,7 +108,7 @@ export function CrewScreen() {
             <ul className="rows overflow-hidden rounded-[24px] bg-surface shadow-card">
               {members.map((m, i) => (
                 <motion.li key={m.user_id} {...rise(i + 1)} className="flex items-center gap-3 px-4 py-3">
-                  <Avatar name={m.display_name} />
+                  <Avatar name={m.display_name} avatar={m.avatar} />
                   <span className="flex flex-1 items-center gap-1.5 text-[16px] font-medium">
                     {m.display_name}
                     {i === 0 && m.coins > 0 && <Crown size={16} />}

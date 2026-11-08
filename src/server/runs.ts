@@ -31,6 +31,7 @@ export type RunRow = {
 type MemberRow = {
   user_id: string;
   display_name: string;
+  avatar: string | null;
   is_bot: boolean;
   verdict: Verdict["status"] | null;
   reason: string | null;
@@ -65,7 +66,7 @@ export async function createRun(input: {
 
 const members = (runId: string) =>
   query<MemberRow>(
-    `select m.user_id, u.display_name, u.is_bot, m.hint, latest.verdict, latest.reason, approved.created_at as approved_at
+    `select m.user_id, u.display_name, u.avatar, u.is_bot, m.hint, latest.verdict, latest.reason, approved.created_at as approved_at
      from run_members m
      join users u on u.id = m.user_id
      left join lateral (
@@ -107,6 +108,7 @@ export async function toRun(run: RunRow, viewerId: string): Promise<QuestRun> {
   const list: RunMember[] = rows.map((m) => ({
     user_id: m.user_id,
     display_name: m.display_name,
+    avatar: m.avatar,
     hint: run.mode === "pair" ? (m.hint ?? (m.is_bot ? BOT_HINT : null)) : null,
     submitted: !!m.approved_at,
     verdict: m.verdict
