@@ -8,17 +8,19 @@ import { getPosition } from "@/lib/geo";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
-import { QuestIcon, questTypeLabel } from "@/components/ui/quest-icon";
+import { categoryLabel, categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
 
 // Moved outside component to avoid recreating on every render.
 function InviteQuest({ quest }: { quest: Quest }) {
   return (
     <article className="rounded-[20px] bg-surface p-5 shadow-card">
       <div className="flex items-center gap-2 text-[13px] text-ink-muted">
-        <QuestIcon type={quest.type} size={8} />
-        <span>{questTypeLabel[quest.type]}</span>
-        <span className="ml-auto font-semibold text-ink tabular-nums">
-          +{quest.coins}
+        <CategoryIcon category={categoryOf(quest)} size={20} className="text-ink" />
+        <span>{categoryLabel[categoryOf(quest)]}</span>
+        <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums">
+          <Coin size={14} />
+          {quest.coins}
+          <span className="sr-only"> coins</span>
         </span>
       </div>
       <h2 className="mt-2.5 text-[22px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
@@ -62,6 +64,7 @@ export function InviteScreen() {
   const [error, setError] = useState<string | null>(null);
   const [quest, setQuest] = useState<Quest | null>(null);
   const [hostName, setHostName] = useState<string | null>(null);
+  const [own, setOwn] = useState(false);
   const [expired, setExpired] = useState(false);
   const [detailsError, setDetailsError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,10 +87,11 @@ export function InviteScreen() {
         if (mounted) {
           setQuest(details.quest);
           setHostName(details.host_name);
+          setOwn(details.host_id === user.id);
           setExpired(details.expired);
           setLoading(false);
         }
-      } catch (e) {
+      } catch {
         if (mounted) {
           setDetailsError("This invite isn't valid or has expired. Ask them for a new one?");
           setLoading(false);
@@ -101,6 +105,18 @@ export function InviteScreen() {
       mounted = false;
     };
   }, [code, router]);
+
+  const [copied, setCopied] = useState(false);
+  async function share() {
+    const url = location.href;
+    try {
+      if (navigator.share) await navigator.share({ title: "A quest on Amble", url });
+      else {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+      }
+    } catch {}
+  }
 
   async function accept() {
     setBusy(true);
@@ -123,9 +139,11 @@ export function InviteScreen() {
   }
 
   const duration = quest?.duration_min ?? QUEST_MINUTES;
-  const inviterLine = hostName
-    ? `${hostName} wants to do a quest with you.`
-    : "Someone nearby wants to do a quest with you.";
+  const inviterLine = own
+    ? "This is your invite. Send the link to the person you just met, and you'll both get this quest."
+    : hostName
+      ? `${hostName} wants to do a quest with you.`
+      : "Someone nearby wants to do a quest with you.";
 
   // If we got an error loading invite details, show it
   if (detailsError) {
@@ -167,7 +185,7 @@ export function InviteScreen() {
           as="h1"
           className="mt-6 text-center text-[40px] leading-none font-bold"
         >
-          free for {duration} min?
+          {own ? "your invite" : `free for ${duration} min?`}
         </Hand>
         <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/95">
           {inviterLine}
@@ -182,7 +200,14 @@ export function InviteScreen() {
       </div>
       <div className="space-y-2 px-4 pt-6 pb-6">
         {error && <Notice tone="warning">{error}</Notice>}
-        {expired ? (
+        {own && !expired ? (
+          <>
+            <MagneticButton onClick={share}>{copied ? "Link copied" : "Share the link"}</MagneticButton>
+            <ButtonLink size="lg" variant="quiet" href="/">
+              Back to today
+            </ButtonLink>
+          </>
+        ) : expired ? (
           <>
             <p className="pb-2 text-center text-[15px] text-ink-muted">
               This invite has ended. Ask them for a new one?

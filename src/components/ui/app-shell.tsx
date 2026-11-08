@@ -83,11 +83,11 @@ export function TopBar({ title, back, right }: { title?: ReactNode; back?: strin
   );
 }
 
+// A short line of status text. No coloured dot: the words carry it, and a
+// problem reads a shade stronger than a plain note.
 export function Notice({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "warning" | "danger" }) {
-  const dots = { neutral: "bg-ink-faint", warning: "bg-warning", danger: "bg-danger" };
   return (
-    <p className="flex items-start gap-2.5 px-5 py-2 text-[14px] leading-snug text-ink-muted" role="status">
-      <span className={`mt-1.5 size-1.5 shrink-0 rounded-full ${dots[tone]}`} />
+    <p className={`px-5 py-2 text-[14px] leading-snug ${tone === "neutral" ? "text-ink-muted" : "text-ink"}`} role="status">
       {children}
     </p>
   );

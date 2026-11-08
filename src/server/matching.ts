@@ -423,6 +423,7 @@ export async function inviteDetails(code: string) {
     status: row.status,
     expired: row.status !== "pending" || row.expires_at < new Date(),
     quest,
+    host_id: row.user_a,
     host_name: host?.display_name ?? null,
   };
 }
