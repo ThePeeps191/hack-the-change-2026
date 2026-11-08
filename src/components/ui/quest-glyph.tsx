@@ -96,7 +96,8 @@ export const glyphMarkup: Record<Category, { base: string; accent: string }> = {
 // (the .cat-accent class reads --h).
 function inner(category: Category) {
   const g = glyphMarkup[category];
-  return `${g.base}<g class="cat-accent" style="--h:${categoryHue[category]}">${g.accent}</g>`;
+  // drawn through the #ink filter (root layout), so they wobble like pen lines
+  return `<g filter="url(#ink)">${g.base}<g class="cat-accent" style="--h:${categoryHue[category]}">${g.accent}</g></g>`;
 }
 
 export function glyphSvg(category: Category, size = 22) {

@@ -53,3 +53,38 @@ export const CloudInk = (
     <path d="M9.1 18.6l-.9 2M13.1 18.6l-.9 2M17.1 18.6l-.9 2" />
   </>
 );
+
+// A flag, drawn in ink: a pole leaning a touch, a wavy cloth, and a tuft of
+// ground at its foot. Held flags get hatching and a faint wash on the cloth,
+// and the cloth (with its hatching) sways from the pole (.flag-fly). Open
+// flags are an empty outline. As a string too, for map pins built as HTML.
+const FLAG_POLE = "M6.3 21.1c-.2-5.6-.1-11.3.1-17";
+const FLAG_GROUND = "M3.7 21.3c1.7-.5 3.5-.5 5.3 0";
+const FLAG_CLOTH = "M6.4 4.3c2.1-.9 4 .6 6.1.1 1.6-.4 3.1-.9 4.7-.4-.8 1.6-1.4 3.1-.6 4.8-1.7-.4-3.2.2-4.8.6-2 .4-3.6-.8-5.5.1";
+const FLAG_HATCH = "M8.2 5.4l2.9 3.3M10.9 5.1l3 3.2M13.7 4.9l2.5 2.7";
+
+export function inkFlagMarkup(held: boolean, fill = "currentColor") {
+  return `<g filter="url(#ink)"><path d="${FLAG_GROUND}"/><path d="${FLAG_POLE}"/><g class="${held ? "flag-fly" : ""}" style="transform-box:fill-box;transform-origin:0% 50%"><path d="${FLAG_CLOTH}" fill="${held ? fill : "none"}" fill-opacity="${held ? 0.2 : 0}"/>${held ? `<path d="${FLAG_HATCH}" stroke-width="1.1"/>` : ""}</g></g>`;
+}
+
+export function inkFlagSvg(held: boolean, size = 20) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inkFlagMarkup(held)}</svg>`;
+}
+
+export function InkFlag({ held, color, size = 22, className = "" }: { held: boolean; color: string; size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`shrink-0 ${className}`}
+      aria-hidden
+      dangerouslySetInnerHTML={{ __html: inkFlagMarkup(held, color) }}
+    />
+  );
+}

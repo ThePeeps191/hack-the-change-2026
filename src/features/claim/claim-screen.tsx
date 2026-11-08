@@ -8,6 +8,7 @@ import type { Zone } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Skeleton } from "@/components/ui/card";
+import { InkFlag, inkFlagSvg } from "@/components/ui/ink";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { NoGame, ZoneActions } from "./claim-actions";
 
@@ -28,20 +29,6 @@ const hues = { ours: 222, theirs: 22, free: undefined } as const;
 //
 // A held zone's flag is filled and flies (the cloth sways from the pole,
 // .flag-fly in globals.css); an open zone's flag is a still, empty outline.
-const POLE = "M6 21V4";
-const FLYING = "M6 4h11l-2.5 4L17 12H6";
-const flagPaths = (held: boolean) => `<path d="${POLE}"/><path class="${held ? "flag-fly" : ""}" d="${FLYING}"/>`;
-const flagSvg = (held: boolean) =>
-  `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${flagPaths(held)}</svg>`;
-
-function Flag({ held, color, size }: { held: boolean; color: string; size: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
-      <path d={POLE} />
-      <path d={FLYING} fill={held ? color : "none"} fillOpacity=".22" className={held ? "flag-fly" : ""} />
-    </svg>
-  );
-}
 
 // "4 snacks", "1923", "38 seconds": a zone's best result in plain words.
 function best(z: Zone) {
@@ -60,7 +47,7 @@ export function ClaimScreen() {
 
   const tone = (z: Zone) => (z.held_by_team_id == null ? "free" : z.held_by_team_id === us?.id ? "ours" : "theirs");
   const markers = useMemo<GlobeMarker[]>(
-    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)], icon: flagSvg(tone(z) !== "free"), hue: hues[tone(z)] })),
+    () => (game?.zones ?? []).map((z) => ({ id: z.id, lat: z.lat, lng: z.lng, label: z.name, color: colors[tone(z)], icon: inkFlagSvg(tone(z) !== "free"), hue: hues[tone(z)] })),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- tone depends only on game
     [game],
   );
@@ -125,7 +112,7 @@ export function ClaimScreen() {
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <div className="flex items-center gap-1.5 text-[13px] font-medium text-ink-muted">
-                    <Flag held={tone(zone) !== "free"} color={colors[tone(zone)]} size={15} />
+                    <InkFlag held={tone(zone) !== "free"} color={colors[tone(zone)]} size={18} />
                     {tone(zone) === "ours" ? `Held by ${us?.name}` : tone(zone) === "theirs" ? `Held by ${them?.name}` : "Nobody holds this yet"}
                   </div>
                   <p className="mt-2 text-[22px] leading-tight font-semibold tracking-[-0.01em]">{zone.name}</p>
@@ -152,7 +139,7 @@ export function ClaimScreen() {
                   {game.zones.map((z) => (
                     <li key={z.id}>
                       <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
-                        <Flag held={tone(z) !== "free"} color={colors[tone(z)]} size={22} />
+                        <InkFlag held={tone(z) !== "free"} color={colors[tone(z)]} size={26} />
                         <span className="min-w-0 flex-1">
                           <span className="block text-[16px] font-semibold">{z.name}</span>
                           <span className="mt-0.5 block truncate text-[13px] text-ink-muted">
