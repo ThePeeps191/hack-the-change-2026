@@ -91,6 +91,14 @@ export async function joinCrew(user: User, code: string | undefined) {
   return toCrew(row, user.id);
 }
 
+// Leaving takes you off the member list and nothing else: your coins stay
+// yours, and the invite code still works if you want back in. A crew nobody is
+// in drops off the weekly board.
+export async function leaveCrew(user: User, crewId: string) {
+  await crewFor(user, crewId);
+  await query("delete from crew_members where crew_id = $1 and user_id = $2", [crewId, user.id]);
+}
+
 export async function shareQuest(user: User, crewId: string, questId: string | undefined) {
   await crewFor(user, crewId);
   if (!questId) throw new HttpError(400, "quest_id is required");
@@ -121,6 +129,7 @@ export async function crewLeaderboard(user: User): Promise<LeaderboardEntry[]> {
          select 1 from crew_members x join crews y on y.id = x.crew_id join users z on z.id = y.created_by
          where x.user_id = $1 and z.auth0_sub like 'demo|%'))
      group by c.id
+     having count(m.user_id) > 0
      order by coins desc, c.name
      limit 50`,
     [user.id, DEMO_CREW_ID],
