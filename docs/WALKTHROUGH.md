@@ -99,7 +99,8 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## System 2: crews, coins and Claim
 
-- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. The join page (`/join` or `/join/<code>`) shows the code as letter boxes (`src/features/crews/code-boxes.tsx`): one invisible real input holds the value and the boxes just draw it. It checks the code as you type, so the boxes turn white when it names a crew and shake when it doesn't. Start a quest together and you land on the same run.
+- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. The join page (`/join` or `/join/<code>`) shows the code as letter boxes (`src/features/crews/code-boxes.tsx`): one invisible real input holds the value and the boxes just draw it. It checks the code as you type, so the boxes turn white when it names a crew and shake when it doesn't. Start a quest together and you land on the same run. Starting one also puts it on the crew tab, so crewmates can find it. A crew run stays open for latecomers: it finishes when two or more people are on it and all are done, when the timer runs out, or when someone whose proof is in taps "Finish now" (`finishRun`). A solo quest finishes on its own approval.
+- **"Try the demo"** (`src/server/demo-crew.ts`): each visitor gets their own copy of the seeded crew, its rival and the Claim game, so one judge's steals never show up for the next. The weekly board shows a copy only to its owner, in place of the seeded crew. A fresh demo login is also how we reset the Claim board between pitch rounds.
 - **Coins** come from every finished quest and are paid once (see above). The weekly board (`crewLeaderboard`) only counts the last 7 days, so a quiet week starts everyone level again.
 - **Claim** (`src/server/games.ts`): campus spots are zones, each with a challenge and a best score. Finish the challenge with approved proof and you take an empty zone. To steal a held zone you have to beat its best score. `attemptZone` locks the zone row so two teams can't take it at once.
 - **Ratings:** stealing a zone is the one real win and loss in the app, so it's the only place ratings change: Glicko-2 from the `glicko2` package (`rateSteal`). Each crew has one rating. Stranger quests are cooperative and never touch a rating.
@@ -112,7 +113,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - **Familiar faces:** people you've done 2 or more quests with, and your time together, measured against Hall (2019)'s estimate of about 50 hours to become casual friends.
 - **New places:** places you visited for the first time, shown as a count on Home.
 - **Mood before and after,** from the optional check-in (`checkins`), so you can see whether you usually feel better afterwards.
-- **Recently:** your finished quests. Tap one to open its recap, which shows the proof photos you took (`Entry` in `src/features/dashboard/you-bits.tsx`). Photos are kept on disk and only served to people on that quest (`src/app/api/media/[id]/route.ts`).
+- **Recently:** your finished quests. The same quest with the same partner on the same day folds into one row with a count like ×5, since every "Try the demo" run shares one guest (`collapseRepeats`). Tap one to open its recap, which shows the proof photos you took (`Entry` in `src/features/dashboard/you-bits.tsx`). Photos are kept on disk and only served to people on that quest (`src/app/api/media/[id]/route.ts`).
 
 ## The UI, briefly
 
@@ -140,7 +141,7 @@ We used Claude Code, an AI coding assistant, heavily, with many sessions in para
 
 Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
-**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs 18+ and a verified email, and happens in daylight only. Report is one tap away, ends the quest, and you're never paired with that person again.
+**"How do you stop creeps?"** You meet at a public quest spot, never at each other's location, and your partner only sees a rough distance and, after both say yes, a first name. Meeting strangers needs a verified email and happens in daylight only. Report is one tap away, ends the quest, and you're never paired with that person again.
 
 **"What if nobody's nearby?"** On a campus at 11 AM there's density, which is why the pilot is one campus. Crews and invite links work with zero strangers around, and "anywhere" quests work alone. In the demo, Priya is a labelled practice partner.
 

@@ -58,7 +58,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 **Read the rubric literally.** It was written for cities: Innovation asks how we "creatively apply technology to urban challenges (housing, mobility, disaster resilience, inclusivity)", and a 5 in Impact "addresses inclusivity, safety, resilience and sustainability in a unified way". Say all four words in the pitch, with one Amble example each:
 
 - **Inclusive:** comfort settings (step-free, short pace, side by side instead of chatting), ten quest languages, free, any phone browser, no fitness level assumed, and starter quests tagged `newcomer` that double as a tour of Calgary.
-- **Safe:** 18+, both people say yes, you meet at a public quest spot, your partner never sees your location, daylight only for strangers, one tap to report, and a report means you're never paired again.
+- **Safe:** both people say yes, you meet at a public quest spot, your partner never sees your location, daylight only for strangers, one tap to report, and a report means you're never paired again.
 - **Resilient:** neighbours who already know each other, which is what a community leans on when something goes wrong. And the app itself keeps working when the AI, GPS or signal doesn't.
 - **Sustainable:** every quest is on foot to a public place, with nothing to buy and no car. One AI call is shared by everyone nearby, so it stays cheap to run.
 
@@ -80,7 +80,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 - **Measurable outcomes in the product itself** (see Metrics): active minutes against the national guideline, time spent with the same people, new places, and mood before and after. A judge can see impact for a single user on the dashboard.
 - **Inclusive by design, for named groups:** newcomers, people living alone and anyone shy (see Prompt fit). Comfort settings (pace and access, side-by-side vs chatty, language), walking pace with no fitness level assumed, any phone browser with no install, free, low-pressure copy, and "anywhere" quests for people who can't get to campus.
 - **Neighbourhood engagement:** give-back (volunteering) and skill-swap quests turn a 20-minute gap into community work.
-- **Safe by design:** 18+, both people say yes, you meet at a public quest spot (never at each other's location), daylight quests, a report button that is always one tap away, and only a first name until both accept.
+- **Safe by design:** both people say yes, you meet at a public quest spot (never at each other's location), daylight quests, a report button that is always one tap away, and only a first name until both accept.
 - **Community and city:** quests send people to public libraries, campus events and local spots, on foot. That's sustainable mobility, and footfall for public spaces.
 
 ### Feasibility & Scalability

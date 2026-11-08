@@ -80,10 +80,10 @@ export const api = {
   match: () => call<Match | null>("/api/match"),
   acceptMatch: (id: string) => post<Match>(`/api/matches/${id}/accept`),
   declineMatch: (id: string) => post<Match>(`/api/matches/${id}/decline`),
-  createInvite: (questId?: string) =>
+  createInvite: (questId?: string, near?: { lat: number; lng: number }) =>
     post<{ code: string; url: string; quest: { id: string; title: string } }>(
       "/api/invites",
-      questId ? { quest_id: questId } : {},
+      { ...(questId ? { quest_id: questId } : {}), ...near },
     ),
   inviteDetails: (code: string) =>
     call<{
@@ -120,6 +120,7 @@ export const api = {
   connect: (run_id: string) =>
     post<{ connected: boolean }>("/api/connections", { run_id }),
   leaveRun: (runId: string) => post<void>(`/api/runs/${runId}/leave`, {}),
+  finishRun: (runId: string) => post<QuestRun>(`/api/runs/${runId}/finish`, {}),
   report: (body: { reported_id: string; run_id: string; reason: string }) =>
     post<void>("/api/reports", body),
 

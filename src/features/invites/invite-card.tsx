@@ -1,9 +1,19 @@
 "use client";
 import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
+import { getPosition } from "@/lib/geo";
 import { Notice } from "@/components/ui/app-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { ShareLink } from "./share-link";
+
+// Where you are, so the invite's quest is near you both, but only if this
+// phone already shares location: making a link never pops a permission prompt.
+async function whereYouAre() {
+  const allowed = await navigator.permissions?.query({ name: "geolocation" }).then((p) => p.state === "granted").catch(() => false);
+  if (!allowed) return undefined;
+  const pos = await getPosition(3000);
+  return pos.approximate ? undefined : { lat: pos.lat, lng: pos.lng };
+}
 
 // For someone you've just met in person: no nearby search, just a link.
 export function InviteCard() {
@@ -16,7 +26,7 @@ export function InviteCard() {
     setBusy(true);
     setError(null);
     try {
-      const made = await api.createInvite();
+      const made = await api.createInvite(undefined, await whereYouAre());
       setLink(made.url);
       setQuest(made.quest.title);
     } catch (e) {

@@ -10,6 +10,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { MoodCheck } from "@/features/checkin/mood-check";
+import { FinishNow } from "./finish-now";
 import { ReportSheet } from "./report-sheet";
 import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
@@ -179,6 +180,8 @@ export function QuestScreen() {
             <p className="pb-3 text-center text-[15px] text-ink-muted">That&apos;s fine. The walk still counts.</p>
             <ButtonLink size="lg" href="/">Back to today</ButtonLink>
           </>
+        ) : you?.submitted && run.mode === "crew" && run.crew_id ? (
+          <FinishNow runId={run.id} />
         ) : you?.submitted ? (
           <p className="py-3 text-center text-[15px] text-ink-muted">Your proof is in. Waiting on {partner?.display_name ?? "your partner"}.</p>
         ) : (

@@ -6,7 +6,7 @@ The live app is **https://amble.health**. This page lists every outside service 
 
 | What | Where | Details |
 | --- | --- | --- |
-| Hosting | **Vercel**, project `amble` (team `thepeeps191s-projects`, Hobby) | Builds every push to `main` and nothing else (`vercel.json`). Also reachable at `amble-three.vercel.app`, but Auth0 sign-in only works on amble.health |
+| Hosting | **Vercel**, project `amble` (team `thepeeps191s-projects`, Pro trial from Nov 7 to Nov 21) | Builds every push to `main` and nothing else (`vercel.json`). Also reachable at `amble-three.vercel.app`, but Auth0 sign-in only works on amble.health |
 | Domain | **amble.health**, bought by a friend, DNS at **Porkbun** | `A @ 216.198.79.1` and `CNAME www` to Vercel. `www` forwards to the bare domain. HTTPS is Vercel's. Not a GoDaddy Registry domain |
 | Database | **Tiger Data** (Tiger Cloud), service `amble` | Postgres with TimescaleDB, AWS `us-east-1` (next to Vercel), 0.5 CPU, development tier, paid by trial credits (about 30 days from Nov 7). `location_pings` is a hypertable with 30-day retention |
 | Login | **Auth0**, tenant `dev-nvabg6b64ww053zt` (US), Regular Web App `Amble` | Callback `https://amble.health/auth/callback`, logout and web origin `https://amble.health`, plus `localhost:3000` for local tests. Email/password and Google are on |
@@ -26,7 +26,8 @@ The live app is **https://amble.health**. This page lists every outside service 
 | `AUTH0_CLIENT_SECRET`, `AUTH0_SECRET` | secret | |
 | `APP_BASE_URL` | `https://amble.health` | Must match the Auth0 URLs |
 | `PGLITE_DIR` | `/tmp/pglite/db` | Leftover from before Tiger; ignored while `DATABASE_URL` is set |
-| `AI_PROVIDER`, `GEMINI_API_KEY` | not set yet | For the Gemini swap |
+| `AI_PROVIDER` | `claude` | Set to `gemini` for the swap |
+| `GEMINI_API_KEY` | not set yet | For the Gemini swap |
 
 Changing a variable does nothing until a redeploy (Vercel → Deployments → Redeploy, which asks for Danny's 2FA), or until the next merge to `main`.
 
@@ -34,7 +35,7 @@ Changing a variable does nothing until a redeploy (Vercel → Deployments → Re
 
 1. A merge to `main` triggers a Vercel build. Other branches don't create a deployment at all (`git.deploymentEnabled` in `vercel.json`).
 
-**The Hobby plan allows 100 deployments a day.** On Nov 7 we hit it within hours, because every pushed branch used to create one, and merges stopped going live ("Deployment rate limited"). If merges stop showing up on amble.health, check the Vercel status on the latest `main` commit first.
+**Deployment limits.** On Nov 7 we used up the Hobby plan's 100 deployments a day within hours, because every pushed branch used to create one, and merges stopped going live ("Deployment rate limited"). Danny moved the team to a Pro trial (6,000 a day) and branches no longer deploy. If merges stop showing up on amble.health, check the Vercel status on the latest `main` commit first.
 2. The production build runs `scripts/db-migrate.ts` on Tiger first: new files in `db/migrations/`, the starter quests from `data/quests/`, and the demo seed (because `DEMO_MODE=1`). Then `next build`.
 3. Proof photos and videos are stored in Postgres (`uploads` table), because Vercel functions have no lasting disk. Vercel refuses uploads over 4.5 MB, so the phone shrinks photos first (`src/lib/shrink-photo.ts`) and clips must be short.
 

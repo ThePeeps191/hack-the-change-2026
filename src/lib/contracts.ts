@@ -83,6 +83,7 @@ export type QuestRun = {
   ends_at: string;
   members: RunMember[];
   zone_id?: string | null; // Claim runs: the zone this challenge is for
+  crew_id?: string | null; // Added: set when started with a crew, so the quest screen can offer "Finish now"
 };
 
 export type Verdict = {

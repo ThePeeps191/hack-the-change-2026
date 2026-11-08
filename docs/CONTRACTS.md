@@ -54,6 +54,8 @@ type QuestRun = {
   started_at: string;
   ends_at: string;
   members: { user_id: string; display_name: string; submitted: boolean; verdict: Verdict | null }[];
+  zone_id?: string | null;  // Claim runs: the zone this challenge is for
+  crew_id?: string | null;  // set when started with a crew; starting one also adds it to the crew's shared quests
 };
 
 type Verdict = {
@@ -110,7 +112,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/match` | Current match, polled | `Match` or null |
 | `POST /api/matches/:id/accept` | Accept a match | `Match` |
 | `POST /api/matches/:id/decline` | Decline a match | `Match` |
-| `POST /api/invites` | Create a link to send a stranger. Pins `quest_id` if given, otherwise picks the quest now | `{ code, url, quest: { id, title } }` |
+| `POST /api/invites` | Create a link to send a stranger: `{ quest_id?, lat?, lng? }`. Pins `quest_id` if given, otherwise picks the quest now near `lat`/`lng` (not saved) or campus | `{ code, url, quest: { id, title } }` |
 | `GET /api/invites/:code` | Show an invite before you accept it | `{ code, status, expired, quest, host_id, host_name }` |
 | `POST /api/invites/:code/accept` | Open a stranger's invite: `{ lat?, lng? }` | `Match` |
 | `GET /api/quests` | List quests, `?type=anywhere` for quests that work in any city | `Quest[]` |
@@ -120,6 +122,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/runs/:id` | Run status, polled. `members[0]` is always you | `QuestRun` |
 | `POST /api/runs/:id/checkins` | One-tap mood: `{ phase, mood }`. Before is how you are, 1 to 5. After is relative: 5 better, 3 the same, 1 worse | nothing |
 | `POST /api/runs/:id/leave` | Leave a quest with someone new without reporting them. Ends it for both | `204` |
+| `POST /api/runs/:id/finish` | Crew quest only, once your proof is approved: finish now instead of waiting for the crew. A crew run otherwise stays open until 2+ people are all done or time runs out | `QuestRun` |
 | `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve pending proof by hand | `{ approved }` |
 | `GET /api/media/:id` | Proof media, for people on that quest | the file |
 | `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
