@@ -33,15 +33,9 @@ We were inspired by AR games like Pokemon Go, and the challenges especially by t
 
 We built it for Prompt 1 of Hack the Change, under community connection and inclusion, and proactive health and wellness.
 
-## What it does
+## How a quest works
 
-**Meet someone new (20 minutes)**
-
-1. **I'm free.** Tell Amble you have twenty minutes.
-2. **Matched.** Someone nearby is free too. You see only a rough distance until you both say yes, then just a first name.
-3. **The quest.** You both get the same small task at a public spot. You meet there, never at each other's location, and each of you can add one line so the other can spot you ("red jacket, by the main doors").
-4. **Proof.** One photo or short video. An AI referee checks it against the quest.
-5. **Recap.** A short story of your walk, the minutes you were active, how you felt before and after (only you see that), and the choice to stay in touch. You only connect if you both say yes.
+Tap "I'm free" and Amble looks for someone nearby. All you see at first is a rough distance, then a first name once you both say yes. You both get the same quest at a public place and meet there, never at each other's location. Each of you can add one line so the other can spot you, like "red jacket, by the main doors". If nobody's around, Amble tells you, and you can send the quest to someone you're with by link or AirDrop.
 
 **With friends**
 
