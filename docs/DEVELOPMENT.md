@@ -45,7 +45,7 @@ Read [how Amble works](ARCHITECTURE.md) to find your way around, and [DEPLOYMENT
 | `db/migrations/` | The schema, as timestamped SQL files |
 | `scripts/smoke.ts` | Tests the whole product over HTTP: `BASE_URL=http://localhost:3001 bun run smoke` |
 | `data/quests/quests.json` | UCalgary starter quests, all in one file |
-| `tools/quest-maker-server.ts` | `bun tools/quest-maker-server.ts`, then open http://localhost:8744: place quests on a map and every edit saves into `data/quests/` |
+| `tools/quest-maker-server.ts` | `bun tools/quest-maker-server.ts`, then open http://localhost:8744: place quests on a map and every edit saves into `data/quests/`. http://localhost:8744/claim does the same for the Claim spots and their challenges in `data/claim-quests.json` |
 | `src/app/globals.css` | Design tokens (`bg-surface`, `text-ink-muted`, `rounded-card`...) |
 
 This is Next.js 16: `middleware` is now `proxy.ts`, and route `params` are a promise. Read `node_modules/next/dist/docs/` before guessing an API.

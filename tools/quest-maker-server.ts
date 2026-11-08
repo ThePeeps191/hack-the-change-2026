@@ -1,7 +1,9 @@
 // Quest maker with live saving. Serves tools/quest-maker.html and lets it read and
 // write the starter quest files in data/quests/, so every edit lands in the repo.
+// /claim serves tools/claim-maker.html, which edits the Claim spots and their
+// challenges in data/claim-quests.json the same way.
 //
-//   bun tools/quest-maker-server.ts          then open http://localhost:8744
+//   bun tools/quest-maker-server.ts          then open http://localhost:8744 (or /claim)
 //   PORT=9000 bun tools/quest-maker-server.ts
 //
 // Dev-only on purpose: it listens on localhost and is not part of the Next app,
@@ -14,6 +16,8 @@ import { fileURLToPath } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DIR = path.join(HERE, "..", "data", "quests");
 const PAGE = path.join(HERE, "quest-maker.html");
+const CLAIM_PAGE = path.join(HERE, "claim-maker.html");
+const CLAIM_FILE = path.join(HERE, "..", "data", "claim-quests.json");
 const port = Number(process.env.PORT) || 8744;
 
 // Plain file names only (quests.json, science-b.json): no paths, no traversal.
@@ -29,6 +33,16 @@ async function readBody(req: AsyncIterable<Buffer>) {
   const chunks: Buffer[] = [];
   for await (const c of req) chunks.push(c);
   return Buffer.concat(chunks).toString("utf8");
+}
+
+// Keep the file's existing line endings (Windows checkouts use CRLF) so git sees no noise,
+// and write to a temp file then rename, so the app never reads a half-written file.
+async function writeJson(file: string, data: unknown) {
+  const crlf = await readFile(file, "utf8").then((t) => t.includes("\r\n"), () => false);
+  const text = JSON.stringify(data, null, 2) + "\n";
+  const tmp = `${file}.${process.pid}.tmp`;
+  await writeFile(tmp, crlf ? text.replace(/\n/g, "\r\n") : text);
+  await rename(tmp, file);
 }
 
 const server = createServer(async (req, res) => {
@@ -72,14 +86,30 @@ const server = createServer(async (req, res) => {
         }
         const ok = Array.isArray(quests) && quests.every((q) => q && typeof q === "object" && typeof q.title === "string");
         if (!ok) return send(res, 400, { error: "body must be an array of quests, each with a title" });
-        // Keep the file's existing line endings (Windows checkouts use CRLF) so git sees no noise.
-        const crlf = await readFile(file, "utf8").then((t) => t.includes("\r\n"), () => false);
-        const text = JSON.stringify(quests, null, 2) + "\n";
-        // Write to a temp file and rename, so the app never reads a half-written file.
-        const tmp = `${file}.${process.pid}.tmp`;
-        await writeFile(tmp, crlf ? text.replace(/\n/g, "\r\n") : text);
-        await rename(tmp, file);
+        await writeJson(file, quests);
         return send(res, 200, { ok: true, file: name, count: (quests as unknown[]).length });
+      }
+    }
+
+    if (url.pathname === "/claim") {
+      return send(res, 200, await readFile(CLAIM_PAGE, "utf8"), "text/html; charset=utf-8");
+    }
+
+    if (url.pathname === "/api/claim") {
+      if (req.method === "GET") return send(res, 200, JSON.parse(await readFile(CLAIM_FILE, "utf8")));
+      if (req.method === "PUT") {
+        let spots: unknown;
+        try {
+          spots = JSON.parse(await readBody(req));
+        } catch {
+          return send(res, 400, { error: "body must be JSON" });
+        }
+        // Every spot needs its challenge title and a zone with a name and a place on the map.
+        const ok = Array.isArray(spots) && spots.length > 0 && spots.every((s) =>
+          s && typeof s.title === "string" && s.zone && typeof s.zone.name === "string" && Number.isFinite(s.zone.lat) && Number.isFinite(s.zone.lng));
+        if (!ok) return send(res, 400, { error: "every spot needs a title and a zone with a name, lat and lng" });
+        await writeJson(CLAIM_FILE, spots);
+        return send(res, 200, { ok: true, count: (spots as unknown[]).length });
       }
     }
 
@@ -91,4 +121,5 @@ const server = createServer(async (req, res) => {
 
 server.listen(port, "127.0.0.1", () => {
   console.log(`Quest maker: http://localhost:${port}  (saving into data/quests/)`);
+  console.log(`Claim maker: http://localhost:${port}/claim  (saving into data/claim-quests.json)`);
 });

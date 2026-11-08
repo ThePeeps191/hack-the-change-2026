@@ -11,7 +11,15 @@
     "proof": "photo",
     "coins": 30,
     "place_name": "Taylor Family Digital Library",
-    "sources": []
+    "sources": [],
+    "zone": {
+      "name": "TFDL",
+      "lat": 51.0777,
+      "lng": -114.1293,
+      "radius_m": 80,
+      "result_unit": "year",
+      "lower_is_better": true
+    }
   },
   {
     "id": "a1b2c3d4-0002-4000-8000-000000000001",
@@ -25,7 +33,15 @@
     "proof": "photo",
     "coins": 25,
     "place_name": "MacEwan Student Centre",
-    "sources": []
+    "sources": [],
+    "zone": {
+      "name": "Mac Hall",
+      "lat": 51.0786,
+      "lng": -114.1306,
+      "radius_m": 70,
+      "result_unit": "snacks",
+      "lower_is_better": false
+    }
   },
   {
     "id": "a1b2c3d4-0003-4000-8000-000000000001",
@@ -39,7 +55,15 @@
     "proof": "photo",
     "coins": 30,
     "place_name": "Olympic Oval",
-    "sources": []
+    "sources": [],
+    "zone": {
+      "name": "Olympic Oval",
+      "lat": 51.0766,
+      "lng": -114.1357,
+      "radius_m": 120,
+      "result_unit": "seconds",
+      "lower_is_better": true
+    }
   },
   {
     "id": "a1b2c3d4-0004-4000-8000-000000000001",
@@ -53,7 +77,15 @@
     "proof": "photo",
     "coins": 20,
     "place_name": "Rozsa Centre",
-    "sources": []
+    "sources": [],
+    "zone": {
+      "name": "Rozsa Centre",
+      "lat": 51.0749,
+      "lng": -114.1297,
+      "radius_m": 80,
+      "result_unit": "posters",
+      "lower_is_better": false
+    }
   },
   {
     "id": "a1b2c3d4-0099-4000-8000-000000000002",
@@ -67,6 +99,14 @@
     "proof": "video",
     "coins": 15,
     "place_name": null,
-    "sources": []
+    "sources": [],
+    "zone": {
+      "name": "Kinesiology",
+      "lat": 51.0771,
+      "lng": -114.1332,
+      "radius_m": 90,
+      "result_unit": "seconds",
+      "lower_is_better": false
+    }
   }
 ]
