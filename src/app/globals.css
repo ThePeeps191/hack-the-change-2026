@@ -368,10 +368,10 @@ a {
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --podium-1: #3d6ef0;
+    --podium-1: #2f5fd6;
     --podium-2: #2a3f74;
     --podium-3: #1f2c4d;
-    --podium-ink: rgb(255 255 255 / .7);
+    --podium-ink: #ffffff;
     --podium-edge: rgb(255 255 255 / .35);
   }
 }
@@ -401,7 +401,7 @@ a {
    around the whole number instead. */
 .sky .odo { text-shadow: none; filter: drop-shadow(0 1px 8px rgb(24 64 130 / 0.3)); }
 /* Flat avatars: one hue per person, a light tint with the initial in a deep shade. */
-.avatar { background: hsl(var(--h) 80% 90%); color: hsl(var(--h) 55% 32%); }
+.avatar { background: hsl(var(--h) 80% 90%); color: hsl(var(--h) 55% 28%); }
 @media (prefers-color-scheme: dark) {
   .avatar { background: hsl(var(--h) 35% 24%); color: hsl(var(--h) 80% 82%); }
 }
@@ -425,16 +425,19 @@ a {
 @media (prefers-reduced-motion: reduce) { .flag-fly { animation: none; } }
 
 /* The Claim card on Crew: by day a deeper patch of the same sky with a little
-   late sun in the corner; at night the dusk sky with stars. No purple, so it
+   late sun in the corner; at night the dusk sky with stars. Faint contour
+   lines (public/topo.svg) make it read as a trail map. No purple, so it
    sits in the page's blues instead of fighting them. */
 .claim-card {
   background:
-    radial-gradient(90% 70% at 105% 115%, rgb(255 205 150 / .45), transparent 60%),
-    linear-gradient(165deg, #2c69c2 0%, #3a78cf 60%, #4782d4 100%);
+    url("/topo.svg") center / cover no-repeat,
+    radial-gradient(90% 70% at 105% 115%, rgb(255 205 150 / .3), transparent 60%),
+    linear-gradient(165deg, #2558ad 0%, #2c63b9 60%, #3169be 100%);
 }
 @media (prefers-color-scheme: dark) {
   .claim-card {
     background:
+      url("/topo.svg") center / cover no-repeat,
       radial-gradient(90% 70% at 105% 115%, rgb(255 190 140 / .16), transparent 60%),
       linear-gradient(170deg, #1a3466 0%, #22407a 60%, #2a4c88 100%);
   }

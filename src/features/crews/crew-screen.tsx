@@ -93,7 +93,7 @@ export function CrewScreen() {
               <Stars className="hidden dark:block" />
               <div className="relative flex items-center gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-medium tracking-[0.02em] text-white/85">Claim · live this week</p>
+                  <p className="text-[13px] font-medium tracking-[0.02em] text-white">Claim · live this week</p>
                   <p className="mt-2 text-[19px] leading-snug font-semibold">Hold spots on campus by beating their challenge.</p>
                   <p className="mt-3 flex items-center gap-1 text-[15px] font-semibold">
                     Open the map
