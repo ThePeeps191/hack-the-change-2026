@@ -7,6 +7,7 @@ import { CAMPUS_CENTER, QUEST_MINUTES } from "@/lib/config";
 import { getPosition } from "@/lib/geo";
 import type { Dashboard, Quest } from "@/lib/contracts";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, icons, RoundButton } from "@/components/ui/hero";
@@ -59,6 +60,7 @@ export function HomeScreen() {
 
   return (
     <AppShell>
+      <Split aside={
       <Hero>
         <HeroBar center={date} />
         <SunArc caption={<span className="text-[13px] font-medium text-on-sky/90">of {goal} active min this week</span>} progress={active / goal} className="mt-1 px-6">
@@ -81,11 +83,12 @@ export function HomeScreen() {
           <RoundButton href="/me" label="Your week" d={icons.history} />
         </div>
       </Hero>
+      }>
 
       {error && <div className="pt-3"><Notice tone="danger">{error}</Notice></div>}
       <ResumeBanner />
 
-      <section className="px-4 pt-6" aria-labelledby="nearby">
+      <section className="px-4 pt-6 lg:pt-0" aria-labelledby="nearby">
         <Hand as="h2" className="mb-3 px-1 text-[28px] leading-none font-bold text-ink">
           <span id="nearby">nearby</span>
         </Hand>
@@ -152,8 +155,9 @@ export function HomeScreen() {
         </section>
       )}
 
-      <QuestSheet quest={open} crewId={crewId} onClose={() => setOpen(null)} />
       <InviteCard />
+      </Split>
+      <QuestSheet quest={open} crewId={crewId} onClose={() => setOpen(null)} />
     </AppShell>
   );
 }

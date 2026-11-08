@@ -47,7 +47,7 @@ This is the main demo. Each step names the function that does it.
 9. **Finishing.** `settle` in `src/server/runs.ts` marks the run complete once everyone's proof is approved, and works out how far each person walked from their own pings.
 10. **Recap.** `getRecap` in `src/server/recaps.ts` asks the AI for a two-line story once and keeps it. It shows your own route, never your partner's. Then you can choose to stay in touch, which only connects you if both say yes (`stayInTouch` in `src/server/people.ts`).
 
-**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds, you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
+**Alone? Priya.** In demo mode, if nobody real is free after about 4 seconds (25 seconds if you signed in with a real account, so two team phones that tap a little apart still find each other; `botWaitMs`), you're matched with Priya, a bot (`src/server/bot.ts`). She says yes, sends proof and opts in to stay in touch, so one person can try the whole flow. The screen labels her as a practice partner. Two real people (`/?as=alice` and `/?as=bob` locally) match each other for real.
 
 ## No background workers: why, and how things still move
 
@@ -58,11 +58,9 @@ There's no timer or queue running on the server. State moves forward when someon
 All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `writeRecap` (`generateQuests` is still there but nothing calls it: quests are hand-made). Behind them:
 
 - **Mock mode** (`AI_MODE=mock`, the default while building) returns starter quests and a fake verdict after 2 seconds. Dozens of sessions can run without spending anyone's credits.
-- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Gemini.**
+- **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Claude.** Claude can't watch video, so for video proof the phone also sends one JPEG of three still frames (start, middle, end; `src/lib/video-frames.ts`) and Claude judges that. If a frame comes out blank, as iPhone Safari sometimes does, no frames are sent and place and time decide.
 
-**Quests are always at real places.** `placesNear` in `src/lib/places.ts` fetches real, public places near you from OpenStreetMap (libraries, parks, cafés, viewpoints, but no bars and nothing private), plus our own hand-picked campus places. The model picks from that numbered list, and **the coordinates always come from the list, never from the model**, so it can't invent a place. In Gemini mode, Maps and Search grounding add real context and source links, which the quest screen shows.
-
-**A light check on every AI quest.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace and nothing dangerous. Then `toSafeQuest` checks every quest that comes back: a short list of clearly wrong words (alcohol, drugs, weapons, nudity), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped. We kept this deliberately small: a longer word list threw away good quests.
+**Quests are hand-made.** Every quest is in `data/quests/quests.json`, written and checked by us, so the safety rules (public, daylight, walking pace) are ours, not a prompt's. The older AI quest-writing code (`generateQuests`, `src/lib/places.ts`, `toSafeQuest`) is still in the repo, but nothing calls it.
 
 **The AI never blocks a person.** Every call has a timeout. If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
 
@@ -101,7 +99,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## System 2: crews, coins and Claim
 
-- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. Start a quest together and you land on the same run.
+- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. The join page (`/join` or `/join/<code>`) shows the code as letter boxes (`src/features/crews/code-boxes.tsx`): one invisible real input holds the value and the boxes just draw it. It checks the code as you type, so the boxes turn white when it names a crew and shake when it doesn't. Start a quest together and you land on the same run.
 - **Coins** come from every finished quest and are paid once (see above). The weekly board (`crewLeaderboard`) only counts the last 7 days, so a quiet week starts everyone level again.
 - **Claim** (`src/server/games.ts`): campus spots are zones, each with a challenge and a best score. Finish the challenge with approved proof and you take an empty zone. To steal a held zone you have to beat its best score. `attemptZone` locks the zone row so two teams can't take it at once.
 - **Ratings:** stealing a zone is the one real win and loss in the app, so it's the only place ratings change: Glicko-2 from the `glicko2` package (`rateSteal`). Each crew has one rating. Stranger quests are cooperative and never touch a rating.
@@ -121,6 +119,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - `src/app/` holds the pages, one folder per URL. Each page just renders a screen from `src/features/`.
 - `src/components/ui/` holds the shared pieces: the app shell and bottom nav, buttons, cards, the sheet, the odometer numbers and the hero.
 - `src/app/globals.css` holds the design tokens: colours for light and dark mode, radii and fonts. Screens use token names like `text-ink-muted`, not raw colours, so everything looks like one app.
+- Filled buttons get a tactile look from the `.tb` classes at the end of `globals.css`: one element with two background layers, a soft gradient face inside and a lighter-to-darker 1px shell showing through a transparent border, plus a thin white highlight on top. Pressing swaps in a flat, slightly darker face with a faint inner shadow. `buttonClass` in `button.tsx` adds them, so screens never style a button by hand.
 - Motion uses the `motion` library and respects "reduce motion". The maps are `maplibre-gl`.
 
 ## Deploying

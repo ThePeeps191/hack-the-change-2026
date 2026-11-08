@@ -12,7 +12,9 @@ import { Coin } from "@/components/ui/quest-glyph";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
 import { MAX_UPLOAD_BYTES, shrinkPhoto } from "@/lib/shrink-photo";
+import { videoFrames } from "@/lib/video-frames";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { buttonClass } from "@/components/ui/button";
 import { Odometer } from "@/components/ui/odometer";
 
 // WebGL, so only in the browser, and only fetched when a photo is on screen.
@@ -84,6 +86,8 @@ export function ProofScreen() {
       const pos = await getPosition(4000);
       const form = new FormData();
       if (media) form.set("media", media);
+      const frames = media ? await videoFrames(media) : null;
+      if (frames) form.set("frames", frames);
       if (!pos.approximate) {
         form.set("lat", String(pos.lat));
         form.set("lng", String(pos.lng));
@@ -112,7 +116,7 @@ export function ProofScreen() {
   const accept = kind === "video" ? "video/*" : "image/*";
   const looking = view === "sending" || view === "checking";
   const reduce = useReducedMotion();
-  // Photos get the mosaic scan; videos (and reduced motion) get a plain blur while we look.
+  // Photos get the glow-and-sweep scan (photo-scan.tsx); videos (and reduced motion) get a plain blur while we look.
   const scan = kind === "photo" && !reduce;
   const photoFilter =
     view === "approved" ? "" : view === "rejected" ? "grayscale(1) brightness(.55)" : looking && !scan ? "blur(14px) brightness(.6) saturate(.8)" : "";
@@ -225,7 +229,7 @@ export function ProofScreen() {
         <div className="mt-auto flex flex-col items-center gap-1 px-4 pt-6 pb-[max(24px,env(safe-area-inset-bottom))]">
           {run && view === "capture" && (kind === "gps" || file) && (
             <>
-              <button onClick={submit} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b] transition-transform active:scale-[0.98]">
+              <button onClick={submit} className={buttonClass("onSky", "lg")}>
                 Send it
               </button>
               {kind !== "gps" && (
@@ -245,13 +249,13 @@ export function ProofScreen() {
             </button>
           )}
           {view === "approved" && (
-            <Link href={run?.status === "completed" ? `/recap/${runId}` : `/quest/${runId}`} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b]">
+            <Link href={run?.status === "completed" ? `/recap/${runId}` : `/quest/${runId}`} className={buttonClass("onSky", "lg")}>
               {run?.status === "completed" ? "See how it went" : "Back to the quest"}
             </Link>
           )}
           {view === "rejected" && (
             <>
-              <button onClick={retry} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b]">
+              <button onClick={retry} className={buttonClass("onSky", "lg")}>
                 Try another {kind}
               </button>
               <Link href={`/quest/${runId}`} className="flex min-h-12 items-center px-4 text-[15px] font-medium text-white/70">Back to the quest</Link>

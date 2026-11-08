@@ -12,19 +12,9 @@ import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Ink, StepsInk, SunInk } from "@/components/ui/ink";
 import { Coin } from "@/components/ui/quest-glyph";
 import { MoodCheck } from "@/features/checkin/mood-check";
+import { MeetPaths } from "./meet-paths";
 import { RecapExtras } from "./recap-extras";
 
-
-// The walk you took, drawn as a line from the real route points. With no
-// route (location off, or an anywhere quest) we draw nothing rather than fake one.
-function routePath(route: Recap["route"]) {
-  const lats = route.map((p) => p.lat);
-  const lngs = route.map((p) => p.lng);
-  const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
-  const sx = (v: number) => 14 + ((v - minLng) / (maxLng - minLng || 1)) * 312;
-  const sy = (v: number) => 100 - ((v - minLat) / (maxLat - minLat || 1)) * 80;
-  return route.map((p, i) => `${i ? "L" : "M"}${sx(p.lng).toFixed(1)} ${sy(p.lat).toFixed(1)}`).join(" ");
-}
 
 // Why a recap can't be shown, each with an honest heading and one way on.
 type Problem = "missing" | "unfinished" | "offline" | "broken";
@@ -83,36 +73,9 @@ export function RecapScreen() {
           {recap?.title ? recap.title.charAt(0).toUpperCase() + recap.title.slice(1) : " "}
         </p>
 
-        {recap && recap.route.length >= 2 && (
-        <svg viewBox="0 0 340 110" className="mx-auto mt-3 block w-full max-w-[360px] px-3" aria-hidden>
-          {(
-            <>
-              <path d={routePath(recap.route)} fill="none" stroke="rgb(255 255 255 / .25)" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
-              <path
-                d={routePath(recap.route)}
-                fill="none"
-                stroke="#fff"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                pathLength={1}
-                strokeDasharray="1"
-                style={{ ["--len" as string]: 1, animation: "draw 1.8s var(--ease-out-soft) .2s both" }}
-              />
-              {/* you, walking it again: a dot follows the real route once the
-                  line has drawn, and stays where you finished */}
-              {moving && (
-                <circle r="5" fill="#fff" stroke="rgb(255 255 255 / .35)" strokeWidth="6" opacity="0">
-                  <set attributeName="opacity" to="1" begin="2s" />
-                  <animateMotion dur="2.6s" begin="2s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.25 1" path={routePath(recap.route)} />
-                </circle>
-              )}
-            </>
-          )}
-        </svg>
-        )}
+        {recap && !problem && <MeetPaths partner={name} still={!moving} />}
 
-        {/* the numbers, said once in a handwritten line under the route */}
+        {/* the numbers, said once in a handwritten line under the picture */}
         {!problem && recap && (
           <Hand as="p" className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-3 text-[23px] leading-none font-bold">
             <span className="flex items-center gap-1.5"><Ink size={21}>{SunInk}</Ink>{recap.duration_min} min</span>

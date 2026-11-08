@@ -9,13 +9,15 @@ type Size = "md" | "lg";
 const base =
   "relative inline-flex items-center justify-center gap-2 font-semibold select-none whitespace-nowrap transition-[background-color,color,box-shadow,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out-soft)] disabled:opacity-40 disabled:pointer-events-none";
 
+// The filled variants use the textured look from globals.css (.tb and its
+// tb-* colours): a gradient face, a 1px lit shell and a pressed state.
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent shadow-press hover:bg-accent-strong",
-  secondary: "bg-surface text-ink shadow-card hover:bg-sunken",
+  primary: "tb tb-primary text-on-accent",
+  secondary: "tb tb-secondary text-ink",
   quiet: "text-ink-muted hover:text-ink",
   danger: "text-danger hover:bg-danger-soft",
   // the white pill that sits on the sky panel and on dark toasts
-  onSky: "bg-white text-[#0d0e0d] [text-shadow:none] shadow-[0_6px_20px_rgb(13_14_13/0.18)] hover:bg-white/95",
+  onSky: "tb tb-on-sky text-[#0d0e0d] [text-shadow:none]",
 };
 
 const sizes: Record<Size, string> = {
@@ -24,7 +26,7 @@ const sizes: Record<Size, string> = {
 };
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", extra = "") {
-  return `${base} ${variants[variant]} ${sizes[size]} active:scale-[0.98] ${extra}`;
+  return `${base} ${variants[variant]} ${sizes[size]} motion-safe:active:scale-[0.98] ${extra}`;
 }
 
 export function Button({ variant = "primary", size = "md", className = "", ...props }: ComponentProps<"button"> & { variant?: Variant; size?: Size }) {
@@ -83,7 +85,7 @@ export function MagneticButton({
       onClick={onClick}
       disabled={disabled}
       style={{ x, y }}
-      whileTap={{ scale: 0.96 }}
+      whileTap={reduce ? undefined : { scale: 0.96 }}
       transition={{ type: "spring", stiffness: 500, damping: 26 }}
       className={`${base} ${variants[variant]} ${sizes.lg} ${className}`}
     >

@@ -132,6 +132,13 @@ const HISTORY: [string, number, string | null, number, number, string][] = [
   ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120, 19, "The long way round asked around campus and came back with a pile of answers."], // The Wisdom of the Crowd
 ];
 
+// [quest, crewmate who shared it with the crew]
+const CREW_SHARED: [string, string][] = [
+  ["febb791a-b824-4680-97d1-fca36894e28b", "seed|mina"], // Film a Duck, West Campus Park
+  ["a9129295-d5c5-4964-8b0f-a4f6956e3dec", "seed|theo"], // Lucky Eights, Chinatown
+  ["faf105ad-114b-44fb-b2b1-e5909f23b8d9", "seed|jo"], // A Look Into Calgary's Past, Central Library
+];
+
 export async function seedDemoData(query: Query) {
   const [existing] = await query("select 1 as yes from zones where game_id = $1 limit 1", [SEED_GAME]);
 
@@ -157,6 +164,10 @@ export async function seedDemoData(query: Query) {
     for (const member of members) {
       await query("insert into crew_members (crew_id, user_id) values ($1, $2) on conflict do nothing", [crewId(n), person(member)]);
     }
+  }
+  // Quests crewmates sent the crew, so the crew tab has something to start together.
+  for (const [questId, sharedBy] of CREW_SHARED) {
+    await query("insert into crew_quests (crew_id, quest_id, shared_by) values ($1, $2, $3) on conflict do nothing", [DEMO_CREW_ID, questId, person(sharedBy)]);
   }
   await query(
     "insert into coin_events (id, user_id, crew_id, amount) values ($1, $2, $3, 30) on conflict do nothing",
@@ -195,7 +206,9 @@ export async function seedDemoData(query: Query) {
     await query("insert into recaps (run_id, summary) values ($1, $2) on conflict (run_id) do update set summary = excluded.summary", [runId(n), summary]);
     const [q] = await query("select coins from quests where id = $1", [questId]);
     await query(
-      "insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz) on conflict do nothing",
+      // Updates the amount on a reseed, so history matches the quest's current coins.
+      `insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz)
+       on conflict (user_id, run_id) where run_id is not null do update set amount = excluded.amount`,
       [sam, runId(n), q.coins, completedAt.toISOString()],
     );
   }

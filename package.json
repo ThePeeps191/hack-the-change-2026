@@ -20,7 +20,6 @@
     "@vis.gl/react-google-maps": "^1.10.2",
     "border-beam": "^1.4.1",
     "glicko2": "^1.2.4",
-    "img-fx": "0.5.1",
     "liquid-gooey": "^0.2.2",
     "maplibre-gl": "^6.16.0",
     "motion": "^14.10.1",

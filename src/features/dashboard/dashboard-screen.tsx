@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import type { Dashboard, User } from "@/lib/contracts";
 import { setSound, soundOn } from "@/lib/feedback";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar } from "@/components/ui/hero";
 import { SunArc } from "@/components/ui/sun-arc";
@@ -68,6 +69,7 @@ export function DashboardScreen() {
 
   return (
     <AppShell>
+      <Split aside={
       <Hero className="pb-8">
         <HeroBar center="you" />
         <Hand as="h1" className="text-center text-[36px] leading-none font-bold">
@@ -89,8 +91,9 @@ export function DashboardScreen() {
         )}
         {d && <WeekStrip history={d.history} />}
       </Hero>
+      }>
 
-      <div className="space-y-8 px-4 pt-7">
+      <div className="space-y-8 px-4 pt-7 lg:pt-0">
         {!d && <Skeleton className="h-40 rounded-[24px]" />}
 
         {d && (
@@ -175,6 +178,7 @@ export function DashboardScreen() {
         </div>
         <ProfileLinks />
       </div>
+      </Split>
     </AppShell>
   );
 }

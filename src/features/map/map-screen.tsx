@@ -8,11 +8,13 @@ import { tick } from "@/lib/feedback";
 import { getPosition } from "@/lib/geo";
 import { CAMPUS_CENTER } from "@/lib/config";
 import { AppShell, Hand } from "@/components/ui/app-shell";
+import { Split } from "@/components/ui/split";
 import { Skeleton } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import type { GlobeMarker } from "@/components/map/globe-map";
 import { categoryOf, glyphSvg } from "@/components/ui/quest-glyph";
-import { QuestCard } from "@/features/quests/quest-card";
+import { GlyphTile, QuestCard, questMeta } from "@/features/quests/quest-card";
+import { Coin } from "@/components/ui/quest-glyph";
 import { QuestSheet } from "@/features/quests/quest-sheet";
 
 const GlobeMap = dynamic(() => import("@/components/map/globe-map"), {
@@ -42,6 +44,11 @@ function metres(a: LatLng, b: LatLng) {
   return Math.sqrt(x * x + y * y) * 6371000;
 }
 
+// The list shows the closest few as full cards; the rest fold into one card
+// of short rows that opens like a dropdown. A short row opens its quest
+// straight away, since selecting it would lift it above the fold, out of view.
+const TOP = 3;
+
 const frosted = "glass grid size-11 place-items-center rounded-full text-ink transition-transform active:scale-95";
 
 export function MapScreen() {
@@ -53,6 +60,7 @@ export function MapScreen() {
   const [open, setOpen] = useState<Quest | null>(null);
   const [here, setHere] = useState<LatLng>(CAMPUS_CENTER);
   const [located, setLocated] = useState(false);
+  const [more, setMore] = useState(false);
 
   useEffect(() => {
     api.quests().then(setQuests).catch(() => setQuests([]));
@@ -103,6 +111,12 @@ export function MapScreen() {
     if (q?.lat != null && q.lng != null) setFocus({ lat: q.lat, lng: q.lng });
   }
 
+  // First tap on a quest with a place shows it on the map; the next opens it.
+  function tap(q: Quest) {
+    if (q.id === selected || q.lat == null) setOpen(q);
+    else choose(q.id);
+  }
+
   function toggle() {
     tick(0.8);
     setExpanded((e) => !e);
@@ -116,13 +130,14 @@ export function MapScreen() {
 
   return (
     <AppShell>
-      <motion.header {...behind} className="px-5 pt-[max(18px,env(safe-area-inset-top))] pb-3">
+      <Split aside={<>
+      <motion.header {...behind} className="px-5 lg:px-1 pt-[max(18px,env(safe-area-inset-top))] pb-3">
         <Hand as="h1" className="text-[36px] leading-none font-bold">around you</Hand>
         <p className="mt-1 text-[14px] text-ink-muted">Drag to look around. Tap a pin to see what&apos;s there.</p>
       </motion.header>
 
       {/* The map keeps its slot in the page so nothing jumps when it opens up. */}
-      <div className="relative mx-4 h-[50dvh] min-h-[320px]">
+      <div className="split-fill relative mx-4 h-[50dvh] min-h-[320px] lg:mx-0">
         <AnimatePresence>
           {expanded && (
             <motion.button
@@ -141,7 +156,7 @@ export function MapScreen() {
           transition={soft}
           className={
             expanded
-              ? "fixed inset-x-2.5 top-[max(10px,env(safe-area-inset-top))] bottom-[max(10px,env(safe-area-inset-bottom))] z-50 mx-auto max-w-[620px] overflow-hidden rounded-[32px] shadow-lift"
+              ? "fixed inset-x-2.5 top-[max(10px,env(safe-area-inset-top))] bottom-[max(10px,env(safe-area-inset-bottom))] z-50 mx-auto max-w-[620px] overflow-hidden lg:right-4 lg:left-[248px] lg:mx-0 lg:max-w-none rounded-[32px] shadow-lift"
               : "absolute inset-0 overflow-hidden rounded-[28px] shadow-card"
           }
           style={{ borderRadius: expanded ? 32 : 28 }}
@@ -171,13 +186,15 @@ export function MapScreen() {
         </motion.div>
       </div>
 
-      <motion.section {...behind} className="px-4 pt-4" aria-label="Quests on the map">
+      </>}>
+      <motion.section {...behind} className="px-4 pt-4 lg:pt-[92px]" aria-label="Quests on the map">
         <Segmented<Filter>
           label="Show"
           value={filter}
           onChange={(v) => {
             setFilter(v);
             setSelected(null);
+            setMore(false);
             // Fly to the nearest quest of this kind so the pins are in view.
             const first = (quests ?? []).filter((q) => (v === "all" || q.type === v) && q.lat != null && q.lng != null).sort((a, b) => away(a) - away(b))[0];
             if (first) setFocus({ lat: first.lat!, lng: first.lng! });
@@ -203,20 +220,71 @@ export function MapScreen() {
                     )}
                   </div>
                 )
-              : ordered.map((q) => (
-                  <motion.button
-                    layout
-                    transition={soft}
-                    key={q.id}
-                    onClick={() => (q.id === selected || q.lat == null ? setOpen(q) : choose(q.id))}
-                    className={`block w-full rounded-[20px] text-left outline-offset-2 ${q.id === selected ? "outline-2 outline-accent" : ""}`}
-                    aria-pressed={q.id === selected}
-                  >
-                    <QuestCard quest={q} />
-                  </motion.button>
-                ))}
+              : (
+                  <>
+                    {ordered.slice(0, TOP).map((q) => (
+                      <motion.button
+                        layout
+                        transition={soft}
+                        key={q.id}
+                        onClick={() => tap(q)}
+                        className={`block w-full rounded-[20px] text-left outline-offset-2 ${q.id === selected ? "outline-2 outline-accent" : ""}`}
+                        aria-pressed={q.id === selected}
+                      >
+                        <QuestCard quest={q} />
+                      </motion.button>
+                    ))}
+                    {ordered.length > TOP && (
+                      <motion.div layout transition={soft} className="overflow-hidden rounded-[22px] bg-surface shadow-card ring-1 ring-[var(--hairline)]">
+                        <button
+                          onClick={() => { tick(0.6); setMore((m) => !m); }}
+                          aria-expanded={more}
+                          aria-controls="more-quests"
+                          className="flex min-h-14 w-full items-center justify-between gap-3 px-4 text-left"
+                        >
+                          <span className="text-[16px] font-semibold">
+                            {ordered.length - TOP} more quests
+                            <span className="font-normal text-ink-muted"> · farther away</span>
+                          </span>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className={`shrink-0 text-ink-muted transition-transform duration-300 ${more ? "rotate-180" : ""}`}>
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {more && (
+                            <motion.ul
+                              id="more-quests"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            >
+                              {ordered.slice(TOP).map((q) => (
+                                <li key={q.id} className="border-t border-[var(--hairline)]">
+                                  <button onClick={() => setOpen(q)} className="flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
+                                    <GlyphTile quest={q} />
+                                    <span className="min-w-0 flex-1">
+                                      <span className="block truncate text-[15px] font-semibold">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
+                                      <span className="block truncate text-[13px] text-ink-muted">{questMeta(q)}</span>
+                                    </span>
+                                    <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold tabular-nums">
+                                      <Coin size={14} />
+                                      {q.coins}
+                                      <span className="sr-only"> coins</span>
+                                    </span>
+                                  </button>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </>
+                )}
         </div>
       </motion.section>
+      </Split>
       <QuestSheet quest={open} onClose={() => setOpen(null)} />
     </AppShell>
   );
