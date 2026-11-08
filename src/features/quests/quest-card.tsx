@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Quest } from "@/lib/contracts";
 import { categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
 
-// The quest's category icon, bare: ink with one detail in the category colour.
+// The quest's category icon, bare and in one colour (ink), with no tile behind it.
 export function GlyphTile({ quest, size = 44 }: { quest: Quest; size?: number }) {
   return (
     <span className="grid shrink-0 place-items-start text-ink" style={{ width: Math.round(size * 0.64) }}>
@@ -40,7 +40,8 @@ export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: strin
       </div>
     </div>
   );
-  const cls = "block w-full rounded-[22px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] transition-transform duration-200 active:scale-[0.985]";
+  // "group" lets hovering anywhere on the card play the icon's little motion (globals.css)
+  const cls = "group block w-full rounded-[22px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] transition-transform duration-200 active:scale-[0.985]";
   if (href) return <Link href={href} className={cls}>{body}</Link>;
   if (onClick) return <button type="button" onClick={onClick} className={cls}>{body}</button>;
   return <div className={cls}>{body}</div>;

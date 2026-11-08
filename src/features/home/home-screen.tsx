@@ -134,7 +134,7 @@ export function HomeScreen() {
                   <button
                     type="button"
                     onClick={() => setOpen(q)}
-                    className="flex h-full w-full flex-col rounded-[24px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] active:scale-[0.98]"
+                    className="group flex h-full w-full flex-col rounded-[24px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] active:scale-[0.98]"
                   >
                     <span className="flex items-center justify-between">
                       <GlyphTile quest={q} size={40} />
