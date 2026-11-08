@@ -124,7 +124,11 @@ export async function crewLeaderboard(user: User): Promise<LeaderboardEntry[]> {
      left join coin_events e on e.user_id = m.user_id
        and not exists (select 1 from quest_runs r where r.id = e.run_id and r.sample)
      join users creator on creator.id = c.created_by
-     where (creator.auth0_sub not like 'demo|%' or exists (select 1 from crew_members x where x.crew_id = c.id and x.user_id = $1))
+     -- A demo visitor's copy of the seeded crews shows only to them. Deleting your
+     -- data renames you to 'deleted|...', and your copy must stay hidden then too,
+     -- or every visitor would see a second "the long way round".
+     where ((creator.auth0_sub not like 'demo|%' and creator.auth0_sub not like 'deleted|%')
+            or exists (select 1 from crew_members x where x.crew_id = c.id and x.user_id = $1))
        and not (c.id = $2 and exists (
          select 1 from crew_members x join crews y on y.id = x.crew_id join users z on z.id = y.created_by
          where x.user_id = $1 and z.auth0_sub like 'demo|%'))
