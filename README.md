@@ -54,7 +54,7 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 
 <p align="center">
   <img src="docs/images/screens/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
-  <img src="docs/images/screens/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table we sent on purpose, and says what would count" width="250">
+  <img src="docs/images/screens/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
   <img src="docs/images/screens/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
@@ -69,7 +69,7 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
   <img src="docs/images/screens/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
 </p>
 
-<p align="center"><sub>Real screens and real AI verdicts from amble.health, as a demo guest with the practice partner. The rejected foosball drawing is one we sent on purpose, and the Claim result is a test entry.</sub></p>
+<p align="center"><sub>Real screens, real photos and real AI verdicts from amble.health, as a demo guest with the practice partner. We sent the ping pong photo on purpose, and the Claim result is a test entry.</sub></p>
 
 **The You tab**
 
