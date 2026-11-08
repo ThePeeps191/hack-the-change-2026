@@ -29,11 +29,13 @@ export function Avatar({ name, size = 40, ring = false }: { name: string; size?:
     const n = hash(name);
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     // mischief off: no spitting or winking, just blinks and glances.
+    // followPointer: the eyes look at the mouse (or your finger) as it moves.
     const bot = new GrokBot(host.current!, {
       size,
       shape: shapes[n % shapes.length],
       color: colors[(n >>> 8) % colors.length],
       mischief: false,
+      followPointer: !still,
       still,
     });
     bot.svg.removeAttribute("role");
