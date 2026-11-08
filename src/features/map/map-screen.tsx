@@ -44,7 +44,8 @@ function metres(a: LatLng, b: LatLng) {
 }
 
 // The list shows the closest few as full cards; the rest fold into one card
-// of short rows that opens like a dropdown.
+// of short rows that opens like a dropdown. A short row opens its quest
+// straight away, since selecting it would lift it above the fold, out of view.
 const TOP = 3;
 
 const frosted = "glass grid size-11 place-items-center rounded-full text-ink transition-transform active:scale-95";
@@ -239,8 +240,8 @@ export function MapScreen() {
                           className="flex min-h-14 w-full items-center justify-between gap-3 px-4 text-left"
                         >
                           <span className="text-[16px] font-semibold">
-                            {more ? "Fewer quests" : `${ordered.length - TOP} more quests`}
-                            {!more && <span className="font-normal text-ink-muted"> · farther away</span>}
+                            {ordered.length - TOP} more quests
+                            <span className="font-normal text-ink-muted"> · farther away</span>
                           </span>
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className={`shrink-0 text-ink-muted transition-transform duration-300 ${more ? "rotate-180" : ""}`}>
                             <path d="M6 9l6 6 6-6" />
@@ -257,8 +258,8 @@ export function MapScreen() {
                             >
                               {ordered.slice(TOP).map((q) => (
                                 <li key={q.id} className="border-t border-[var(--hairline)]">
-                                  <button onClick={() => tap(q)} className="flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
-                                    <GlyphTile quest={q} size={36} />
+                                  <button onClick={() => setOpen(q)} className="flex min-h-14 w-full items-center gap-3 px-4 py-2.5 text-left active:bg-[var(--hairline)]">
+                                    <GlyphTile quest={q} />
                                     <span className="min-w-0 flex-1">
                                       <span className="block truncate text-[15px] font-semibold">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
                                       <span className="block truncate text-[13px] text-ink-muted">{questMeta(q)}</span>
