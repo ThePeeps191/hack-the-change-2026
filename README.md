@@ -75,16 +75,7 @@ There are no background workers. State moves forward when a phone checks in ever
 
 We wrote every quest by hand, at real public places around UCalgary and Calgary. The AI does two jobs: Claude Haiku checks proof (photos, and three still frames from each video) and writes the recaps. It's told to be generous with honest attempts. Every AI call has a timeout and a fallback, so if the AI is slow or down the quest still counts. If it gets one wrong in the demo, demo accounts can tap Count it anyway.
 
-## Built with
-
-| | |
-| --- | --- |
-| App | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Motion, bun |
-| Data | Postgres on Tiger Data (TimescaleDB), embedded Postgres (PGlite) for local development |
-| Sign-in | Auth0 |
-| AI | Claude Haiku (Anthropic) |
-| Maps | MapLibre GL, OpenStreetMap |
-| Hosting | Vercel, at amble.health |
+Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
 
 ## How we built it
 
