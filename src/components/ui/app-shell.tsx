@@ -40,6 +40,7 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
                 <Link
                   href={t.href}
                   aria-current={isActive(t.href, path) ? "page" : undefined}
+                  onClick={() => tick(0.6)}
                   className={`flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isActive(t.href, path) ? "font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
                 >
                   <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
