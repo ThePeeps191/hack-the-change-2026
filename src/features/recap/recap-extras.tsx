@@ -5,7 +5,7 @@ import type { Recap } from "@/lib/contracts";
 export function RecapExtras({ recap }: { recap: Recap }) {
   const again = recap.partner && !recap.demo_partner && (recap.times_together ?? 0) >= 2;
   // Older servers only send `photos`; treat those as images.
-  const proof = recap.proof ?? recap.photos.map((url) => ({ url, type: "image/jpeg" }));
+  const proof: NonNullable<Recap["proof"]> = recap.proof ?? recap.photos.map((url) => ({ url, type: "image/jpeg" }));
   if (proof.length === 0 && !again) return null;
   const size = proof.length > 1 ? "aspect-square" : "aspect-[4/3] max-h-[320px]";
   return (
@@ -17,6 +17,10 @@ export function RecapExtras({ recap }: { recap: Recap }) {
             {proof.map((p) =>
               p.type.startsWith("video/") ? (
                 <video key={p.url} src={p.url} controls playsInline preload="metadata" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${size}`} />
+              ) : p.stills ? (
+                // A wide strip of three stills, shown whole instead of cropped like a photo.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={p.url} src={p.url} alt="Three stills from your video" className="w-full rounded-[24px] bg-sunken shadow-card" />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img key={p.url} src={p.url} alt="Verified proof from this quest" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${size}`} />

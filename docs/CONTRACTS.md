@@ -69,7 +69,7 @@ type Recap = {
   route: { lat: number; lng: number; at: string }[];
   photos: string[];
   narration_url: string | null;
-  proof?: { url: string; type: string }[]; // the same proof with each file's type (image/… or video/…)
+  proof?: { url: string; type: string; stills?: boolean }[]; // the same proof with each file's type (image/… or video/…). stills: a clip too long to upload, kept as one image of three stills from it
 };
 ```
 
