@@ -4,8 +4,9 @@ import { one, query, transaction } from "@/lib/db";
 import { HttpError, notFound } from "@/lib/route";
 import { DEMO_CREW_ID } from "./db/setup";
 import { getQuest, type QuestRow, toQuest } from "./quests";
+import { checkAvatar } from "./users";
 
-type CrewRow = { id: string; name: string; invite_code: string; created_by: string; created_at: Date; rating: number };
+type CrewRow = { id: string; name: string; invite_code: string; created_by: string; created_at: Date; rating: number; avatar: string | null };
 
 const WORDS = ["MAPLE", "CEDAR", "BIRCH", "ASPEN", "WILLOW", "SPRUCE", "LARCH", "ALDER", "POPLAR", "ROWAN"];
 
@@ -42,6 +43,7 @@ async function toCrew(row: CrewRow, viewerId?: string): Promise<Crew> {
   return {
     id: row.id,
     name: row.name,
+    avatar: row.avatar ?? null,
     invite_code: row.invite_code,
     created_by: row.created_by,
     created_at: row.created_at.toISOString(),
@@ -104,6 +106,15 @@ export async function joinCrew(user: User, code: string | undefined) {
 // Leaving takes you off the member list and nothing else: your coins stay
 // yours, and the invite code still works if you want back in. A crew nobody is
 // in drops off the weekly board.
+// Any member can change the crew's character. Everyone in the crew and on the
+// weekly board sees the new one. Null goes back to the one from the crew's name.
+export async function setCrewAvatar(user: User, crewId: string, avatar: string | null) {
+  checkAvatar(avatar);
+  await crewFor(user, crewId);
+  const row = await one<CrewRow>("update crews set avatar = $2 where id = $1 returning *", [crewId, avatar]);
+  return toCrew(row!, user.id);
+}
+
 export async function leaveCrew(user: User, crewId: string) {
   await crewFor(user, crewId);
   await query("delete from crew_members where crew_id = $1 and user_id = $2", [crewId, user.id]);
@@ -125,8 +136,8 @@ export async function shareQuest(user: User, crewId: string, questId: string | u
 // Crews copied for a "Try the demo" visitor show only to that visitor, in place
 // of the seeded crew they copy, so a judge sees one "the long way round": theirs.
 export async function crewLeaderboard(user: User): Promise<LeaderboardEntry[]> {
-  const rows = await query<{ id: string; name: string; coins: number; rating: number; delta: number }>(
-    `select c.id, c.name, c.rating,
+  const rows = await query<{ id: string; name: string; avatar: string | null; coins: number; rating: number; delta: number }>(
+    `select c.id, c.name, c.avatar, c.rating,
        coalesce(sum(e.amount) filter (where e.created_at > now() - interval '7 days'), 0)::int as coins,
        coalesce(sum(e.amount) filter (where e.created_at > now() - interval '1 day'), 0)::int as delta
      from crews c
@@ -148,12 +159,12 @@ export async function crewLeaderboard(user: User): Promise<LeaderboardEntry[]> {
      limit 50`,
     [user.id, DEMO_CREW_ID],
   );
-  return rows.map((r, i) => ({ rank: i + 1, id: r.id, name: r.name, coins: r.coins, rating: Math.round(r.rating), delta: r.delta }));
+  return rows.map((r, i) => ({ rank: i + 1, id: r.id, name: r.name, avatar: r.avatar, coins: r.coins, rating: Math.round(r.rating), delta: r.delta }));
 }
 
 export async function memberLeaderboard(user: User, crewId: string): Promise<LeaderboardEntry[]> {
   const crew = await toCrew(await crewFor(user, crewId), user.id);
   return [...crew.members]
     .sort((a, b) => b.coins - a.coins)
-    .map((m, i) => ({ rank: i + 1, id: m.user_id, name: m.display_name, coins: m.coins }));
+    .map((m, i) => ({ rank: i + 1, id: m.user_id, name: m.display_name, avatar: m.avatar, coins: m.coins }));
 }

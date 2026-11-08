@@ -141,6 +141,7 @@ export type CrewMember = {
 export type Crew = {
   id: string;
   name: string;
+  avatar?: string | null; // Added: the character a member picked, "shape:colour". Null: it comes from the name.
   invite_code: string;
   created_by: string;
   created_at: string;
@@ -154,6 +155,7 @@ export type LeaderboardEntry = {
   rank: number;
   id: string; // crew id, or user id when ranking a crew's members
   name: string;
+  avatar?: string | null; // Added: their picked character (see User and Crew)
   coins: number;
   rating?: number;
   delta?: number; // coins gained recently, for the "coins landing" animation

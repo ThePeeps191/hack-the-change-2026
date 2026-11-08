@@ -90,7 +90,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `location_pings` | time, user_id, run_id, lat, lng (a Tiger Data hypertable) |
 | `connections` | user_a, user_b, run_id, created_at, written only when both opt in |
 | `reports` | id, reporter_id, reported_id, run_id, reason, created_at |
-| `crews` | id, name, invite_code, created_by, rating, rating_rd, rating_vol, created_at |
+| `crews` | id, name, avatar (picked character, "shape:colour"), invite_code, created_by, rating, rating_rd, rating_vol, created_at |
 | `crew_members` | crew_id, user_id, joined_at |
 | `crew_quests` | crew_id, quest_id, shared_by, created_at |
 | `coin_events` | id, user_id, crew_id, run_id, amount, created_at |
@@ -137,6 +137,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/crews` | Crews I'm in | crew list |
 | `POST /api/crews` | `{ name }` | crew with `invite_code` |
 | `GET /api/crews/:id` | Crew, members and shared quests | crew |
+| `PATCH /api/crews/:id` | Any member changes the crew's character: `{ avatar }`, `"shape:colour"` or null for the original | crew |
 | `GET /api/crews/join?code=` | Check an invite code before joining (404 if no crew has it) | `{ name }` |
 | `POST /api/crews/join` | `{ invite_code }` | crew |
 | `POST /api/crews/:id/leave` | Leave the crew. Coins stay yours; the invite code still lets you back in | nothing |

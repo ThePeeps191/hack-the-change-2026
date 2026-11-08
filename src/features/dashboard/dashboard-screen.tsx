@@ -143,7 +143,13 @@ export function DashboardScreen() {
 
         {me && (
           <Section id="character" title="your character">
-            <AvatarPicker me={me} onSaved={setMe} />
+            <AvatarPicker
+              name={me.display_name}
+              avatar={me.avatar}
+              note="Your crew and quest partners see this character."
+              resetLabel="Use my original"
+              onSave={(avatar) => api.updateMe({ avatar }).then(setMe)}
+            />
           </Section>
         )}
 

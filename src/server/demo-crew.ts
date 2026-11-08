@@ -9,8 +9,8 @@ import { freshCode } from "./crews";
 // the weekly board knows to show it only to them.
 async function copyCrew(seedId: string, userId: string) {
   const crew = await one<{ id: string; name: string }>(
-    `insert into crews (name, invite_code, created_by, rating)
-     select name, $2, $3, rating from crews where id = $1 returning id, name`,
+    `insert into crews (name, invite_code, created_by, rating, avatar)
+     select name, $2, $3, rating, avatar from crews where id = $1 returning id, name`,
     [seedId, await freshCode(), userId],
   );
   await query(

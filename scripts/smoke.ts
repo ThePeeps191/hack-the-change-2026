@@ -253,6 +253,12 @@ async function main() {
   const entry = board.find((e) => e.id === crew.id);
   check(entry?.coins === photoQuest.coins * 2, "both members' coins reach the leaderboard", entry);
   check(entry?.delta === photoQuest.coins * 2, "recent coins show as delta", entry);
+  check((await kim.patch<Crew>(`/api/crews/${crew.id}`, { avatar: "cloud:3" })).data.avatar === "cloud:3", "any member can pick the crew's character");
+  check((await lee.get<Crew>(`/api/crews/${crew.id}`)).data.avatar === "cloud:3", "crewmates see the crew's character");
+  check((await lee.get<LeaderboardEntry[]>("/api/leaderboard")).data.find((e) => e.id === crew.id)?.avatar === "cloud:3", "the weekly board shows it");
+  check((await lee.patch<Crew>(`/api/crews/${crew.id}`, { avatar: null })).data.avatar === null, "another member can put the original back");
+  check((await person("mo").patch(`/api/crews/${crew.id}`, { avatar: "cloud:3" })).status === 404, "non-members can't change a crew's character");
+  check((await kim.patch(`/api/crews/${crew.id}`, { avatar: "<script>" })).status === 400, "a crew's character has to look like one");
   const members = (await kim.get<LeaderboardEntry[]>(`/api/leaderboard?crew_id=${crew.id}`)).data;
   check(members.length === 2, "crew ranking lists members");
 

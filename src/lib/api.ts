@@ -137,6 +137,8 @@ export const api = {
   crewForCode: (code: string) => call<{ name: string }>(`/api/crews/join?code=${encodeURIComponent(code)}`),
   joinCrew: (invite_code: string) =>
     post<Crew>("/api/crews/join", { invite_code }),
+  setCrewAvatar: (crewId: string, avatar: string | null) =>
+    call<Crew>(`/api/crews/${crewId}`, { method: "PATCH", body: JSON.stringify({ avatar }) }),
   leaveCrew: (crewId: string) => post<void>(`/api/crews/${crewId}/leave`, {}),
   shareQuest: (crewId: string, quest_id: string) =>
     post<void>(`/api/crews/${crewId}/quests`, { quest_id }),

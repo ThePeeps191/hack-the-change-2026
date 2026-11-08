@@ -39,7 +39,7 @@ export function Podium({ top, ours }: { top: LeaderboardEntry[]; ours?: string }
                   <Crown size={24} />
                 </motion.span>
               )}
-              <Avatar name={e.name} size={s.at === 0 ? 56 : 46} ring={mine} />
+              <Avatar name={e.name} avatar={e.avatar} size={s.at === 0 ? 56 : 46} ring={mine} />
             </div>
             {/* A one-line name sits at the bottom of its two-line space, so it stays right above its coins. */}
             <div className="mt-2 flex min-h-[2.5em] items-end px-1 text-[13px] leading-tight">
