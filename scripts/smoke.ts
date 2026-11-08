@@ -111,7 +111,10 @@ async function main() {
   check(rejected.data.status === "pending", "proof returns pending straight away", rejected);
   const r1 = await settled(sam, runId);
   check(r1.members[0].verdict?.status === "rejected" && !r1.members[0].submitted, "rejected proof comes back with a reason", r1.members[0]);
-  await sam.proof(runId);
+  // With DEMO_MODE on, the presenter can overturn a wrong "no" by hand instead.
+  const demo = (await sam.get<{ demo_mode: boolean }>("/api/health")).data.demo_mode;
+  if (demo) check((await sam.post<{ approved: number }>(`/api/runs/${runId}/approve`)).data.approved === 1, "a rejected proof can be approved by hand");
+  else await sam.proof(runId);
   const r2 = await settled(sam, runId);
   check(r2.members[0].verdict?.status === "approved" && r2.members[0].submitted, "approved on retry");
   check(r2.members[0].verdict?.coins === run.quest.coins, "verdict shows the coins");

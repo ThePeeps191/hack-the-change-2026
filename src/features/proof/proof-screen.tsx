@@ -40,7 +40,9 @@ function LookingGlass() {
   );
 }
 
-export function ProofScreen() {
+// `demo` (DEMO_MODE) adds a quiet "Approve by hand" for when the AI gets it
+// wrong on stage.
+export function ProofScreen({ demo = false }: { demo?: boolean }) {
   const { runId } = useParams<{ runId: string }>();
   const forceReject = useSearchParams().get("mock") === "reject";
   const [run, setRun] = useState<QuestRun | null>(null);
@@ -116,6 +118,19 @@ export function ProofScreen() {
     } catch (e) {
       setError(e instanceof ApiError && e.status >= 400 && e.status < 500 ? e.message : "That didn't send. Your photo is still here, so try again when you have signal.");
       setStep("capture");
+    }
+  }
+
+  // Re-reading the run moves the screen to approved, with the coins.
+  async function approveByHand() {
+    try {
+      await api.approveRun(runId);
+      const next = await api.run(runId);
+      setRun(next);
+      if (next.members[0]?.verdict) setVerdict(next.members[0].verdict);
+      setStep("approved");
+    } catch {
+      setError("That didn't go through. Try again.");
     }
   }
 
@@ -277,6 +292,11 @@ export function ProofScreen() {
               </button>
               <Link href={`/quest/${runId}`} className="flex min-h-12 items-center px-4 text-[15px] font-medium text-white/70">Back to the quest</Link>
             </>
+          )}
+          {demo && (view === "rejected" || view === "checking") && (
+            <button onClick={approveByHand} className="min-h-12 px-4 text-[13px] font-medium text-white/45 hover:text-white">
+              Approve by hand
+            </button>
           )}
         </div>
       </div>

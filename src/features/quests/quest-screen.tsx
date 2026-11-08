@@ -177,7 +177,7 @@ export function QuestScreen() {
           <ButtonLink size="lg" href={`/recap/${run.id}`}>See how it went</ButtonLink>
         ) : run.status === "expired" ? (
           <>
-            <p className="pb-3 text-center text-[15px] text-ink-muted">That&apos;s fine. The walk still counts.</p>
+            <p className="pb-3 text-center text-[15px] text-ink-muted">Time ran out before any proof came in. No coins this time, but come back any time.</p>
             <ButtonLink size="lg" href="/">Back to today</ButtonLink>
           </>
         ) : you?.submitted && run.mode === "crew" && run.crew_id ? (
