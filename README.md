@@ -20,7 +20,7 @@ With friends, you form a **crew**, take on quests together, earn coins and play 
 
 <p align="center">
   <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" height="480">
-  <img src="docs/images/app-demo.gif" alt="Amble on a phone: a quest is picked, Amble finds a practice partner, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
+  <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone: Aaron picks a quest and gets matched with Siddhant, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
 </p>
 
 ## Try it
@@ -48,15 +48,15 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 5. **Recap.** A short story of your walk, the minutes you were active, how you felt before and after (only you see that), and the choice to stay in touch. You only connect if you both say yes.
 
 <p align="center">
-  <img src="docs/images/screens/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
-  <img src="docs/images/screens/matched.jpg" alt="Matched with Priya, labelled as a practice partner, with the quest you both get" width="250">
-  <img src="docs/images/screens/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Priya" width="250">
+  <img src="docs/images/aaron-and-siddhant/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/aaron-and-siddhant/matched.jpg" alt="Matched: you and Siddhant, with the quest you both get" width="250">
+  <img src="docs/images/aaron-and-siddhant/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Siddhant" width="250">
 </p>
 
 <p align="center">
-  <img src="docs/images/screens/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
-  <img src="docs/images/screens/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
-  <img src="docs/images/screens/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
+  <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
+  <img src="docs/images/aaron-and-siddhant/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
+  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
 **With friends**
@@ -65,12 +65,12 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 - **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
 
 <p align="center">
-  <img src="docs/images/screens/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
-  <img src="docs/images/screens/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
-  <img src="docs/images/screens/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+  <img src="docs/images/aaron-and-siddhant/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
 </p>
 
-<p align="center"><sub>Real screens, real photos and real AI verdicts from amble.health, as a demo guest with the practice partner. We sent the ping pong photo on purpose, and the Claim result is a test entry.</sub></p>
+<p align="center"><sub>Real screens, real photos and real AI verdicts from amble.health: Aaron's side of a real match with Siddhant, on demo accounts. We sent the ping pong photo on purpose, the Claim result is a test entry, and the history on the You tab is the demo's sample data.</sub></p>
 
 **The You tab**
 
