@@ -46,7 +46,7 @@ We were inspired by AR games like Pokemon Go, and the challenges especially by t
 
 Tap "I'm free" and Amble looks for someone nearby. You both get the same quest at a public place and meet there, never at each other's location, and your location is deleted the moment you're matched. You only see each other's first name once you both say yes, and during the quest, one tap opens 911 and Campus Security or lets you leave. If nobody's around, you can send the quest to someone you're with by link or AirDrop.
 
-Amble picks quests that suit you both: step-free places first, shorter quests if you want an easier pace, and side-by-side quests if you'd rather not chat.
+Amble picks quests that suit you both. It goes for step-free places first, shorter quests if you want an easier pace, and side-by-side quests if you'd rather not chat.
 
 When you've done it, you send a photo or short video and an AI model checks it against the quest. If it passes, you get coins. Then you see a short recap of what you did, and you can choose to stay in touch.
 
@@ -60,7 +60,7 @@ When you've done it, you send a photo or short video and an AI model checks it a
 
 ## Crews and Claim
 
-Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, for example "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
+Crews share quests and earn coins together, and the coins go toward a weekly board. Claim is a second game where two crews compete for spots around campus. Each spot has a challenge, like "Hold a plank for as long as possible and record it. Longer plank wins." If nobody holds a spot, finishing the challenge takes it. If another crew holds it, you have to beat their score to steal it.
 
 The You tab keeps your own numbers, never ranked against anyone: active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest. The whole app is built for screen readers and respects Reduce Motion.
 
