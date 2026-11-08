@@ -18,9 +18,15 @@ Amble gets people outside together. Tap **"I'm free"**, and Amble pairs you with
 
 With friends, you form a **crew**, take on quests together, earn coins and play **Claim**, a game that turns campus into a map of spots to take and steal.
 
+<p align="center">
+  <img src="docs/images/amble-demo.gif" alt="Amble on a phone: a quest is picked, Amble looks for someone nearby, finds a practice partner, and both get the same quest" width="280">
+</p>
+
 ## Try it
 
 Open **[amble.health](https://amble.health)** on your phone and tap **Try the demo**. You don't need an account, a partner or GPS: a practice partner, Priya, matches with you and plays along. In Chrome on Android you can also install it like an app (⋮ → Install app).
+
+<p align="center"><sub>Screens from amble.health as a demo guest. The proof images are drawings standing in for real photos, and the AI's verdicts on them are real.</sub></p>
 
 ## Why
 
@@ -41,10 +47,28 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 4. **Proof.** One photo or short video. An AI referee checks it against the quest.
 5. **Recap.** A short story of your walk, the minutes you were active, how you felt before and after (only you see that), and the choice to stay in touch. You only connect if you both say yes.
 
+<p align="center">
+  <img src="docs/images/app/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/app/matched.jpg" alt="Matched with Priya, labelled as a practice partner, with the quest you both get" width="250">
+  <img src="docs/images/app/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Priya" width="250">
+</p>
+
+<p align="center">
+  <img src="docs/images/app/that-counts.jpg" alt="The AI referee approves a price tag: that counts, with a reason naming what it can see" width="250">
+  <img src="docs/images/app/not-quite-yet.jpg" alt="The AI referee rejects a drawing of a foosball table and says what would count" width="250">
+  <img src="docs/images/app/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
+</p>
+
 **With friends**
 
 - **Crews** share quests, earn coins together and race on a weekly board. Pick a character for yourself on the You tab, and one for your crew on the Crew tab.
 - **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
+
+<p align="center">
+  <img src="docs/images/app/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/app/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+  <img src="docs/images/app/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+</p>
 
 **The You tab**
 
