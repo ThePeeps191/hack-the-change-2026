@@ -138,7 +138,7 @@ const HISTORY: [string, number, string | null, number, number, string][] = [
   ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "seed|jo", 640, 18, "Sam and Jo found a free table and went to sudden death after a 4-4 tie."], // Play Foosball
   ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580, 14, "Sam and Theo walked up for the view and caught the towers in the afternoon sun."], // Downtown View
   ["febb791a-b824-4680-97d1-fca36894e28b", 2, "seed|jo", 760, 12, "Sam and Jo waited by the water until a duck finally paddled into the shot."], // Film a Duck
-  ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940, 16, "Sam and Mina walked a stretch backwards and laughed for most of it."], // Walk Backwards
+  ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940, 16, "Sam and Mina ran a short stretch backwards and laughed for most of it."], // Run Backwards
   ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120, 19, "The long way round asked around campus and came back with a pile of answers."], // The Wisdom of the Crowd
 ];
 
