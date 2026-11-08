@@ -56,10 +56,13 @@ export function DashboardScreen() {
   const faces = d?.familiar_faces ?? [];
   const mood = d?.mood;
 
-  // The server can log one quest twice, once with no route (0 m). Show the
-  // one with a route and drop the empty copy.
+  // The server can log one quest twice within minutes, once with no route
+  // (0 m). Drop that empty copy, but keep a real repeat of the same quest on
+  // another day, like doing Ping Pong with Priya again today.
+  const near = (a: string, b: string) => Math.abs(new Date(a).getTime() - new Date(b).getTime()) < 10 * 60_000;
   const journal = (d?.history ?? []).filter(
-    (h, _, all) => !(!h.distance_m && all.some((o) => o !== h && o.quest.id === h.quest.id && o.partner?.display_name === h.partner?.display_name && !!o.distance_m)),
+    (h, _, all) =>
+      !(!h.distance_m && all.some((o) => o !== h && o.quest.id === h.quest.id && o.partner?.display_name === h.partner?.display_name && !!o.distance_m && near(o.completed_at, h.completed_at))),
   );
 
   return (

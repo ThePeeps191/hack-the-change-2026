@@ -1,6 +1,6 @@
 "use client";
 import { Liquid } from "liquid-gooey";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
@@ -96,6 +96,7 @@ export function MatchScreen() {
   // so plainly instead of letting a practice partner pass for a real person.
   const practice = (match as (typeof match & { demo_partner?: boolean }) | null)?.demo_partner === true;
   const d = gap[state];
+  const reduce = useReducedMotion();
   const alone = state === "searching" || state === "ended";
   const you = alone ? 0 : -d / 2;
   const them = d / 2;
@@ -111,12 +112,12 @@ export function MatchScreen() {
         />
         <motion.div
           className="relative mx-auto mt-4 grid h-[250px] w-full place-items-center"
-          animate={state === "matched" ? { y: 0 } : { y: [0, -7, 0] }}
-          transition={state === "matched" ? { duration: 0.4 } : { duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+          animate={state === "matched" || reduce ? { y: 0 } : { y: [0, -7, 0] }}
+          transition={reduce ? { duration: 0 } : state === "matched" ? { duration: 0.4 } : { duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
         >
           <Specks gather={state === "matched"} />
           {state === "matched" && <Burst />}
-          {state === "searching" && (
+          {state === "searching" && !reduce && (
             <>
               <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_infinite]" />
               <span className="absolute size-24 rounded-full border-2 border-white/50 animate-[ripple_2.6s_ease-out_1.3s_infinite]" />

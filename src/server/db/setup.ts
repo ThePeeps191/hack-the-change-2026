@@ -121,13 +121,13 @@ const CREWS: [number, string, string, number, string[]][] = [
   [5, "snack scouts", "WILLOW-5", 1402, ["seed|omar"]],
 ];
 
-// [quest id, days ago, partner, metres walked]. Priya twice, so "familiar
-// faces" has something to show.
+// Jo twice, so "familiar faces" has something to show. Never Priya: she is
+// the practice partner, and a history would make her look like an old friend.
 // [quest, days ago, partner, metres walked, minutes taken, what the recap says]
 const HISTORY: [string, number, string | null, number, number, string][] = [
-  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "bot|priya", 640, 18, "Sam and Priya found a free table and kept one rally going long enough to lose count."], // Play Ping Pong
+  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "seed|jo", 640, 18, "Sam and Jo found a free table and kept one rally going long enough to lose count."], // Play Ping Pong
   ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580, 14, "Sam and Theo walked up for the view and caught the towers in the afternoon sun."], // Downtown View
-  ["febb791a-b824-4680-97d1-fca36894e28b", 2, "bot|priya", 760, 12, "Sam and Priya waited by the water until a duck finally paddled into the shot."], // Film a Duck
+  ["febb791a-b824-4680-97d1-fca36894e28b", 2, "seed|jo", 760, 12, "Sam and Jo waited by the water until a duck finally paddled into the shot."], // Film a Duck
   ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940, 16, "Sam and Mina ran a short stretch backwards and laughed for most of it."], // Run Backwards
   ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120, 19, "The long way round asked around campus and came back with a pile of answers."], // The Wisdom of the Crowd
 ];
@@ -181,6 +181,10 @@ export async function seedDemoData(query: Query) {
        on conflict (id) do update set completed_at = quest_runs.started_at + $6::int * interval '1 minute', ends_at = quest_runs.started_at + $6::int * interval '1 minute'`,
       [runId(n), questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString(), minutes],
     );
+    // Priya is the practice partner, so she has no history with Sam. Older
+    // seeds put her on two of these runs; take her off them.
+    await query("delete from submissions where run_id = $1 and user_id = $2", [runId(n), person("bot|priya")]);
+    await query("delete from run_members where run_id = $1 and user_id = $2", [runId(n), person("bot|priya")]);
     for (const [j, member] of (partner ? [sam, person(partner)] : [sam]).entries()) {
       await query("insert into run_members (run_id, user_id, distance_m) values ($1, $2, $3) on conflict do nothing", [runId(n), member, metres]);
       await query(

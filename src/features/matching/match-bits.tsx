@@ -36,7 +36,7 @@ export function Specks({ gather }: { gather: boolean }) {
                 ? { x: p.x, y: p.y, opacity: 0.6 }
                 : { x: p.x, y: p.y, opacity: [0.2, 0.85, 0.2], scale: [0.7, 1, 0.7] }
           }
-          transition={gather ? { duration: 0.7, ease: [0.5, 0, 0.75, 0] } : { duration: 2.8 + (i % 3) * 0.9, delay: p.d, repeat: Infinity, ease: "easeInOut" }}
+          transition={reduce ? { duration: 0 } : gather ? { duration: 0.7, ease: [0.5, 0, 0.75, 0] } : { duration: 2.8 + (i % 3) * 0.9, delay: p.d, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
     </div>

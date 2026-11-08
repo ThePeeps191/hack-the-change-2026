@@ -2,7 +2,7 @@ import type { Recap } from "@/lib/contracts";
 
 // The verified photos, and a quiet note when the same two people meet again.
 export function RecapExtras({ recap }: { recap: Recap }) {
-  const again = recap.partner && (recap.times_together ?? 0) >= 2;
+  const again = recap.partner && !recap.demo_partner && (recap.times_together ?? 0) >= 2;
   if (recap.photos.length === 0 && !again) return null;
   return (
     <>
