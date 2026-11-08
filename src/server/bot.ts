@@ -1,6 +1,6 @@
 import "server-only";
 import { one, query } from "@/lib/db";
-import { AUTH_MODE, DEMO_MODE } from "@/lib/env";
+import { AUTH_MODE, DEMO_MODE, PRACTICE_PARTNER_ON } from "@/lib/env";
 
 // Priya, a made-up partner, so one person can do the whole flow: a developer
 // clicking through alone, or a judge with no second phone. She appears when
@@ -19,6 +19,7 @@ const SIGNED_IN_WAIT_MS = 25_000;
 const BOT_SUB = "bot|priya";
 
 export async function botWaitMs(userId: string): Promise<number | null> {
+  if (!PRACTICE_PARTNER_ON) return null;
   const row = await one<{ auth0_sub: string }>("select auth0_sub from users where id = $1", [userId]);
   const sub = row?.auth0_sub ?? "";
   if (DEMO_MODE) return sub.startsWith("demo|") || sub.startsWith("mock|") ? GUEST_WAIT_MS : SIGNED_IN_WAIT_MS;

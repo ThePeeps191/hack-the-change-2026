@@ -60,6 +60,7 @@ If you're changing behaviour, you almost always want `src/server/`. Routes stay 
 | `AI_MODE=live`, `AI_PROVIDER=claude` | Claude Haiku 5.5 (`ai-claude.ts`), what amble.health runs. It checks proof and writes recaps. Photos are resized to 1568 px. Video proof is judged from three still frames the phone sends (`video-frames.ts`) |
 | `AI_MODE=live`, `AI_PROVIDER=gemini` | Gemini with Maps and Search grounding (`gemini-live.ts`), including video. Not used: the demo runs Claude and we're not entering the Gemini prize |
 | Keys | `ANTHROPIC_API_KEY` and `GEMINI_API_KEY` come from `.env` first, then the shell (`secrets.ts`). `/api/health` reports which, never the key |
+| `PRACTICE_PARTNER=off` | No bot partner, so people only match with real people (`botWaitMs` in `bot.ts`) |
 | `DEMO_MODE=1` | A "try the demo" login, the bot partner for everyone, no daylight or location rules, `POST /api/runs/:id/approve` |
 
 ## Testing it
