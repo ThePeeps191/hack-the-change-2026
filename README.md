@@ -24,7 +24,7 @@
   <sub>Watch the demo video</sub>
 </p>
 
-Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. For example, one quest at the Foothills Athletic Park is "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal." All quests were written by hand since a limitation of having AI procedurally create quests is that AI does not know about the environments it is creating quests for (eg. AI does not know that there are foosball tables in the UCalgary engineering building.
+Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. For example, one quest at the Foothills Athletic Park is "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal." All quests were written by hand, since AI doesn't know what's actually at a place. It wouldn't know there are foosball tables in the UCalgary engineering building, for example.
 
 You can also start a crew with your friends and compete with other crews to claim spots around campus.
 
