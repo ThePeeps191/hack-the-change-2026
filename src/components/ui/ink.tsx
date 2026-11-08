@@ -54,6 +54,26 @@ export const CloudInk = (
   </>
 );
 
+// Two footprints, left then right, for distance walked.
+export const StepsInk = (
+  <>
+    <path d="M6.8 3.6c1.5-.1 2.4 1.4 2.3 3.3-.1 1.9-.9 3.4-2.2 3.4-1.4 0-2.1-1.5-2-3.3.1-1.9.6-3.3 1.9-3.4z" />
+    <path d="M6.1 12.6c.9 0 1.5.6 1.5 1.5 0 .8-.6 1.5-1.4 1.5-.8 0-1.4-.7-1.4-1.5 0-.8.5-1.4 1.3-1.5z" />
+    <path d="M16.9 8.4c1.4.1 2 1.6 1.9 3.4-.1 1.9-.8 3.3-2.1 3.3-1.4 0-2.2-1.5-2.1-3.4.1-1.9 1-3.4 2.3-3.3z" />
+    <path d="M17.4 17.4c.8 0 1.3.7 1.3 1.5 0 .8-.6 1.5-1.4 1.5-.8 0-1.4-.7-1.4-1.5 0-.9.6-1.5 1.5-1.5z" />
+  </>
+);
+
+// Two people, one a step behind the other, for people met.
+export const PeopleInk = (
+  <>
+    <path d="M9 10.6c1.6 0 2.9-1.3 2.8-2.9 0-1.6-1.3-2.9-2.9-2.8-1.6 0-2.8 1.3-2.7 2.9 0 1.6 1.2 2.8 2.8 2.8z" />
+    <path d="M3.6 19.3c.3-3.2 2.6-5.4 5.5-5.3 2.8 0 5 2.1 5.3 5.2" />
+    <path d="M15.4 4.9c1.4 0 2.5 1.1 2.4 2.6 0 1.4-1.1 2.5-2.5 2.4" />
+    <path d="M16.6 13.7c2.2.4 3.7 2.4 3.9 5.2" />
+  </>
+);
+
 // A flag, drawn in ink: a pole leaning a touch, a wavy cloth, and a tuft of
 // ground at its foot. Held flags get hatching and a faint wash on the cloth,
 // and the cloth (with its hatching) sways from the pole (.flag-fly). Open

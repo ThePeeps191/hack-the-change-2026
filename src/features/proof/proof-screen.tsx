@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { QuestRun, Verdict } from "@/lib/contracts";
 import { chime, coins, knock, tick } from "@/lib/feedback";
+import { Coin } from "@/components/ui/quest-glyph";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
 import { MAX_UPLOAD_BYTES, shrinkPhoto } from "@/lib/shrink-photo";
@@ -213,7 +214,7 @@ export function ProofScreen() {
                     <span className="numeral text-[52px] leading-none">+</span>
                     <Odometer value={shown.coins} delay={700} className="numeral text-[52px] leading-none" />
                   </span>
-                  <span className="mt-1.5 text-[15px] font-medium text-white/80">coins</span>
+                  <span className="mt-1.5 flex items-center gap-1.5 text-[15px] font-medium text-white/80"><Coin size={16} />coins</span>
                 </div>
               )}
             </motion.div>

@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar } from "@/components/ui/hero";
 import { SunArc } from "@/components/ui/sun-arc";
 import { Odometer } from "@/components/ui/odometer";
+import { Ink, InkFlag, PeopleInk, StepsInk } from "@/components/ui/ink";
 import { Segmented } from "@/components/ui/segmented";
 import { Switch } from "@/components/ui/switch";
 import { Entry, FaceCard, Weather, WeekStrip } from "./you-bits";
@@ -80,8 +81,10 @@ export function DashboardScreen() {
         </p>
         {d && <WeekStrip history={d.history} />}
         {d && (
-          <p className="mt-3 text-center text-[13px] font-medium text-on-sky/90">
-            {d.quests_done} quests · {d.km_moved} km · {d.people_met} people met
+          <p className="mt-3 flex items-center justify-center gap-3.5 text-[13px] font-medium text-on-sky/90">
+            <span className="flex items-center gap-1"><InkFlag held={false} color="currentColor" size={16} />{d.quests_done} quests</span>
+            <span className="flex items-center gap-1"><Ink size={16}>{StepsInk}</Ink>{d.km_moved} km</span>
+            <span className="flex items-center gap-1"><Ink size={16}>{PeopleInk}</Ink>{d.people_met} people met</span>
           </p>
         )}
       </Hero>
