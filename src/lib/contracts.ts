@@ -174,6 +174,13 @@ export type Dashboard = {
   mood?: { after_better: number; checkins: number }; // check-ins where you felt better after
   sample_quests?: number; // "Try the demo" guests start with a few sample quests; this many of yours are samples
   small_hellos?: SmallHello[]; // a quest with someone new, as a moment rather than a tally
+  week?: WeekDay[]; // this week, Monday to Sunday in Calgary time (TimescaleDB time_bucket on Tiger)
+};
+
+export type WeekDay = {
+  day: string; // YYYY-MM-DD
+  quest_minutes: number; // minutes on quests you finished that day
+  moving_minutes: number; // minutes with GPS pings while on a quest that day
 };
 
 export type FamiliarFace = {

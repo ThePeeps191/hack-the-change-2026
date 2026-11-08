@@ -110,10 +110,11 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 `getDashboard` in `src/server/dashboard.ts` computes them from real quests. Everything is private and never ranked.
 
 - **Active minutes this week**, against **150**, the Canadian 24-Hour Movement Guidelines.
+- **This week's suns:** the seven days at the top of the You tab come from `weekDays` in `src/server/week.ts`. On Tiger Data it groups your finished quests and your GPS pings by day with TimescaleDB's `time_bucket` (in Calgary time), and counts minutes you were moving as one-minute `time_bucket`s on the `location_pings` hypertable. Embedded Postgres has no TimescaleDB, so locally it uses `date_trunc`, and if the TimescaleDB query ever fails it falls back the same way.
 - **Familiar faces:** people you've done 2 or more quests with, and your time together, measured against Hall (2019)'s estimate of about 50 hours to become casual friends.
 - **New places:** places you visited for the first time, shown as a count on Home.
 - **Mood before and after,** from the optional check-in (`checkins`), so you can see whether you usually feel better afterwards.
-- **Quest history:** your finished quests. The same quest with the same partner on the same day folds into one row with a count like ×5, since every "Try the demo" run shares one guest (`collapseRepeats`). Tap one to open its recap, which shows the date and the proof you sent: photos, and videos that play in place (`Entry` in `src/features/dashboard/you-bits.tsx`, `RecapExtras` in `src/features/recap/recap-extras.tsx`). Photos are kept on disk and only served to people on that quest (`src/app/api/media/[id]/route.ts`).
+- **Quest history:** your finished quests. The same quest with the same partner on the same day folds into one row with a count like ×5, since every "Try the demo" run shares one guest (`collapseRepeats`). Tap one to open its recap, which shows the date and the proof you sent: photos, and videos that play in place (`Entry` in `src/features/dashboard/you-bits.tsx`, `RecapExtras` in `src/features/recap/recap-extras.tsx`). Photos are kept in the database (`uploads` table) and only served to people on that quest (`src/app/api/media/[id]/route.ts`).
 
 ## The UI, briefly
 

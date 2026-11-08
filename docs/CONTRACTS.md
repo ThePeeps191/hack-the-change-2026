@@ -140,7 +140,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/crews/:id/leave` | Leave the crew. Coins stay yours; the invite code still lets you back in | nothing |
 | `POST /api/crews/:id/quests` | Share a quest with the crew: `{ quest_id }` | nothing |
 | `GET /api/leaderboard` | `?crew_id=` ranks that crew's members by all-time coins. Otherwise all crews by coins this week, with `delta` for the last day | ranked list |
-| `GET /api/dashboard` | Quests done, km moved, people met, coins, history, and the human metrics: active minutes against 150, familiar faces, small hellos, new places, how often you felt better after | dashboard |
+| `GET /api/dashboard` | Quests done, km moved, people met, coins, history, and the human metrics: active minutes against 150, familiar faces, small hellos, new places, how often you felt better after, and `week`: this week's seven days (`{ day, quest_minutes, moving_minutes }`, Calgary time) | dashboard |
 | `POST /api/games` | Start a Claim game: `{ crew_id?, name?, rival_code? }` | game with zones |
 | `GET /api/games/current` | Your crew's active game, or a 404. `teams[0]` is always yours | game with zones |
 | `GET /api/games/:id` | Game state for the map, polled | game with zones |

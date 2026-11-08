@@ -69,7 +69,7 @@ flowchart LR
 
 - **One Next.js app** serves the screens and a small API. Every rule (matching, quest runs, coins, Claim) runs on the server, inside database transactions, so two phones can't race each other into a bad state.
 - **No background workers.** Phones check in every few seconds, and each check-in moves the state forward: a match expires, a quest ends, a bot partner answers. Nothing has to run on a timer.
-- **Postgres on Tiger Data** stores everything. Location pings live in a TimescaleDB hypertable with a 30-day retention policy, so routes delete themselves. Proof photos are stored in the database too.
+- **Postgres on Tiger Data** stores everything. Location pings live in a TimescaleDB hypertable with a 30-day retention policy, so routes delete themselves, and the You tab's week is built with TimescaleDB's `time_bucket`. Proof photos are stored in the database too.
 - **Auth0** handles sign-in. Judges get a signed demo login, so they never need an account.
 - **Works on a bad day.** GPS denied, no signal, or the AI slow: each has a friendly fallback, and every AI call has a timeout.
 
