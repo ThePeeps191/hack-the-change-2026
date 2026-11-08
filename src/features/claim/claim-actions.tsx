@@ -43,8 +43,9 @@ export function NoGame({ onStarted }: { onStarted: (game: Game) => void }) {
   );
 }
 
-// What you can do with the zone you tapped: start its challenge, carry on with
-// it, or send your result once the proof is approved.
+// What you can do with the zone you tapped: take its challenge (or carry on
+// with it), or send your result once the proof is approved. The result box only
+// appears after the AI approves the photo, and the server checks that too.
 export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
   const router = useRouter();
   const [result, setResult] = useState("");
@@ -98,9 +99,8 @@ export function ZoneActions({ game, zone }: { game: Game; zone: Zone }) {
           <input id="result" className={field} type="number" inputMode="decimal" min={claimBounds(zone.result_unit).min} max={claimBounds(zone.result_unit).max} value={result} onChange={(e) => setResult(e.target.value)} />
           <Button className="w-full" disabled={busy || result === ""} onClick={send}>Send it</Button>
         </>
-      ) : zone.my_run_id ? (
-        <Button className="w-full" disabled={busy} onClick={start}>{busy ? "Joining…" : "Join the challenge"}</Button>
       ) : (
+        // Every zone says the same thing, whether you're starting or picking it back up.
         <Button className="w-full" disabled={busy} onClick={start}>{busy ? "Starting…" : "Take this challenge"}</Button>
       )}
     </div>
