@@ -133,7 +133,7 @@ export function GlassRail() {
   const name = user?.display_name || "You";
 
   return (
-    <nav ref={rail} aria-label="main" className="glass-rail fixed inset-y-0 left-0 z-0 w-[264px]">
+    <nav ref={rail} aria-label="main" className="glass-rail grain fixed inset-y-0 left-0 z-0 w-[264px]">
       <div aria-hidden className="rail-sky">
         <div className="rail-band" />
         

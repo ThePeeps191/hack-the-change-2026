@@ -1108,9 +1108,9 @@ a {
    lighter sky cards on the pages beside it. */
 .rail-sky {
   position: absolute;
-  inset: 0;
+  inset: 12px; /* the same shape as the pane, so there's one panel, not a frame inside a frame */
   overflow: hidden;
-  border-radius: 0 36px 36px 0;
+  border-radius: 24px;
   background: linear-gradient(172deg, var(--color-sky-bottom) 0%, var(--color-sky-mid) 20%, var(--color-sky-top) 42%, #152f5e 70%, #0c1c3d 100%);
 }
 /* A hard-edged band of light, so the glass rim has an edge to bend. It leans
@@ -1153,3 +1153,48 @@ a {
 .rail-link[aria-current="page"] { background: rgb(255 255 255 / .06); }
 .glass-rail :focus-visible { outline-color: #fff; }
 @media (prefers-reduced-motion: reduce) { .rail-band { transition: none; } }
+
+/* Quest cards light up when you point at them: a thin rim that's brightest near
+   the pointer, a faint wash inside, and a soft glow around the card. White on
+   the dark theme; white wouldn't show on the light one, so there it's sky blue.
+   Only cards that do something when clicked react. quest-card.tsx sets the
+   position, and the mask cuts the rim down to a ring (like .rail-light). */
+.quest-card {
+  --glow: 56 106 191;
+  --glow-x: 50%;
+  --glow-y: 0%;
+  position: relative;
+  transition: scale 200ms, box-shadow 280ms var(--ease-out-soft);
+}
+@media (prefers-color-scheme: dark) {
+  .quest-card { --glow: 255 255 255; }
+}
+.quest-card::before,
+.quest-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 280ms var(--ease-out-soft);
+}
+.quest-card::before {
+  background: radial-gradient(280px circle at var(--glow-x) var(--glow-y), rgb(var(--glow) / .07), transparent 70%);
+}
+.quest-card::after {
+  padding: 1.5px;
+  background: radial-gradient(260px circle at var(--glow-x) var(--glow-y), rgb(var(--glow) / .95), rgb(var(--glow) / .22) 75%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+@media (hover: hover) {
+  :is(a.quest-card, button.quest-card, button .quest-card, .quest-card:has(> button)):hover {
+    box-shadow: var(--shadow-card), 0 6px 26px rgb(var(--glow) / .16);
+  }
+  :is(a.quest-card, button.quest-card, button .quest-card, .quest-card:has(> button)):hover::before,
+  :is(a.quest-card, button.quest-card, button .quest-card, .quest-card:has(> button)):hover::after {
+    opacity: 1;
+  }
+}

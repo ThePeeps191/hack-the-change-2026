@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import type { PointerEvent } from "react";
 import type { Quest } from "@/lib/contracts";
 import { categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
 import { QuestDistance } from "./quest-distance";
@@ -28,6 +30,15 @@ export function QuestMetaLine({ quest, className = "" }: { quest: Quest; classNa
   );
 }
 
+// Tells a card where the mouse is, so its rim lights up nearest the pointer
+// (.quest-card in globals.css). Set straight on the element: it fires constantly.
+export function glowAt(e: PointerEvent<HTMLElement>) {
+  if (e.pointerType !== "mouse") return;
+  const box = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--glow-x", `${e.clientX - box.left}px`);
+  e.currentTarget.style.setProperty("--glow-y", `${e.clientY - box.top}px`);
+}
+
 // A quest at a glance: what it's about (the glyph), what it's called, where and
 // how long, and the coins. Everything but the glyph lines up in one column, and
 // the description sits under the title, two lines at most.
@@ -52,8 +63,8 @@ export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: strin
     </div>
   );
   // "group" lets hovering anywhere on the card play the icon's little motion (globals.css)
-  const cls = "group block w-full rounded-[22px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] transition-transform duration-200 active:scale-[0.985]";
-  if (href) return <Link href={href} className={cls}>{body}</Link>;
-  if (onClick) return <button type="button" onClick={onClick} className={cls}>{body}</button>;
-  return <div className={cls}>{body}</div>;
+  const cls = "quest-card group block w-full rounded-[22px] bg-surface p-4 text-left shadow-card ring-1 ring-[var(--hairline)] active:scale-[0.985]";
+  if (href) return <Link href={href} onPointerMove={glowAt} className={cls}>{body}</Link>;
+  if (onClick) return <button type="button" onClick={onClick} onPointerMove={glowAt} className={cls}>{body}</button>;
+  return <div onPointerMove={glowAt} className={cls}>{body}</div>;
 }
