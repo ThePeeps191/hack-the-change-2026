@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { inkFlagMarkup } from "@/components/ui/ink";
 import type { Game } from "@/lib/contracts";
 
 // A tiny trail map of the live Claim game for the card on the Crew page.
@@ -65,10 +66,9 @@ export function ClaimPeek({ crewId }: { crewId?: string }) {
         const ours = held && z.held_by_team_id === us?.id;
         const color = ours ? "#ffffff" : held ? "#ffb48a" : "rgb(255 255 255 / .7)";
         return (
-          <g key={z.id} transform={`translate(${x - 2} ${y - 15})`} stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none">
-            <ellipse cx="2" cy="15" rx="4" ry="1.4" fill="rgb(10 20 50 / .3)" stroke="none" />
-            <path d="M2 15V2" />
-            <path d="M2 2h8l-1.8 2.8L10 7.6H2" fill={held ? color : "none"} fillOpacity={held ? 0.95 : 0} className={held ? "flag-fly" : ""} style={{ transformBox: "fill-box", transformOrigin: "0% 50%" }} />
+          <g key={z.id} transform={`translate(${x - 5} ${y - 17}) scale(.8)`} stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none">
+            <ellipse cx="6.3" cy="21.3" rx="5" ry="1.6" fill="rgb(10 20 50 / .3)" stroke="none" />
+            <g dangerouslySetInnerHTML={{ __html: inkFlagMarkup(held, color) }} />
           </g>
         );
       })}
