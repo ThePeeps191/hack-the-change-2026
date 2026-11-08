@@ -24,22 +24,20 @@ function tint(el: HTMLElement, hue?: number) {
   el.style.setProperty("--h", String(hue));
 }
 
-const STYLE = {
-  light: "https://tiles.openfreemap.org/styles/positron",
-  dark: "https://tiles.openfreemap.org/styles/dark",
-};
+// Always the light map, even when the phone is in dark mode: streets and
+// buildings read better, and the white-ringed pins are made for it.
+const STYLE = "https://tiles.openfreemap.org/styles/positron";
 
-const isDark = () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
 const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Globe projection, a soft daylight atmosphere and 3D buildings. Re-applied
-// whenever the style (re)loads, e.g. when the system theme flips.
-function dress(map: MLMap, dark: boolean) {
+// whenever the style (re)loads.
+function dress(map: MLMap) {
   map.setProjection({ type: "globe" });
   map.setSky({
-    "sky-color": dark ? "#10264a" : "#4f8fdc",
-    "horizon-color": dark ? "#29508a" : "#b9d6f3",
-    "fog-color": dark ? "#0c0d0c" : "#f6f6f2",
+    "sky-color": "#4f8fdc",
+    "horizon-color": "#b9d6f3",
+    "fog-color": "#f6f6f2",
     "sky-horizon-blend": 0.6,
     "horizon-fog-blend": 0.6,
     "fog-ground-blend": 0.7,
@@ -61,7 +59,7 @@ function dress(map: MLMap, dark: boolean) {
         "source-layer": "building",
         minzoom: 14,
         paint: {
-          "fill-extrusion-color": dark ? "#2a2f33" : "#f3f1ea",
+          "fill-extrusion-color": "#f3f1ea",
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 8],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
           "fill-extrusion-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.82],
@@ -145,17 +143,16 @@ export default function GlobeMap({
   // Create the map once.
   useEffect(() => {
     if (!box.current) return;
-    const dark = isDark();
     const m = new maplibregl.Map({
       container: box.current,
-      style: STYLE[dark ? "dark" : "light"],
+      style: STYLE,
       center: [CAMPUS_CENTER.lng + 40, CAMPUS_CENTER.lat - 20],
       zoom: 0.35,
       attributionControl: { compact: true },
       maxPitch: 70,
     });
     map.current = m;
-    m.on("style.load", () => dress(m, isDark()));
+    m.on("style.load", () => dress(m));
     m.once("load", () => {
       box.current?.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
       loaded.current = true;
@@ -200,13 +197,8 @@ export default function GlobeMap({
     const ro = new ResizeObserver(() => m.resize());
     ro.observe(box.current);
 
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onTheme = () => m.setStyle(STYLE[mq.matches ? "dark" : "light"]);
-    mq.addEventListener("change", onTheme);
-
     const placed = pins.current;
     return () => {
-      mq.removeEventListener("change", onTheme);
       ro.disconnect();
       placed.clear();
       m.remove();

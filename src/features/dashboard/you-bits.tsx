@@ -1,6 +1,7 @@
 "use client";
 import { CloudInk, Ink, SunInk } from "@/components/ui/ink";
 import { motion } from "motion/react";
+import Link from "next/link";
 import type { FamiliarFace, HistoryItem } from "@/lib/contracts";
 import { distance } from "@/lib/format";
 import { Avatar } from "@/components/ui/avatar";
@@ -105,51 +106,6 @@ export function FaceCard({ face, i, wide = false }: { face: FamiliarFace; i: num
   );
 }
 
-// New places as stamps in a passport: inked, a little crooked, each with a date.
-const inks = ["#2f5fd0", "#b4532a", "#2d7d5a", "#7a4bc2", "#a23a5a"];
-
-function hash(s: string) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-
-export function Stamp({ name, date, i }: { name: string; date: string; i: number }) {
-  const h = hash(name);
-  const ink = inks[h % inks.length];
-  const tilt = (h % 9) - 4;
-  const d = new Date(date);
-  const short = name.split(",")[0];
-  return (
-    <motion.li
-      className="grid aspect-square place-items-center"
-      initial={{ opacity: 0, scale: 1.25, rotate: tilt - 8 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: tilt }}
-      viewport={{ once: true }}
-      transition={{ type: "spring", stiffness: 420, damping: 18, delay: 0.1 + i * 0.12 }}
-    >
-      <div
-        className="stamp flex size-full flex-col items-center justify-center rounded-[20px] border-[1.5px] p-2 text-center mix-blend-multiply dark:mix-blend-normal"
-        style={{ ["--ink" as string]: ink, boxShadow: `inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px color-mix(in oklab, ${ink} 50%, transparent)` }}
-      >
-        <CategoryIcon category={categoryOf({ title: short, description: "", place_name: name, tags: [] })} size={20} />
-        <p className="mt-1 line-clamp-3 text-[11px] leading-[1.15] font-bold tracking-[0.01em] break-words uppercase">{short}</p>
-        <p className="mt-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
-          {d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-        </p>
-      </div>
-    </motion.li>
-  );
-}
-
-export function EmptyStamp() {
-  return (
-    <li className="grid aspect-square place-items-center rounded-[20px] border-[1.5px] border-dashed border-[var(--color-line)] text-center text-[12px] leading-tight font-medium text-ink-faint">
-      <span className="px-3">your next place</span>
-    </li>
-  );
-}
-
 // How you felt after each quest, as a little row of weather.
 export function Weather({ better, total }: { better: number; total: number }) {
   return (
@@ -176,14 +132,15 @@ export function Weather({ better, total }: { better: number; total: number }) {
 // One journal entry: a date block, what you did, with whom, and the coins.
 export function Entry({ h, i }: { h: HistoryItem; i: number }) {
   const d = new Date(h.completed_at);
+  // Opens the quest's recap, which shows the proof photos you took.
   return (
     <motion.li
-      className="flex items-center gap-3.5 px-4 py-3.5"
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, ease, delay: i * 0.05 }}
     >
+      <Link href={`/recap/${h.run_id}?from=me`} className="flex items-center gap-3.5 px-4 py-3.5 active:bg-sunken">
       <div className="flex w-11 shrink-0 flex-col items-center rounded-[12px] bg-sunken py-1.5 leading-none">
         <span className="text-[10px] font-bold tracking-[0.1em] text-danger uppercase">{d.toLocaleDateString(undefined, { month: "short" })}</span>
         <span className="mt-0.5 text-[19px] font-semibold tabular-nums">{d.getDate()}</span>
@@ -198,6 +155,10 @@ export function Entry({ h, i }: { h: HistoryItem; i: number }) {
       <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums">
         <Coin size={13} />+{h.coins}
       </span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-ink-faint" aria-hidden>
+        <path d="M9 6l6 6-6 6" />
+      </svg>
+      </Link>
     </motion.li>
   );
 }
