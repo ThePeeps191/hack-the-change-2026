@@ -99,7 +99,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## System 2: crews, coins and Claim
 
-- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. Start a quest together and you land on the same run.
+- **Crews** (`src/server/crews.ts`): make one, share a code like `MAPLE-42K`, and friends join. The join page (`/join` or `/join/<code>`) shows the code as letter boxes (`src/features/crews/code-boxes.tsx`): one invisible real input holds the value and the boxes just draw it. It checks the code as you type, so the boxes turn white when it names a crew and shake when it doesn't. Start a quest together and you land on the same run.
 - **Coins** come from every finished quest and are paid once (see above). The weekly board (`crewLeaderboard`) only counts the last 7 days, so a quiet week starts everyone level again.
 - **Claim** (`src/server/games.ts`): campus spots are zones, each with a challenge and a best score. Finish the challenge with approved proof and you take an empty zone. To steal a held zone you have to beat its best score. `attemptZone` locks the zone row so two teams can't take it at once.
 - **Ratings:** stealing a zone is the one real win and loss in the app, so it's the only place ratings change: Glicko-2 from the `glicko2` package (`rateSteal`). Each crew has one rating. Stranger quests are cooperative and never touch a rating.
