@@ -8,6 +8,23 @@ import { botId } from "./bot";
 import { timesTogether } from "./matching";
 import { advance, questForRun, runForMember } from "./runs";
 
+// Writes the recap's words ahead of time (see GET /api/runs/:id), once per
+// server, so opening the recap is instant. Failing here is fine: opening the
+// recap tries again.
+const prewriting = new Set<string>();
+export async function prewriteRecap(user: User, runId: string) {
+  if (prewriting.has(runId)) return;
+  prewriting.add(runId);
+  try {
+    if (await one("select 1 as yes from recaps where run_id = $1", [runId])) return;
+    await getRecap(user, runId);
+  } catch (e) {
+    console.error("recap prewrite failed:", (e as Error).message);
+  } finally {
+    prewriting.delete(runId);
+  }
+}
+
 // The words are written once per run and kept. The route is only ever yours:
 // a recap never shows where your partner walked.
 export async function getRecap(user: User, runId: string): Promise<Recap> {
@@ -48,6 +65,8 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
       ).filter((p) => p.path),
     });
     await query("insert into recaps (run_id, summary, narration_url) values ($1, $2, $3) on conflict (run_id) do nothing", [runId, saved.summary, saved.narration_url]);
+    // If both of you opened it at once, everyone gets the words that were kept.
+    saved = (await one<{ summary: string; narration_url: string | null }>("select summary, narration_url from recaps where run_id = $1", [runId])) ?? saved;
   }
 
   const other = run.mode === "pair" ? people.find((p) => p.user_id !== user.id) : undefined;
