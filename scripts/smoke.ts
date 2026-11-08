@@ -248,6 +248,26 @@ async function main() {
   const members = (await kim.get<LeaderboardEntry[]>(`/api/leaderboard?crew_id=${crew.id}`)).data;
   check(members.length === 2, "crew ranking lists members");
 
+  // A crew quest stays open for late crewmates, and starting one shares it.
+  const late = (await kim.post<Crew>("/api/crews", { name: `late ${tag}` })).data;
+  await lee.post("/api/crews/join", { invite_code: late.invite_code });
+  const [lateQuest, soloQuest] = (await kim.get<Quest[]>("/api/quests")).data.filter((q) => q.proof === "photo");
+  const lateRun = (await kim.post<QuestRun>("/api/runs", { quest_id: lateQuest.id, crew_id: late.id })).data;
+  check((await lee.get<Crew>(`/api/crews/${late.id}`)).data.shared_quests.some((q) => q.id === lateQuest.id), "starting a crew quest shares it with the crew");
+  await kim.proof(lateRun.id);
+  await settled(kim, lateRun.id);
+  check((await mine(kim, lateRun.id)).status === "active", "a crew run stays open after the first approval");
+  const lateJoin = (await lee.post<QuestRun>("/api/runs", { quest_id: lateQuest.id, crew_id: late.id })).data;
+  check(lateJoin.id === lateRun.id && lateJoin.members.length === 2, "a late crewmate joins the same run", lateJoin.id);
+  await lee.proof(lateRun.id);
+  await settled(lee, lateRun.id);
+  check((await poll(() => mine(kim, lateRun.id), (r) => r.status === "completed")).status === "completed", "it completes once the late crewmate is done");
+  const alone = (await kim.post<QuestRun>("/api/runs", { quest_id: soloQuest.id, crew_id: late.id })).data;
+  check((await kim.post(`/api/runs/${alone.id}/finish`)).status === 409, "finish now needs your proof first");
+  await kim.proof(alone.id);
+  await settled(kim, alone.id);
+  check((await kim.post<QuestRun>(`/api/runs/${alone.id}/finish`)).data.status === "completed", "finish now ends a crew quest without waiting");
+
   console.log("\nclaim");
   const noa = person("noa");
   const rival = (await noa.post<Crew>("/api/crews", { name: `rivals ${tag}` })).data;
