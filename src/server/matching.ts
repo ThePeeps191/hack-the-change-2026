@@ -22,6 +22,7 @@ type Availability = {
   lng: number;
   expires_at: Date;
   created_at: Date;
+  quest_id?: string | null;
   prefs?: Prefs;
 };
 
@@ -120,14 +121,17 @@ const openMatch = (userId: string) =>
     [userId],
   );
 
-const myAvailability = (userId: string) =>
+export const myAvailability = (userId: string) =>
   one<Availability>(
     "select * from availability where user_id = $1 and expires_at > now()",
     [userId],
   );
 
-export async function setFree(user: User, lat: number, lng: number) {
+// questId: set when you tapped "Find someone to do it with" on one quest, so
+// the match gets that quest.
+export async function setFree(user: User, lat: number, lng: number, questId?: string | null) {
   assertCanMeet(user);
+  if (questId) await getQuest(questId);
   const open = await openMatch(user.id);
   if (open?.status === "accepted")
     return {
@@ -138,9 +142,9 @@ export async function setFree(user: User, lat: number, lng: number) {
   if (open) await cancelPending(user.id); // saying you're free again always starts a fresh search
   const expires = new Date(Date.now() + AVAILABILITY_MIN * 60_000);
   await query(
-    `insert into availability (user_id, lat, lng, expires_at) values ($1, $2, $3, $4::timestamptz)
-     on conflict (user_id) do update set lat = excluded.lat, lng = excluded.lng, expires_at = excluded.expires_at, created_at = now()`,
-    [user.id, lat, lng, expires.toISOString()],
+    `insert into availability (user_id, lat, lng, expires_at, quest_id) values ($1, $2, $3, $4::timestamptz, $5)
+     on conflict (user_id) do update set lat = excluded.lat, lng = excluded.lng, expires_at = excluded.expires_at, quest_id = excluded.quest_id, created_at = now()`,
+    [user.id, lat, lng, expires.toISOString(), questId ?? null],
   );
   await tryPair(user.id);
   return { expires_at: expires.toISOString() };
@@ -196,7 +200,7 @@ async function tryPair(userId: string) {
     await insertMatch(me, nearest.other.user_id, nearest.metres, {
       lat: (me.lat + nearest.other.lat) / 2,
       lng: (me.lng + nearest.other.lng) / 2,
-    });
+    }, me.quest_id ?? nearest.other.quest_id);
     await query("delete from availability where user_id = $1 or user_id = $2", [
       me.user_id,
       nearest.other.user_id,
@@ -209,10 +213,11 @@ async function insertMatch(
   partnerId: string,
   metres: number,
   midpoint: { lat: number; lng: number },
+  questId?: string | null,
 ) {
   await query(
-    `insert into matches (user_a, user_b, source, distance_m, lat, lng, expires_at)
-     values ($1, $2, 'nearby', $3, $4, $5, $6::timestamptz)`,
+    `insert into matches (user_a, user_b, source, distance_m, lat, lng, expires_at, quest_id)
+     values ($1, $2, 'nearby', $3, $4, $5, $6::timestamptz, $7)`,
     [
       me.user_id,
       partnerId,
@@ -220,6 +225,7 @@ async function insertMatch(
       midpoint.lat,
       midpoint.lng,
       new Date(Date.now() + MATCH_EXPIRY_MS).toISOString(),
+      questId ?? null,
     ],
   );
 }
@@ -270,7 +276,7 @@ export async function currentMatch(user: User): Promise<Match | null> {
 async function pairWithBot(free: Availability) {
   const bot = await botId();
   await transaction(async () => {
-    await insertMatch(free, bot, 260, { lat: free.lat, lng: free.lng });
+    await insertMatch(free, bot, 260, { lat: free.lat, lng: free.lng }, free.quest_id);
     await query("delete from availability where user_id = $1", [free.user_id]);
   });
 }
