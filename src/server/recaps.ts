@@ -20,9 +20,11 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
      join users u on u.id = m.user_id where m.run_id = $1`,
     [runId],
   );
+  // The practice partner's proof is a copy of yours, so it's left out: a judge
+  // trying the demo alone would otherwise see their own photo twice.
   const photos = await query<{ media_url: string; media_path: string; media_type: string }>(
-    `select media_url, media_path, media_type from submissions
-     where run_id = $1 and verdict = 'approved' and media_path is not null order by created_at`,
+    `select s.media_url, s.media_path, s.media_type from submissions s join users u on u.id = s.user_id
+     where s.run_id = $1 and s.verdict = 'approved' and s.media_path is not null and not u.is_bot order by s.created_at`,
     [runId],
   );
   const route = await query<{ lat: number; lng: number; time: Date }>(
