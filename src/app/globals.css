@@ -1063,3 +1063,18 @@ a {
 }
 /* The login's glass panes stand taller beside the words on a computer. */
 @media (min-width: 1024px) { .sp-pane { height: clamp(340px, 62vh, 560px); } }
+
+/* The specks round the sun on the arc (sun-arc.tsx): each one drifts a little
+   way out from the sun and back, swelling as it goes, so the sun shimmers.
+   Only added when motion is allowed. */
+.sun-speck { transform-box: fill-box; transform-origin: center; animation: sun-speck 2.6s ease-in-out infinite alternate; }
+@keyframes sun-speck {
+  from { transform: translate(0, 0) scale(.8); }
+  to { transform: translate(var(--dx), var(--dy)) scale(1.25); }
+}
+
+/* The desktop rail's icons (app-shell.tsx) give a small hop and tilt when you
+   point at them, like something waking up. */
+.rail-icon { transition: transform .35s var(--ease-spring, cubic-bezier(.34,1.56,.64,1)); }
+@media (hover: hover) { .rail-link:hover .rail-icon { transform: translateY(-2px) rotate(-8deg) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .rail-icon { transition: none; } .rail-link:hover .rail-icon { transform: none; } }

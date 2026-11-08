@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Quest } from "@/lib/contracts";
 import { categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
+import { QuestDistance } from "./quest-distance";
 
 // The quest's category icon, bare and in one colour (ink), with no tile behind it.
 export function GlyphTile({ quest, size = 44 }: { quest: Quest; size?: number }) {
@@ -11,10 +12,20 @@ export function GlyphTile({ quest, size = 44 }: { quest: Quest; size?: number })
   );
 }
 
-export function questMeta(q: Quest) {
+export function questPlace(q: Quest) {
   const when = q.type === "event" ? "This week" : null;
-  const where = q.place_name ?? "Anywhere";
-  return [when, where, `${q.duration_min} min`].filter(Boolean).join(" · ");
+  return [when, q.place_name ?? "Anywhere"].filter(Boolean).join(" · ");
+}
+
+// Where, how long and how far. A long place name gets cut short, never the time
+// or the distance.
+export function QuestMetaLine({ quest, className = "" }: { quest: Quest; className?: string }) {
+  return (
+    <span className={`flex min-w-0 text-[13px] text-ink-muted ${className}`}>
+      <span className="truncate">{questPlace(quest)}</span>
+      <span className="shrink-0 whitespace-nowrap">&nbsp;· {quest.duration_min} min<QuestDistance quest={quest} /></span>
+    </span>
+  );
 }
 
 // A quest at a glance: what it's about (the glyph), what it's called, where and
@@ -35,7 +46,7 @@ export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: strin
             <span className="sr-only"> coins</span>
           </span>
         </div>
-        <p className="mt-0.5 truncate text-[13px] text-ink-muted">{questMeta(quest)}</p>
+        <QuestMetaLine quest={quest} className="mt-0.5" />
         <p className="mt-2 line-clamp-2 text-[14px] leading-snug text-ink-muted">{quest.description}</p>
       </div>
     </div>

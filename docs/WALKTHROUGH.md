@@ -90,6 +90,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 | --- | --- |
 | Location is forgotten once you're matched | `tryPair` deletes both `availability` rows. `expireStale` clears the meeting point of finished matches |
 | Your partner never sees where you are | `toMatch` only returns `distance_m` |
+| "350 m away" on quest cards never leaves your phone | `QuestDistance` in `src/features/quests/quest-distance.tsx` works it out in the browser, only if location is already allowed (it never asks), and shows nothing otherwise. `SHOW_QUEST_DISTANCE` in `src/lib/config.ts` turns it off |
 | First name only, and only after both say yes | `toMatch`, and `firstName` in `auth.ts` |
 | Proof photos only go to people on that quest | `GET /api/media/:id` checks `run_members`, and serves files with a no-script sandbox |
 | Your route is shown only to you, and deleted after 30 days | `getRecap`, and the Tiger Data retention policy |
@@ -125,6 +126,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 - It's phone-first, but a computer gets the whole screen from 1024px up. The four tab pages put a rail on the left, which also gives Claim its own row (on a phone, Claim is reached from the Crew tab). Most pages use `Split` (`split.tsx`): the sky or map stays put on the left as a rounded card, and the content scrolls on the right. A one-step page passes `wide` to `AppShell` to opt in. The pages that are all sky (finding someone, joining a crew, not found) stretch the sky across the screen with `.sky-stage`, which gathers the content in the middle. The login puts the words beside the glass panes, and the proof screen puts the photo beside the verdict. On a phone, none of this applies.
 - The compass in the middle of the nav points at real north on an Android phone. `use-heading.ts` reads an Android phone's compass and the needle turns against the way the phone faces. iPhones only share the compass after a permission prompt, which we chose not to show, so on an iPhone, a laptop, or with reduced motion, the needle just drifts gently.
 - Avatars are little animated blob characters (`avatar.tsx`). We hash a person's or crew's name to pick one of 22 shapes and 16 colours, so the same name always gets the same character. The drawing comes from an open-source library (MIT), copied into `src/lib/bots/grokbot.js`. Each shape is defined by a maths function, turned into 72 outline points, and springs move those points, which makes the wobble. The library also makes the bots blink and glance around. With a mouse, their eyes follow it. On a phone, which has no mouse, each one looks somewhere random every 1 to 3 seconds. With "reduce motion" on, they hold still.
+- The finding-someone screen has a sunrise along its bottom edge (`sunrise-glow.tsx`). It's the `voice-glow` library's VoiceBeam, which is made to follow a microphone, but we drive its level by hand: a low breathing glow while it looks, brighter once someone's nearby, and a flare when you're matched. No microphone is used.
 - Motion uses the `motion` library and respects "reduce motion". The maps are `maplibre-gl`.
 
 ## Deploying
