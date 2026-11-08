@@ -12,7 +12,8 @@ const numeral = Fraunces({ subsets: ["latin"], axes: ["SOFT", "opsz"], variable:
 const hand = Gaegu({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-gaegu", display: "swap" });
 
 export const metadata: Metadata = {
-  title: APP_NAME,
+  // Each page names itself ("Crew · Amble"), so a screen reader announces where you've landed.
+  title: { template: `%s · ${APP_NAME}`, default: APP_NAME },
   description: APP_TAGLINE,
   appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: "default" },
 };
