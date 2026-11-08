@@ -29,7 +29,6 @@ export function WelcomeScreen() {
   const next = nextParam?.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
   const [me, setMe] = useState<User | null>(null);
   const [name, setName] = useState("");
-  const [adult, setAdult] = useState(false);
   const [comfort, setComfort] = useState<Comfort>(toComfort({}));
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
@@ -39,7 +38,6 @@ export function WelcomeScreen() {
     api.me().then((u) => {
       setMe(u);
       setName(u.display_name);
-      setAdult(!!u.age_confirmed_at);
       setComfort(toComfort(u.prefs));
       setLanguage(u.prefs.language ?? "en");
     }).catch(() => setError(true));
@@ -50,6 +48,7 @@ export function WelcomeScreen() {
     setError(false);
     try {
       const prefs: Prefs = { ...me?.prefs, ...toPrefs(comfort, language) };
+      // age_confirmed_at just marks "finished the welcome screen" now; there is no age question.
       await api.updateMe({ display_name: name, age_confirmed_at: new Date().toISOString(), prefs });
       router.replace(next);
     } catch {
@@ -141,17 +140,12 @@ export function WelcomeScreen() {
               </div>
             </section>
 
-            {firstRun && (
-              <div className={`overflow-hidden ${box}`}>
-                <Switch checked={adult} onChange={setAdult} label="I'm 18 or older" hint="Amble is for adults, so you meet other adults." />
-              </div>
-            )}
           </>
         )}
       </motion.div>
 
       <div className="sticky bottom-0 z-20 bg-gradient-to-t from-canvas from-70% to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))]">
-        <Button size="lg" onClick={save} disabled={busy || !me || !name.trim() || !adult}>{busy ? "Saving…" : firstRun ? "Let's go" : "Save"}</Button>
+        <Button size="lg" onClick={save} disabled={busy || !me || !name.trim()}>{busy ? "Saving…" : firstRun ? "Let's go" : "Save"}</Button>
       </div>
     </AppShell>
   );
