@@ -279,7 +279,8 @@ async function main() {
   const game = (await kim.post<Game>("/api/games", { rival_code: rival.invite_code })).data;
   check(game.zones.length === 5 && game.teams.length === 2, "game has zones and two teams", { z: game.zones.length, t: game.teams.length });
   check((await noa.get<Game>("/api/games/current")).data.teams[0].crew_id === rival.id, "each team sees itself first");
-  const zone = game.zones.find((z) => z.result_unit === "snacks")!;
+  // TFDL: a photo challenge right by AT, scored in years where the earliest wins.
+  const zone = game.zones.find((z) => z.result_unit === "year" && z.lower_is_better)!;
   async function play(p: Person, result: number) {
     const started = (await p.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
     await p.proof(started.id);
@@ -287,18 +288,18 @@ async function main() {
     return p.post<Zone>(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: started.id, result });
   }
   const noProof = (await kim.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
-  check((await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 9 })).status === 409, "no claim without approved proof");
+  check((await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 1950 })).status === 409, "no claim without approved proof");
   await kim.proof(noProof.id);
   await settled(kim, noProof.id);
-  const first = await kim.post<Zone>(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 3 });
+  const first = await kim.post<Zone>(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 1950 });
   const kimTeam = game.teams[0].id;
-  check(first.data.held_by_team_id === kimTeam && first.data.best_result === 3, "an empty zone is claimed", first);
-  const repeat = await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 99 });
+  check(first.data.held_by_team_id === kimTeam && first.data.best_result === 1950, "an empty zone is claimed", first);
+  const repeat = await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 1900 });
   check(repeat.status === 409, "a run only counts once");
-  const lost = await play(noa, 2);
+  const lost = await play(noa, 1990);
   check(lost.data.held_by_team_id === kimTeam, "a worse result doesn't steal it", lost);
-  const stolen = await play(noa, 5);
-  check(stolen.data.held_by_team_id !== kimTeam && stolen.data.best_result === 5, "a better result steals it", stolen);
+  const stolen = await play(noa, 1900);
+  check(stolen.data.held_by_team_id !== kimTeam && stolen.data.best_result === 1900, "a better result steals it", stolen);
   const ratedUp = (await noa.get<Crew>(`/api/crews/${rival.id}`)).data.rating!;
   check(ratedUp > 1500, "stealing lifts the rating", ratedUp);
 

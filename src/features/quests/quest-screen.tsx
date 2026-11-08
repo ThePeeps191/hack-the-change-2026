@@ -115,7 +115,7 @@ export function QuestScreen() {
             <div className="flex items-center gap-2 text-[13px] text-ink-muted">
               <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
               <span>{categoryLabel[categoryOf(q)]}<span className="text-ink-faint"> · {q.proof} proof</span></span>
-              <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}<span className="sr-only"> coins</span></span>
+              {q.coins > 0 && <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}<span className="sr-only"> coins</span></span>}
             </div>
             <h1 className="name-serif mt-3 text-[28px] leading-[1.1] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}

@@ -110,7 +110,7 @@ export async function toRun(run: RunRow, viewerId: string): Promise<QuestRun> {
     hint: run.mode === "pair" ? (m.hint ?? (m.is_bot ? BOT_HINT : null)) : null,
     submitted: !!m.approved_at,
     verdict: m.verdict
-      ? { status: m.verdict, reason: m.reason ?? "", ...(m.verdict === "approved" ? { coins: quest.coins } : {}) }
+      ? { status: m.verdict, reason: m.reason ?? "", ...(m.verdict === "approved" && quest.coins > 0 ? { coins: quest.coins } : {}) }
       : null,
   }));
   list.sort((a, b) => Number(b.user_id === viewerId) - Number(a.user_id === viewerId));

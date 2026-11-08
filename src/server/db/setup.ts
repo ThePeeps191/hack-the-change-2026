@@ -35,7 +35,7 @@ type StarterQuest = {
   radius_m: number | null;
   duration_min: number;
   proof: string;
-  coins: number;
+  coins?: number; // Claim challenges have none: Claim is about holding spots, not coins
   place_name: string | null;
   sources?: unknown[];
   tags?: string[];
@@ -58,7 +58,7 @@ async function upsertQuest(query: Query, q: StarterQuest, listed: boolean) {
        place_name = excluded.place_name, sources = excluded.sources, tags = excluded.tags, starter = excluded.starter,
        created_at = case when excluded.starter then quests.created_at else excluded.created_at end`,
     [
-      q.id, q.title, q.description, q.type, q.lat, q.lng, q.radius_m, q.duration_min, q.proof, q.coins, q.place_name,
+      q.id, q.title, q.description, q.type, q.lat, q.lng, q.radius_m, q.duration_min, q.proof, q.coins ?? 0, q.place_name,
       JSON.stringify(q.sources ?? []), JSON.stringify(q.tags ?? []), listed, listed ? null : UNLISTED_AT,
     ],
   );
