@@ -37,7 +37,7 @@ On the side are the AI (`src/lib/ai.ts`), login (`src/lib/auth.ts`) and real pla
 This is the main demo. Each step names the function that does it.
 
 1. **"I'm free."** The phone asks for GPS (`getPosition` in `src/lib/geo.ts`). If that's denied or slow, it falls back to the middle of campus and says so on screen. It then calls `POST /api/availability`, which runs `setFree` in `src/server/matching.ts`. That stores your location for 20 minutes, after `assertCanMeet` in `src/server/safety.ts` has checked you're 18 or over, verified, and that it's daylight.
-2. **The AI starts writing quests now, while you wait** (`warmQuests` in `src/server/quests.ts`). By the time you're matched, a quest is usually ready.
+2. **Quests are hand-made.** The AI never writes them: the pair gets the nearest starter quest from `data/quests/quests.json` that suits both people (`pickPairQuest` in `src/server/quests.ts`).
 3. **Finding someone.** The match screen asks `GET /api/match` every 3 seconds (`currentMatch`). That calls `tryPair`, which takes a database lock, so two people searching at the same moment can't both grab the same third person. It then finds the nearest free person within 2 km, adds a penalty when comfort settings clash (chatty versus side by side), skips anyone you've reported or just turned down, and creates a match. **Both people's locations are deleted at that moment.**
 4. **What you see before saying yes:** a rough distance and nothing else. Your partner's name only appears once you've both said yes (`toMatch`).
 5. **Both say yes.** The second "yes" calls `finalize`. In one database transaction it picks a quest that fits both people's settings (`pickPairQuest`, then `chooseForPair`) and creates the run, so two taps at the same moment can't create two runs.
@@ -55,7 +55,7 @@ There's no timer or queue running on the server. State moves forward when someon
 
 ## The AI: what it does and what stops it going wrong
 
-All AI calls go through three functions in `src/lib/ai.ts`: `generateQuests`, `judgeProof` and `writeRecap`. Behind them:
+All AI calls go through three functions in `src/lib/ai.ts`: `judgeProof` and `writeRecap` (`generateQuests` is still there but nothing calls it: quests are hand-made). Behind them:
 
 - **Mock mode** (`AI_MODE=mock`, the default while building) returns starter quests and a fake verdict after 2 seconds. Dozens of sessions can run without spending anyone's credits.
 - **Live mode** uses Gemini (`src/lib/gemini-live.ts`) or Claude (`src/lib/ai-claude.ts`), chosen by `AI_PROVIDER`. **The demo runs Gemini.**
@@ -64,9 +64,9 @@ All AI calls go through three functions in `src/lib/ai.ts`: `generateQuests`, `j
 
 **A light check on every AI quest.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace and nothing dangerous. Then `toSafeQuest` checks every quest that comes back: a short list of clearly wrong words (alcohol, drugs, weapons, nudity), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped. We kept this deliberately small: a longer word list threw away good quests.
 
-**The AI never blocks a person.** Every call has a timeout. If quest writing is slow or fails, you get the starter pack (`data/quests/quests.json`). If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
+**The AI never blocks a person.** Every call has a timeout. If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
 
-**Cost.** One call writes several quests for an area, and they're cached for 6 hours within 1 km (`recentlyWritten`), so everyone nearby shares them. Token counts are logged on every call (`logUsage`), without any content, so we can quote a real cost per quest.
+**Cost.** The AI only runs on proof checks and recaps. Token counts are logged on every call (`logUsage`), without any content, so we can quote a real cost per quest.
 
 **The prompt-injection defence on proof:** the proof prompt tells the model to ignore any writing in the photo that tries to tell it what to answer, and to reject screenshots and photos of screens.
 
@@ -147,7 +147,7 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"What does the AI cost per user?"** One call writes several quests for an area, and they're shared with everyone within 1 km for 6 hours. Proof is one small image call. *(Quote the measured figure from Devpost here, once someone has measured it.)*
 
-**"What happens when the AI is down or wrong?"** Quests fall back to our hand-written starter pack, proof counts anyway and says so, and the recap falls back to a plain summary. Every call has a timeout, so nothing hangs.
+**"What happens when the AI is down or wrong?"** Quests are hand-written, so they don't depend on it. Proof counts anyway and says so, and the recap falls back to a plain summary. Every call has a timeout, so nothing hangs.
 
 **"Why would anyone open it twice?"** Familiar faces: the second time you're matched with someone, the app notices, and friendship is time spent together. And your crew's Claim map changes daily.
 
@@ -161,9 +161,9 @@ Keep each answer to two sentences. Two minutes of Q&A is about four questions.
 
 **"Why Next.js, Postgres, Auth0?"** One deployable app with typed contracts on both sides, real SQL with transactions and locks for the race conditions in matching, and login we don't have to build or secure ourselves. Tiger Data gives us automatic expiry for location data.
 
-**"Walk me through what happens when I tap 'I'm free'."** Use the System 1 steps above: `setFree` stores your location for 20 minutes, `warmQuests` starts the AI writing, `tryPair` takes a lock and pairs you with the nearest person, and the locations are deleted.
+**"Walk me through what happens when I tap 'I'm free'."** Use the System 1 steps above: `setFree` stores your location for 20 minutes, `tryPair` takes a lock and pairs you with the nearest person, and the locations are deleted.
 
-**"How does it scale to another city?"** Nothing is tied to Calgary except the starter pack. Quests come from OpenStreetMap places near any point, cached per area, and the server has no state outside Postgres.
+**"How does it scale to another city?"** Nothing is tied to Calgary except the starter quests: a new city needs its own hand-made quests in `data/quests/`. The server has no state outside Postgres.
 
 **"Show me where X is in the code."** Each of us should be able to open these without searching: `src/server/matching.ts` (pairing), `src/server/proof.ts` (proof checks), `src/lib/quest-safety.ts` (AI safety), `src/lib/places.ts` (real places), `src/server/games.ts` (Claim and ratings), `src/server/users.ts` (delete my data).
 
