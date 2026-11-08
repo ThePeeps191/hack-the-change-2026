@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { tick } from "@/lib/feedback";
 import { useGoFree } from "@/features/matching/use-go-free";
-import { OrbButton } from "./orb-button";
+import { CompassButton } from "./compass-button";
 
 const side = [
   { href: "/", label: "Today", icon: "M12 3.5l8 6.2V20a.5.5 0 0 1-.5.5h-5v-6h-5v6h-5A.5.5 0 0 1 4 20V9.7z" },
@@ -32,16 +32,11 @@ export function AppShell({ children, nav = true }: { children: ReactNode; nav?: 
               if (!t) {
                 return (
                   <li key="go">
-                    <OrbButton onClick={go} disabled={busy} label="I'm free: find someone nearby">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <circle cx="8.5" cy="12" r="3.2" />
-                        <circle cx="15.5" cy="12" r="3.2" />
-                      </svg>
-                    </OrbButton>
+                    <CompassButton onClick={go} disabled={busy} label="I'm free: find someone nearby" />
                   </li>
                 );
               }
-              const active = t.href === "/" ? path === "/" : path.startsWith(t.href) || (t.href === "/crew" && path.startsWith("/claim"));
+              const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
               return (
                 <li key={i}>
                   <Link

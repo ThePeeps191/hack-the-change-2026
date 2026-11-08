@@ -75,7 +75,7 @@ export type RunMember = {
 export type QuestRun = {
   id: string;
   quest: Quest;
-  mode: "pair" | "crew" | "claim";
+  mode: "pair" | "crew";
   status: "active" | "completed" | "expired";
   started_at: string;
   ends_at: string;
@@ -180,38 +180,6 @@ export type FamiliarFace = {
 export type SmallHello = { run_id: string; display_name: string; quest_title: string; at: string };
 
 export type Checkin = { phase: "before" | "after"; mood: number };
-
-export type Zone = {
-  id: string;
-  game_id: string;
-  name: string;
-  lat: number;
-  lng: number;
-  radius_m: number;
-  quest_id: string;
-  held_by_team_id: string | null;
-  best_result: number | null;
-  // Added: what best_result measures, e.g. "seconds", "reps", "metres".
-  result_unit?: string;
-  quest?: Quest;
-  // Added: whether a smaller result wins (a faster time), and your team's run
-  // for this zone that hasn't been turned into an attempt yet.
-  lower_is_better?: boolean;
-  my_run_id?: string | null;
-  my_run_ready?: boolean; // that run has approved proof, so a result can be sent
-};
-
-export type GameTeam = { id: string; game_id: string; crew_id: string; name: string };
-
-export type Game = {
-  id: string;
-  name: string;
-  status: "lobby" | "active" | "finished";
-  created_by: string;
-  created_at: string;
-  teams: GameTeam[];
-  zones: Zone[];
-};
 
 export type Connection = { user_id: string; display_name: string; avatar_url: string | null };
 

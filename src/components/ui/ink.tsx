@@ -74,10 +74,27 @@ export const PeopleInk = (
   </>
 );
 
+// A small compass, the same idea as the centre button.
+export const CompassInk = (
+  <>
+    <path d="M12 3.2c4.9-.1 8.8 3.9 8.8 8.8 0 4.9-4 8.8-8.9 8.8-4.8 0-8.7-4-8.7-8.9.1-4.8 4-8.7 8.8-8.7z" />
+    <path d="M12 6.6l2 5.4h-4z" fill="currentColor" fillOpacity=".35" />
+    <path d="M12 17.4l2-5.4h-4z" />
+  </>
+);
+
+// A map pin with a dot, slightly lopsided.
+export const PinInk = (
+  <>
+    <path d="M12 21.1c-3.6-3.4-6.6-6.9-6.5-10.6.1-3.7 3-6.4 6.6-6.4 3.5.1 6.3 2.9 6.3 6.5 0 3.6-2.9 7.1-6.4 10.5z" />
+    <path d="M12.1 8.4c1.1 0 2 .9 2 2 0 1.1-1 2-2.1 2-1.1-.1-1.9-1-1.9-2.1.1-1 1-1.9 2-1.9z" />
+  </>
+);
+
 // A flag, drawn in ink: a pole leaning a touch, a wavy cloth, and a tuft of
 // ground at its foot. Held flags get hatching and a faint wash on the cloth,
 // and the cloth (with its hatching) sways from the pole (.flag-fly). Open
-// flags are an empty outline. As a string too, for map pins built as HTML.
+// flags are an empty outline.
 const FLAG_POLE = "M6.3 21.1c-.2-5.6-.1-11.3.1-17";
 const FLAG_GROUND = "M3.7 21.3c1.7-.5 3.5-.5 5.3 0";
 const FLAG_CLOTH = "M6.4 4.3c2.1-.9 4 .6 6.1.1 1.6-.4 3.1-.9 4.7-.4-.8 1.6-1.4 3.1-.6 4.8-1.7-.4-3.2.2-4.8.6-2 .4-3.6-.8-5.5.1";
@@ -87,9 +104,6 @@ export function inkFlagMarkup(held: boolean, fill = "currentColor") {
   return `<g filter="url(#ink)"><path d="${FLAG_GROUND}"/><path d="${FLAG_POLE}"/><g class="${held ? "flag-fly" : ""}" style="transform-box:fill-box;transform-origin:0% 50%"><path d="${FLAG_CLOTH}" fill="${held ? fill : "none"}" fill-opacity="${held ? 0.2 : 0}"/>${held ? `<path d="${FLAG_HATCH}" stroke-width="1.1"/>` : ""}</g></g>`;
 }
 
-export function inkFlagSvg(held: boolean, size = 20) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inkFlagMarkup(held)}</svg>`;
-}
 
 export function InkFlag({ held, color, size = 22, className = "" }: { held: boolean; color: string; size?: number; className?: string }) {
   return (

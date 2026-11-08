@@ -25,7 +25,7 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 
 The humans set this rule, and it binds every session as firmly as the organizers' rules above.
 
-**If a judge won't see it or touch it in the 3-minute pitch or the video, don't build it.** The demo path is welcome → I'm free → match → quest → proof → recap → crew and Claim → You. Making that path work, look great and hold up on a phone beats any new feature.
+**If a judge won't see it or touch it in the 3-minute pitch or the video, don't build it.** The demo path is welcome → I'm free → match → quest → proof → recap → crew → You. Making that path work, look great and hold up on a phone beats any new feature.
 
 - **Don't build:**
   - community or "impact" numbers, analytics, metrics pages or admin dashboards

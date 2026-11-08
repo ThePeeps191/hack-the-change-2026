@@ -38,7 +38,7 @@ Read [how Amble works](docs/ARCHITECTURE.md) to find your way around, and [DEPLO
 | --- | --- |
 | `src/lib/contracts.ts` | Shared types from `docs/CONTRACTS.md` |
 | `src/lib/api.ts` | Typed client for every endpoint. Screens call this, never `fetch` directly |
-| `src/server/` | All the rules: matching, runs, proof, crews, Claim, dashboard |
+| `src/server/` | All the rules: matching, runs, proof, crews, dashboard |
 | `src/lib/config.ts` | `APP_NAME` and other constants |
 | `src/lib/ai.ts`, `auth.ts`, `db.ts` | Server seams with mock and live branches. `ai.ts` picks Claude (`ai-claude.ts`) or Gemini (`gemini-live.ts`) |
 | `src/app/api/**` | Thin routes that call `src/server/` |
