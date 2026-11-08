@@ -39,7 +39,7 @@ Gemini is the game master, referee and producer. It writes quests for wherever y
 - Quest types: `local` (a place nearby), `anywhere` (fitness, works in any city), `event` (something on today).
 - Proof types: photo, video, GPS route.
 - Shared quest shape and API: `docs/CONTRACTS.md` and `src/lib/contracts.ts`.
-- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Gemini, Vultr.
+- Stack: Next.js 16, TypeScript, Tailwind 4, bun. Auth0, Tiger Data (Postgres), Gemini, hosted on Vercel at amble.health.
 - Safety: 18+, quests stay public, daylight and walking pace, report button, meet at the quest spot.
 - The UI is built against mocks (`AUTH_MODE=mock`, `GEMINI_MODE=mock`) behind `src/lib/api.ts`.
 - **Undecided:** the ratings model (proposed separately), personas, and hide and seek (a stretch goal).

@@ -125,7 +125,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## Deploying
 
-Vercel hosts the app at https://amble-three.vercel.app and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). The old Vultr kit in `deploy/` is unused.
+Vercel hosts the app at https://amble.health and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). Every outside service and env var is listed in `docs/DEPLOYMENT.md`.
 
 ## Testing
 
