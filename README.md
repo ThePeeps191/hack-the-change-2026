@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/icons/icon-192.png" alt="The Amble icon: a lowercase a with the sun in its bowl" width="96" height="96">
+  <img src="public/icons/icon-192.png" alt="The Amble icon, a lowercase a with the sun in its bowl" width="96" height="96">
 </p>
 
 <h1 align="center">Amble</h1>
@@ -15,7 +15,7 @@
 
 <p align="center">
   <img src="docs/images/foosball-game.gif" alt="Two people playing foosball in the engineering building at UCalgary, the real place behind one of Amble's quests" height="480">
-  <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone: Aaron picks a quest and gets matched with Siddhant, and a real photo of the game gets checked: that counts, plus 15 coins" height="480">
+  <img src="docs/images/app-demo-aaron-and-siddhant.gif" alt="Amble on a phone. Aaron picks a quest and gets matched with Siddhant, and a real photo of the game earns 15 coins" height="480">
 </p>
 
 <p align="center">
@@ -51,9 +51,9 @@ Amble picks quests that suit you both. It goes for step-free places first, short
 When you've done it, you send a photo or short video and an AI model checks it against the quest. If it passes, you get coins. Then you see a short recap of what you did, and you can choose to stay in touch.
 
 <p align="center">
-  <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
+  <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball and says what it can see" width="250">
   <img src="docs/images/aaron-and-siddhant/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
-  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
+  <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap, with a short story of the quest, the minutes and coins, and the proof" width="250">
 </p>
 
 <p align="center"><sub>Same foosball quest, two real photos. Ping pong doesn't count.</sub></p>
@@ -65,9 +65,9 @@ Crews share quests and earn coins together, and the coins go toward a weekly boa
 The You tab keeps your own numbers and never ranks you against anyone. It shows your active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places, and how you felt before and after each quest. The app is built for screen readers and respects Reduce Motion.
 
 <p align="center">
-  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board, with a podium of the top three crews and then the rest" width="250">
   <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
-  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab, with active minutes against the 150-minute guideline, quests, distance and people met" width="250">
 </p>
 
 <details>
@@ -75,14 +75,14 @@ The You tab keeps your own numbers and never ranks you against anyone. It shows 
 <br>
 
 <p align="center">
-  <img src="docs/images/aaron-and-siddhant/today.jpg" alt="The Today screen: 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
-  <img src="docs/images/aaron-and-siddhant/matched.jpg" alt="Matched: you and Siddhant, with the quest you both get" width="250">
-  <img src="docs/images/aaron-and-siddhant/quest.jpg" alt="The quest screen: play foosball at the Schulich School of Engineering, with a line on how to spot Siddhant" width="250">
+  <img src="docs/images/aaron-and-siddhant/today.jpg" alt="The Today screen, with 79 of 150 active minutes this week, an I'm free button and nearby quests" width="250">
+  <img src="docs/images/aaron-and-siddhant/matched.jpg" alt="Matched with Siddhant, with the quest you both get" width="250">
+  <img src="docs/images/aaron-and-siddhant/quest.jpg" alt="The quest screen for playing foosball at the Schulich School of Engineering, with a line on how to spot Siddhant" width="250">
 </p>
 
 <p align="center">
-  <img src="docs/images/aaron-and-siddhant/crew-page.jpg" alt="The crew page: the crew's own character, its name and its coins" width="250">
-  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-page.jpg" alt="The crew page, with the crew's own character, its name and its coins" width="250">
+  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just stolen from north campus walkers, with Mac Hall now yours" width="250">
   <img src="docs/images/aaron-and-siddhant/map.jpg" alt="The map of quests around Calgary, each a pin you can tap" width="250">
 </p>
 
