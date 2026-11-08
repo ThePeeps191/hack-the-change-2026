@@ -126,6 +126,14 @@ function checkPlaceAndTime(
 export async function approveByHand(user: User, runId: string) {
   if (!DEMO_MODE) throw notFound("route");
   await runForMember(user, runId);
+  // A wrong "no" from the AI can be overturned too: your latest rejected proof
+  // goes back to pending, then gets approved like any other.
+  await query(
+    `update submissions set verdict = 'pending' where id = (
+       select id from submissions where run_id = $1 and user_id = $2 order by created_at desc limit 1
+     ) and verdict = 'rejected'`,
+    [runId, user.id],
+  );
   const pending = await query<{ id: string }>("select id from submissions where run_id = $1 and verdict = 'pending'", [runId]);
   for (const s of pending) await applyVerdict(s.id, "approved", "approved by hand.");
   return pending.length;

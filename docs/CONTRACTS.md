@@ -123,7 +123,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `POST /api/runs/:id/checkins` | One-tap mood: `{ phase, mood }`. Before is how you are, 1 to 5. After is relative: 5 better, 3 the same, 1 worse | nothing |
 | `POST /api/runs/:id/leave` | Leave a quest with someone new without reporting them. Ends it for both | `204` |
 | `POST /api/runs/:id/finish` | Crew quest only, once your proof is approved: finish now instead of waiting for the crew. A crew run otherwise stays open until 2+ people are all done or time runs out | `QuestRun` |
-| `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve pending proof by hand | `{ approved }` |
+| `POST /api/runs/:id/approve` | `DEMO_MODE` only: approve your proof by hand, pending or rejected (the proof screen shows "Approve by hand"). Coins are still paid once | `{ approved }` |
 | `GET /api/media/:id` | Proof media, for people on that quest | the file |
 | `POST /api/runs/:id/submissions` | Multipart: media, lat, lng, taken_at. Returns straight away, usually `pending` | `Verdict` |
 | `GET /api/runs/:id/recap` | Recap for a finished run | `Recap` |

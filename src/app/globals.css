@@ -384,11 +384,17 @@ a {
    which would cut that shadow into rectangles, so there the shadow is drawn
    around the whole number instead. */
 .sky .odo { text-shadow: none; filter: drop-shadow(0 1px 8px rgb(24 64 130 / 0.3)); }
-/* Flat avatars: one hue per person, a light tint with the initial in a deep shade. */
-.avatar { background: hsl(var(--h) 80% 90%); color: hsl(var(--h) 55% 28%); }
+/* Squishy avatars (components/ui/avatar.tsx): one hue per character, a light
+   body with a deep outline and face in the same hue. In dark mode the body
+   dims a little and the outline goes near-black so it still reads on ink. */
+.squish { --body: hsl(var(--h) 80% 83%); --line: hsl(var(--h) 50% 24%); --hat: hsl(var(--h) 45% 42%); --blush: hsl(350 90% 72% / 0.55); }
 @media (prefers-color-scheme: dark) {
-  .avatar { background: hsl(var(--h) 35% 24%); color: hsl(var(--h) 80% 82%); }
+  .squish { --body: hsl(var(--h) 55% 68%); --line: hsl(var(--h) 45% 13%); --hat: hsl(var(--h) 40% 42%); --blush: hsl(350 85% 60% / 0.6); }
 }
+/* A slow breath: wider and shorter, then back, pinned to the bottom edge. */
+@keyframes squish { 0%, 100% { transform: scale(1, 1) } 50% { transform: scale(1.05, 0.94) } }
+.squish-body { transform-box: view-box; transform-origin: 50% 92%; animation: squish 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .squish-body { animation: none; } }
 
 /* Category accents: one detail of each quest icon in its category's hue. On a
    selected (blue) pin it turns white like the rest of the icon. Claim's flag
@@ -894,8 +900,12 @@ a {
   .split-aside .hero-bar + * { margin-top: auto; }
   .split-aside .sky > .relative > :last-child { margin-bottom: auto; }
   .split-aside .split-fill { flex: 1; height: auto !important; min-height: 0; }
-  /* A single-step page's sky card fills the column's height. */
-  .split-tall > .relative:has(> .sky), .split-tall .sky { flex: 1; }
+  /* The sky card fills the column, which is as tall as the content beside it. */
+  .split-aside > .relative:has(> .sky), .split-aside .sky { flex: 1; }
+  /* A map needs some room even beside a short list. */
+  .split-aside:has(.split-fill) { min-height: min(100dvh, 640px); }
+  /* The content's top lines up with the card's: drop the phone's top gap. */
+  .split-main > :first-child { padding-top: 0; margin-top: 0; }
 }
 
 /* The proof photo while it's checked (src/features/proof/photo-scan.tsx).
