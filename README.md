@@ -35,7 +35,9 @@ We were inspired by AR games like Pokemon Go, and the challenges especially by t
 
 ## How a quest works
 
-Tap "I'm free" and Amble looks for someone nearby. You both get the same quest at a public place and meet there, and you only see each other's first name once you both say yes. If nobody's around, you can send the quest to someone you're with by link or AirDrop.
+Tap "I'm free" and Amble looks for someone nearby. You both get the same quest at a public place and meet there, never at each other's location, and your location is deleted the moment you're matched. You only see each other's first name once you both say yes, and during the quest, one tap opens 911 and Campus Security or lets you leave. If nobody's around, you can send the quest to someone you're with by link or AirDrop.
+
+Amble picks quests that suit you both: step-free places first, shorter quests if you want an easier pace, and side-by-side quests if you'd rather not chat.
 
 When you've done it, you send a photo or short video and an AI model checks it against the quest. If it passes, you get coins. Then you see a short recap of what you did, and you can choose to stay in touch.
 
