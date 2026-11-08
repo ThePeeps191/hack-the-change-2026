@@ -5,11 +5,13 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite", "postgres"],
   // Read from disk at runtime (starter quests, migrations), so Vercel has to ship them.
   outputFileTracingIncludes: { "/**": ["./data/**/*", "./db/migrations/*"] },
+  experimental: {
+    // The dev-only MCP server writes every request and browser log line to
+    // .next/dev/logs/. In a git worktree (.claude/worktrees/) Turbopack counts
+    // that write as a code change, so pages reload forever. We don't use it.
+    mcpServer: false,
+  },
   turbopack: {
-    // Worktrees live inside the main checkout (.claude/worktrees/), so Turbopack
-    // could take the outer folder as the root and stop ignoring this checkout's
-    // .next/. Its dev log then counts as a code change, and pages reload forever.
-    root: process.cwd(),
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
