@@ -54,6 +54,12 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 </p>
 
 <p align="center">
+  <img src="docs/images/aaron-and-siddhant/map.jpg" alt="The map of quests around Calgary, each a pin you can tap" width="250">
+  <img src="docs/images/aaron-and-siddhant/quest-sheet.jpg" alt="A quest up close: how long it takes, what proof it needs and the coins, with a button to find someone to do it with" width="250">
+  <img src="docs/images/aaron-and-siddhant/spot-and-mood.jpg" alt="On the quest: how to spot Siddhant, and one line so Siddhant can spot you" width="250">
+</p>
+
+<p align="center">
   <img src="docs/images/aaron-and-siddhant/that-counts.jpg" alt="The AI referee approves a real photo of two people playing foosball: that counts, with a reason naming what it can see" width="250">
   <img src="docs/images/aaron-and-siddhant/rejected-ping-pong.jpg" alt="The AI referee rejects a real photo of two people playing ping pong for a foosball quest, and says what would count" width="250">
   <img src="docs/images/aaron-and-siddhant/recap.jpg" alt="The recap: a short story of the quest, the minutes and coins, and the proof" width="250">
@@ -65,16 +71,28 @@ We built it for Hack the Change's Prompt 1, through two focus areas: **community
 - **Claim** turns campus into a board of zones. Beat a zone's challenge to take it for your crew, and steal zones from rival crews.
 
 <p align="center">
-  <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
-  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
-  <img src="docs/images/aaron-and-siddhant/you.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-page.jpg" alt="The crew page: the crew's own character, its name and its coins" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-board.jpg" alt="The weekly board: a podium of the top three crews, then the rest" width="250">
+  <img src="docs/images/aaron-and-siddhant/crew-character.jpg" alt="Any member can pick the crew's character: a shape and a colour" width="250">
 </p>
 
-<p align="center"><sub>Real screens, real photos and real AI verdicts from amble.health: Aaron's side of a real match with Siddhant, on demo accounts. We sent the ping pong photo on purpose, the Claim result is a test entry, and the history on the You tab is the demo's sample data.</sub></p>
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/claim.jpg" alt="The Claim map of campus, with flags for the zones each crew holds" width="250">
+  <img src="docs/images/aaron-and-siddhant/claim-math.jpg" alt="A Claim challenge: race through ten arithmetic problems at Math Sciences" width="250">
+  <img src="docs/images/aaron-and-siddhant/steal.jpg" alt="A Claim zone just taken: stolen from north campus walkers, Mac Hall is yours" width="250">
+</p>
 
 **The You tab**
 
 Private numbers that matter, never ranked against anyone: active minutes against Canada's 150-minute guideline, familiar faces (people you've done several quests with), new places you've been, and how you felt before and after each quest.
+
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/you-tab.jpg" alt="The You tab: active minutes against the 150-minute guideline, quests, distance and people met" width="250">
+  <img src="docs/images/aaron-and-siddhant/you-faces.jpg" alt="Familiar faces, and how you felt after your quests" width="250">
+  <img src="docs/images/aaron-and-siddhant/mood-and-touch.jpg" alt="On the recap: how you felt before and after, and the choice to stay in touch with Siddhant" width="250">
+</p>
+
+<p align="center"><sub>Real screens, real photos and real AI verdicts from amble.health: Aaron's side of a real match with Siddhant, on demo accounts. We sent the ping pong photo on purpose, the Claim result is a test entry, and the history on the You tab is the demo's sample data.</sub></p>
 
 ## Inclusive and safe by design
 
@@ -85,6 +103,12 @@ Private numbers that matter, never ranked against anyone: active minutes against
 - **Help one tap away.** During a quest, "Help, leave or report" shows 911 and UCalgary Campus Security, lets you leave without blaming anyone, or report. If you report someone, you're never paired with them again.
 - **Pick the quest, then the person.** Open any quest and tap "Find someone to do it with": whoever you're matched with does that one.
 - **Honest when it's quiet.** If nobody's free nearby after 45 seconds, Amble says so and offers a link to send to someone you're with.
+
+<p align="center">
+  <img src="docs/images/aaron-and-siddhant/help.jpg" alt="Help, leave or report: 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report" width="250">
+  <img src="docs/images/aaron-and-siddhant/you-comfort.jpg" alt="Comfort settings: pace, talking, step-free places first and sounds" width="250">
+  <img src="docs/images/aaron-and-siddhant/privacy.jpg" alt="The privacy page: what Amble keeps and why, in plain words" width="250">
+</p>
 
 ## How it works
 
