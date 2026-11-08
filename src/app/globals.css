@@ -554,8 +554,9 @@ a {
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-face,
 .amble-marker[data-pin][data-tint][data-selected] .amble-pin-tip { background: hsl(var(--h) 62% 50%); }
 
-/* Place and quest names: Fraunces, fully soft, sized optically so small
-   names stay sturdy. Names read like a field guide; body text stays sans. */
+/* The one big quest or place title on a screen (quest page, quest sheet,
+   invite, Claim zone): Fraunces, fully soft. Titles in lists stay in the body
+   sans, semibold, so a list reads as one family. */
 .name-serif {
   font-family: var(--font-numeral);
   font-optical-sizing: auto;

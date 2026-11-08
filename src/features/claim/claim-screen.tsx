@@ -141,7 +141,7 @@ export function ClaimScreen() {
                       <button onClick={() => choose(z.id)} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left hover:bg-sunken/60">
                         <InkFlag held={tone(z) !== "free"} color={colors[tone(z)]} size={26} />
                         <span className="min-w-0 flex-1">
-                          <span className="name-serif block text-[17px]">{z.name}</span>
+                          <span className="block text-[17px] font-semibold">{z.name}</span>
                           <span className="mt-0.5 block truncate text-[13px] text-ink-muted">
                             {z.quest ? z.quest.title.charAt(0).toUpperCase() + z.quest.title.slice(1) : "Challenge"}
                           </span>
