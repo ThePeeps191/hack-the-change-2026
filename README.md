@@ -23,7 +23,7 @@ You can also start a crew with your friends and compete with other crews to clai
 
 ## Try it
 
-Open [amble.health](https://amble.health) on your phone and tap Try the demo. You don't need an account. If nobody else is free, a practice partner called Priya plays along, so you can go through the whole thing by yourself. In Chrome on Android you can also install it like an app.
+Open [amble.health](https://amble.health) on two phones and tap Try the demo on each. You don't need an account. Tap "I'm free" on both and you'll get matched. On your own, Amble tells you nobody's free yet and gives you a link to send to someone. In Chrome on Android you can also install it like an app.
 
 ## Why we built it
 
