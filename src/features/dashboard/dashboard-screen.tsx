@@ -90,7 +90,7 @@ export function DashboardScreen() {
             <span className="flex items-center gap-1"><Ink size={18}>{PeopleInk}</Ink>{d.people_met} people met</span>
           </p>
         )}
-        {d && <WeekStrip history={d.history} />}
+        {d && <WeekStrip history={d.history} week={d.week} />}
       </Hero>
       }>
 

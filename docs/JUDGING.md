@@ -167,7 +167,7 @@ Every team is entered for every side pot automatically, and each one is scored o
 | **Voltex, Real-World Energy Data** ($500) | Real published or measured energy data, such as AESO, central to the product, live preferred. Sample or AI-made data scores 1 | Nothing. See below | **No** |
 | **MLH Gemini API** | Gemini actually used | `src/lib/gemini-live.ts` exists, but we chose Claude for the demo | **No.** Don't tick it |
 | **MLH Auth0** | Auth0 login | `AUTH_MODE=live` with `src/proxy.ts` and `src/lib/auth0.ts` | **Yes**, live on amble.health |
-| **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention | **Yes**, live on amble.health |
+| **MLH Tiger Data** | Tiger Data used | `DATABASE_URL` on Tiger, `location_pings` hypertable with 30-day retention, and `time_bucket` queries for the You tab's week (`src/server/week.ts`) | **Yes**, live on amble.health |
 | **MLH Vultr** | Hosted on Vultr | Nothing: we host on Vercel | **No** (Danny's call) |
 | **MLH GoDaddy Registry** | A domain registered through GoDaddy Registry | amble.health: `.health` is run by GoDaddy Registry (IANA, checked Nov 7) | **Yes**, opted in on Devpost |
 
