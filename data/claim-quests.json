@@ -9,7 +9,6 @@
     "radius_m": 80,
     "duration_min": 20,
     "proof": "photo",
-    "coins": 30,
     "place_name": "Taylor Family Digital Library",
     "sources": [],
     "zone": {
@@ -31,7 +30,6 @@
     "radius_m": 70,
     "duration_min": 20,
     "proof": "photo",
-    "coins": 25,
     "place_name": "MacEwan Student Centre",
     "sources": [],
     "zone": {
@@ -53,7 +51,6 @@
     "radius_m": null,
     "duration_min": 20,
     "proof": "photo",
-    "coins": 30,
     "place_name": null,
     "sources": [],
     "zone": {
@@ -75,7 +72,6 @@
     "radius_m": 80,
     "duration_min": 15,
     "proof": "photo",
-    "coins": 20,
     "place_name": "Math Sciences",
     "sources": [],
     "zone": {
@@ -97,7 +93,6 @@
     "radius_m": 90,
     "duration_min": 5,
     "proof": "video",
-    "coins": 15,
     "place_name": "Kinesiology",
     "sources": [],
     "zone": {
