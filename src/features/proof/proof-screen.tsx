@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { ThinkingOrb } from "thinking-orbs";
 import { useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import type { QuestRun, Verdict } from "@/lib/contracts";
@@ -27,6 +26,20 @@ const soft = { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const };
 // A camera-like screen: dark, full bleed, the photo is the hero. While Gemini
 // looks, an orb thinks over the blurred photo. Approved photos "develop" back
 // into focus; rejected ones stay grey with a kind reason and a retry.
+// While the AI checks: a hand-inked magnifying glass that drifts in a slow
+// loop over the photo, like someone looking it over. Still with reduced motion.
+function LookingGlass() {
+  return (
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="looking-glass" role="img" aria-label="Checking your proof">
+      <g filter="url(#ink)">
+        <path d="M27 11.5c8.8-.2 15.6 6.7 15.4 15.5-.2 8.6-7 15.3-15.6 15.1-8.5-.2-15.1-7.1-14.9-15.6.2-8.3 6.9-14.8 15.1-15z" fill="rgb(255 255 255 / .12)" />
+        <path d="M38.3 38.6l12.2 12.6" strokeWidth="4.2" />
+        <path d="M20.6 22.4c1.3-2.6 3.6-4.2 6.4-4.6" strokeWidth="1.8" strokeOpacity=".7" />
+      </g>
+    </svg>
+  );
+}
+
 export function ProofScreen() {
   const { runId } = useParams<{ runId: string }>();
   const forceReject = useSearchParams().get("mock") === "reject";
@@ -171,7 +184,7 @@ export function ProofScreen() {
           )}
 
           {/* viewfinder corners while capturing */}
-          {view === "capture" && (
+          {view === "capture" && !preview && (
             <div aria-hidden className="pointer-events-none absolute inset-5">
               {["top-0 left-0 border-t-2 border-l-2 rounded-tl-xl", "top-0 right-0 border-t-2 border-r-2 rounded-tr-xl", "bottom-0 left-0 border-b-2 border-l-2 rounded-bl-xl", "right-0 bottom-0 border-r-2 border-b-2 rounded-br-xl"].map((c) => (
                 <span key={c} className={`absolute size-7 border-white/55 ${c}`} />
@@ -189,9 +202,9 @@ export function ProofScreen() {
                 transition={soft}
               >
                 {scan && preview && <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(closest-side,rgb(11_12_11/.62),rgb(11_12_11/.18))]" />}
-                <ThinkingOrb state="searching" size={64} theme="dark" color="#ffffff" aria-label="Checking your proof" />
-                <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "having a look…"}</Hand>
-                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">Checking it against the quest, the place and the time.</p>
+                <LookingGlass />
+                <Hand className="text-[26px] leading-none font-bold">{view === "sending" ? "sending…" : "checking…"}</Hand>
+                <p className="max-w-[26ch] text-center text-[14px] leading-snug text-white/70">{view === "sending" ? "Sending your photo over." : "Checking it against the quest, the place and the time."}</p>
               </motion.div>
             )}
           </AnimatePresence>
