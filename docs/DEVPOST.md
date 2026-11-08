@@ -44,7 +44,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 ### How we built it
 
-One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. We wrote every quest by hand, at real public places in Calgary. **Claude** (Anthropic's Claude Haiku) checks proof photos and videos (three still frames from each video) and writes recaps. Every AI call has a timeout and a fallback, so the app never leaves anyone stuck. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
+One Next.js (TypeScript) app on Vercel at amble.health. **Auth0** handles login. Postgres on **Tiger Data** stores the data, with location pings in a TimescaleDB hypertable and a 30-day retention policy. We wrote every quest by hand, at real public places in Calgary. **Claude** (Anthropic's Claude Haiku) checks proof photos and videos (three still frames from each video) and writes recaps. Every AI call has a timeout and a fallback, so the app never leaves anyone stuck, and the recap is written while you're still finishing the quest, so it opens instantly. There are no background workers: state moves forward when a phone polls, and every rule is enforced on the server inside database transactions. An end-to-end test drives the whole product over HTTP as a dozen simulated people.
 
 ### Challenges we ran into
 
