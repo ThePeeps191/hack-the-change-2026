@@ -130,7 +130,7 @@ const CREWS: [number, string, string, number, string[]][] = [
 // the practice partner, and a history would make her look like an old friend.
 // [quest, days ago, partner, metres walked, minutes taken, what the recap says]
 const HISTORY: [string, number, string | null, number, number, string][] = [
-  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "seed|jo", 640, 18, "Sam and Jo found a free table and kept one rally going long enough to lose count."], // Play Ping Pong
+  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "seed|jo", 640, 18, "Sam and Jo found a free table and went to sudden death after a 4-4 tie."], // Play Foosball
   ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580, 14, "Sam and Theo walked up for the view and caught the towers in the afternoon sun."], // Downtown View
   ["febb791a-b824-4680-97d1-fca36894e28b", 2, "seed|jo", 760, 12, "Sam and Jo waited by the water until a duck finally paddled into the shot."], // Film a Duck
   ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940, 16, "Sam and Mina ran a short stretch backwards and laughed for most of it."], // Run Backwards

@@ -37,7 +37,7 @@ const guesses: [RegExp, Category][] = [
   [/plank|push-?up|squat|stretch|\breps\b|jump|\brun\b|running|backwards/, "fitness"],
   [/snack|food|coffee|drink|lunch|\beat\b|cafe/, "food"],
   [/\bbook|librar|study|lecture/, "study"],
-  [/\boval\b|olympic|rink|skat|\bgym\b|\bcourt\b|\bfield\b|ping ?pong|table tennis|frisbee/, "sport"],
+  [/\boval\b|olympic|rink|skat|\bgym\b|\bcourt\b|\bfield\b|ping ?pong|table tennis|foosball|frisbee/, "sport"],
   [/poster|\bevent|\btalk\b|\bshow\b|concert|\bgig\b|\bart\b|\barts\b|music|theatre|gallery/, "arts"],
   [/\bview\b|mountain|window|\bpark\b|\btree|river|sunset|garden|\bbird|\bduck|\bplane|sky/, "outdoors"],
 ];
