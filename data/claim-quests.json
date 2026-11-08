@@ -65,7 +65,7 @@
   {
     "id": "a1b2c3d4-0004-4000-8000-000000000001",
     "title": "Who's Better at Arithmetic?",
-    "description": "Visit the Math Sciences building (take a photo as proof). Once you're there, time yourself on completing the arithmetic problems here. Shortest time wins.",
+    "description": "At the Math Sciences building, tap Start below and race through ten arithmetic problems. Photograph the finished screen with your time as proof. Shortest time wins.",
     "type": "local",
     "lat": 51.079983,
     "lng": -114.127843,
@@ -79,7 +79,7 @@
       "lat": 51.079983,
       "lng": -114.127843,
       "radius_m": 80,
-      "result_unit": "time",
+      "result_unit": "seconds",
       "lower_is_better": true
     }
   },
