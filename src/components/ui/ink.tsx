@@ -124,3 +124,17 @@ export function InkFlag({ held, color, size = 22, className = "" }: { held: bool
     />
   );
 }
+
+// A door frame with an arrow walking out of it, for leaving a crew. The frame
+// is open on the right, with a little hatching for shade on the wall side. The
+// arrow is its own group (.leave-arrow) so a button can nudge it outward.
+export const LeaveInk = (
+  <>
+    <path d="M13.6 7.4c0-1.1.1-2.2-.1-3.2-2.6-.3-5.3-.2-7.9 0-.3 5.2-.3 10.4 0 15.6 2.6.2 5.3.3 7.9 0 .2-1 .1-2.1.1-3.2" />
+    <path d="M7.1 6.2l1.8 1.8M7.1 9.2l1.3 1.3M7.1 14.7l1.5 1.5M7.1 17.4l.9.9" strokeWidth={1.1} />
+    <g className="leave-arrow">
+      <path d="M10.1 12.1c3.3-.2 6.8-.1 10.2 0" />
+      <path d="M17.4 8.9c1 1.1 2 2.1 2.9 3.1-.9 1-1.9 2-2.9 3.1" />
+    </g>
+  </>
+);

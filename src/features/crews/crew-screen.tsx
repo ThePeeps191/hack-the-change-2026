@@ -16,6 +16,7 @@ import { Podium } from "./podium";
 import { AnywhereQuests, NoCrewActions, StartQuestCard } from "./crew-actions";
 import { ClaimPeek } from "@/features/claim/claim-peek";
 import { InviteSheet } from "./invite-sheet";
+import { LeaveCrew } from "./leave-crew";
 
 const rise = (i: number) => ({
   initial: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -164,6 +165,7 @@ export function CrewScreen() {
         )}
 
         {crew && <AnywhereQuests crew={crew} onChange={reload} />}
+        {crew && <LeaveCrew crew={crew} onLeft={() => { setCrew(undefined); reload(); }} />}
       </div>
       </Split>
       {crew && <InviteSheet open={inviting} onClose={() => setInviting(false)} name={crew.name} code={crew.invite_code} />}

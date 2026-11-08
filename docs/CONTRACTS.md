@@ -136,6 +136,7 @@ Plain Postgres on Tiger Data. Backend area drafts these, and the UI area checks 
 | `GET /api/crews/:id` | Crew, members and shared quests | crew |
 | `GET /api/crews/join?code=` | Check an invite code before joining (404 if no crew has it) | `{ name }` |
 | `POST /api/crews/join` | `{ invite_code }` | crew |
+| `POST /api/crews/:id/leave` | Leave the crew. Coins stay yours; the invite code still lets you back in | nothing |
 | `POST /api/crews/:id/quests` | Share a quest with the crew: `{ quest_id }` | nothing |
 | `GET /api/leaderboard` | `?crew_id=` ranks that crew's members by all-time coins. Otherwise all crews by coins this week, with `delta` for the last day | ranked list |
 | `GET /api/dashboard` | Quests done, km moved, people met, coins, history, and the human metrics: active minutes against 150, familiar faces, small hellos, new places, how often you felt better after | dashboard |
