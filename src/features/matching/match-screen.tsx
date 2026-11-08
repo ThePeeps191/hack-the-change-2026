@@ -133,7 +133,7 @@ export function MatchScreen() {
         <SunriseGlow phase={state} />
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
-          center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : "finding someone"}
+          center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : idle ? "not looking" : "finding someone"}
         />
         <motion.div
           className="relative mx-auto mt-4 grid h-[250px] w-full place-items-center"
