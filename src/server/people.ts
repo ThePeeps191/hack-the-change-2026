@@ -34,6 +34,16 @@ export async function stayInTouch(user: User, runId: string) {
   });
 }
 
+// Leaving without blaming anyone: ends a quest with someone new for both of you,
+// the same way a report does, but nothing is reported and you can be matched
+// again. Crew and solo quests just run out on their own.
+export async function leaveRun(user: User, runId: string) {
+  const run = await runForMember(user, runId);
+  if (run.mode === "pair" && run.status === "active") {
+    await query("update quest_runs set status = 'expired' where id = $1", [run.id]);
+  }
+}
+
 // A report ends the quest straight away and the two of you are never paired again.
 export async function report(user: User, body: { reported_id?: string; run_id?: string; reason?: string }) {
   if (!body.reported_id || !body.run_id || !body.reason?.trim()) throw new HttpError(400, "reported_id, run_id and reason are required");
