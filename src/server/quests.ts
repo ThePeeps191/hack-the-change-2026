@@ -5,7 +5,7 @@ import { AI_MODE } from "@/lib/env";
 import { notFound } from "@/lib/route";
 import { distanceM } from "./safety";
 
-// The System 1 demo quest: ping pong at Schulich, on campus. Must be in data/quests/.
+// The System 1 demo quest: foosball at Schulich, on campus. Must be in data/quests/.
 const DEMO_PAIR_QUEST = "48359d56-748a-4a9a-85b9-388c730a447c";
 
 export type QuestRow = Quest;

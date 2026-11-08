@@ -60,7 +60,7 @@ export function DashboardScreen() {
 
   // The server can log one quest twice within minutes, once with no route
   // (0 m). Drop that empty copy, but keep a real repeat of the same quest on
-  // another day, like doing Ping Pong with Priya again today.
+  // another day, like doing Foosball with Priya again today.
   const near = (a: string, b: string) => Math.abs(new Date(a).getTime() - new Date(b).getTime()) < 10 * 60_000;
   // Then fold same-day repeats into one row with a count.
   const journal = collapseRepeats((d?.history ?? []).filter(

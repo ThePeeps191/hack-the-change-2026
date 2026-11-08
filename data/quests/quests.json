@@ -177,8 +177,8 @@
   },
   {
     "id": "48359d56-748a-4a9a-85b9-388c730a447c",
-    "title": "Play ping pong",
-    "description": "Play a game of ping-pong up to 13 points on the tables in the Engineering building.",
+    "title": "Play foosball",
+    "description": "Play a game of foosball, first to 5 goals, on the tables in the Engineering building.",
     "type": "local",
     "lat": 51.080541,
     "lng": -114.132136,

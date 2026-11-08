@@ -26,7 +26,7 @@ Twenty minutes, someone new, somewhere outside.
 
 Amble answers Prompt 1 through two focus areas: **Community Connection & Inclusion** and **Proactive Health & Wellness**.
 
-Tap "I'm free" and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place, such as a game of ping-pong to 13 in the engineering building, or finding eight number eights in Chinatown in eight minutes. There's something to do besides small talk. Take a photo, and an AI referee (Claude) checks it against the quest, the place and the time. Then you see a recap of your walk, and choose whether to stay in touch. You only connect if you both say yes.
+Tap "I'm free" and Amble pairs you with someone nearby who's free too. You both get the same small 20-minute quest at a real, public place, such as a game of foosball in the engineering building, or finding eight number eights in Chinatown in eight minutes. There's something to do besides small talk. Take a photo, and an AI referee (Claude) checks it against the quest, the place and the time. Then you see a recap of your walk, and choose whether to stay in touch. You only connect if you both say yes.
 
 With friends, crews earn coins together and play **Claim**, a game where you take spots on the campus map by beating that spot's challenge.
 
