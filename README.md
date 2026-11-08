@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://amble.health">amble.health</a> ·
   <a href="https://devpost.com/software/9dszkw-small-usage-limits-big-dreams-amble">Devpost</a> ·
-  Built in 24 hours at Hack the Change 2026, Calgary
+  Built in 24 hours at Hack the Change 2026
 </p>
 
 <p align="center">
