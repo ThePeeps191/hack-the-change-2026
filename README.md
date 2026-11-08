@@ -29,7 +29,7 @@ Open [amble.health](https://amble.health) on your phone and tap Try the demo. Yo
 
 23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)). In Calgary it's 26% of 18 to 34 year olds ([City of Calgary, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf)). And only 46% of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021-eng.htm)). We wanted one app that goes after both problems.
 
-Making a friend usually means planning a coffee and making small talk, which is exactly the hard part for newcomers, people living alone and anyone shy. Amble swaps the small talk for a shared task, and the coffee for a walk.
+We were inspired by AR games like Pokemon Go, and the challenges especially by the game show Jet Lag: The Game, which is full of collaborative challenges tied to real places.
 
 We built it for Hack the Change's Prompt 1, through two focus areas: **community connection and inclusion**, and **proactive health and wellness**.
 
