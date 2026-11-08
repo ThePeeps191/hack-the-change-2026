@@ -52,7 +52,7 @@ export function SkySteps({ items, delay = 0.3 }: { items: { badge: ReactNode; ti
             transition={reduce ? { duration: 0 } : { duration: 0.5, ease, delay: at(i) + 0.08 }}
           >
             <span className="block font-[family-name:var(--font-hand)] text-[24px] leading-[1.05] font-bold">{s.title}</span>
-            {s.detail && <span className="mt-1 block text-[15px] leading-snug text-on-sky/85">{s.detail}</span>}
+            {s.detail && <span className="mt-1 block text-[15px] leading-snug text-on-sky/95">{s.detail}</span>}
           </motion.span>
         </li>
       ))}
@@ -62,4 +62,4 @@ export function SkySteps({ items, delay = 0.3 }: { items: { badge: ReactNode; ti
 
 // The quiet second choice that sits under a white pill on the sky.
 export const skyQuiet =
-  "flex min-h-[56px] w-full items-center justify-center rounded-[20px] text-[17px] font-semibold text-[#121412]/75 dark:text-on-sky/85 transition-colors hover:bg-white/30 dark:hover:bg-white/12";
+  "flex min-h-[56px] w-full items-center justify-center rounded-[20px] text-[17px] font-semibold text-[#121412]/75 dark:text-on-sky/95 transition-colors hover:bg-white/30 dark:hover:bg-white/12";

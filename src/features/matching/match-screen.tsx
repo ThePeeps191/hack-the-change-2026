@@ -81,7 +81,7 @@ export function MatchScreen() {
       <Hero fill className="min-h-dvh">
         <HeroBar
           left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />}
-          center={state === "matched" ? "matched" : "finding someone"}
+          center={state === "matched" ? "matched" : state === "found" ? "someone nearby" : "finding someone"}
         />
         <motion.div
           className="relative mx-auto mt-4 grid h-[220px] w-full place-items-center"
@@ -109,7 +109,7 @@ export function MatchScreen() {
           <AnimatePresence>
             {state === "matched" && (
               <motion.span
-                className="pointer-events-none absolute text-[16px] font-semibold text-[var(--color-sky-top)]"
+                className="pointer-events-none absolute text-[16px] font-semibold text-[var(--color-sky-top)] [text-shadow:none]"
                 initial={{ opacity: 0, filter: "blur(6px)" }}
                 animate={{ opacity: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0 }}
@@ -136,11 +136,11 @@ export function MatchScreen() {
               {state === "matched" && `you and ${name ?? "them"}`}
               {state === "ended" && "that one slipped away"}
             </Hand>
-            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] leading-snug text-on-sky/85">
+            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] leading-snug text-on-sky/95">
               {state === "searching" && (
                 <>
                   <PlaceTicker />
-                  <span className="mt-1 block text-[13px] text-on-sky/65">Usually under a minute · <Elapsed /></span>
+                  <span className="mt-1 block text-[13px] text-on-sky/90">Usually under a minute · <Elapsed /></span>
                 </>
               )}
               {state === "found" && "They're free right now too."}
@@ -152,8 +152,8 @@ export function MatchScreen() {
         </AnimatePresence>
 
       <div className="flex flex-1 flex-col px-4 pt-6">
-        {approx && state === "searching" && <p className="px-6 text-center text-[14px] text-on-sky/80">We couldn&apos;t get your location, so we&apos;re using the middle of campus.</p>}
-        {error && <p className="px-6 pt-1 text-center text-[14px] text-on-sky/80">Signal&apos;s patchy. We&apos;ll keep trying.</p>}
+        {approx && state === "searching" && <p className="px-6 text-center text-[14px] text-on-sky/95">We couldn&apos;t get your location, so we&apos;re using the middle of campus.</p>}
+        {error && <p className="px-6 pt-1 text-center text-[14px] text-on-sky/95">Signal&apos;s patchy. We&apos;ll keep trying.</p>}
 
         <Toast
           show={state === "found"}
@@ -176,7 +176,7 @@ export function MatchScreen() {
         <AnimatePresence>
           {state === "matched" && run && (
             <motion.div
-              className="mx-auto mt-2 w-full rounded-[24px] bg-white/85 p-4 text-[#121412] shadow-[0_18px_50px_rgb(13_40_90/0.2)] backdrop-blur-xl dark:bg-[#1b2130]/85 dark:text-white"
+              className="mx-auto mt-2 w-full rounded-[24px] bg-white/85 p-4 text-[#121412] [text-shadow:none] shadow-[0_18px_50px_rgb(13_40_90/0.2)] backdrop-blur-xl dark:bg-[#1b2130]/85 dark:text-white"
               initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
@@ -185,10 +185,12 @@ export function MatchScreen() {
               <div className="mt-2 flex items-start gap-3">
                 <CategoryIcon category={categoryOf(run.quest)} size={28} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
-                  <p className="mt-1 text-[14px] leading-snug">
-                    <span className="opacity-65">{run.quest.place_name ? `${run.quest.place_name} · ` : ""}<span className="whitespace-nowrap">{run.quest.duration_min} min</span> · </span>
-                    <span className="inline-flex items-center gap-1 align-[-2px] font-semibold whitespace-nowrap tabular-nums"><Coin size={13} />{run.quest.coins}</span>
+                  <div className="flex items-start gap-3">
+                    <p className="flex-1 text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
+                    <span className="mt-0.5 inline-flex items-center gap-1 text-[15px] font-semibold whitespace-nowrap tabular-nums" aria-label={`${run.quest.coins} coins`}><Coin size={14} />{run.quest.coins}</span>
+                  </div>
+                  <p className="mt-1 text-[14px] leading-snug opacity-65">
+                    {run.quest.place_name ? `${run.quest.place_name} · ` : ""}<span className="whitespace-nowrap">{run.quest.duration_min} min</span>
                   </p>
                 </div>
               </div>
@@ -201,7 +203,7 @@ export function MatchScreen() {
             <button
               onClick={cancel}
               disabled={acting}
-              className="mx-auto flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/80 px-6 text-[16px] font-semibold text-[#121412] shadow-[0_6px_20px_rgb(13_40_90/0.15),inset_0_1px_0_rgb(255_255_255/0.9)] backdrop-blur-md transition-transform hover:bg-white/90 active:scale-[0.96] dark:bg-white/15 dark:text-white dark:shadow-none dark:ring-1 dark:ring-white/20"
+              className="mx-auto flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/80 px-6 text-[16px] font-semibold text-[#121412] [text-shadow:none] shadow-[0_6px_20px_rgb(13_40_90/0.15),inset_0_1px_0_rgb(255_255_255/0.9)] backdrop-blur-md transition-transform hover:bg-white/90 active:scale-[0.96] dark:bg-white/15 dark:text-white dark:shadow-none dark:ring-1 dark:ring-white/20"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
                 <path d="M6 6l12 12M18 6L6 18" />

@@ -42,7 +42,7 @@ function metres(a: LatLng, b: LatLng) {
   return Math.sqrt(x * x + y * y) * 6371000;
 }
 
-const frosted = "grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md transition-transform active:scale-95";
+const frosted = "glass grid size-11 place-items-center rounded-full text-ink transition-transform active:scale-95";
 
 export function MapScreen() {
   const [quests, setQuests] = useState<Quest[] | null>(null);

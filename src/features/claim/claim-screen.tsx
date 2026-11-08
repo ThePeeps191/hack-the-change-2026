@@ -84,13 +84,13 @@ export function ClaimScreen() {
       >
         <GlobeMap markers={markers} selected={picked} onSelect={choose} focus={focus} intro={false} fit />
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-[max(8px,env(safe-area-inset-top))]">
-          <Link href="/crew" aria-label="Back to crew" className="pointer-events-auto grid size-11 place-items-center rounded-full bg-surface/85 text-ink shadow-card backdrop-blur-md">
+          <Link href="/crew" aria-label="Back to crew" className="glass pointer-events-auto grid size-11 place-items-center rounded-full text-ink">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M14.5 5.5L8 12l6.5 6.5" />
             </svg>
           </Link>
           {game && (
-            <div className="pointer-events-auto flex items-center gap-2.5 rounded-full bg-surface/85 px-4 py-2 text-[13px] font-semibold text-ink shadow-card backdrop-blur-md" aria-label={`You hold ${held.ours}, they hold ${held.theirs}, ${held.free} open`}>
+            <div className="glass pointer-events-auto flex items-center gap-2.5 rounded-full px-4 py-2 text-[13px] font-semibold text-ink" aria-label={`You hold ${held.ours}, they hold ${held.theirs}, ${held.free} open`}>
               <span className="text-accent"><span className="tabular-nums">{held.ours}</span> yours</span>
               <span className="text-rival"><span className="tabular-nums">{held.theirs}</span> theirs</span>
               <span className="text-ink-muted"><span className="tabular-nums">{held.free}</span> open</span>

@@ -123,12 +123,13 @@ const CREWS: [number, string, string, number, string[]][] = [
 
 // [quest id, days ago, partner, metres walked]. Priya twice, so "familiar
 // faces" has something to show.
-const HISTORY: [string, number, string | null, number][] = [
-  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "bot|priya", 640], // Play Ping Pong
-  ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580], // Downtown View
-  ["febb791a-b824-4680-97d1-fca36894e28b", 2, "bot|priya", 760], // Film a Duck
-  ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940], // Run Backwards
-  ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120], // The Wisdom of the Crowd
+// [quest, days ago, partner, metres walked, minutes taken, what the recap says]
+const HISTORY: [string, number, string | null, number, number, string][] = [
+  ["48359d56-748a-4a9a-85b9-388c730a447c", 0, "bot|priya", 640, 18, "Sam and Priya found a free table and kept one rally going long enough to lose count."], // Play Ping Pong
+  ["3143141c-f538-4b52-a123-76f36c91572b", 1, "seed|theo", 580, 14, "Sam and Theo walked up for the view and caught the towers in the afternoon sun."], // Downtown View
+  ["febb791a-b824-4680-97d1-fca36894e28b", 2, "bot|priya", 760, 12, "Sam and Priya waited by the water until a duck finally paddled into the shot."], // Film a Duck
+  ["9271a6b7-7bcf-4d92-bbdf-d39fc24fd1e5", 4, "seed|mina", 940, 16, "Sam and Mina ran a short stretch backwards and laughed for most of it."], // Run Backwards
+  ["4379f1a6-ae68-4d5d-99d6-156602a2435c", 6, null, 1120, 19, "The long way round asked around campus and came back with a pile of answers."], // The Wisdom of the Crowd
 ];
 
 export async function seedDemoData(query: Query) {
@@ -170,14 +171,15 @@ export async function seedDemoData(query: Query) {
     );
   }
 
-  for (const [i, [questId, daysAgo, partner, metres]] of HISTORY.entries()) {
+  for (const [i, [questId, daysAgo, partner, metres, minutes, summary]] of HISTORY.entries()) {
     const n = i + 1;
     const startedAt = new Date(Date.now() - daysAgo * 86_400_000 - 3_600_000);
-    const completedAt = new Date(startedAt.getTime() + 17 * 60_000);
+    const completedAt = new Date(startedAt.getTime() + minutes * 60_000);
     await query(
       `insert into quest_runs (id, quest_id, mode, status, started_at, ends_at, completed_at)
-       values ($1, $2, $3, 'completed', $4::timestamptz, $5::timestamptz, $5::timestamptz) on conflict do nothing`,
-      [runId(n), questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString()],
+       values ($1, $2, $3, 'completed', $4::timestamptz, $5::timestamptz, $5::timestamptz)
+       on conflict (id) do update set completed_at = quest_runs.started_at + $6::int * interval '1 minute', ends_at = quest_runs.started_at + $6::int * interval '1 minute'`,
+      [runId(n), questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString(), minutes],
     );
     for (const [j, member] of (partner ? [sam, person(partner)] : [sam]).entries()) {
       await query("insert into run_members (run_id, user_id, distance_m) values ($1, $2, $3) on conflict do nothing", [runId(n), member, metres]);
@@ -186,7 +188,7 @@ export async function seedDemoData(query: Query) {
         [seedId("a0000000", n * 10 + j), runId(n), member],
       );
     }
-    await query("insert into recaps (run_id, summary) values ($1, $2) on conflict do nothing", [runId(n), "A short walk and a quest finished with time to spare."]);
+    await query("insert into recaps (run_id, summary) values ($1, $2) on conflict (run_id) do update set summary = excluded.summary", [runId(n), summary]);
     const [q] = await query("select coins from quests where id = $1", [questId]);
     await query(
       "insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz) on conflict do nothing",

@@ -91,6 +91,7 @@ export const api = {
       status: string;
       expired: boolean;
       quest: Quest | null;
+      host_id: string;
       host_name: string | null;
     }>(`/api/invites/${code}`),
   acceptInvite: (code: string, pos?: { lat: number; lng: number }) =>

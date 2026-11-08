@@ -42,9 +42,9 @@
   --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
 
   /* The sky hero panel and the dark notification toasts */
-  --color-sky-top: #3a70c8;
-  --color-sky-mid: #5287d6;
-  --color-sky-bottom: #a3c4ee;
+  --color-sky-top: #2c5cb0;
+  --color-sky-mid: #386abf;
+  --color-sky-bottom: #7aa2e0;
   --color-on-sky: #ffffff;
   --color-toast: #0d0e0d;
   --color-on-toast: #ffffff;
@@ -297,7 +297,6 @@ a {
   animation: orb-turn 7s linear infinite;
   box-shadow: inset 0 -6px 14px rgb(10 30 120 / .45), 0 8px 22px rgb(47 102 245 / .45);
 }
-.orb:active .orb-swirl { animation-duration: 1.2s }
 .orb-gloss {
   position: absolute;
   inset: 0;
@@ -451,3 +450,72 @@ a {
 /* Rival orange as text: deep enough for AA on the light page. */
 .text-rival { color: #b8501b; }
 @media (prefers-color-scheme: dark) { .text-rival { color: var(--color-anywhere); } }
+
+/* Glass, only for controls that float over something alive (the sky, a map).
+   Plain CSS so it works in iOS Safari: blur and saturate what's behind, a
+   light sheen from the top-left, a bright top edge and a faint lower rim, like
+   a drop of glass catching light. */
+.glass,
+.glass-sky {
+  /* no saturate here: on the blue sky it pushed the circles to a glossy electric blue */
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.glass {
+  background:
+    radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .55), transparent 55%),
+    rgb(255 255 255 / .62);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .9),
+    inset 0 -1px 1px rgb(255 255 255 / .35),
+    inset 0 0 0 .5px rgb(0 0 0 / .06),
+    0 8px 22px rgb(15 30 60 / .16);
+}
+.glass-sky {
+  background:
+    radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .26), transparent 55%),
+    rgb(255 255 255 / .1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .6),
+    inset 0 -1px 1px rgb(255 255 255 / .18),
+    inset 0 0 0 .5px rgb(255 255 255 / .25),
+    0 6px 18px rgb(10 30 70 / .14);
+}
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background:
+      radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .14), transparent 55%),
+      rgb(28 32 42 / .55);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / .22),
+      inset 0 -1px 1px rgb(255 255 255 / .06),
+      inset 0 0 0 .5px rgb(255 255 255 / .1),
+      0 8px 22px rgb(0 0 0 / .35);
+  }
+}
+
+/* The live quest card, which straddles the sky and the page: glass, so the
+   sky shows softly through its top half instead of a dark slab sitting on it. */
+.glass-card {
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  background:
+    radial-gradient(130% 70% at 20% 0%, rgb(255 255 255 / .6), transparent 60%),
+    rgb(255 255 255 / .74);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .95),
+    inset 0 -1px 1px rgb(255 255 255 / .4),
+    inset 0 0 0 .5px rgb(20 40 90 / .08),
+    0 18px 44px rgb(20 40 90 / .16);
+}
+@media (prefers-color-scheme: dark) {
+  .glass-card {
+    background:
+      radial-gradient(130% 70% at 20% 0%, rgb(255 255 255 / .1), transparent 60%),
+      rgb(24 30 46 / .66);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / .18),
+      inset 0 0 0 .5px rgb(255 255 255 / .08),
+      0 18px 44px rgb(0 0 0 / .4);
+  }
+}

@@ -73,7 +73,7 @@ export const getCrew = async (user: User, id: string) => toCrew(await crewFor(us
 
 export async function joinCrew(user: User, code: string | undefined) {
   const row = await one<CrewRow>("select * from crews where invite_code = $1", [code?.trim().toUpperCase() ?? ""]);
-  if (!row) throw new HttpError(404, "that code doesn't match a crew. check it with your friend?");
+  if (!row) throw new HttpError(404, "That code doesn't match a crew. Check it with your friend.");
   await query("insert into crew_members (crew_id, user_id) values ($1, $2) on conflict do nothing", [row.id, user.id]);
   return toCrew(row);
 }

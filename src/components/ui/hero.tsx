@@ -43,13 +43,13 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
       <section
         className={`sky relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "pb-6"} ${className}`}
         style={{
-          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)",
+          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 66%, var(--color-sky-bottom) 100%)",
           textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
           ...(fill ? {} : { marginBottom: -36, maskImage: FADE, WebkitMaskImage: FADE }),
         }}
       >
         {/* a soft sun glow, top-right */}
-        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/15 blur-3xl" />
         <Clouds />
         <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>{children}</div>
         {!fill && <div aria-hidden className="h-16" />}
@@ -94,7 +94,7 @@ export function HeroIcon({ href, label, d, onClick }: { href?: string; label: st
 
 // Round frosted icon button that sits beside the main pill.
 export function RoundButton({ href, label, d, onClick }: { href?: string; label: string; d: string; onClick?: () => void }) {
-  const cls = "grid size-[52px] shrink-0 place-items-center rounded-full bg-white/22 text-on-sky backdrop-blur-md transition-[background-color,transform] hover:bg-white/30 active:scale-95";
+  const cls = "glass-sky grid size-[52px] shrink-0 place-items-center rounded-full text-on-sky transition-transform active:scale-95";
   const svg = (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d={d} />

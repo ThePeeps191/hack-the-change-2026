@@ -91,7 +91,7 @@ export async function createGame(user: User, body: { crew_id?: string; name?: st
   const rival = body.rival_code
     ? await one<{ id: string; name: string }>("select id, name from crews where invite_code = $1", [body.rival_code.trim().toUpperCase()])
     : null;
-  if (body.rival_code && !rival) throw new HttpError(404, "that code doesn't match a crew");
+  if (body.rival_code && !rival) throw new HttpError(404, "That code doesn't match a crew.");
   if (rival?.id === crew.id) throw new HttpError(400, "that's your own crew. ask a rival crew for their code.");
 
   const row = await transaction(async () => {

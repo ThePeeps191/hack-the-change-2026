@@ -1,10 +1,10 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
-import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
+import { AppShell, Hand } from "@/components/ui/app-shell";
 import Link from "next/link";
-import { MagneticButton } from "@/components/ui/button";
+import { buttonClass, MagneticButton } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon, Stars } from "@/components/ui/hero";
 import { SkySteps, skyQuiet } from "@/components/ui/sky-steps";
 
@@ -17,6 +17,11 @@ export function JoinScreen() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // If you're already in the crew this link is for, say so instead of asking you to join.
+  const [mine, setMine] = useState<string | null>(null);
+  useEffect(() => {
+    api.crews().then((cs) => setMine(cs.find((c) => c.invite_code.toLowerCase() === code.toLowerCase())?.name ?? null)).catch(() => {});
+  }, [code]);
 
   async function join() {
     setBusy(true);
@@ -35,9 +40,11 @@ export function JoinScreen() {
       <Hero fill className="min-h-dvh pb-[max(20px,env(safe-area-inset-bottom))]">
         <Stars className="opacity-50" />
         <HeroBar left={<HeroIcon href="/" label="Back" d="M14.5 5.5L8 12l6.5 6.5" />} center="a crew invite" />
-        <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">join the crew?</Hand>
-        <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">A crew is a few friends who get outside together, wherever each of you is.</p>
-        <div className="mt-9 px-4">
+        <Hand as="h1" className="relative mt-6 text-center text-[44px] leading-none font-bold">{mine ? "you're already in" : "join the crew?"}</Hand>
+        <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">
+          {mine ? <>This link is for {mine}, and you&apos;re one of them.</> : "A crew is a few friends who get outside together, wherever each of you is."}
+        </p>
+        {!mine && <div className="mt-9 px-4">
           <SkySteps
             items={[
               { badge: GROUP, title: "do quests together", detail: "Or race each other from anywhere." },
@@ -45,11 +52,17 @@ export function JoinScreen() {
               { badge: FLAG, title: "play Claim", detail: "Hold spots on the map." },
             ]}
           />
-        </div>
+        </div>}
         <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 px-4 pt-8">
-          {error && <Notice tone="warning">{error}</Notice>}
-          <MagneticButton variant="onSky" onClick={join} disabled={busy}>{busy ? "Joining…" : "Join the crew"}</MagneticButton>
-          <Link className={skyQuiet} href="/">Not now</Link>
+          {error && <p role="alert" className="pb-3 text-center text-[15px] leading-snug font-medium text-balance">{error}</p>}
+          {mine ? (
+            <Link href="/crew" className={buttonClass("onSky", "lg", "w-full")}>Open {mine}</Link>
+          ) : (
+            <>
+              <MagneticButton variant="onSky" onClick={join} disabled={busy}>{busy ? "Joining…" : "Join the crew"}</MagneticButton>
+              <Link className={skyQuiet} href="/">Not now</Link>
+            </>
+          )}
         </div>
       </Hero>
     </AppShell>

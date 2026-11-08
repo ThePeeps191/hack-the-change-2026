@@ -32,6 +32,7 @@ export function QuestCard({ quest, href, onClick }: { quest: Quest; href?: strin
           <span className="flex shrink-0 items-center gap-1 pt-1 text-[14px] font-semibold tabular-nums">
             <Coin size={14} />
             {quest.coins}
+            <span className="sr-only"> coins</span>
           </span>
         </div>
         <p className="mt-0.5 truncate text-[13px] text-ink-muted">{questMeta(quest)}</p>

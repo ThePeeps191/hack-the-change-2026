@@ -3,7 +3,8 @@ import { useRef, type ReactNode } from "react";
 
 // The main action as a small living orb: a slowly turning blue and white
 // metallic swirl, a glossy highlight that leans toward your finger, and a soft
-// glow that breathes. Pressing squeezes it and spins the swirl faster.
+// glow that breathes. Pressing squeezes it; the swirl keeps the same steady
+// turn whether it is idle, pressed or loading, so it never jumps.
 export function OrbButton({ onClick, disabled, label, children, size = 60 }: { onClick: () => void; disabled?: boolean; label: string; children: ReactNode; size?: number }) {
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -30,7 +31,7 @@ export function OrbButton({ onClick, disabled, label, children, size = 60 }: { o
       aria-label={label}
       onPointerMove={lean}
       onPointerLeave={reset}
-      className="orb relative grid place-items-center rounded-full text-white transition-transform duration-200 ease-[var(--ease-spring)] active:scale-[0.92] disabled:opacity-70"
+      className="orb relative grid place-items-center rounded-full text-white transition-transform duration-200 ease-[var(--ease-spring)] active:scale-[0.92] disabled:cursor-wait"
       style={{ width: size, height: size }}
     >
       <span aria-hidden className="orb-glow" />

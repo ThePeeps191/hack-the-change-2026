@@ -9,7 +9,7 @@ import type { Dashboard, Quest } from "@/lib/contracts";
 import { AppShell, Hand, Notice } from "@/components/ui/app-shell";
 import { MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
-import { Hero, HeroBar, HeroIcon, icons, RoundButton } from "@/components/ui/hero";
+import { Hero, HeroBar, icons, RoundButton } from "@/components/ui/hero";
 import { Odometer } from "@/components/ui/odometer";
 import { SunArc } from "@/components/ui/sun-arc";
 import { useGoFree } from "@/features/matching/use-go-free";
@@ -60,11 +60,7 @@ export function HomeScreen() {
   return (
     <AppShell>
       <Hero>
-        <HeroBar
-          left={<HeroIcon href="/me#comfort" label="Comfort settings" d={icons.settings} />}
-          center={date}
-          right={<HeroIcon href="/map" label="Map" d={icons.map} />}
-        />
+        <HeroBar center={date} />
         <SunArc caption={<span className="text-[13px] font-medium text-on-sky/90">of {goal} active min this week</span>} progress={active / goal} className="mt-1 px-6">
           <Odometer value={d ? active : 0} className="font-[family-name:var(--font-display)] text-[40px] leading-none font-semibold tracking-[-0.03em]" />
         </SunArc>
@@ -74,7 +70,7 @@ export function HomeScreen() {
           <span><span className="font-semibold tabular-nums text-on-sky">{places}</span> {places === 1 ? "new place" : "new places"}</span>
         </p>
         <Hand as="h1" className="mt-5 text-center text-[38px] leading-none font-bold">free for {QUEST_MINUTES} min?</Hand>
-        <p className="mx-auto mt-2 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/85">
+        <p className="mx-auto mt-2 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/95">
           Someone nearby is too. You&apos;ll get one small thing to do together.
         </p>
         <div className="mt-5 flex items-center gap-3 px-5">

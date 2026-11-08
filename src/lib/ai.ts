@@ -42,7 +42,7 @@ export async function judgeProof(input: ProofInput): Promise<Pick<Verdict, "stat
     if (input.mock_verdict === "rejected") {
       return { status: "rejected", reason: "We can't quite see the quest in this one. Get a little closer and try again?" };
     }
-    return { status: "approved", reason: "That counts. Nice one." };
+    return { status: "approved", reason: "We can see the quest in it, so it goes on the board." };
   }
   return (await live()).judgeProofLive(input);
 }
