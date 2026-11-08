@@ -231,7 +231,7 @@ export function MatchScreen() {
                 <CategoryIcon category={categoryOf(run.quest)} size={28} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start gap-3">
-                    <p className="flex-1 text-[18px] leading-snug font-semibold text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
+                    <p className="name-serif flex-1 text-[19px] leading-snug text-pretty">{run.quest.title.charAt(0).toUpperCase() + run.quest.title.slice(1)}</p>
                     <span className="mt-0.5 inline-flex items-center gap-1 text-[15px] font-semibold whitespace-nowrap tabular-nums" aria-label={`${run.quest.coins} coins`}><Coin size={14} />{run.quest.coins}</span>
                   </div>
                   <p className="mt-1 text-[14px] leading-snug opacity-65">

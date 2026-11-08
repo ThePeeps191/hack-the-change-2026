@@ -146,7 +146,7 @@ export function Entry({ h, i }: { h: HistoryItem; i: number }) {
         <span className="mt-0.5 text-[19px] font-semibold tabular-nums">{d.getDate()}</span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[16px] font-medium">{h.quest.title.charAt(0).toUpperCase() + h.quest.title.slice(1)}</p>
+        <p className="name-serif truncate text-[17px]">{h.quest.title.charAt(0).toUpperCase() + h.quest.title.slice(1)}</p>
         <p className="mt-0.5 flex items-center gap-1.5 truncate text-[13px] text-ink-muted">
           <CategoryIcon category={categoryOf(h.quest)} size={14} className="text-ink-faint" />
           {h.partner ? `with ${h.partner.display_name}` : "on your own"} · {distance(h.distance_m)}

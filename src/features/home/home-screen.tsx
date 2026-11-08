@@ -141,7 +141,7 @@ export function HomeScreen() {
                       <GlyphTile quest={q} size={40} />
                       <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums"><Coin size={14} />{q.coins}</span>
                     </span>
-                    <span className="mt-5 text-[19px] leading-[1.15] font-semibold tracking-[-0.01em] text-pretty">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
+                    <span className="name-serif mt-5 text-[20px] leading-[1.15] text-pretty">{q.title.charAt(0).toUpperCase() + q.title.slice(1)}</span>
                     <span className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-ink-muted">{q.description}</span>
                     <span className="mt-auto pt-3 text-[13px] font-medium text-ink-faint">{q.duration_min} min · {q.proof === "gps" ? "your route is the proof" : `${q.proof} proof`}</span>
                   </button>
