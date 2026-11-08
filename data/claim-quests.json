@@ -92,8 +92,8 @@
     "title": "Hold a Plank",
     "description": "Hold a plank for as long as possible and record it. Longer plank wins.",
     "type": "local",
-    "lat": 51.077071,
-    "lng": -114.13309,
+    "lat": 51.077186,
+    "lng": -114.133015,
     "radius_m": 90,
     "duration_min": 5,
     "proof": "video",
@@ -102,8 +102,8 @@
     "sources": [],
     "zone": {
       "name": "Kinesiology",
-      "lat": 51.077071,
-      "lng": -114.13309,
+      "lat": 51.077186,
+      "lng": -114.133015,
       "radius_m": 90,
       "result_unit": "seconds",
       "lower_is_better": false

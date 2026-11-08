@@ -129,7 +129,6 @@ ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
           </div>
           <div class="row">
             <label>Minutes <input id="duration_min" type="number" min="1" max="60"></label>
-            <label>Coins <input id="coins" type="number" min="5" max="100" step="5"></label>
           </div>
           <span class="hint">"At the spot" checks the proof photo was taken inside the circle. "Anywhere" skips that check, though the spot stays on the map.</span>
         </section>
@@ -278,7 +277,6 @@ function fillForm() {
   $("type").value = s.type;
   $("proof").value = s.proof;
   $("duration_min").value = s.duration_min;
-  $("coins").value = s.coins;
   $("result_unit").value = z.result_unit;
   $("lower_is_better").checked = !!z.lower_is_better;
 }
@@ -302,7 +300,6 @@ $("form").addEventListener("input", (e) => {
   s.type = $("type").value;
   s.proof = $("proof").value;
   s.duration_min = Math.round(num("duration_min", s.duration_min));
-  s.coins = Math.round(num("coins", s.coins));
   z.result_unit = $("result_unit").value;
   z.lower_is_better = $("lower_is_better").checked;
   const lat = num("lat", NaN), lng = num("lng", NaN);

@@ -178,9 +178,11 @@ export function Entry({ h, i }: { h: JournalRow; i: number }) {
           {h.partner ? `with ${h.partner.display_name}` : "on your own"}{h.distance_m >= 50 && <> · {distance(h.distance_m)}</>}
         </p>
       </div>
-      <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums">
-        <Coin size={13} />+{h.coins}
-      </span>
+      {h.coins > 0 && (
+        <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums">
+          <Coin size={13} />+{h.coins}
+        </span>
+      )}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-ink-faint" aria-hidden>
         <path d="M9 6l6 6-6 6" />
       </svg>
