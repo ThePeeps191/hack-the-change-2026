@@ -36,7 +36,9 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 - Comfort settings: step-free places only, short and easy pace, and side by side instead of chatting.
 - You meet at a public quest spot, never at each other's location. Your partner sees a rough distance, then a first name once you both say yes.
-- Daylight only for meeting strangers, one tap to report, and a report means you're never paired again.
+- Daylight only for meeting strangers. During a quest, one tap opens 911 and UCalgary Campus Security, a way to leave without blaming anyone, and a report; a report means you're never paired again.
+- Each of you can add one line so the other can spot you at a busy building, like "red jacket, by the main doors". Nothing more is shared.
+- The recap shows how you felt before and after, only to you.
 - Location is deleted the moment you're matched, routes are deleted after 30 days, and you can download or delete all your data. The privacy page says which AI sees your photos.
 
 ### How we built it
