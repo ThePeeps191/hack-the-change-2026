@@ -80,10 +80,10 @@ export const api = {
   match: () => call<Match | null>("/api/match"),
   acceptMatch: (id: string) => post<Match>(`/api/matches/${id}/accept`),
   declineMatch: (id: string) => post<Match>(`/api/matches/${id}/decline`),
-  createInvite: (questId?: string) =>
+  createInvite: (questId?: string, near?: { lat: number; lng: number }) =>
     post<{ code: string; url: string; quest: { id: string; title: string } }>(
       "/api/invites",
-      questId ? { quest_id: questId } : {},
+      { ...(questId ? { quest_id: questId } : {}), ...near },
     ),
   inviteDetails: (code: string) =>
     call<{

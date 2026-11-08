@@ -20,6 +20,7 @@ import { Coin } from "@/components/ui/quest-glyph";
 import { InviteCard } from "@/features/invites/invite-card";
 import { ResumeBanner } from "./resume-banner";
 import { QuestSheet } from "@/features/quests/quest-sheet";
+import { MoreQuests } from "@/features/quests/more-quests";
 
 function today() {
   return new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toLowerCase();
@@ -30,7 +31,6 @@ export function HomeScreen() {
   const { go, busy, error } = useGoFree();
   const [d, setD] = useState<Dashboard | null>(null);
   const [quests, setQuests] = useState<Quest[] | null>(null);
-  const [more, setMore] = useState(false);
   const [date, setDate] = useState("");
   const [open, setOpen] = useState<Quest | null>(null);
   const [crewId, setCrewId] = useState<string | undefined>();
@@ -51,7 +51,7 @@ export function HomeScreen() {
 
   const away = (q: Quest) => (q.lat == null || q.lng == null ? Infinity : (q.lat - here.lat) ** 2 + ((q.lng - here.lng) * Math.cos((here.lat * Math.PI) / 180)) ** 2);
   const nearby = (quests ?? []).filter((q) => q.type !== "anywhere").sort((a, b) => away(a) - away(b));
-  const shown = more ? nearby : nearby.slice(0, 3);
+  const shown = nearby.slice(0, 3);
   const anywhere = (quests ?? []).filter((q) => q.type === "anywhere");
   const active = d?.active_minutes_week ?? 0;
   const goal = d?.active_goal_minutes ?? 150;
@@ -113,14 +113,7 @@ export function HomeScreen() {
                 </AnimatePresence>
               )}
         </div>
-        {nearby.length > 3 && (
-          <button onClick={() => setMore((m) => !m)} className="mx-auto mt-3 flex min-h-11 items-center gap-1 px-4 text-[14px] font-medium text-ink-faint hover:text-ink-muted">
-            {more ? "show less" : `+${nearby.length - 3} more`}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className={more ? "rotate-180" : ""}>
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-        )}
+        <div className="mt-2.5"><MoreQuests quests={nearby.slice(3)} onPick={setOpen} /></div>
       </section>
 
       {anywhere.length > 0 && (
