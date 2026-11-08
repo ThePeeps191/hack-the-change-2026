@@ -44,7 +44,7 @@ export function JoinScreen() {
         <p className="relative mx-auto mt-3 max-w-[30ch] text-center text-[16px] leading-snug text-balance text-on-sky/90">
           {mine ? <>This link is for {mine}, and you&apos;re one of them.</> : "A crew is a few friends who get outside together, wherever each of you is."}
         </p>
-        <div className="mt-9 px-4">
+        {!mine && <div className="mt-9 px-4">
           <SkySteps
             items={[
               { badge: GROUP, title: "do quests together", detail: "Or race each other from anywhere." },
@@ -52,7 +52,7 @@ export function JoinScreen() {
               { badge: FLAG, title: "play Claim", detail: "Hold spots on the map." },
             ]}
           />
-        </div>
+        </div>}
         <div className="relative mx-auto mt-auto w-full max-w-[400px] space-y-1 px-4 pt-8">
           {error && <p role="alert" className="pb-3 text-center text-[15px] leading-snug font-medium text-balance">{error}</p>}
           {mine ? (

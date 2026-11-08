@@ -177,8 +177,9 @@ export async function seedDemoData(query: Query) {
     const completedAt = new Date(startedAt.getTime() + minutes * 60_000);
     await query(
       `insert into quest_runs (id, quest_id, mode, status, started_at, ends_at, completed_at)
-       values ($1, $2, $3, 'completed', $4::timestamptz, $5::timestamptz, $5::timestamptz) on conflict do nothing`,
-      [runId(n), questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString()],
+       values ($1, $2, $3, 'completed', $4::timestamptz, $5::timestamptz, $5::timestamptz)
+       on conflict (id) do update set completed_at = quest_runs.started_at + $6::int * interval '1 minute', ends_at = quest_runs.started_at + $6::int * interval '1 minute'`,
+      [runId(n), questId, partner ? "pair" : "crew", startedAt.toISOString(), completedAt.toISOString(), minutes],
     );
     for (const [j, member] of (partner ? [sam, person(partner)] : [sam]).entries()) {
       await query("insert into run_members (run_id, user_id, distance_m) values ($1, $2, $3) on conflict do nothing", [runId(n), member, metres]);

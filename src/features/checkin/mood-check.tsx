@@ -13,9 +13,9 @@ const SUN = "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2.5v2M12 19.5v2M4.6 4.6L6 6M
 const PART = "M8 3.5v1.5M3.5 8H2M4.6 4.6l1 1M11.4 4.6l-1 1M5.6 10.4A3 3 0 1 1 10.8 7.5M9 20h8.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.2A3 3 0 0 0 9 20z";
 const CLOUD = "M7.5 18.5a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17.6 9.6a4.5 4.5 0 0 1-.6 8.9z";
 const WEATHER = [
-  { mood: 5, d: SUN, tint: "bg-[#fff1c9] text-[#b97a0c] dark:bg-[#3a3016] dark:text-[#f2c45a]" },
-  { mood: 3, d: PART, tint: "bg-[#eef1f6] text-[#5b6b85] dark:bg-[#232a36] dark:text-[#a9b8d0]" },
-  { mood: 1, d: CLOUD, tint: "bg-sunken text-ink-muted" },
+  { mood: 5, d: SUN, tint: "text-[#c98a12] dark:text-[#f2c45a]" },
+  { mood: 3, d: PART, tint: "text-[#5b6b85] dark:text-[#a9b8d0]" },
+  { mood: 1, d: CLOUD, tint: "text-ink-faint" },
 ];
 const LABELS = { before: ["Good", "Okay", "Low"], after: ["Better", "Same", "Worse"] };
 
@@ -72,7 +72,7 @@ export function MoodCheck({ runId, phase }: { runId: string; phase: "before" | "
                         className="flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-[18px] bg-sunken text-[14px] font-semibold text-ink ring-1 ring-[var(--hairline)] transition-[background-color,transform] hover:bg-accent-soft active:scale-95"
                       >
                         <span className={`grid size-9 place-items-center rounded-full ${w.tint}`}>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill={w.mood === 1 ? "currentColor" : "none"} stroke="currentColor" strokeWidth={w.mood === 1 ? 0 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={w.d} /></svg>
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill={w.mood === 1 ? "currentColor" : "none"} stroke="currentColor" strokeWidth={w.mood === 1 ? 0 : 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={w.d} /></svg>
                         </span>
                         {labels[i]}
                       </button>
