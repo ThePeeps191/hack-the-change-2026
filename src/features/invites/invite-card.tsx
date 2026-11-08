@@ -8,6 +8,7 @@ import { ShareLink } from "./share-link";
 // For someone you've just met in person: no nearby search, just a link.
 export function InviteCard() {
   const [link, setLink] = useState<string | null>(null);
+  const [quest, setQuest] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +16,9 @@ export function InviteCard() {
     setBusy(true);
     setError(null);
     try {
-      setLink((await api.createInvite()).url);
+      const made = await api.createInvite();
+      setLink(made.url);
+      setQuest(made.quest.title);
     } catch (e) {
       setError(e instanceof ApiError && e.status === 403 ? e.message : "Couldn't make a link just now. Try again?");
     } finally {
@@ -39,7 +42,9 @@ export function InviteCard() {
       <section className="space-y-4 rounded-[24px] bg-surface p-5 shadow-card">
         <div>
           <p className="text-[17px] font-semibold">Send this to them</p>
-          <p className="mt-1 text-[14px] leading-snug text-ink-muted">When they say yes, you&apos;ll both get the same quest. The link lasts 30 minutes.</p>
+          <p className="mt-1 text-[14px] leading-snug text-ink-muted">
+            {quest ? <>When they say yes, you&apos;ll both do <span className="font-semibold text-ink">{quest.charAt(0).toUpperCase() + quest.slice(1)}</span>.</> : "When they say yes, you'll both get the same quest."} The link lasts 30 minutes.
+          </p>
         </div>
         <ShareLink url={link} title="Do a 20-minute quest with me" />
         <ButtonLink className="w-full" variant="secondary" href="/match">Wait for them</ButtonLink>
