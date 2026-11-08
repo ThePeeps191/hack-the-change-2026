@@ -150,7 +150,7 @@ export function JoinScreen() {
             <ul className="flex flex-wrap justify-center gap-2" aria-label="Who's in">
               {mineCrew.members.map((m) => (
                 <li key={m.user_id} className="flex w-14 flex-col items-center gap-1">
-                  <span aria-hidden><Avatar name={m.display_name} size={44} /></span>
+                  <span aria-hidden><Avatar name={m.display_name} avatar={m.avatar} size={44} /></span>
                   <span className="w-full truncate text-[13px] font-medium text-on-sky/90">{m.display_name}</span>
                 </li>
               ))}

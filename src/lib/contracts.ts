@@ -37,6 +37,7 @@ export type User = {
   id: string;
   display_name: string;
   avatar_url: string | null;
+  avatar?: string | null; // Added: the character picked on the You page, "shape:colour". Null: it comes from the name.
   email_verified: boolean;
   age_confirmed_at: string | null;
   prefs: Prefs;
@@ -71,6 +72,7 @@ export type Match = {
 export type RunMember = {
   user_id: string;
   display_name: string;
+  avatar?: string | null; // Added: their picked character (see User)
   submitted: boolean;
   verdict: Verdict | null;
   // Added: "how to spot me" on a quest with someone new, e.g. "red jacket, by the doors". Pair runs only.
@@ -130,6 +132,7 @@ export type CrewMember = {
   user_id: string;
   display_name: string;
   avatar_url: string | null;
+  avatar?: string | null; // Added: their picked character (see User)
   coins: number;
   joined_at: string;
 };
@@ -194,6 +197,7 @@ export type WeekDay = {
 export type FamiliarFace = {
   display_name: string;
   avatar_url: string | null;
+  avatar?: string | null; // Added: their picked character (see User)
   quests_together: number;
   minutes_together: number;
   last_seen: string;

@@ -8,6 +8,7 @@ export type UserRow = {
   id: string;
   display_name: string;
   avatar_url: string | null;
+  avatar: string | null;
   email_verified: boolean;
   age_confirmed_at: Date | null;
   prefs: Prefs;
@@ -20,6 +21,7 @@ export function toUser(r: UserRow): User {
     id: r.id,
     display_name: r.display_name,
     avatar_url: r.avatar_url,
+    avatar: r.avatar ?? null,
     email_verified: r.email_verified,
     age_confirmed_at: r.age_confirmed_at?.toISOString() ?? null,
     prefs: r.prefs ?? {},
@@ -51,16 +53,20 @@ export async function findOrCreateUser(input: {
   return toUser((await one<UserRow>("select * from users where auth0_sub = $1", [input.sub]))!);
 }
 
-export async function updateProfile(user: User, patch: { display_name?: string; age_confirmed_at?: string | null; prefs?: Prefs }) {
+export async function updateProfile(user: User, patch: { display_name?: string; age_confirmed_at?: string | null; prefs?: Prefs; avatar?: string | null }) {
   const name = patch.display_name?.trim().slice(0, 40);
   if (patch.display_name !== undefined && !name) throw new HttpError(400, "pick a name to show people");
+  // Your character, as "shape:colour" (e.g. "cloud:3"). The screens check the shape
+  // and colour exist and fall back to the one from your name if not.
+  if (patch.avatar != null && !/^[a-z]{2,16}:\d{1,2}$/.test(patch.avatar)) throw new HttpError(400, "that character doesn't exist");
   const row = await one<UserRow>(
     `update users set
        display_name = coalesce($2, display_name),
        age_confirmed_at = case when $3::boolean then coalesce(age_confirmed_at, now()) else age_confirmed_at end,
-       prefs = coalesce($4::text::jsonb, prefs)
+       prefs = coalesce($4::text::jsonb, prefs),
+       avatar = case when $5::boolean then $6 else avatar end
      where id = $1 returning *`,
-    [user.id, name ?? null, !!patch.age_confirmed_at, patch.prefs ? JSON.stringify(cleanPrefs(patch.prefs)) : null],
+    [user.id, name ?? null, !!patch.age_confirmed_at, patch.prefs ? JSON.stringify(cleanPrefs(patch.prefs)) : null, patch.avatar !== undefined, patch.avatar ?? null],
   );
   return toUser(row!);
 }
@@ -111,7 +117,7 @@ export async function deleteMyData(user: User) {
     await query("delete from crew_members where user_id = $1", [user.id]);
     await query("delete from connections where $1 in (user_a, user_b)", [user.id]);
     await query(
-      `update users set auth0_sub = 'deleted|' || id, display_name = 'someone', avatar_url = null,
+      `update users set auth0_sub = 'deleted|' || id, display_name = 'someone', avatar_url = null, avatar = null,
          email_verified = false, age_confirmed_at = null, prefs = '{}', coins = 0
        where id = $1`,
       [user.id],

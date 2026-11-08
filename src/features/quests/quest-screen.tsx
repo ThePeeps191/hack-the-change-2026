@@ -151,7 +151,7 @@ export function QuestScreen() {
               {run.members.map((m, i) => (
                 <li key={m.user_id} className="flex items-center gap-3 text-[14px] text-ink-muted">
                   <span className="relative">
-                    <Avatar name={m.display_name} size={30} />
+                    <Avatar name={m.display_name} avatar={m.avatar} size={30} />
                     {(m.submitted || m.verdict?.status === "pending") && (
                       <span className={`absolute -right-1 -bottom-1 grid size-[15px] place-items-center rounded-full ring-2 ring-[var(--color-surface)] ${m.submitted ? "bg-accent text-on-accent" : "bg-accent"}`} aria-hidden>
                         {m.submitted ? (

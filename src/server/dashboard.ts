@@ -36,8 +36,8 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     [user.id],
   );
 
-  const together = await query<{ run_id: string; user_id: string; display_name: string; avatar_url: string | null; started_at: Date; completed_at: Date; title: string }>(
-    `select r.id as run_id, o.user_id, u.display_name, u.avatar_url, r.started_at, r.completed_at, q.title
+  const together = await query<{ run_id: string; user_id: string; display_name: string; avatar_url: string | null; avatar: string | null; started_at: Date; completed_at: Date; title: string }>(
+    `select r.id as run_id, o.user_id, u.display_name, u.avatar_url, u.avatar, r.started_at, r.completed_at, q.title
      from run_members m
      join run_members o on o.run_id = m.run_id and o.user_id <> m.user_id
      join users u on u.id = o.user_id
@@ -59,6 +59,7 @@ export async function getDashboard(user: User): Promise<Dashboard> {
     .map((runs) => ({
       display_name: runs[0].display_name,
       avatar_url: runs[0].avatar_url,
+      avatar: runs[0].avatar,
       quests_together: runs.length,
       minutes_together: Math.round(runs.reduce((sum, r) => sum + minutes(r), 0)),
       last_seen: runs.at(-1)!.completed_at.toISOString(),

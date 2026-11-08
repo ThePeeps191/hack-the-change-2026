@@ -85,7 +85,7 @@ export function FaceCard({ face, i, wide = false }: { face: FamiliarFace; i: num
       transition={{ duration: 0.5, ease, delay: i * 0.07 }}
     >
       <div className="flex items-center gap-3">
-        <Avatar name={face.display_name} size={44} />
+        <Avatar name={face.display_name} avatar={face.avatar} size={44} />
         <div className="min-w-0">
           <p className="truncate text-[17px] font-semibold">{face.display_name}</p>
           <p className="text-[13px] text-ink-muted">{face.quests_together} quests together</p>

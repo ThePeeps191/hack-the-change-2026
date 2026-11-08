@@ -29,7 +29,7 @@ export async function freshCode() {
 // you always see yourself.
 async function toCrew(row: CrewRow, viewerId?: string): Promise<Crew> {
   const members = await query<Omit<CrewMember, "joined_at"> & { joined_at: Date }>(
-    `select u.id as user_id, u.display_name, u.avatar_url, u.coins, m.joined_at
+    `select u.id as user_id, u.display_name, u.avatar_url, u.avatar, u.coins, m.joined_at
      from crew_members m join users u on u.id = m.user_id
      where m.crew_id = $1 and (u.auth0_sub not like 'demo|%' or u.id = $2)
      order by m.joined_at, u.id`,

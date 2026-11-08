@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { collapseRepeats, Entry, FaceCard, Weather, WeekStrip } from "./you-bits";
 import { type Comfort, toComfort, toPrefs } from "@/features/onboarding/prefs";
 import { ProfileLinks } from "./profile-links";
+import { AvatarPicker } from "./avatar-picker";
 
 const defaults: Comfort = { pace: "walk", talk: "side", stepFree: false };
 
@@ -137,6 +138,12 @@ export function DashboardScreen() {
             <ul className="rows overflow-hidden rounded-[24px] bg-surface shadow-card">
               {journal.map((h, i) => <Entry key={h.run_id} h={h} i={i} />)}
             </ul>
+          </Section>
+        )}
+
+        {me && (
+          <Section id="character" title="your character">
+            <AvatarPicker me={me} onSaved={setMe} />
           </Section>
         )}
 
