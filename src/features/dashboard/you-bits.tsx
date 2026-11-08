@@ -152,7 +152,7 @@ export function collapseRepeats(history: HistoryItem[]): JournalRow[] {
 // One journal entry: a date block, what you did, with whom, and the coins.
 export function Entry({ h, i }: { h: JournalRow; i: number }) {
   const d = new Date(h.completed_at);
-  // Opens the quest's recap, which shows the proof photos you took.
+  // Opens the quest's recap: the date, what the AI wrote, and the photos or videos you sent as proof.
   return (
     <motion.li
       initial={{ opacity: 0, y: 8 }}

@@ -115,6 +115,8 @@ export type Recap = {
   connected?: boolean;
   // Added: when the quest finished (ISO).
   completed_at?: string;
+  // Added: the same proof as `photos`, with each file's type, so a video plays as a video.
+  proof?: { url: string; type: string }[];
 };
 
 export type CrewMember = {

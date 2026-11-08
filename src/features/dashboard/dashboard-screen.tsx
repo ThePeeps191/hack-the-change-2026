@@ -133,7 +133,7 @@ export function DashboardScreen() {
         )}
 
         {journal.length > 0 && (
-          <Section id="recent" title="recently">
+          <Section id="recent" title="quest history">
             <ul className="rows overflow-hidden rounded-[24px] bg-surface shadow-card">
               {journal.map((h, i) => <Entry key={h.run_id} h={h} i={i} />)}
             </ul>

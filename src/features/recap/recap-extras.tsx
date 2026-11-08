@@ -1,18 +1,29 @@
 import type { Recap } from "@/lib/contracts";
 
-// The verified photos, and a quiet note when the same two people meet again.
+// The verified proof (photos, and videos that play in place), and a quiet note
+// when the same two people meet again.
 export function RecapExtras({ recap }: { recap: Recap }) {
   const again = recap.partner && !recap.demo_partner && (recap.times_together ?? 0) >= 2;
-  if (recap.photos.length === 0 && !again) return null;
+  // Older servers only send `photos`; treat those as images.
+  const proof = recap.proof ?? recap.photos.map((url) => ({ url, type: "image/jpeg" }));
+  if (proof.length === 0 && !again) return null;
+  const size = proof.length > 1 ? "aspect-square" : "aspect-[4/3] max-h-[320px]";
   return (
     <>
-      {recap.photos.length > 0 && (
-        <div className={`grid gap-2 ${recap.photos.length > 1 ? "grid-cols-2" : ""}`}>
-          {recap.photos.map((src) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={src} src={src} alt="Verified proof from this quest" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${recap.photos.length > 1 ? "aspect-square" : "aspect-[4/3] max-h-[240px]"}`} />
-          ))}
-        </div>
+      {proof.length > 0 && (
+        <section aria-label="Your proof">
+          <p className="mb-2 px-1 text-[14px] font-medium text-ink-muted">Your proof</p>
+          <div className={`grid gap-2 ${proof.length > 1 ? "grid-cols-2" : ""}`}>
+            {proof.map((p) =>
+              p.type.startsWith("video/") ? (
+                <video key={p.url} src={p.url} controls playsInline preload="metadata" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${size}`} />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={p.url} src={p.url} alt="Verified proof from this quest" className={`w-full rounded-[24px] bg-sunken object-cover shadow-card ${size}`} />
+              ),
+            )}
+          </div>
+        </section>
       )}
       {again && (
         <section className="rounded-[24px] bg-surface p-5 shadow-card">

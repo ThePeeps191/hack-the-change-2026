@@ -69,6 +69,7 @@ type Recap = {
   route: { lat: number; lng: number; at: string }[];
   photos: string[];
   narration_url: string | null;
+  proof?: { url: string; type: string }[]; // the same proof with each file's type (image/… or video/…)
 };
 ```
 
