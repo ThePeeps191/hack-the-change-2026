@@ -77,6 +77,7 @@ async function toMatch(m: MatchRow, userId: string): Promise<Match> {
     distance_m: m.distance_m,
     times_together: together,
     demo_partner: partnerId != null && partnerId === (await botId()),
+    quest_title: m.quest_id ? (await one<{ title: string }>("select title from quests where id = $1", [m.quest_id]))?.title ?? null : null,
   };
 }
 
@@ -374,6 +375,8 @@ function inviteCode() {
 
 // A link for someone you've actually met. Making the link counts as your yes.
 // Pass quest_id to pin a specific quest to this invite (for AirDrop sharing).
+// Without one, we pick the quest now, so the link, the invite page and your
+// waiting screen can all name it.
 export async function createInvite(
   user: User,
   origin: string,
@@ -383,17 +386,18 @@ export async function createInvite(
   await cancelPending(user.id);
   await query("delete from availability where user_id = $1", [user.id]);
   const code = inviteCode();
+  const quest = questId ? await getQuest(questId) : await pickPairQuest(CAMPUS_CENTER.lat, CAMPUS_CENTER.lng, [user.prefs ?? {}]);
   await query(
     `insert into matches (user_a, source, invite_code, quest_id, a_accepted_at, expires_at)
      values ($1, 'invite', $2, $3, now(), $4::timestamptz)`,
     [
       user.id,
       code,
-      questId ?? null,
+      quest.id,
       new Date(Date.now() + INVITE_EXPIRY_MS).toISOString(),
     ],
   );
-  return { code, url: `${origin}/invite/${code}` };
+  return { code, url: `${origin}/invite/${code}`, quest: { id: quest.id, title: quest.title } };
 }
 
 // Public details for an invite, so the invite screen can show the quest.
