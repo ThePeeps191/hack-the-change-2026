@@ -865,9 +865,9 @@ a {
    The sky stops fading into the paper and becomes a rounded card that fills
    the column; the wash under it isn't needed. A map fills the column too. */
 @media (min-width: 1024px) {
-  .split-aside > .relative:has(> .sky) { flex: 1; display: flex; flex-direction: column; }
+  .split-aside > .relative:has(> .sky) { display: flex; flex-direction: column; }
   .split-aside .sky {
-    flex: 1;
+    min-height: min(600px, calc(100dvh - 48px));
     display: flex;
     flex-direction: column;
     margin-bottom: 0 !important;

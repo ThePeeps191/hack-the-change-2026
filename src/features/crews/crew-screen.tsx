@@ -73,7 +73,7 @@ export function CrewScreen() {
       </Hero>
       }>
 
-      <div className="space-y-7 px-4 pt-6">
+      <div className="space-y-7 px-4 pt-6 lg:pt-0">
         {crew === null && <NoCrewActions onDone={reload} />}
         {crew && (
           <motion.div {...rise(0)}>

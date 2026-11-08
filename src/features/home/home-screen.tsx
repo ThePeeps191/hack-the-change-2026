@@ -88,7 +88,7 @@ export function HomeScreen() {
       {error && <div className="pt-3"><Notice tone="danger">{error}</Notice></div>}
       <ResumeBanner />
 
-      <section className="px-4 pt-6" aria-labelledby="nearby">
+      <section className="px-4 pt-6 lg:pt-0" aria-labelledby="nearby">
         <Hand as="h2" className="mb-3 px-1 text-[28px] leading-none font-bold text-ink">
           <span id="nearby">nearby</span>
         </Hand>
@@ -155,9 +155,9 @@ export function HomeScreen() {
         </section>
       )}
 
+      <InviteCard />
       </Split>
       <QuestSheet quest={open} crewId={crewId} onClose={() => setOpen(null)} />
-      <InviteCard />
     </AppShell>
   );
 }
