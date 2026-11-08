@@ -66,7 +66,7 @@ export function LoginScreen({ demo, returnTo }: { demo: boolean; returnTo: strin
               {busy ? "Starting…" : "Try the demo"}
             </button>
           )}
-          <p className="pt-1 text-center text-[13px] text-[#121412]/75 dark:text-on-sky/95">
+          <p className="pt-1 text-center text-[13px] text-[#121412]/90 dark:text-on-sky/95">
             For 18 and older. <a className="inline-flex min-h-11 items-center underline underline-offset-2" href="/privacy">What we keep, and why</a>
           </p>
         </motion.div>
