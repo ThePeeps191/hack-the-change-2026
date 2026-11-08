@@ -77,11 +77,9 @@ We wrote every quest by hand, at real public places around UCalgary and Calgary.
 
 Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
 
-## How we built it
+## AI disclosure
 
-Four of us built Amble in 24 hours with Claude Code as our coding assistant, running many sessions in parallel. Each session worked in its own git worktree and branch, opened a small pull request, and merged it once it worked, so dozens of changes landed every hour without stepping on each other. The rules every session followed are in [CLAUDE.md](CLAUDE.md).
-
-We made the product decisions: the idea and focus areas, the safety rules, the metrics and the research behind them, the quests, the design and what to cut. An end-to-end test (`scripts/smoke.ts`) drives the whole product over HTTP as a dozen simulated people.
+We built Amble with Claude Code as our coding assistant. It wrote much of the code, while we made the product decisions, wrote the quests and other content by hand, and reviewed the changes. Dozens of sessions ran in parallel, each in its own git worktree with small pull requests, using the rules in [CLAUDE.md](CLAUDE.md). At one point our merges used up the hosting platform's daily deploy limit.
 
 ## Repository
 
