@@ -19,8 +19,6 @@ export type RunRow = {
   quest_id: string;
   match_id: string | null;
   crew_id: string | null;
-  zone_id: string | null;
-  team_id: string | null;
   mode: QuestRun["mode"];
   status: QuestRun["status"];
   started_at: Date;
@@ -43,14 +41,12 @@ export async function createRun(input: {
   members: string[];
   matchId?: string;
   crewId?: string | null;
-  zoneId?: string | null;
-  teamId?: string | null;
 }) {
   const ends = new Date(Date.now() + input.quest.duration_min * 60_000);
   const run = await one<RunRow>(
-    `insert into quest_runs (quest_id, match_id, crew_id, zone_id, team_id, mode, ends_at)
-     values ($1, $2, $3, $4, $5, $6, $7::timestamptz) returning *`,
-    [input.quest.id, input.matchId ?? null, input.crewId ?? null, input.zoneId ?? null, input.teamId ?? null, input.mode, ends.toISOString()],
+    `insert into quest_runs (quest_id, match_id, crew_id, mode, ends_at)
+     values ($1, $2, $3, $4, $5::timestamptz) returning *`,
+    [input.quest.id, input.matchId ?? null, input.crewId ?? null, input.mode, ends.toISOString()],
   );
   for (const member of input.members) {
     await query("insert into run_members (run_id, user_id) values ($1, $2) on conflict do nothing", [run!.id, member]);
@@ -175,8 +171,7 @@ export async function applyVerdict(submissionId: string, status: "approved" | "r
 }
 
 // A pair finishes when both have approved proof. A crew quest finishes when
-// everyone has, or when time runs out and at least one person did it. A Claim
-// challenge is a team effort, so one approval finishes it.
+// everyone has, or when time runs out and at least one person did it.
 async function settle(runId: string): Promise<RunRow> {
   return transaction(async () => {
     const run = (await one<RunRow>("select * from quest_runs where id = $1 for update", [runId]))!;
@@ -189,7 +184,6 @@ async function settle(runId: string): Promise<RunRow> {
 
     const done =
       (approved > 0 && approved === rows.length) ||
-      (run.mode === "claim" && approved > 0) ||
       (run.mode === "crew" && timeUp && approved > 0);
 
     if (done) {
@@ -221,27 +215,14 @@ async function recordDistances(runId: string) {
   }
 }
 
-// Starts a crew or Claim quest. Friends who tap the same quest land on the same
-// run. With no crew it's a solo quest, for anywhere quests.
-export async function startRun(user: User, body: { quest_id?: string; crew_id?: string; zone_id?: string }) {
+// Starts a crew quest. Friends who tap the same quest land on the same run.
+// With no crew it's a solo quest, for anywhere quests.
+export async function startRun(user: User, body: { quest_id?: string; crew_id?: string }) {
   if (!body.quest_id) throw new HttpError(400, "quest_id is required");
   const quest = await getQuest(body.quest_id);
 
-  let crewId: string | null = body.crew_id ?? null;
-  let teamId: string | null = null;
-  if (body.zone_id) {
-    const zone = await one<{ game_id: string; quest_id: string }>("select game_id, quest_id from zones where id = $1", [body.zone_id]);
-    if (!zone) throw notFound("zone");
-    if (zone.quest_id !== quest.id) throw new HttpError(400, "that isn't this zone's quest");
-    const team = await one<{ id: string; crew_id: string }>(
-      `select t.id, t.crew_id from game_teams t join crew_members m on m.crew_id = t.crew_id
-       where t.game_id = $1 and m.user_id = $2 limit 1`,
-      [zone.game_id, user.id],
-    );
-    if (!team) throw new HttpError(403, "your crew isn't in this game");
-    teamId = team.id;
-    crewId = team.crew_id;
-  } else if (crewId) {
+  const crewId: string | null = body.crew_id ?? null;
+  if (crewId) {
     const member = await one("select 1 as yes from crew_members where crew_id = $1 and user_id = $2", [crewId, user.id]);
     if (!member) throw new HttpError(403, "you're not in that crew");
   }
@@ -250,11 +231,11 @@ export async function startRun(user: User, body: { quest_id?: string; crew_id?: 
   // finding and creating happen under a lock for that crew and quest.
   const run = await transaction(async () => {
     if (crewId) {
-      await query("select pg_advisory_xact_lock(hashtext($1))", [`${crewId}:${quest.id}:${body.zone_id ?? ""}`]);
+      await query("select pg_advisory_xact_lock(hashtext($1))", [`${crewId}:${quest.id}`]);
       const existing = await one<RunRow>(
         `select * from quest_runs where crew_id = $1 and quest_id = $2 and status = 'active'
-           and zone_id is not distinct from $3 and ends_at > now() order by started_at desc limit 1`,
-        [crewId, quest.id, body.zone_id ?? null],
+           and zone_id is null and ends_at > now() order by started_at desc limit 1`,
+        [crewId, quest.id],
       );
       if (existing) {
         await query("insert into run_members (run_id, user_id) values ($1, $2) on conflict do nothing", [existing.id, user.id]);
@@ -262,7 +243,7 @@ export async function startRun(user: User, body: { quest_id?: string; crew_id?: 
       }
     }
     // You're on the run from the start, and crewmates join when they tap it.
-    return createRun({ quest, mode: body.zone_id ? "claim" : "crew", members: [user.id], crewId, zoneId: body.zone_id, teamId });
+    return createRun({ quest, mode: "crew", members: [user.id], crewId });
   });
   return toRun(run, user.id);
 }

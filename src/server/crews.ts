@@ -87,7 +87,7 @@ export async function joinCrew(user: User, code: string | undefined) {
 }
 
 // Puts a demo login in the seeded crew, so a judge lands on a populated crew
-// tab and Claim map. Does nothing if the seed data isn't there.
+// tab. Does nothing if the seed data isn't there.
 export async function joinDemoCrew(userId: string) {
   await query(
     `insert into crew_members (crew_id, user_id)

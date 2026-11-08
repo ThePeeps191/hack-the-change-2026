@@ -3,7 +3,7 @@
 //
 //   PORT=3001 bun run dev        (in one terminal)
 //   BASE_URL=http://localhost:3001 bun run smoke
-import type { Crew, Dashboard, Game, LeaderboardEntry, Match, Quest, QuestRun, Recap, User, Verdict, Zone } from "../src/lib/contracts";
+import type { Crew, Dashboard, LeaderboardEntry, Match, Quest, QuestRun, Recap, User, Verdict } from "../src/lib/contracts";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3001";
 const tag = Math.random().toString(36).slice(2, 7);
@@ -248,37 +248,6 @@ async function main() {
   const members = (await kim.get<LeaderboardEntry[]>(`/api/leaderboard?crew_id=${crew.id}`)).data;
   check(members.length === 2, "crew ranking lists members");
 
-  console.log("\nclaim");
-  const noa = person("noa");
-  const rival = (await noa.post<Crew>("/api/crews", { name: `rivals ${tag}` })).data;
-  const noGame = await person("pat").get("/api/games/current");
-  check(noGame.status === 404, "no game yet is a clean 404");
-  const game = (await kim.post<Game>("/api/games", { rival_code: rival.invite_code })).data;
-  check(game.zones.length === 5 && game.teams.length === 2, "game has zones and two teams", { z: game.zones.length, t: game.teams.length });
-  check((await noa.get<Game>("/api/games/current")).data.teams[0].crew_id === rival.id, "each team sees itself first");
-  const zone = game.zones.find((z) => z.result_unit === "snacks")!;
-  async function play(p: Person, result: number) {
-    const started = (await p.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
-    await p.proof(started.id);
-    await settled(p, started.id);
-    return p.post<Zone>(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: started.id, result });
-  }
-  const noProof = (await kim.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
-  check((await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 9 })).status === 409, "no claim without approved proof");
-  await kim.proof(noProof.id);
-  await settled(kim, noProof.id);
-  const first = await kim.post<Zone>(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 3 });
-  const kimTeam = game.teams[0].id;
-  check(first.data.held_by_team_id === kimTeam && first.data.best_result === 3, "an empty zone is claimed", first);
-  const repeat = await kim.post(`/api/games/${game.id}/zones/${zone.id}/attempts`, { run_id: noProof.id, result: 99 });
-  check(repeat.status === 409, "a run only counts once");
-  const lost = await play(noa, 2);
-  check(lost.data.held_by_team_id === kimTeam, "a worse result doesn't steal it", lost);
-  const stolen = await play(noa, 5);
-  check(stolen.data.held_by_team_id !== kimTeam && stolen.data.best_result === 5, "a better result steals it", stolen);
-  const ratedUp = (await noa.get<Crew>(`/api/crews/${rival.id}`)).data.rating!;
-  check(ratedUp > 1500, "stealing lifts the rating", ratedUp);
-
   console.log("\nthings the review caught");
   const photo = await fetch(BASE + recap.data.photos[0]);
   check(photo.headers.get("x-content-type-options") === "nosniff", "media is served with nosniff");
@@ -304,11 +273,6 @@ async function main() {
   await poll(() => mine(ola, opRun), (r) => r.status === "completed");
   const yeses = await Promise.all([ola, pip].map((p) => p.post<{ connected: boolean }>("/api/connections", { run_id: opRun })));
   check(yeses.some((y) => y.data.connected), "two yeses at the same moment still connect", yeses.map((y) => y.data));
-  const claimMate = person("quin");
-  await claimMate.post("/api/crews/join", { invite_code: rival.invite_code });
-  const mateRun = (await noa.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
-  const joined = (await claimMate.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
-  check(joined.id === mateRun.id && joined.members.length === 2, "a claim teammate joins the open challenge", joined);
 
   console.log("\ndashboard and privacy");
   const dash = (await alice.get<Dashboard>("/api/dashboard")).data;

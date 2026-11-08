@@ -108,7 +108,7 @@ export function RoundButton({ href, label, d, onClick }: { href?: string; label:
 }
 
 // A dusk sky: deep blue overhead, a warm glow at the horizon. For the few
-// surfaces that need to be dark (the live quest, Claim), so they still feel
+// surfaces that need to be dark (the live quest), so they still feel
 // like outdoors rather than a dashboard.
 export const dusk = "linear-gradient(170deg, #1a3466 0%, #22407a 52%, #4b4f86 82%, #a8697a 118%)";
 
