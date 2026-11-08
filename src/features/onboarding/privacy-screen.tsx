@@ -38,7 +38,7 @@ const KEPT: { icon: React.ReactNode; what: string; why: string }[] = [
   },
 ];
 
-export function PrivacyScreen() {
+export function PrivacyScreen({ shared = false }: { shared?: boolean }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -94,9 +94,13 @@ export function PrivacyScreen() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
             >
-              <p className="text-[17px] font-semibold">Delete everything?</p>
-              <p className="text-[14px] leading-snug text-ink-muted">Your routes, photos, check-ins, crews and connections go for good. This can&apos;t be undone.</p>
-              <Button variant="danger" size="lg" disabled={busy} onClick={remove}>{busy ? "Deleting…" : "Yes, delete it all"}</Button>
+              <p className="text-[17px] font-semibold">{shared ? "Delete what you added?" : "Delete everything?"}</p>
+              <p className="text-[14px] leading-snug text-ink-muted">
+                {shared
+                  ? "This is a shared demo account, so its sample quests, crew and coins stay for the next person. Your location, photos and check-ins go for good."
+                  : "Your routes, photos, check-ins, crews and connections go for good. This can't be undone."}
+              </p>
+              <Button variant="danger" size="lg" disabled={busy} onClick={remove}>{busy ? "Deleting…" : shared ? "Yes, delete it" : "Yes, delete it all"}</Button>
               <Button variant="quiet" size="lg" onClick={() => setConfirming(false)}>Keep my account</Button>
             </motion.div>
           ) : (
