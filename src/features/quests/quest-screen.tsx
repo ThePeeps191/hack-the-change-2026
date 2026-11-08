@@ -106,13 +106,13 @@ export function QuestScreen() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       >
-        <BorderBeam size="md" theme={dark ? "dark" : "light"} colorVariant="ocean" duration={6} strength={1} borderRadius={28} active={active} className="glass-card rounded-[28px] text-ink">
+        <BorderBeam size="md" theme={dark ? "dark" : "light"} colorVariant="ice" duration={6} strength={1} borderRadius={28} active={active} className="glass-card rounded-[28px] text-ink">
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-ink-muted">
               <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
               <span>{categoryLabel[categoryOf(q)]}</span>
               <span className="text-ink-faint">· {q.proof} proof</span>
-              <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}</span>
+              <span className="ml-auto flex items-center gap-1 font-semibold text-ink tabular-nums"><Coin size={14} />{q.coins}<span className="sr-only"> coins</span></span>
             </div>
             <h1 className="mt-3 text-[26px] leading-[1.12] font-semibold tracking-[-0.02em] text-pretty">
               {q.title.charAt(0).toUpperCase() + q.title.slice(1)}

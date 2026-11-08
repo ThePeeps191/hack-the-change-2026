@@ -142,7 +142,7 @@ export function InviteScreen() {
           >
             oops
           </Hand>
-          <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/85">
+          <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/95">
             {detailsError}
           </p>
         </Hero>
@@ -169,7 +169,7 @@ export function InviteScreen() {
         >
           free for {duration} min?
         </Hand>
-        <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/85">
+        <p className="mx-auto mt-3 max-w-[30ch] text-center text-[15px] leading-snug text-on-sky/95">
           {inviterLine}
         </p>
       </Hero>

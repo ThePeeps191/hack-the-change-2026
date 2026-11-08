@@ -58,10 +58,12 @@ export function ProofScreen() {
     if (view === "approved") {
       chime();
       setTimeout(coins, 650);
+      // re-read the run: if this was the last proof, the quest is done and the button can go to the recap
+      api.run(runId).then(setRun).catch(() => {});
     }
     if (view === "rejected") knock();
     prev.current = view;
-  }, [view]);
+  }, [view, runId]);
 
   async function submit() {
     if (!run) return;
@@ -126,7 +128,7 @@ export function ProofScreen() {
 
         {/* The frame */}
         <div className="relative mx-3 aspect-[4/5] overflow-hidden rounded-[28px] bg-white/[0.06]">
-          <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" onChange={(e) => pick(e.target.files?.[0] ?? null)} />
+          <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           {preview ? (
             <div
               className={`size-full transition-[filter] duration-[900ms] ${view === "approved" ? "animate-[develop_1.4s_var(--ease-out-soft)]" : ""}`}
@@ -229,8 +231,8 @@ export function ProofScreen() {
             </button>
           )}
           {view === "approved" && (
-            <Link href={`/quest/${runId}`} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b]">
-              Back to the quest
+            <Link href={run?.status === "completed" ? `/recap/${runId}` : `/quest/${runId}`} className="flex min-h-14 w-full items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[#0b0c0b]">
+              {run?.status === "completed" ? "See how it went" : "Back to the quest"}
             </Link>
           )}
           {view === "rejected" && (

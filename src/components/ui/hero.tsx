@@ -43,13 +43,13 @@ export function Hero({ children, className = "", fill = false }: { children: Rea
       <section
         className={`sky relative overflow-hidden text-on-sky ${fill ? "flex flex-1 flex-col" : "pb-6"} ${className}`}
         style={{
-          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 58%, var(--color-sky-bottom) 100%)",
+          background: "linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 66%, var(--color-sky-bottom) 100%)",
           textShadow: "0 1px 10px rgb(24 64 130 / 0.28)",
           ...(fill ? {} : { marginBottom: -36, maskImage: FADE, WebkitMaskImage: FADE }),
         }}
       >
         {/* a soft sun glow, top-right */}
-        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/25 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-white/15 blur-3xl" />
         <Clouds />
         <div className={`relative ${fill ? "flex flex-1 flex-col" : ""}`}>{children}</div>
         {!fill && <div aria-hidden className="h-16" />}

@@ -68,14 +68,14 @@ export function CrewScreen() {
         ) : crew === null ? (
           <div className="px-6 py-6 text-center">
             <Hand as="h1" className="text-[38px] leading-none font-bold">no crew yet</Hand>
-            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] text-on-sky/85">Start one and send the link to a few friends. Crews do longer games together.</p>
+            <p className="mx-auto mt-2 max-w-[30ch] text-[15px] text-on-sky/95">Start one and send the link to a few friends. Crews do longer games together.</p>
           </div>
         ) : (
           <div className="flex flex-col items-center px-6 pt-1 text-center">
             <Hand as="h1" className="text-[38px] leading-none font-bold">{crew.name}</Hand>
             <Odometer value={crew.coins} delay={150} className="mt-3 font-[family-name:var(--font-display)] text-[64px] leading-none font-semibold tracking-[-0.04em]" />
-            <p className="mt-1 text-[14px] font-medium text-on-sky/85">
-              coins all time{crew.rating != null && <> · crew rating {Math.round(crew.rating)}</>}
+            <p className="mt-1 text-[14px] font-medium text-on-sky/95">
+              coins all time
             </p>
           </div>
         )}

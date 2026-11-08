@@ -42,9 +42,9 @@
   --font-hand: var(--font-gaegu), var(--font-funnel-sans), sans-serif;
 
   /* The sky hero panel and the dark notification toasts */
-  --color-sky-top: #3a70c8;
-  --color-sky-mid: #5287d6;
-  --color-sky-bottom: #a3c4ee;
+  --color-sky-top: #2c5cb0;
+  --color-sky-mid: #386abf;
+  --color-sky-bottom: #7aa2e0;
   --color-on-sky: #ffffff;
   --color-toast: #0d0e0d;
   --color-on-toast: #ffffff;
@@ -457,8 +457,9 @@ a {
    a drop of glass catching light. */
 .glass,
 .glass-sky {
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  backdrop-filter: blur(14px) saturate(180%);
+  /* no saturate here: on the blue sky it pushed the circles to a glossy electric blue */
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 .glass {
   background:
@@ -472,8 +473,8 @@ a {
 }
 .glass-sky {
   background:
-    radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .38), transparent 55%),
-    rgb(255 255 255 / .14);
+    radial-gradient(120% 90% at 25% 0%, rgb(255 255 255 / .26), transparent 55%),
+    rgb(255 255 255 / .1);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / .6),
     inset 0 -1px 1px rgb(255 255 255 / .18),

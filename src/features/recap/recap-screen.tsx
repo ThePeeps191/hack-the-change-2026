@@ -9,7 +9,6 @@ import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Button, ButtonLink, MagneticButton } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/card";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
-import { Odometer } from "@/components/ui/odometer";
 import { MoodCheck } from "@/features/checkin/mood-check";
 import { RecapExtras } from "./recap-extras";
 
@@ -75,7 +74,7 @@ export function RecapScreen() {
         <Hand as="h1" className="px-6 pt-1 text-center text-[40px] leading-none font-bold">
           {problem ? PROBLEMS[problem].title : name ? `you and ${name} did it` : "you did it"}
         </Hand>
-        <p className="mx-auto mt-2 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-on-sky/85">
+        <p className="mx-auto mt-2 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-on-sky/95">
           {recap?.title ? recap.title.charAt(0).toUpperCase() + recap.title.slice(1) : " "}
         </p>
 
@@ -108,21 +107,13 @@ export function RecapScreen() {
         </svg>
         )}
 
-        {!problem && (
-        <div className="mt-5 flex justify-center gap-10 px-4 text-center">
-          {[
-            { v: recap?.duration_min ?? 0, l: recap?.duration_min === 1 ? "minute" : "minutes" },
-            ...(recap?.distance_m != null && recap.distance_m >= 50
-              ? [km! >= 1 ? { v: km!.toFixed(1), l: "km walked" } : { v: Math.round(recap.distance_m / 10) * 10, l: "metres walked" }]
-              : []),
-            { v: recap?.coins ?? 0, l: "coins" },
-          ].map((s, i) => (
-            <div key={s.l}>
-              <Odometer value={s.v} delay={300 + i * 120} className="font-[family-name:var(--font-display)] text-[32px] font-semibold tracking-[-0.02em]" />
-              <p className="mt-0.5 text-[13px] font-medium text-on-sky/85">{s.l}</p>
-            </div>
-          ))}
-        </div>
+        {/* the numbers, said once in a handwritten line under the route */}
+        {!problem && recap && (
+          <Hand as="p" className="mt-4 px-4 text-center text-[26px] leading-none font-bold">
+            {recap.duration_min} min
+            {recap.distance_m != null && recap.distance_m >= 50 && <> · {km! >= 1 ? `${km!.toFixed(1)} km` : `${Math.round(recap.distance_m / 10) * 10} m`}</>}
+            {" · "}+{recap.coins} coins
+          </Hand>
         )}
       </Hero>
 

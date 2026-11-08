@@ -26,7 +26,7 @@ export function Toast({
           animate={{ y: 0, opacity: 1, scale: 1, filter: "blur(0px)" }}
           exit={{ y: -30, opacity: 0, scale: 0.97, filter: "blur(6px)" }}
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          className="rounded-[26px] bg-white/85 p-5 text-[#121412] shadow-[0_18px_50px_rgb(13_40_90/0.25),inset_0_1px_0_rgb(255_255_255/0.9)] ring-1 ring-white/60 backdrop-blur-2xl dark:bg-[#1b2130]/85 dark:text-white dark:ring-white/10"
+          className="rounded-[26px] bg-white/85 p-5 text-[#121412] [text-shadow:none] shadow-[0_18px_50px_rgb(13_40_90/0.25),inset_0_1px_0_rgb(255_255_255/0.9)] ring-1 ring-white/60 backdrop-blur-2xl dark:bg-[#1b2130]/85 dark:text-white dark:ring-white/10"
         >
           <p className="font-[family-name:var(--font-hand)] text-[22px] leading-tight font-bold">{title}</p>
           {body && <p className="mt-1.5 text-[15px] leading-snug opacity-70">{body}</p>}

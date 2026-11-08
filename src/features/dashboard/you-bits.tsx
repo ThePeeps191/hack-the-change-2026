@@ -47,7 +47,7 @@ export function WeekStrip({ history }: { history: HistoryItem[] }) {
                 </svg>
               )}
             </motion.span>
-            <span className={`text-[12px] font-semibold ${isToday ? "text-on-sky" : "text-on-sky/60"}`}>{name}</span>
+            <span className={`text-[12px] font-semibold ${isToday ? "text-on-sky" : "text-on-sky/90"}`}>{name}</span>
           </li>
         );
       })}

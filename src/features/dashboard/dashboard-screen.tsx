@@ -69,15 +69,15 @@ export function DashboardScreen() {
         <Hand as="h1" className="text-center text-[36px] leading-none font-bold">
           {me ? `hi, ${me.display_name.split(" ")[0].toLowerCase()}` : " "}
         </Hand>
-        <SunArc caption={<span className="text-[13px] font-medium text-on-sky/85">of {goal} active min this week</span>} progress={active / goal} className="mt-3 px-5">
+        <SunArc caption={<span className="text-[13px] font-medium text-on-sky/95">of {goal} active min this week</span>} progress={active / goal} className="mt-3 px-5">
           <Odometer value={active} delay={150} className="font-[family-name:var(--font-display)] text-[52px] leading-none font-semibold tracking-[-0.04em]" />
         </SunArc>
-        <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/85">
+        <p className="mx-auto mt-3 max-w-[32ch] px-6 text-center text-[15px] leading-snug text-balance text-on-sky/95">
           Canada&apos;s movement guidelines suggest {goal} a week.
         </p>
         {d && <WeekStrip history={d.history} />}
         {d && (
-          <p className="mt-3 text-center text-[13px] font-medium text-on-sky/75">
+          <p className="mt-3 text-center text-[13px] font-medium text-on-sky/90">
             {d.quests_done} quests · {d.km_moved} km · {d.people_met} people met
           </p>
         )}
