@@ -891,6 +891,8 @@ a {
   .split-aside .hero-bar + * { margin-top: auto; }
   .split-aside .sky > .relative > :last-child { margin-bottom: auto; }
   .split-aside .split-fill { flex: 1; height: auto !important; min-height: 0; }
+  /* A single-step page's sky card fills the column's height. */
+  .split-tall > .relative:has(> .sky) { flex: 1; }
 }
 
 /* The proof photo while it's checked (src/features/proof/photo-scan.tsx).
@@ -983,3 +985,15 @@ a {
 /* The map's attribution "i" is 24px; give it a 44px tap area. */
 .maplibregl-ctrl-attrib-button { position: relative; }
 .maplibregl-ctrl-attrib-button::after { content: ""; position: absolute; inset: -10px; }
+
+/* Wide screens: a single-step page whose sky fills the screen (join, not
+   found, finding someone). The sky spans the whole width; the top bar stays
+   at the top and everything else gathers in the middle, with the buttons
+   right under it instead of down at the foot of the screen. */
+@media (min-width: 1024px) {
+  .sky-stage > .relative { justify-content: center; }
+  .sky-stage .hero-bar { position: absolute; inset-inline: 0; top: 0; padding-inline: 24px; }
+  .sky-stage > .relative > .mt-auto { margin-top: 2.5rem; }
+}
+/* The login's glass panes stand taller beside the words on a computer. */
+@media (min-width: 1024px) { .sp-pane { height: clamp(340px, 62vh, 560px); } }
