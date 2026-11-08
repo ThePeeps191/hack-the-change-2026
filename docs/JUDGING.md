@@ -70,6 +70,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 - **AI referee with context.** Proof is checked against the quest, the place and the time window, not just "is there a book in this photo".
 - **We measure friendship, not followers.** The metrics below come from research on how friendships actually form. No other fitness or social app counts this.
 - **Strangers become regulars.** The second time you're matched with someone, the app notices, and that's where the loneliness numbers actually move.
+- **Claim mode** turns a campus into a board game that crews play over days.
 
 ### Impact & Relevance to the prompt (health, social connection, well-being)
 
@@ -130,7 +131,7 @@ There are three layers, so the competitive parts never leak into stranger meetup
 
 1. **Wellbeing stats** (above). They come from every quest, private, never ranked.
 2. **Coins.** Every completed quest earns coins for effort, and coins feed the weekly crew leaderboard. Anyone can earn them at any fitness level.
-(Ratings were only used by the Claim game, which was cut, so don't mention them.)
+3. **Ratings (Glicko-2, using the `glicko2` package).** Only where there's a real winner. In the build that's one thing: a crew stealing a Claim zone from another crew (`rateSteal` in `src/server/games.ts`). Each crew has one rating. Stranger quests are cooperative and never touch a rating. (Races, 1v1 challenges and ratings per category were ideas that weren't built, so don't mention them.)
 
 ## The 3-minute demo (round 1) and 5-minute final
 
@@ -139,7 +140,7 @@ The team owns the story. This is the skeleton it has to fit.
 1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers, and say the two focus areas by name.
 2. **System 1 live (90 s):** on a phone: free for 20 min, matched (with Priya, the demo partner, and say she's a demo partner), a UCalgary quest, a photo, the AI referee confirms it, the recap.
 3. **Why it works (30 s):** the human metrics on the dashboard, and safety in one sentence.
-4. **System 2 (30 s):** the crew and the weekly leaderboard.
+4. **System 2 (30 s):** crew leaderboard, the Claim map, a zone stolen.
 5. **Close (10 s):** what a pilot on campus looks like.
 
 The final adds 2 minutes: scalability (cost, any city), the tech architecture, and what we'd measure in a pilot.
@@ -153,7 +154,7 @@ The final adds 2 minutes: scalability (cost, any city), the tech architecture, a
 | UI/UX and metrics | Design system, every screen, the human metrics dashboard, ratings, the screenshots in the video |
 | Backend | Login and the demo login, matching, the live deploy, no secrets in the repo |
 | Gemini | Grounded quests with sources, the proof referee, recaps, the cost-per-quest number |
-| Friends and demo | Quests and story, testers, the video, the Devpost write-up, the title format, submitting early |
+| Friends and demo | Quests and story, Claim rules, testers, the video, the Devpost write-up, the title format, submitting early |
 
 ## Side pots and sponsor prizes
 
