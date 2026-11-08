@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Funnel_Display, Funnel_Sans, Gaegu } from "next/font/google";
 import { APP_NAME, APP_TAGLINE } from "@/lib/config";
+import { RegisterServiceWorker } from "@/components/register-sw";
 import "./globals.css";
 
 const display = Funnel_Display({ subsets: ["latin"], variable: "--font-funnel-display", display: "swap" });
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </filter>
         </svg>
         {children}
+        <RegisterServiceWorker />
       </body>
     </html>
   );
