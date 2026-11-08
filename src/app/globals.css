@@ -539,7 +539,7 @@ a {
   --px: .5;
   --py: .5;
   perspective: 900px;
-  touch-action: none; /* so a finger dragging across tilts the panes instead of scrolling */
+  touch-action: pan-y; /* a sideways drag tilts the panes; up and down still scrolls */
   padding: 18px 2px 30px;
 }
 
@@ -608,15 +608,20 @@ a {
   transform: translate(calc((var(--px) - .5) * -26px), calc((var(--py) - .5) * -8px));
   transition: transform .7s cubic-bezier(.2, .8, .2, 1);
 }
+/* Each cloud is three overlapping puffs (radial gradients), lightly blurred. */
 .sp-clouds span {
+  --puff: rgb(255 255 255 / .8);
   position: absolute;
-  height: 30px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / .7);
-  filter: blur(8px);
+  height: 40px;
+  background:
+    radial-gradient(circle at 28% 68%, var(--puff) 0 30%, transparent 31%),
+    radial-gradient(circle at 52% 42%, var(--puff) 0 40%, transparent 41%),
+    radial-gradient(circle at 76% 66%, var(--puff) 0 28%, transparent 29%),
+    linear-gradient(var(--puff), var(--puff)) 22% 88% / 60% 30% no-repeat;
+  filter: blur(3px);
 }
 @media (prefers-color-scheme: dark) {
-  .sp-clouds span { background: rgb(200 190 235 / .35); }
+  .sp-clouds span { --puff: rgb(205 195 240 / .4); }
 }
 
 /* Solid ground along the bottom, so each pane's label sits on dark, not sky. */
@@ -665,9 +670,10 @@ a {
 
 .sp-label {
   position: absolute;
-  inset: auto 6px 0;
+  inset: auto 4px 0;
   height: 25%;
   justify-content: center;
+  padding-bottom: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -679,10 +685,19 @@ a {
 .sp-title {
   font-family: var(--font-hand);
   font-size: 17px;
+  white-space: nowrap;
   font-weight: 700;
   line-height: 1;
   text-shadow: 0 1px 6px rgb(0 0 0 / .4);
 }
+
+/* An invisible button over each pane, for keyboard focus. */
+.sp-hit {
+  position: absolute;
+  inset: 0;
+  border-radius: 19px;
+}
+.sp-hit:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
 
 .sp-caption {
   min-height: 3em;
