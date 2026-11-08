@@ -9,9 +9,9 @@ import { distance, walkMinutes } from "@/lib/format";
 import type { QuestRun } from "@/lib/contracts";
 import { usePoll } from "@/lib/use-poll";
 import { AppShell, Hand } from "@/components/ui/app-shell";
-import { ButtonLink } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
-import { Toast, toastPill, toastQuiet } from "@/components/ui/toast";
+import { Toast, toastQuiet } from "@/components/ui/toast";
 import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
 import { CategoryIcon, categoryOf, Coin } from "@/components/ui/quest-glyph";
 
@@ -151,19 +151,6 @@ export function MatchScreen() {
               </div>
             </Liquid.Item>
           </Liquid>
-          <AnimatePresence>
-            {state === "matched" && (
-              <motion.span
-                className="pointer-events-none absolute text-[17px] font-semibold text-[#173f86] [text-shadow:none]"
-                initial={{ opacity: 0, filter: "blur(6px)" }}
-                animate={{ opacity: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.35, duration: 0.4 }}
-              >
-                you + {name ?? "them"}
-              </motion.span>
-            )}
-          </AnimatePresence>
         </motion.div>
         <AnimatePresence mode="wait">
           <motion.div
@@ -184,8 +171,8 @@ export function MatchScreen() {
             <p className="mx-auto mt-2 max-w-[30ch] text-[15px] leading-snug text-on-sky/95">
               {state === "searching" && (
                 <>
-                  <PlaceTicker />
-                  <span className="mt-1 block text-[13px] text-on-sky/90">Usually under a minute · <Elapsed /></span>
+                  <PlaceTicker approx={approx} />
+                  <span className="mt-1 block text-[13px] text-on-sky/90">Usually under a minute<Elapsed /></span>
                 </>
               )}
               {state === "found" && "They're free right now too."}
@@ -214,7 +201,7 @@ export function MatchScreen() {
               )}
             </>
           }
-          action={<button className={toastPill} onClick={() => respond(true)} disabled={acting}>Yes, let&apos;s go</button>}
+          action={<Button className="flex-1" onClick={() => respond(true)} disabled={acting}>Yes, let&apos;s go</Button>}
           secondary={<button className={toastQuiet} onClick={() => respond(false)} disabled={acting}>Not now</button>}
         />
 

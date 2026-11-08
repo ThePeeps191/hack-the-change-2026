@@ -1,5 +1,4 @@
 "use client";
-import { BorderBeam } from "border-beam";
 import { motion } from "motion/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -60,9 +59,6 @@ export function QuestScreen() {
   }
 
   const q = run.quest;
-  // The card only renders on the phone, after the run has loaded, so reading
-  // the colour scheme here can't cause a hydration mismatch.
-  const dark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [you, ...others] = run.members;
   const partner = others[0];
   const active = run.status === "active";
@@ -81,7 +77,7 @@ export function QuestScreen() {
         <div className="flex flex-col items-center pt-2" role={active ? "timer" : undefined} aria-label={active && left != null ? `${Math.ceil(left / 60)} minutes left` : undefined}>
           {active ? (
             <>
-              <div className="font-[family-name:var(--font-display)] text-[84px] leading-none font-semibold tracking-[-0.04em] tabular-nums">
+              <div className="numeral text-[84px] leading-none">
                 {left == null ? (
                   <span className="opacity-0">00</span>
                 ) : late ? (
@@ -106,7 +102,7 @@ export function QuestScreen() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       >
-        <BorderBeam size="md" theme={dark ? "dark" : "light"} colorVariant="ice" duration={6} strength={1} borderRadius={28} active={active} className="glass-card rounded-[28px] text-ink">
+        <div className="glass-card rounded-[28px] text-ink">
           <article className="relative rounded-[28px] p-5">
             <div className="flex items-center gap-2 text-[13px] text-ink-muted">
               <CategoryIcon category={categoryOf(q)} size={20} className="text-ink" />
@@ -162,7 +158,7 @@ export function QuestScreen() {
               ))}
             </ul>
           </article>
-        </BorderBeam>
+        </div>
       </motion.div>
 
       {active && <div className="px-4 pt-5"><MoodCheck runId={run.id} phase="before" /></div>}

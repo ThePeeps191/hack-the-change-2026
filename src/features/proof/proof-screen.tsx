@@ -152,7 +152,8 @@ export function ProofScreen() {
         </p>
 
         {/* The frame */}
-        <div className="relative mx-3 aspect-[4/5] overflow-hidden rounded-[28px] bg-white/[0.06]">
+        {/* Once the verdict is in, the frame shortens to square so the verdict and its button fit on a phone screen. */}
+        <div className={`relative mx-3 overflow-hidden rounded-[28px] bg-white/[0.06] transition-[aspect-ratio] duration-500 ${view === "approved" || view === "rejected" ? "aspect-square" : "aspect-[4/5]"}`}>
           <input ref={input} type="file" accept={accept} capture="environment" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           {preview ? (
             <div
