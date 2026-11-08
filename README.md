@@ -107,17 +107,12 @@ Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tige
 
 We built Amble with Claude Code as our coding assistant. It wrote much of the code, while we made the product decisions, wrote the quests and other content by hand, and reviewed the changes. Dozens of sessions ran in parallel, each in its own git worktree with small pull requests, using the rules in [CLAUDE.md](CLAUDE.md). At one point our merges used up the hosting platform's daily deploy limit.
 
-## Repository
+## Where things are
 
-| Path | What's there |
-| --- | --- |
-| `src/app/` | Screens and API routes |
-| `src/features/` | One folder per feature: matching, quests, proof, recap, crews, Claim, the You tab |
-| `src/server/` | The rules: matching, runs, proof, crews, Claim, coins |
-| `src/lib/` | Shared types, the API client, and the seams for sign-in, AI and the database |
-| `data/quests/` | The hand-written quests |
-| `db/migrations/` | The database schema |
-| `docs/` | How it works ([TECHNICAL](docs/TECHNICAL.md) for a short summary, [WALKTHROUGH](docs/WALKTHROUGH.md), [ARCHITECTURE](docs/ARCHITECTURE.md)) and how we work ([DEVELOPMENT](docs/DEVELOPMENT.md)) |
+- `src/app/` has the screens and API routes, and `src/features/` has one folder per feature
+- `src/server/` has the rules: matching, runs, proof, crews, Claim and coins
+- `data/quests/` has the hand-written quests, and `db/migrations/` has the schema
+- `docs/` explains the rest. Start with [TECHNICAL](docs/TECHNICAL.md), and see [DEVELOPMENT](docs/DEVELOPMENT.md) to run it locally
 
 ## Team
 
