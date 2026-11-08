@@ -125,11 +125,11 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 | Topic | Decision | Why |
 | --- | --- | --- |
 | Name | Amble | Keep it in one constant so it's easy to change |
-| Hosted services | Gemini, Tiger Data, Auth0, Vercel, amble.health | From the doc. Auth0 is a sponsor track, so keep it even if a shortcut is tempting |
+| Hosted services | Claude (Anthropic), Tiger Data, Auth0, Vercel, amble.health | From the doc. Auth0 is a sponsor track, so keep it even if a shortcut is tempting |
 | App | *Proposed:* one Next.js app in TypeScript, with Tailwind | Pages and API in one repo and one deploy, which means less to integrate |
 | Package manager | *Proposed:* bun, for installs only | Fast, and cheap on disk across dozens of worktrees. Install with `npm i -g bun` |
 | Database access | *Proposed:* plain SQL migrations and the `postgres` client | ORM migration journals conflict when branches run in parallel |
-| AI | Claude Haiku 5.5 while building, Gemini for the demo, behind one seam (`src/lib/ai.ts`, `AI_PROVIDER`) | Cheap and fast to build with; Gemini's Maps grounding and the MLH Gemini prize for the demo. Claude quests use real OpenStreetMap places, since it has no Maps grounding |
+| AI | Claude Haiku 5.5, in development and the demo, behind one seam (`src/lib/ai.ts`, `AI_PROVIDER`) | Cheap and fast. It checks proof and writes recaps; quests are hand-made. A Gemini path exists but isn't used, and we're not entering the Gemini prize |
 | Map | MapLibre GL with free OpenFreeMap tiles | A 3D globe, and no key or quota to manage. Gemini's Maps grounding is separate and needs no map key |
 | Live updates | *Proposed:* poll every few seconds | Plenty for matching, and far simpler than websockets |
 | Uploads | Postgres (`uploads` table) | Vercel functions have no lasting disk |
@@ -138,16 +138,16 @@ The doc lists the stack but not a framework. Everything marked *proposed* is a d
 
 ## Architecture
 
-One Next.js app on Vercel, behind HTTPS at amble.health (we switched from Vultr; see `docs/DEPLOYMENT.md`). The browser talks only to our API routes. API routes talk to Tiger Data, Auth0 and Gemini, and all keys stay on the server except the browser-restricted Maps key.
+One Next.js app on Vercel, behind HTTPS at amble.health (we switched from Vultr; see `docs/DEPLOYMENT.md`). The browser talks only to our API routes. API routes talk to Tiger Data, Auth0 and Claude, and every key stays on the server.
 
 A System 1 quest goes like this:
 
 1. The user says they're free, and the app sends their location to `POST /api/availability`.
 2. The server pairs two nearby people, or a stranger opens an invite link. Both apps poll `GET /api/match` until both accept.
-3. The server gets a quest from Gemini or the starter pack and creates a quest run.
+3. The server picks a hand-made quest near both people and creates a quest run.
 4. Both people walk to the quest location. Location pings are stored for the route.
-5. Each person submits proof. The server checks location and time, then asks Gemini about the photo or video.
-6. Gemini's verdict comes back, coins are awarded, and the recap is created.
+5. Each person submits proof. The server checks location and time, then asks Claude about the photo or video.
+6. Claude's verdict comes back, coins are awarded, and the recap is created.
 
 ## Repo layout
 
