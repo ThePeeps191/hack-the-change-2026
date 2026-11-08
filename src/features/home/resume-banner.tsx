@@ -14,7 +14,7 @@ export function ResumeBanner() {
 
   if (!run) return null;
   return (
-    <div className="px-4 pt-4">
+    <div className="px-4 pt-4 lg:pb-6">
       <Link href={`/quest/${run.id}`} className="flex min-h-14 items-center justify-between gap-3 tb tb-primary rounded-[20px] px-5 py-3 text-on-accent transition-transform motion-safe:active:scale-[0.98]">
         <span className="min-w-0">
           <span className="block text-[13px] font-medium">Back to your quest</span>

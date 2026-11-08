@@ -43,10 +43,12 @@ function dress(map: MLMap) {
     "fog-ground-blend": 0.7,
     "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 6, 1, 9, 0],
   });
-  // The big "Calgary" city name sits right where the pins cluster, so a pin
-  // would cover it. Every pin is in Calgary anyway, so hide the city names;
-  // neighbourhood and street names stay.
-  for (const id of ["label_city", "label_city_capital"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
+  // Place names add nothing here (every pin is in Calgary, and the pins say
+  // what's where), and in a narrow card they get cut off at the edge, so hide
+  // them: the city, towns, villages and neighbourhoods. Street names stay.
+  for (const l of map.getStyle().layers) {
+    if (l.type === "symbol" && (l as { "source-layer"?: string })["source-layer"] === "place") map.setLayoutProperty(l.id, "visibility", "none");
+  }
   if (map.getSource("openmaptiles") && !map.getLayer("amble-3d")) {
     // Draw the 3D blocks above every road and flat building layer (some
     // styles put a label layer before the roads, so "first symbol" isn't
