@@ -29,6 +29,7 @@ Open **[amble.health](https://amble.health)** on your phone and tap **Try the de
 
 ## Why
 
+- In Calgary, **15%** of people often or always feel lonely and another **31%** sometimes do. Among 18 to 34 year olds, **26%** often or always feel lonely ([City of Calgary, Mental Health of Calgarians survey, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf)).
 - **23%** of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)).
 - Only **46%** of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021-eng.htm)).
 

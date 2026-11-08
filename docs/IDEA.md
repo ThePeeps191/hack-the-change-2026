@@ -43,6 +43,7 @@ The two systems feed each other: someone you meet on a 20-minute quest can join 
 
 ## Why this idea
 
+- **Loneliness in Calgary:** 15% of Calgarians often or always feel lonely and another 31% sometimes do; among 18 to 34 year olds, 26% often or always do ([City of Calgary, Mental Health of Calgarians survey, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf), pages 53 and 54; a phone survey of 1,255 Calgarians by Advanis, April to May 2025).
 - **Loneliness:** 23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada, 2021](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)).
 - **Inactivity:** only 46% of Canadian adults get the recommended 150 minutes of activity a week ([Statistics Canada, 2026](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021c-eng.htm)).
 - **Prompt fit:** health (every quest gets people walking or moving outdoors), social connection (meeting someone new and playing with friends), well-being (play, novelty and time outside), and communities (quests send people to local shops, parks, libraries and campus events).

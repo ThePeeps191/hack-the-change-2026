@@ -21,7 +21,7 @@ Twenty minutes, someone new, somewhere outside.
 
 ### Inspiration
 
-23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)). Only 46% of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021c-eng.htm)). <One Calgary-specific, sourced number for Benevity's Best Local Impact, or delete this sentence.> Making a friend usually means planning a coffee and making small talk, which is exactly the hard part for newcomers, for people living alone and for anyone shy.
+23% of Canadians aged 15 to 24 always or often feel lonely, the highest of any age group ([Statistics Canada](https://www.statcan.gc.ca/o1/en/plus/274-you-are-not-alone)). Only 46% of Canadian adults get the recommended 150 active minutes a week ([Statistics Canada](https://www150.statcan.gc.ca/n1/daily-quotidien/261021/dq261021c-eng.htm)). Here in Calgary, 15% of people often or always feel lonely and another 31% sometimes do, and among 18 to 34 year olds it's 26% often or always ([City of Calgary, Mental Health of Calgarians survey, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf)). Making a friend usually means planning a coffee and making small talk, which is exactly the hard part for newcomers, for people living alone and for anyone shy.
 
 ### What it does
 

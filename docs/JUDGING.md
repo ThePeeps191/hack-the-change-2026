@@ -76,7 +76,7 @@ Each category is scored 1 to 5, and the full wording of every level is in [RUNBO
 
 *5 = "embodies the prompt; significant, measurable, scalable impact."*
 
-- **The problem, with numbers:** 23% of Canadians aged 15 to 24 feel lonely always or often, and only 46% of adults get 150 active minutes a week (sources in IDEA.md).
+- **The problem, with numbers:** in Calgary, 15% of people often or always feel lonely and 26% of 18 to 34 year olds do (City of Calgary, 2025). Nationally, 23% of Canadians aged 15 to 24 feel lonely always or often, and only 46% of adults get 150 active minutes a week (sources in IDEA.md).
 - **Measurable outcomes in the product itself** (see Metrics): active minutes against the national guideline, time spent with the same people, new places, and mood before and after. A judge can see impact for a single user on the dashboard.
 - **Inclusive by design, for named groups:** newcomers, people living alone and anyone shy (see Prompt fit). Comfort settings (step-free, short pace, side-by-side vs chatty), walking pace with no fitness level assumed, any phone browser with no install, free, and low-pressure copy.
 - **Neighbourhood engagement:** crews and Claim get friends out across campus together, and familiar faces turn strangers into neighbours. (Give-back and skill-swap quests aren't in the pack, so don't promise them.)
@@ -137,7 +137,7 @@ There are three layers, so the competitive parts never leak into stranger meetup
 
 The team owns the story. This is the skeleton it has to fit.
 
-1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers, and say the two focus areas by name.
+1. **Hook (20 s):** one real moment (a newcomer's first week works well), then the loneliness and activity numbers (lead with Calgary's: 26% of 18 to 34 year olds here often or always feel lonely), and say the two focus areas by name.
 2. **System 1 live (90 s):** on a phone: free for 20 min, matched (with Priya, the demo partner, and say she's a demo partner), a UCalgary quest, a photo, the AI referee confirms it, the recap.
 3. **Why it works (30 s):** the human metrics on the dashboard, and safety in one sentence.
 4. **System 2 (30 s):** crew leaderboard, the Claim map, a zone stolen.
@@ -200,7 +200,7 @@ Done on Nov 7 by opening the app alone at phone width (390 × 844), with a produ
 6. ~~**Rewrite or remove two starter quests.**~~ Decided Nov 7 to keep safety rules light, so both stay. Original note: "Film an Air Ambulance" means filming a hospital helipad, which is a privacy flag. "Downtown View" sends people onto a parkade roof, and our own AI rules ban rooftops and heights. It's now the second card on the home screen, so do this one first.
 7. **Most of the starter pack is out of reach** (friends and demo, 30 min). Since commit 0763c7f the pack is 17 Calgary quests, and only 3 are within a kilometre of campus (foosball at Schulich, the Art Parkade roof and running backwards at Foothills). The rest are 4 to 10 km away but still say "20 min", and the search screen even shows "Quests waiting at Glenmore Dam, Calgary Zoo". Add 4 to 6 more campus quests, and give the downtown ones honest durations or make them crew quests.
 8. **There are no "anywhere" quests any more.** Decided: drop the promise from the pitch. Every quest is hand-made at a real place, and the README and Devpost don't mention anywhere quests. (`bun run smoke` no longer depends on them, and passes 86 of 86 on real Postgres too.)
-9. **One sourced Calgary number for Benevity** (20 min of research, #366). Use something published, for example from the City of Calgary or United Way of Calgary on isolation or newcomers. Quote it exactly, with the source.
+9. **Done (#366): one sourced Calgary number for Benevity.** 15% of Calgarians often or always feel lonely, 31% sometimes, and 26% of 18 to 34 year olds often or always ([City of Calgary, Mental Health of Calgarians survey, 2025](https://www.calgary.ca/content/dam/www/programs-services/social-programs-and-services/mental-health-and-addiction-strategy/mental-health-calgarians-final-report-2025.pdf), pages 53 and 54). It's in the README, DEVPOST.md, IDEA.md and the hook above. Paste the DEVPOST.md Inspiration text into Devpost itself.
 10. ~~**Measure the cost per proof check.**~~ Measured on the Anthropic Console on Nov 7: the app's first 12 live Claude Haiku calls cost $0.0049 in total, about $0.0004 a call. A quest uses two calls (the proof check and the recap), so about a tenth of a cent per quest, or roughly $1 for 1,000 quests.
 11. ~~**The recap with a bad id.**~~ Done: an unknown run says "no recap here", an unfinished one says "not done yet" and links back to the quest, and no signal offers Try again. None of them show the zero stats.
 12. ~~**The recap with no GPS.**~~ Done: the distance is hidden when there's no route, and "1 minute" is singular.
