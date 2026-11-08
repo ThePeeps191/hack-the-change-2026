@@ -166,6 +166,7 @@ export type Dashboard = {
   familiar_faces?: FamiliarFace[]; // people you've done 2+ quests with
   new_places?: { name: string; lat: number; lng: number; first_visit: string }[];
   mood?: { after_better: number; checkins: number }; // check-ins where you felt better after
+  sample_quests?: number; // "Try the demo" guests start with a few sample quests; this many of yours are samples
   small_hellos?: SmallHello[]; // a quest with someone new, as a moment rather than a tally
 };
 

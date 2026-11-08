@@ -96,6 +96,12 @@ export function DashboardScreen() {
       <div className="space-y-8 px-4 pt-7 lg:pt-0">
         {!d && <Skeleton className="h-40 rounded-[24px]" />}
 
+        {d && (d.sample_quests ?? 0) > 0 && (
+          <p className="rounded-[20px] bg-sunken px-4 py-3 text-[14px] leading-snug text-ink-muted">
+            Your demo starts with {d.sample_quests} sample quests, so you can see how this page fills in. Anything you do now is added on top.
+          </p>
+        )}
+
         {d && (
           <Section
             id="faces"
