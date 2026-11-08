@@ -76,7 +76,7 @@ export function InviteScreen() {
 
     const loadInvite = async () => {
       try {
-        // Check age first
+        // Send first-timers through the welcome screen (name and comfort) first
         const user = await api.me();
         if (!user.age_confirmed_at) {
           router.replace(`/welcome?next=/invite/${code}`);

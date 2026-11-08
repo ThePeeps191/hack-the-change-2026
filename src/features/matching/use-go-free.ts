@@ -22,7 +22,7 @@ export function useGoFree() {
       await api.setFree(pos.lat, pos.lng);
       router.push(pos.approximate ? "/match?approx=1" : "/match");
     } catch (e) {
-      // 403 is a safety rule (18+, verified email, daylight) with its own message.
+      // 403 is a safety rule (verified email, daylight) with its own message.
       setError(e instanceof ApiError && e.status === 403 ? e.message : "Couldn't reach Amble just now. Check your signal and try again.");
       setBusy(false);
     }

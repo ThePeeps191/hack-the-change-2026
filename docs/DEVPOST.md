@@ -36,7 +36,7 @@ The "You" tab shows numbers that matter, privately and never ranked: active minu
 
 - Comfort settings: step-free places only, short and easy pace, side by side instead of chatting, and quests in ten languages.
 - You meet at a public quest spot, never at each other's location. Your partner sees a rough distance, then a first name once you both say yes.
-- 18+, daylight only for meeting strangers, one tap to report, and a report means you're never paired again.
+- Daylight only for meeting strangers, one tap to report, and a report means you're never paired again.
 - Location is deleted the moment you're matched, routes are deleted after 30 days, and you can download or delete all your data. The privacy page says which AI sees your photos.
 
 ### How we built it
