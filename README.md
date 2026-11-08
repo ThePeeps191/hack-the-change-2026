@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://amble.health">amble.health</a> ·
+  <a href="https://www.youtube.com/watch?v=QhlJbPP4aZY">Demo video</a> ·
   <a href="https://devpost.com/software/9dszkw-small-usage-limits-big-dreams-amble">Devpost</a> ·
   Built in 24 hours at Hack the Change 2026
 </p>
@@ -20,6 +21,12 @@
 Amble gives strangers short, fun challenges to do together. When you have some time, you tap "I'm free", get paired with someone nearby, and meet them at a public spot to do the challenge. For example, one quest at the Foothills Athletic Park is "Film each other running 100 m backwards on the track, then play the videos in reverse to see whose run looks more normal." All quests were written by hand since a limitation of having AI procedurally create quests is that AI does not know about the environments it is creating quests for (eg. AI does not know that there are foosball tables in the UCalgary engineering building.
 
 You can also start a crew with your friends and compete with other crews to claim spots around campus.
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=QhlJbPP4aZY"><img src="https://img.youtube.com/vi/QhlJbPP4aZY/maxresdefault.jpg" alt="Watch the Amble demo video on YouTube" width="560"></a>
+  <br>
+  <sub>Watch the demo video</sub>
+</p>
 
 ## Try it
 
