@@ -12,6 +12,7 @@ import { Coin } from "@/components/ui/quest-glyph";
 import { getPosition } from "@/lib/geo";
 import { usePoll } from "@/lib/use-poll";
 import { MAX_UPLOAD_BYTES, shrinkPhoto } from "@/lib/shrink-photo";
+import { videoFrames } from "@/lib/video-frames";
 import { AppShell, Hand } from "@/components/ui/app-shell";
 import { Odometer } from "@/components/ui/odometer";
 
@@ -84,6 +85,8 @@ export function ProofScreen() {
       const pos = await getPosition(4000);
       const form = new FormData();
       if (media) form.set("media", media);
+      const frames = media ? await videoFrames(media) : null;
+      if (frames) form.set("frames", frames);
       if (!pos.approximate) {
         form.set("lat", String(pos.lat));
         form.set("lng", String(pos.lng));

@@ -28,6 +28,7 @@ export type ProofInput = {
   quest: Quest;
   media_path: string | null; // the upload on disk; null for gps proof
   media_type: string | null;
+  frames_path?: string | null; // video only: start, middle and end frames as one JPEG, for models that can't watch video
   lat: number | null;
   lng: number | null;
   taken_at: string | null;

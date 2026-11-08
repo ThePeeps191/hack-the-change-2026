@@ -1,4 +1,5 @@
 import "server-only";
+import snapshot from "../../data/places/calgary.json";
 import { starterQuests } from "./starter-quests";
 
 // Real, named, public places near a point. This is what keeps AI-written quests
@@ -8,6 +9,9 @@ import { starterQuests } from "./starter-quests";
 // 1. OpenStreetMap, through the Overpass API (free, no key). Overpass is often
 //    overloaded, so a few mirrors are tried with short timeouts, and a failure
 //    is remembered for a few minutes so nobody waits on it twice.
+//    If none answers in a few seconds, a saved snapshot of the same kinds of
+//    place around campus and central Calgary (data/places/calgary.json, made by
+//    scripts/snapshot-places.ts) stands in.
 // 2. Our own curated places from data/quests/, which are always there.
 // © OpenStreetMap contributors, ODbL. Quests link back to each OSM place.
 
@@ -29,7 +33,7 @@ const CURATED_RADIUS_M = 3000;
 const MAX_PLACES = 30;
 const CACHE_MS = 60 * 60_000;
 const FAILURE_MS = 5 * 60_000;
-const TIMEOUT_MS = 5000;
+const TIMEOUT_MS = 3500; // mirrors are asked at the same time, so this is the whole wait
 
 // Public spots two people can walk into and do something together. No bars,
 // no private buildings, nothing that needs a ticket.
@@ -73,12 +77,19 @@ function kindOf(tags: Record<string, string>) {
 // both have nothing near this point.
 export async function placesNear(lat: number, lng: number): Promise<Place[]> {
   const fromOsm = await osmPlaces(lat, lng).catch((e) => {
-    console.error("OpenStreetMap places unavailable, using curated places:", (e as Error).message);
-    return [] as Place[];
+    console.error("Overpass unavailable, using the saved OpenStreetMap snapshot:", (e as Error).message);
+    return snapshotPlaces(lat, lng);
   });
   const names = new Set(fromOsm.map((p) => p.name.toLowerCase()));
   const merged = [...fromOsm, ...curatedPlaces(lat, lng).filter((p) => !names.has(p.name.toLowerCase()))];
   return merged.sort((a, b) => a.metres - b.metres).slice(0, MAX_PLACES);
+}
+
+// The saved snapshot, within the same walking radius as a live lookup.
+function snapshotPlaces(lat: number, lng: number): Place[] {
+  return snapshot
+    .map((p) => ({ ...p, metres: metres({ lat, lng }, p), opening_hours: null }))
+    .filter((p) => p.metres <= RADIUS_M);
 }
 
 // The places our hand-written quests use, which we know are real and public.
@@ -105,22 +116,18 @@ async function osmPlaces(lat: number, lng: number): Promise<Place[]> {
 
   const around = `(around:${RADIUS_M},${at.lat},${at.lng})`;
   const query = `[out:json][timeout:5];(${FILTERS.map((f) => `nwr${around}${f}["name"];`).join("")});out center 120;`;
-  let elements: Element[] | null = null;
-  for (const url of MIRRORS) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": "Amble/0.1 (hackathon project)" },
-        body: `data=${encodeURIComponent(query)}`,
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
-      if (!res.ok) continue;
-      elements = ((await res.json()) as { elements?: Element[] }).elements ?? [];
-      break;
-    } catch {
-      // try the next mirror
-    }
-  }
+  // Every mirror at once; the first good answer wins.
+  const ask = async (url: string) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": "Amble/0.1 (hackathon project)" },
+      body: `data=${encodeURIComponent(query)}`,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    return ((await res.json()) as { elements?: Element[] }).elements ?? [];
+  };
+  const elements = await Promise.any(MIRRORS.map(ask)).catch(() => null);
   if (!elements) {
     overpassDownSince = Date.now();
     throw new Error("every Overpass mirror failed or timed out");
