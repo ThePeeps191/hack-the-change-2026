@@ -64,6 +64,8 @@ export type Match = {
   demo_partner?: boolean;
   // Added: the quest an invite pinned, so the waiting screen can name it.
   quest_title?: string | null;
+  // Added: the invite's code, only for the person who made the link and only while it's pending.
+  invite_code?: string | null;
 };
 
 export type RunMember = {
@@ -71,6 +73,8 @@ export type RunMember = {
   display_name: string;
   submitted: boolean;
   verdict: Verdict | null;
+  // Added: "how to spot me" on a quest with someone new, e.g. "red jacket, by the doors". Pair runs only.
+  hint?: string | null;
 };
 
 // One group doing one quest
@@ -117,6 +121,9 @@ export type Recap = {
   completed_at?: string;
   // Added: the same proof as `photos`, with each file's type, so a video plays as a video.
   proof?: { url: string; type: string }[];
+  // Added: your own mood check-ins for this quest (1 to 5), only ever sent to you. Null if skipped.
+  mood_before?: number | null;
+  mood_after?: number | null;
 };
 
 export type CrewMember = {
@@ -179,6 +186,7 @@ export type Dashboard = {
 
 export type WeekDay = {
   day: string; // YYYY-MM-DD
+  quests: number; // quests you finished that day
   quest_minutes: number; // minutes on quests you finished that day
   moving_minutes: number; // minutes with GPS pings while on a quest that day
 };

@@ -78,6 +78,8 @@ async function toMatch(m: MatchRow, userId: string): Promise<Match> {
     times_together: together,
     demo_partner: partnerId != null && partnerId === (await botId()),
     quest_title: m.quest_id ? (await one<{ title: string }>("select title from quests where id = $1", [m.quest_id]))?.title ?? null : null,
+    // Only the person who made the link gets its code back, so the waiting screen can keep showing it.
+    invite_code: m.source === "invite" && m.status === "pending" && m.user_a === userId ? m.invite_code : null,
   };
 }
 

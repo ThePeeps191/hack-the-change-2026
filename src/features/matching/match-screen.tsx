@@ -13,6 +13,8 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { Toast, toastQuiet } from "@/components/ui/toast";
 import { Burst, Elapsed, PlaceTicker, Specks } from "./match-bits";
+import { InviteCard } from "@/features/invites/invite-card";
+import { ShareLink } from "@/features/invites/share-link";
 import { CategoryIcon, categoryOf, Coin } from "@/components/ui/quest-glyph";
 
 type State = "searching" | "found" | "waiting" | "matched" | "ended";
@@ -61,6 +63,19 @@ export function MatchScreen() {
     if (!runId) return;
     api.run(runId).then(setRun).catch(() => {});
   }, [runId]);
+
+  // How long you've been searching, so the screen can stop promising "under a
+  // minute" and offer another way after 45 seconds with nobody around.
+  const [searchingFor, setSearchingFor] = useState(0);
+  useEffect(() => {
+    if (state !== "searching") return;
+    const t = setInterval(() => setSearchingFor((s) => s + 1), 1000);
+    return () => {
+      clearInterval(t);
+      setSearchingFor(0);
+    };
+  }, [state]);
+  const quiet = state === "searching" && searchingFor >= 45;
 
   const prev = useRef<State>("searching");
   useEffect(() => {
@@ -172,7 +187,7 @@ export function MatchScreen() {
               {state === "searching" && (
                 <>
                   <PlaceTicker approx={approx} />
-                  <span className="mt-1 block text-[13px] text-on-sky/90">Usually under a minute<Elapsed /></span>
+                  <span className="mt-1 block text-[13px] text-on-sky/90">{searchingFor >= 60 ? "Still looking" : "Usually under a minute"}<Elapsed /></span>
                 </>
               )}
               {state === "found" && "They're free right now too."}
@@ -204,6 +219,30 @@ export function MatchScreen() {
           action={<Button className="flex-1" onClick={() => respond(true)} disabled={acting}>Yes, let&apos;s go</Button>}
           secondary={<button className={toastQuiet} onClick={() => respond(false)} disabled={acting}>Not now</button>}
         />
+
+        {state === "waiting" && match?.source === "invite" && match.invite_code && (
+          <div className="mx-auto mt-2 w-full rounded-[24px] bg-white/85 p-5 text-[#121412] [text-shadow:none] shadow-[0_18px_50px_rgb(13_40_90/0.2)] backdrop-blur-xl dark:bg-[#1b2130]/85 dark:text-white">
+            <ShareLink url={`${window.location.origin}/invite/${match.invite_code}`} title="Do a 20-minute quest with me" />
+          </div>
+        )}
+
+        <AnimatePresence>
+          {quiet && (
+            <motion.div
+              className="mx-auto mt-2 w-full overflow-hidden rounded-[24px] bg-white/85 text-[#121412] [text-shadow:none] shadow-[0_18px_50px_rgb(13_40_90/0.2)] backdrop-blur-xl dark:bg-[#1b2130]/85 dark:text-white"
+              initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="px-5 pt-4">
+                <p className="text-[17px] font-semibold">Nobody&apos;s free nearby just yet</p>
+                <p className="mt-1 text-[14px] leading-snug opacity-70">We&apos;ll keep looking while this screen is open. Or if someone&apos;s with you right now, send them a quest instead.</p>
+              </div>
+              <InviteCard />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {state === "matched" && run && (

@@ -333,6 +333,9 @@ async function main() {
   const mateRun = (await noa.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
   const joined = (await claimMate.post<QuestRun>("/api/runs", { quest_id: zone.quest_id, zone_id: zone.id })).data;
   check(joined.id === mateRun.id && joined.members.length === 2, "a claim teammate joins the open challenge", joined);
+  const again = (await kim.post<Game>("/api/games", { rival_code: rival.invite_code })).data;
+  const old = (await kim.get<Game>(`/api/games/${game.id}`)).data;
+  check(again.id !== game.id && old.status === "finished" && (await kim.get<Game>("/api/games/current")).data.id === again.id, "a new game ends the crew's old one", { old: old.status });
 
   console.log("\ndashboard and privacy");
   const dash = (await alice.get<Dashboard>("/api/dashboard")).data;

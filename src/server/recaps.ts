@@ -53,6 +53,8 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
   const other = run.mode === "pair" ? people.find((p) => p.user_id !== user.id) : undefined;
   const partner: Partner | null = other ? { display_name: other.display_name, avatar_url: other.avatar_url } : null;
   const earned = await one<{ amount: number }>("select amount from coin_events where run_id = $1 and user_id = $2", [runId, user.id]);
+  const moods = await query<{ phase: "before" | "after"; mood: number }>("select phase, mood from checkins where run_id = $1 and user_id = $2", [runId, user.id]);
+  const moodOf = (phase: "before" | "after") => moods.find((m) => m.phase === phase)?.mood ?? null;
 
   return {
     run_id: runId,
@@ -75,5 +77,7 @@ export async function getRecap(user: User, runId: string): Promise<Recap> {
     // Added: when it finished, so the "how do you feel now" question only shows on a fresh recap.
     completed_at: (run.completed_at ?? run.ends_at).toISOString(),
     proof: photos.map((p) => ({ url: p.media_url, type: p.media_type })),
+    mood_before: moodOf("before"),
+    mood_after: moodOf("after"),
   };
 }

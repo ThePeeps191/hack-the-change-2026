@@ -15,8 +15,13 @@ const side = [
   { href: "/me", label: "You", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.8 3.7-6 7.5-6s6.7 2.2 7.5 6" },
 ] as const;
 
+// On a phone Claim lives inside the Crew tab; on a computer the rail has room
+// to give it its own row, after Crew.
+const rail = [side[0], side[1], side[3], { href: "/claim", label: "Claim", icon: "M5.5 21V3.5M5.5 4h12l-2.5 4.5 2.5 4.5h-12" }, side[4]];
+
 const isActive = (href: string, path: string) =>
   href === "/" ? path === "/" : path.startsWith(href) || (href === "/crew" && path.startsWith("/claim"));
+const isRailActive = (href: string, path: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
 // Phone-first column. The bottom is a quiet row of five icons: four places,
 // and the main action in the middle. From 1024px up the four tab pages get the
@@ -35,15 +40,15 @@ export function AppShell({ children, nav = true, wide = false }: { children: Rea
         <nav aria-label="main" className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-[var(--hairline)] bg-canvas px-4 pt-7 pb-6 lg:flex">
           <Hand className="px-3 text-[38px] leading-none font-bold text-ink">{APP_NAME.toLowerCase()}</Hand>
           <ul className="mt-8 flex flex-col gap-1">
-            {side.map((t) => t && (
+            {rail.map((t) => (
               <li key={t.href}>
                 <Link
                   href={t.href}
-                  aria-current={isActive(t.href, path) ? "page" : undefined}
+                  aria-current={isRailActive(t.href, path) ? "page" : undefined}
                   onClick={() => tick(0.6)}
-                  className={`flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isActive(t.href, path) ? "font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
+                  className={`flex min-h-12 items-center gap-3 rounded-[14px] px-3 text-[16px] transition-colors hover:bg-sunken ${isRailActive(t.href, path) ? "font-bold text-ink" : "font-medium text-ink-muted hover:text-ink"}`}
                 >
-                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isRailActive(t.href, path) ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d={t.icon} />
                   </svg>
                   {t.label}

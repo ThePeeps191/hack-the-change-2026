@@ -13,6 +13,7 @@ import { Hero, HeroBar, HeroIcon } from "@/components/ui/hero";
 import { MoodCheck } from "@/features/checkin/mood-check";
 import { FinishNow } from "./finish-now";
 import { ReportSheet } from "./report-sheet";
+import { SpotMe } from "./spot-me";
 import { RunTracker } from "./run-tracker";
 import { Odometer } from "@/components/ui/odometer";
 import { categoryLabel, categoryOf, CategoryIcon, Coin } from "@/components/ui/quest-glyph";
@@ -167,6 +168,10 @@ export function QuestScreen() {
           </article>
         </div>
       </motion.div>
+
+      {active && run.mode === "pair" && you && partner && !you.submitted && (
+        <div className="px-4 pt-5"><SpotMe runId={run.id} you={you} partner={partner} /></div>
+      )}
 
       {active && <div className="px-4 pt-5"><MoodCheck runId={run.id} phase="before" /></div>}
 
