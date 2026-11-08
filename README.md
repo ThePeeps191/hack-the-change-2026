@@ -92,9 +92,9 @@ The You tab keeps your own numbers and never ranks you against anyone. It shows 
 
 It's one Next.js app on Vercel. Auth0 handles sign-in, and Postgres on Tiger Data stores everything, with location pings in a TimescaleDB hypertable. We wrote every quest by hand, at real places around UCalgary and Calgary. Claude Haiku checks the proof and writes the recaps, and if it's slow or down, your quest still counts. We used Claude Code as a coding assistant.
 
-There are no background workers: the game moves forward whenever a phone checks in. Every rule runs on the server in a database transaction, so two phones can't race each other into a bad state, and an end-to-end test plays the whole product as a dozen simulated people. If GPS is denied, Amble falls back to the middle of campus, and a dropped signal doesn't lose your photo.
+There are no background workers. The game moves forward whenever a phone checks in. Every rule runs on the server in a database transaction, so two phones can't race each other into a bad state, and an end-to-end test plays the whole product as a dozen simulated people. If GPS is denied, Amble falls back to the middle of campus, and a dropped signal doesn't lose your photo.
 
-It's cheap to run. The AI costs about $1 per 1,000 quests, there are no servers of our own to look after, and the quests use places the city already has.
+It's cheap to run. The AI costs about $1 per 1,000 quests and there are no servers of our own to look after. The quests also use places the city already has.
 
 Built with Next.js, React, TypeScript, Tailwind CSS, Motion, bun, Postgres, Tiger Data (TimescaleDB), Auth0, Claude Haiku, MapLibre, OpenStreetMap and Vercel.
 
