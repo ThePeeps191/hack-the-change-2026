@@ -69,11 +69,9 @@ There are comfort settings too: step-free places first, an easier pace, and side
 
 ## How we built it
 
-- **One Next.js app** serves the screens and a small API. Every rule (matching, quest runs, coins, Claim) runs on the server, inside database transactions, so two phones can't race each other into a bad state.
-- **No background workers.** Phones check in every few seconds, and each check-in moves the state forward: a match expires, a quest ends, a bot partner answers. Nothing has to run on a timer.
-- **Postgres on Tiger Data** stores everything. Location pings live in a TimescaleDB hypertable with a 30-day retention policy, so routes delete themselves, and the You tab's week is built with TimescaleDB's `time_bucket`. Proof photos are stored in the database too.
-- **Auth0** handles sign-in. Judges get a signed demo login, so they never need an account.
-- **Works on a bad day.** GPS denied, no signal, or the AI slow: each has a friendly fallback, and every AI call has a timeout.
+It's one Next.js (TypeScript) app on Vercel. Auth0 handles sign-in, and judges get a signed demo login so they don't need an account. Postgres on Tiger Data stores everything, including proof photos. Location pings go in a TimescaleDB hypertable with a 30-day retention policy, so routes delete themselves, and the You tab's week uses TimescaleDB's `time_bucket`.
+
+There are no background workers. State moves forward when a phone checks in every few seconds: a match expires, a quest ends. Every rule runs on the server inside database transactions, so two phones can't race each other into a bad state. An end-to-end test (`scripts/smoke.ts`) drives the whole product over HTTP as a dozen simulated people.
 
 ### Where the AI fits
 
