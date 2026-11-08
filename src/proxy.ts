@@ -6,6 +6,10 @@ import { auth0 } from "@/lib/auth0";
 //
 // /api is excluded on purpose: routes check the session themselves, and running
 // proxy on them would buffer uploads and cap them at 10 MB.
+//
+// The install files are excluded too (manifest, service worker, offline page,
+// icons). Browsers fetch them without a session, so a login redirect would break
+// installing the app and the offline page.
 const PUBLIC_PAGES = ["/login", "/privacy"];
 
 export async function proxy(req: NextRequest) {
@@ -13,9 +17,11 @@ export async function proxy(req: NextRequest) {
 
   const res = await auth0().middleware(req);
   const { pathname, search } = req.nextUrl;
-  if (pathname.startsWith("/auth/") || PUBLIC_PAGES.includes(pathname)) return res;
+  if (pathname.startsWith("/auth/") || PUBLIC_PAGES.includes(pathname))
+    return res;
 
-  const demo = process.env.DEMO_MODE === "1" || process.env.DEMO_MODE === "true";
+  const demo =
+    process.env.DEMO_MODE === "1" || process.env.DEMO_MODE === "true";
   if (demo && req.cookies.has("amble_demo")) return res;
   if (await auth0().getSession(req)) return res;
 
@@ -25,5 +31,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
+  matcher: [
+    "/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.webmanifest|sw.js|offline.html|icons/).*)",
+  ],
 };
