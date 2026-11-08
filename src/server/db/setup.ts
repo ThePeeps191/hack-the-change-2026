@@ -195,7 +195,9 @@ export async function seedDemoData(query: Query) {
     await query("insert into recaps (run_id, summary) values ($1, $2) on conflict (run_id) do update set summary = excluded.summary", [runId(n), summary]);
     const [q] = await query("select coins from quests where id = $1", [questId]);
     await query(
-      "insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz) on conflict do nothing",
+      // Updates the amount on a reseed, so history matches the quest's current coins.
+      `insert into coin_events (user_id, run_id, amount, created_at) values ($1, $2, $3, $4::timestamptz)
+       on conflict (user_id, run_id) where run_id is not null do update set amount = excluded.amount`,
       [sam, runId(n), q.coins, completedAt.toISOString()],
     );
   }

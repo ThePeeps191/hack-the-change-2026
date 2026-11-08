@@ -149,7 +149,7 @@ export function Entry({ h, i }: { h: HistoryItem; i: number }) {
         <p className="font-semibold truncate text-[17px]">{h.quest.title.charAt(0).toUpperCase() + h.quest.title.slice(1)}</p>
         <p className="mt-0.5 flex items-center gap-1.5 truncate text-[13px] text-ink-muted">
           <CategoryIcon category={categoryOf(h.quest)} size={14} className="text-ink-faint" />
-          {h.partner ? `with ${h.partner.display_name}` : "on your own"} · {distance(h.distance_m)}
+          {h.partner ? `with ${h.partner.display_name}` : "on your own"}{h.distance_m >= 50 && <> · {distance(h.distance_m)}</>}
         </p>
       </div>
       <span className="flex items-center gap-1 text-[14px] font-semibold tabular-nums">
