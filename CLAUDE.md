@@ -8,6 +8,7 @@ Danny, Siddhant, Aaron and Jonas are building Amble, a mobile-first website made
 - `docs/ARCHITECTURE.md`: how the code fits together and why
 - `docs/RUNBOOK.md`: **read this first.** The organizers' rules, deadline, judging format, rubric and prizes. What disqualifies us is in there
 - `docs/JUDGING.md`: how Amble scores against that rubric, and what's still missing
+- `docs/DEPLOYMENT.md`: what's live at https://amble.health: Vercel, the domain, Tiger Data, Auth0, the AI and every env var. Read it before touching any outside service
 
 ## The organizers' rules bind every change
 
@@ -17,7 +18,6 @@ These come from `docs/RUNBOOK.md`. Breaking one can get us cut before judging, s
 - **Every one of us must be able to explain any code.** If one of us can't, we can be disqualified. Keep code plain enough to explain in one sentence, and update `docs/WALKTHROUGH.md` when you change how something works.
 - **Submission closes 11:30 AM Sunday, sharp.** Devpost needs the title `TEAM ID - TEAM NAME - Amble`, a 2 to 5 minute video, the GitHub link, a description, the team members and an AI disclosure. After about 10:30 Sunday, merge only fixes.
 - **Judges open the link alone on a phone.** Every flow needs a path that works without a partner, a student email or GPS.
-- **Quests are public, daylight, walking pace, and never involve photographing strangers or children.** Starter quests in `data/quests/` count as much as AI-written ones.
 - **Sponsor prizes need the product to really be used:** Gemini API, Auth0, Tiger Data and GoDaddy Registry. (We host on Vercel, so Vultr is out.) Don't remove one without telling a human.
 
 ## Build only what the demo shows
@@ -110,7 +110,7 @@ Many sessions share each laptop and the same accounts:
 - **Mocks by default:** `AUTH_MODE=mock` and `AI_MODE=mock` keep dev free of quotas and logins. Make live calls only when you're testing the live thing (`AI_MODE=live`).
 - **Phones need HTTPS:** GPS and camera won't work over plain `http://` on a phone. Test phone features on the deployed site or through an HTTPS tunnel.
 - **Database:** each worktree gets its own embedded Postgres in `.data/`, with made-up seed data, so you can't hurt anyone. Tiger Data is the live database: only point `DATABASE_URL` at it to test the real thing, and never drop, truncate or reset it.
-- **Deploys:** only `main` deploys.
+- **Deploys:** only `main` deploys, to Vercel at https://amble.health, and the build migrates Tiger Data first. Details in `docs/DEPLOYMENT.md`.
 - **Secrets:** this repo is **public**. Keys go in `.env`, which is gitignored and normally copied into new worktrees. If yours is missing, copy it from the main checkout. Never put a key in code, logs, fixtures or PR text. If one leaks, tell the humans right away so it can be rotated.
 
 ## Building
@@ -121,6 +121,6 @@ Many sessions share each laptop and the same accounts:
 - Design for a phone first, with real tap targets.
 - Show a usable screen when GPS is denied, the AI is slow or down, or there's no signal.
 - Treat location, photos and video as personal data: don't log them, and use only made-up data in fixtures.
-- Quests stay safe: public places, daylight, walking pace.
+- Keep safety and privacy rules light; this is a hackathon demo, not a published app. Quests should be sensible (public places, walking pace), and that's it. Don't add filters, extra AI rules or checks for strangers, children or faces in photos, daylight limits or content screening. Common sense in the starter quests is enough.
 
 Before you call something done, run it and see it work, and say plainly what you did and didn't check.

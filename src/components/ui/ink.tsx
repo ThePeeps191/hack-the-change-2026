@@ -74,6 +74,23 @@ export const PeopleInk = (
   </>
 );
 
+// A small compass, the same idea as the centre button.
+export const CompassInk = (
+  <>
+    <path d="M12 3.2c4.9-.1 8.8 3.9 8.8 8.8 0 4.9-4 8.8-8.9 8.8-4.8 0-8.7-4-8.7-8.9.1-4.8 4-8.7 8.8-8.7z" />
+    <path d="M12 6.6l2 5.4h-4z" fill="currentColor" fillOpacity=".35" />
+    <path d="M12 17.4l2-5.4h-4z" />
+  </>
+);
+
+// A map pin with a dot, slightly lopsided.
+export const PinInk = (
+  <>
+    <path d="M12 21.1c-3.6-3.4-6.6-6.9-6.5-10.6.1-3.7 3-6.4 6.6-6.4 3.5.1 6.3 2.9 6.3 6.5 0 3.6-2.9 7.1-6.4 10.5z" />
+    <path d="M12.1 8.4c1.1 0 2 .9 2 2 0 1.1-1 2-2.1 2-1.1-.1-1.9-1-1.9-2.1.1-1 1-1.9 2-1.9z" />
+  </>
+);
+
 // A flag, drawn in ink: a pole leaning a touch, a wavy cloth, and a tuft of
 // ground at its foot. Held flags get hatching and a faint wash on the cloth,
 // and the cloth (with its hatching) sways from the pole (.flag-fly). Open

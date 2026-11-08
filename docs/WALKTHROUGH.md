@@ -62,7 +62,7 @@ All AI calls go through three functions in `src/lib/ai.ts`: `generateQuests`, `j
 
 **Quests are always at real places.** `placesNear` in `src/lib/places.ts` fetches real, public places near you from OpenStreetMap (libraries, parks, cafés, viewpoints, but no bars and nothing private), plus our own hand-picked campus places. The model picks from that numbered list, and **the coordinates always come from the list, never from the model**, so it can't invent a place. In Gemini mode, Maps and Search grounding add real context and source links, which the quest screen shows.
 
-**Safety is enforced, not just requested.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace, no filming strangers and so on. Then `toSafeQuest` checks every quest that comes back: blocked words (alcohol, rooftops, night and similar), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped.
+**A light check on every AI quest.** The prompt (`QUEST_RULES` in `src/lib/quest-safety.ts`) asks for public places, daylight, walking pace and nothing dangerous. Then `toSafeQuest` checks every quest that comes back: a short list of clearly wrong words (alcohol, drugs, weapons, nudity), it must be within 5 km, and it must take 5 to 20 minutes. Anything that fails is dropped. We kept this deliberately small: a longer word list threw away good quests.
 
 **The AI never blocks a person.** Every call has a timeout. If quest writing is slow or fails, you get the starter pack (`data/quests/quests.json`). If the proof check fails, the quest counts anyway and the message says so, because nobody should lose a real walk to our outage. If the recap fails, you get a plain one-line summary.
 
@@ -125,7 +125,7 @@ The schema is in `db/migrations/20261107T1500_foundation.sql`. The main tables a
 
 ## Deploying
 
-Vercel hosts the app at https://amble-three.vercel.app and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). The old Vultr kit in `deploy/` is unused.
+Vercel hosts the app at https://amble.health and deploys every push to `main` (`vercel.json` skips every other branch). A production build first runs `scripts/db-migrate.ts` against Tiger Data, then `next build`. Secrets are Vercel environment variables, never in the repo. Because Vercel functions have no lasting disk, proof photos and videos are stored in the database (`uploads` table, `src/lib/uploads.ts`), and the phone shrinks photos before sending because Vercel refuses uploads over 4.5 MB (`src/lib/shrink-photo.ts`). Every outside service and env var is listed in `docs/DEPLOYMENT.md`.
 
 ## Testing
 

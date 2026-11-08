@@ -39,7 +39,10 @@ async function connectEmbedded(): Promise<Engine> {
 
 async function connectPostgres(url: string): Promise<Engine> {
   const { default: postgres } = await import("postgres");
-  const sql = postgres(url, { max: 5, onnotice: () => {} });
+  // Serverless-friendly: few connections per server, idle ones closed quickly so
+  // many short-lived Vercel servers don't use up Tiger's limit, and no named
+  // prepared statements, which a connection pooler can't keep.
+  const sql = postgres(url, { max: 5, idle_timeout: 20, connect_timeout: 10, prepare: false, onnotice: () => {} });
   return {
     kind: "postgres",
     run: (text, params = []) => sql.unsafe(text, params as never[]) as unknown as Promise<Row[]>,
